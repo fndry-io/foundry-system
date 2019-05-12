@@ -1,0 +1,39 @@
+{
+  "name": "foundry/system",
+  "description": "A system plugin for the Foundry Framework",
+  "keywords": [
+    "foundry",
+    "framework",
+    "laravel"
+  ],
+  "license": "MIT",
+  "type": "foundry-core",
+  "authors": [
+    {
+      "name": "Co-Foundry",
+      "email": "digital@co-foundry.co.za"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "laravel-doctrine/orm": "1.4.*",
+    "laravel-doctrine/extensions": "1.0.*"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Foundry\\System\\Providers\\SystemServiceProvider"
+      ],
+      "aliases": {
+      }
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Foundry\\System\\": "app/"
+    },
+    "files": [
+      "app/helpers.php"
+    ]
+  }
+}

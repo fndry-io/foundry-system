@@ -2,24 +2,31 @@
 
 namespace Foundry\System\Entities;
 
+use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
+use Foundry\Core\Entities\Traits\Uuidable;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Foundry\Core\Entity;
-use Foundry\Core\Traits\SoftDeletable;
-use Foundry\Core\Traits\Timestampable;
+use Foundry\Core\Entities\Traits\SoftDeletable;
+use Foundry\Core\Entities\Traits\Timestampable;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Foundry\System\Repositories\UserRepository;
+use LaravelDoctrine\ORM\Auth\Authenticatable;
 
 /**
- * Class User
+ * Class User Entity
+ *
  * @package Foundry\System\Entities
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="UserRepository")
  * @ORM\Table(name="users")
  */
-class User extends Entity {
+class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword {
 
+	use Uuidable;
 	use SoftDeletable;
 	use Timestampable;
+	use Authenticatable;
+	use CanResetPassword;
 
 	/**
 	 * @var array The fillable values
@@ -27,8 +34,11 @@ class User extends Entity {
 	protected $fillable = [
 		'first_name',
 		'last_name',
-		'username',
-		'active'
+		'email'
+	];
+
+	protected $hidden = [
+		'password',
 	];
 
 	/**
@@ -39,28 +49,15 @@ class User extends Entity {
 	protected $id;
 
 	/**
-	 * @ORM\Column(name="uuid", type="guid", unique=true)
-	 * @ORM\GeneratedValue(strategy="UUID")
+	 * @ORM\Column(type="string", nullable=false, unique=true)
 	 */
-	protected $uuid;
-
-	/**
-	 *
-	 * @var string Password
-	 * @ORM\Column(type="string", length=32, unique=true, nullable=false)
-	 */
-	protected $username;
+	protected $email;
 
 	/**
 	 * @var string Password
 	 * @ORM\Column(type="string", nullable=false)
 	 */
 	protected $password;
-
-	/**
-	 * @ORM\Column(type="string", nullable=false, unique=true)
-	 */
-	protected $email;
 
 	/**
 	 * @var string First Name
@@ -87,6 +84,53 @@ class User extends Entity {
 	protected $super_admin = false;
 
 	/**
+	 * @var string Timezone
+	 * @ORM\Column(type="string", nullable=true)
+	 */
+	protected $timezone;
+
+	/**
+	 * @ORM\Column(name="last_login_at", type="datetime", nullable=true)
+	 * @var Carbon
+	 */
+	protected $last_login_at;
+
+	/**
+	 * @var boolean Logged in
+	 * @ORM\Column(type="boolean", options={"default":false})
+	 */
+	protected $logged_in;
+
+	/**
+	 * User constructor.
+	 *
+	 * @param array $properties
+	 *
+	 */
+	public function __construct( array $properties = [] ) {
+		parent::__construct( $properties );
+		$this->setUuid();
+		$this->setCreatedAt(new Carbon());
+		$this->setTimezone(config('app.timezone'));
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAuthIdentifierName()
+	{
+		return 'id';
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAuthIdentifier()
+	{
+		return $this->id;
+	}
+
+	/**
 	 * @param string $password
 	 */
 	public function setPassword( string $password ): void {
@@ -101,17 +145,17 @@ class User extends Entity {
 	}
 
 	/**
-	 * @return mixed
-	 */
-	public function getUuid() {
-		return $this->uuid;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getFirstName(): string {
 		return $this->first_name;
+	}
+
+	/**
+	 * @param string $first_name
+	 */
+	public function setFirstName( string $first_name ): void {
+		$this->first_name = $first_name;
 	}
 
 	/**
@@ -121,12 +165,11 @@ class User extends Entity {
 		return $this->last_name;
 	}
 
-
 	/**
-	 * @return string
+	 * @param string $last_name
 	 */
-	public function getUsername(): string {
-		return $this->username;
+	public function setLastName( string $last_name ): void {
+		$this->last_name = $last_name;
 	}
 
 	/**
@@ -137,10 +180,24 @@ class User extends Entity {
 	}
 
 	/**
+	 * @param mixed $email
+	 */
+	public function setEmail( $email ): void {
+		$this->email = $email;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function isActive(): bool {
 		return $this->active;
+	}
+
+	/**
+	 * @param bool $active
+	 */
+	public function setActive( bool $active ): void {
+		$this->active = $active;
 	}
 
 	/**
@@ -149,5 +206,38 @@ class User extends Entity {
 	public function isSuperAdmin(): bool {
 		return $this->super_admin;
 	}
+
+	/**
+	 * @param bool $super_admin
+	 */
+	public function setSuperAdmin( bool $super_admin ): void {
+		$this->super_admin = $super_admin;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTimezone(): string {
+		return $this->timezone;
+	}
+
+	/**
+	 * @param string $timezone
+	 */
+	public function setTimezone( string $timezone ): void {
+		$this->timezone = $timezone;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getFullName()
+	{
+		return $this->first_name . ' ' . $this->last_name;
+	}
+
+
+
+
 
 }

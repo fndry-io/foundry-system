@@ -12,6 +12,4 @@ files.keys().map(key => {
 
 });
 
-console.log(fieldComponents);
-
 export default fieldComponents

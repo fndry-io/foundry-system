@@ -16,11 +16,7 @@
   ],
   "require": {
     "php": "^7.2",
-    "gedmo/doctrine-extensions": "^2.4",
-    "laravel-doctrine/extensions": "1.0.*",
-    "laravel-doctrine/migrations": "^1.2",
-    "laravel-doctrine/orm": "1.4.*",
-    "ramsey/uuid-doctrine": "^1.5"
+    "foundry/core": "1.0.x-dev"
   },
   "extra": {
     "laravel": {

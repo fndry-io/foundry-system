@@ -71,6 +71,7 @@ class LoginRequest extends FormRequest implements ViewableFormRequestInterface
     public function view() : DocType
     {
     	$form = $this->form();
+
     	$form->setButtons((new SubmitButtonType(__('Login'), $form->getAction())));
     	$form->addChildren(
     		RowType::withChildren($form->get('email')),

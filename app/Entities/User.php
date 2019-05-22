@@ -17,7 +17,7 @@ use LaravelDoctrine\ORM\Auth\Authenticatable;
  * Class User Entity
  *
  * @package Foundry\System\Entities
- * @ORM\Entity(repositoryClass="UserRepository")
+ * @ORM\Entity(repositoryClass="Foundry\System\Repositories\UserRepository")
  * @ORM\Table(name="users")
  */
 class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword {

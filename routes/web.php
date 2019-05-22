@@ -11,6 +11,13 @@
 |
 */
 
-Route::get('/', function () {
-    return 'You have arrived!';
+Route::prefix( 'system' )->middleware('web')->group( function () {
+	Route::get( 'request/view', 'FormRequestController@view' )->name( 'system.request.view' );
+	Route::middleware( 'auth' )->group( function () {
+		Route::get( 'request/display', 'FormRequestController@display' )->name( 'system.request.display' );
+	});
+	if (config('app.debug')) {
+		Route::get( 'request/all', 'FormRequestController@all' )->name( 'system.request.all' );
+	}
+	Route::match(['get', 'post'], 'request/handle', 'FormRequestController@handle' )->name( 'system.request.handle' );
 });

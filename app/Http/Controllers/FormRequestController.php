@@ -1,7 +1,8 @@
 <?php
 namespace Foundry\System\Http\Controllers;
 
-use Foundry\Core\Facades\FormRequestHandler;
+use Foundry\Core\Contracts\FormRequestHandler;
+use Foundry\Core\Requests\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -19,8 +20,7 @@ class FormRequestController extends Controller
 	public function handle(Request $request, FormRequestHandler $handler)
 	{
 		$name = $request->input('_request');
-		$id = $request->input('_id', null);
-		return $handler->handle($name, $request, $id)->toJsonResponse();
+		return $handler->handle($name, $request)->toJsonResponse();
 	}
 
 	/**
@@ -34,8 +34,38 @@ class FormRequestController extends Controller
 	public function view(Request $request, FormRequestHandler $handler)
 	{
 		$name = $request->input('_request');
-		$id = $request->input('_id', null);
-		return $handler::view($name, $request, $id)->toJsonResponse();
+		return $handler->view($name, $request)->toJsonResponse();
+	}
+
+	/**
+	 * Handles a form view request
+	 *
+	 * @param Request $request
+	 * @param FormRequestHandler $handler
+	 *
+	 * @return \Illuminate\Contracts\View\Factory|JsonResponse|\Illuminate\View\View
+	 */
+	public function display(Request $request, FormRequestHandler $handler)
+	{
+		$name = $request->input('_request');
+
+		$response = $handler->view($name, $request);
+
+		if (config('app.env') != 'local') abort(401);
+
+		$list = $handler->forms();
+		sort($list);
+
+		return view('foundry_system::pages.form', [
+			'name' => $name,
+			'list' => $list,
+			'form' => $response->getData()
+		]);
+	}
+
+	public function all(FormRequestHandler $handler)
+	{
+		return Response::success($handler->forms());
 	}
 
 }

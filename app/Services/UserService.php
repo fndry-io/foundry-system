@@ -94,6 +94,15 @@ class UserService {
 		return Response::error(__("Permission denied, wrong password and username combination"), 401);
 	}
 
+	public function logout()
+	{
+		//if current logged in user, log them out first
+		if (auth_user()) {
+			Auth::logout();
+		}
+		return Response::success();
+	}
+
 	/**
 	 * @param $user
 	 *

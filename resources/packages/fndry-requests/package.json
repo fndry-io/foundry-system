@@ -1,0 +1,20 @@
+{
+  "name": "fndry-requests",
+  "version": "0.0.0",
+  "description": "A package to assist with requests to the foundry system and displaying the results or forms",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "./node_modules/.bin/local-link"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "fndry-form": "file:../fndry-form",
+    "fndry-services": "file:../fndry-services",
+    "vue-json-pretty": "^1.6.0"
+  },
+  "devDependencies": {
+    "lib-manager": "0.0.7"
+  }
+}

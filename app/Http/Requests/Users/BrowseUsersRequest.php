@@ -1,8 +1,9 @@
 <?php
 
-namespace Foundry\System\Http\Requests\Auth;
+namespace Foundry\System\Http\Requests\Users;
 
 use Foundry\Core\Entities\Contracts\EntityInterface;
+use Foundry\Core\Inputs\Types\DocType;
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
@@ -11,22 +12,23 @@ use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\System\Entities\Entity;
 use Foundry\System\Entities\User;
-use Foundry\System\Inputs\User\UserLoginInput;
+use Foundry\System\Http\Resources\UserResource;
+use Foundry\System\Inputs\User\UsersFilterInput;
 use Foundry\System\Services\UserService;
-use LaravelDoctrine\ORM\Facades\EntityManager;
+use Illuminate\Support\Collection;
 
-class LoginRequest extends FormRequest implements ViewableFormRequestInterface
+class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInterface
 {
 
 	public static function name(): String {
-		return 'foundry.system.auth.login';
+		return 'foundry.system.users.browse';
 	}
 
 	/**
 	 * @return string
 	 */
 	public static function getInputClass(): string {
-		return UserLoginInput::class;
+		return UsersFilterInput::class;
 	}
 
 	/**
@@ -36,7 +38,7 @@ class LoginRequest extends FormRequest implements ViewableFormRequestInterface
 	 */
 	public function getEntity($id)
 	{
-		return EntityManager::getRepository(User::class)->find($id);
+		return null;
 	}
 
 	/**
@@ -46,19 +48,28 @@ class LoginRequest extends FormRequest implements ViewableFormRequestInterface
      */
     public function authorize()
     {
+    	//todo update to use the permissions
         return true;
     }
 
 	/**
 	 * Handle the request
 	 *
+	 * @see UserResource
 	 * @return Response
 	 */
     public function handle() : Response
     {
     	$response = $this->input->validate();
     	if ($response->isSuccess()) {
-    		return UserService::service()->login($this->input);
+    		$results = UserService::service()->filter(function($builder){
+    			return $builder;
+		    });
+
+		    $data = $results->toArray();
+		    $data['data'] = UserResource::collection(Collection::make($results->items()));
+
+    		return Response::success($data);
 	    }
 	    return $response;
     }
@@ -71,11 +82,9 @@ class LoginRequest extends FormRequest implements ViewableFormRequestInterface
     public function view() : FormType
     {
     	$form = $this->form();
-
-    	$form->setButtons((new SubmitButtonType(__('Login'), $form->getAction())));
+    	$form->setButtons((new SubmitButtonType(__('Filter'), $form->getAction())));
     	$form->addChildren(
-    		RowType::withChildren($form->get('email')),
-		    RowType::withChildren($form->get('password'))
+    		RowType::withChildren($form->get('search'))
 	    );
     	return $form;
     }

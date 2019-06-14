@@ -73,13 +73,13 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 
 	/**
 	 * @var boolean Is Active
-	 * @ORM\Column(type="boolean", options={"default":false})
+	 * @ORM\Column(type="boolean")
 	 */
 	protected $active = false;
 
 	/**
 	 * @var boolean Is Super Admin
-	 * @ORM\Column(type="boolean", options={"default":false})
+	 * @ORM\Column(type="boolean")
 	 */
 	protected $super_admin = false;
 
@@ -97,9 +97,9 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 
 	/**
 	 * @var boolean Logged in
-	 * @ORM\Column(type="boolean", options={"default":false})
+	 * @ORM\Column(type="boolean")
 	 */
-	protected $logged_in;
+	protected $logged_in = false;
 
 	/**
 	 * User constructor.

@@ -23,7 +23,7 @@ class FirstName extends TextInputType implements Field {
 			true
 		) )
 			->setMax( 100 )
-			->isSortable( true );
+			->setSortable( true );
 	}
 
 }

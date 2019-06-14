@@ -23,7 +23,7 @@ class Email extends EmailInputType implements Field {
 		) )
 			->addRule('email')
 			->setMax( 100 )
-			->isSortable( true );
+			->setSortable( true );
 	}
 
 }

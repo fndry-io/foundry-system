@@ -2,20 +2,20 @@
 
 namespace Plugins\Foundry\System\Models\Fields\Generic;
 
-use Foundry\Models\Fields\Field;
-use Illuminate\Database\Eloquent\Model;
-use Foundry\Requests\Types\NumberInputType;
-use Foundry\Requests\Types\Contracts\Inputable;
+use Foundry\Core\Inputs\Contracts\Field;
+use Foundry\Core\Inputs\Types\Contracts\Inputable;
+use Foundry\Core\Inputs\Types\NumberInputType;
+use Foundry\System\Entities\Entity;
 
 class Id extends NumberInputType implements Field {
 
-	static function input( Model &$model = null ): Inputable {
-		return ( new NumberInputType(
+	static function input( Entity &$entity = null ): Inputable {
+		return ( new static(
 			'id',
 			__( 'ID' ),
 			true )
 		)
-			->isSortable( true );
+			->setSortable( true );
 	}
 
 }

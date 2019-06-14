@@ -25,7 +25,7 @@ class Active extends ChoiceInputType implements Field, FieldOptions {
 			Active::options()
 		) )
 			->setHelp()
-			->isSortable( true );
+			->setSortable( true );
 	}
 
 	static function options( \Closure $closure = null, $value = null ): array {

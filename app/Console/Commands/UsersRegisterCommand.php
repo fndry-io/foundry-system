@@ -2,7 +2,7 @@
 
 namespace Foundry\System\Console\Commands;
 
-use Foundry\System\Inputs\UserRegisterInput;
+use Foundry\System\Inputs\User\UserRegisterInput;
 use Illuminate\Console\Command;
 use Foundry\System\Services\UserService;
 use Illuminate\Support\MessageBag;

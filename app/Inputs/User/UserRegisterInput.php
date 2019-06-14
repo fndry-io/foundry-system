@@ -37,7 +37,7 @@ class UserRegisterInput extends Inputs {
 			FirstName::input(),
 			LastName::input(),
 			Email::input(),
-			Password::input()->addRule('min:8')->addRule('max:20')->addRule('confirm'),
+			Password::input()->addRule('min:8')->addRule('max:20')->addRule('confirmed'),
 			PasswordConfirmation::input()
 		]);
 	}

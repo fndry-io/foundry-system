@@ -2,7 +2,6 @@
 
 namespace Plugins\Foundry\System\Models\Fields\Generic;
 
-
 use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 use Foundry\Core\Inputs\Types\DateTimeInputType;
@@ -22,7 +21,7 @@ class CreatedAt extends DateTimeInputType implements Field
             __('Created At'),
             true
         ))
-            ->isSortable(true);
+            ->setSortable(true);
     }
 
 }

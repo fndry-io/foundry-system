@@ -27,7 +27,7 @@ class SuperAdmin extends ChoiceInputType implements Field, FieldOptions {
 			static::options()
 		) )
 			->setHelp()
-			->isSortable( false );
+			->setSortable( false );
 	}
 
 	static function options( \Closure $closure = null, $value = null ): array {

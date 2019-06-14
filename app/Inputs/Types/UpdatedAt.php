@@ -21,7 +21,7 @@ class UpdatedAt extends DateTimeInputType implements Field
             __('Updated At'),
             true
         ))
-            ->isSortable(true);
+            ->setSortable(true);
     }
 
 }

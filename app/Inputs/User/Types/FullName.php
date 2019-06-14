@@ -22,7 +22,7 @@ class FullName extends TextInputType implements Field {
 			__( 'Full Name' ),
 			false
 		) )
-			->isSortable( false );
+			->setSortable( false );
 	}
 
 }

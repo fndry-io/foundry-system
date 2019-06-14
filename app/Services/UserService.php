@@ -10,6 +10,7 @@ use Foundry\System\Inputs\User\UserRegisterInput;
 use Foundry\System\Repositories\UserRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class UserService {
 
@@ -100,6 +101,7 @@ class UserService {
 		if (auth_user()) {
 			Auth::logout();
 		}
+		Session::invalidate();
 		return Response::success();
 	}
 

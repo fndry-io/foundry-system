@@ -26,7 +26,7 @@ class Timezone extends ChoiceInputType implements Field, FieldOptions {
 		) )
 			->setDefault("America/New_York")
 			->setMax( 50 )
-			->isSortable( false );
+			->setSortable( false );
 	}
 
 	/**

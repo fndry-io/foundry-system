@@ -179,7 +179,10 @@ class SystemServiceProvider extends ServiceProvider
 	public function registerFormRequests()
 	{
 		app(\Foundry\Core\Contracts\FormRequestHandler::class)->register([
-			'Foundry\System\Http\Requests\Auth\LoginRequest'
+			'Foundry\System\Http\Requests\Auth\LoginRequest',
+			'Foundry\System\Http\Requests\Auth\LogoutRequest',
+
+			'Foundry\System\Http\Requests\Users\BrowseUsersRequest'
 		]);
 
 	}

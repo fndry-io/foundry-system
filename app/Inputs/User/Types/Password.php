@@ -23,7 +23,7 @@ class Password extends PasswordInputType implements Field {
 			true
 		) )
 			->setMax()
-			->isSortable( false );
+			->setSortable( false );
 	}
 
 }

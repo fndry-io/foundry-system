@@ -4,7 +4,7 @@
                 :id="`fieldset-${schema.name}`"
                 :description="schema.help"
                 :label="schema.label"
-                :label-for="name"
+                :label-for="schema.id"
                 :state="valid"
         >
             <div class="field-wrap">

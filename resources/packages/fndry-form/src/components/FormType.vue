@@ -45,12 +45,14 @@
         methods: {
             // Get type of field. It'll be the name of HTML element
             fieldType(fieldSchema) {
-                let wrappers = ['section',
+                let wrappers = [
+                    'section',
                     'form',
                     'row',
                     'collection',
                     'column',
-                    'tag'];
+                    'tag'
+                ];
 
                 if (wrappers.includes(fieldSchema.type)) {
                     return `fndry-wrapper-${fieldSchema.type}`;

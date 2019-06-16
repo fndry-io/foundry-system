@@ -5,6 +5,8 @@
                       :name="name"
                       v-model="model"
                       :placeholder="schema.placeholder"
+                      :disabled="disabled"
+                      :autocomplete="schema.autocomplete"
                       :min="schema.min"
                       :max="schema.max"
                       :required="schema.required"
@@ -17,33 +19,16 @@
 <script>
     import { BFormInput } from 'bootstrap-vue'
 
+    import abstractInput from '../abstractInput';
+
     export default {
         name: "fndry-field-input",
         components: {
             BFormInput
         },
-        props: {
-            schema: {
-                type: Object,
-                required: true
-            },
-            id: {
-                type: String
-            },
-            name: {
-                type: String
-            },
-            value: {
-                type: [String,Number,Boolean,Array,InputEvent],
-                required: false
-            },
-            state: Boolean,
-            validation: Object
-        },
-        data(){
-            return {
-                model: this.value
-            }
-        },
+        mixins: [
+            abstractInput
+        ]
+
     };
 </script>

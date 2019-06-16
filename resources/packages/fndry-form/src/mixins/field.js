@@ -126,11 +126,12 @@ export default {
                 case 'reference':
                     type = 'reference';
                     break;
-                case 'checkbox':
-                    type = 'checkboxes';
-                    break;
                 case 'switch':
-                    type = 'switch';
+                case 'checkbox':
+                    type = 'checkbox';
+                    break;
+                case 'checkboxes':
+                    type = 'checkboxes';
                     break;
                 case 'radio':
                     type = 'radios';
@@ -144,7 +145,7 @@ export default {
                     break;
             }
 
-            type = (type === 'input')? (field.multiline)? 'textArea': type : type;
+            type = (type === 'input')? (field.multiline)? 'textarea': type : type;
 
             return "fndry-field-" + type;
         },

@@ -24,6 +24,25 @@ export const getMultipleFields = schema => {
 	return res;
 };
 
+export const getInputValues = (schema, model) => {
+    //console.log(schema);
+	if (schema.hasOwnProperty('name')) {
+		if (schema.hasOwnProperty('value')) {
+            set(model, schema.name, schema.value);
+		} else if(schema.multiple === true) {
+            set(model, schema.name, []);
+		} else {
+            set(model, schema.name, null);
+		}
+	}
+	if (schema.hasOwnProperty('children')) {
+		each(schema.children, (child) => {
+			getInputValues(child, model);
+		});
+	}
+
+};
+
 // Merge many models to one 'work model' by schema
 export const mergeMultiObjectFields = (schema, objs) => {
 	let model = {};

@@ -1,9 +1,12 @@
 <template>
-    <form-field :schema="schema" :model="model">
-        <div :class="['form-group', inputClassName]">
-            <label :for="schema.id">
-                {{schema.label}}
-            </label>
+    <ValidationProvider ref="provider" :rules="schema.rules" :name="name" v-slot="{ validate, errors, valid, failedRules }" :slim="true">
+        <b-form-group
+                :id="`fieldset-${schema.name}`"
+                :description="schema.help"
+                :label="schema.label"
+                :label-for="name"
+                :state="valid"
+        >
             <div class="field-wrap">
                 <component ref="child"
                            :is="fieldType(schema)"
@@ -11,31 +14,35 @@
                            :id="schema.id"
                            :name="name"
                            v-model="value"
-                           @change="onChange"
                            @input="onInput"
+                           @change="onChange"
+                           :state="valid"
+                           :validation="{validate}"
                 ></component>
             </div>
-            <!--<div v-if="fieldErrors(field).length > 0" class="invalid-feedback errors">-->
-            <!--<span v-for="(error, index) in fieldErrors(field)" :key="index" v-html="error"></span>-->
-            <!--</div>-->
-            <span class="form-text text-muted" v-html='schema.help'>{{schema.help}}</span>
-        </div>
-    </form-field>
+            <b-form-invalid-feedback :state="valid">
+                <span v-for="(error, index) in errors" :key="index">{{error}}</span>
+            </b-form-invalid-feedback>
+        </b-form-group>
+    </ValidationProvider>
 </template>
+
 <script>
 
-    import {get} from "lodash";
+    import {get as objGet, merge as objMerge} from "lodash";
+    import { BFormGroup, BFormInvalidFeedback } from 'bootstrap-vue'
+    import { ValidationProvider } from 'vee-validate';
+
+    import {fields} from "../types/index.js";
     import field from "../mixins/field.js";
-    import {fields} from "../fields/index.js";
-    import {config} from '../config';
-    import {fndryFormState, fndryFormParentForm} from '../utils/providers';
-    import {hyphenate, getClasses} from '../utils';
+    import conditional from "../mixins/conditional";
 
     export default {
         name: "form-group",
-        components: fields,
+        components: objMerge({BFormGroup, BFormInvalidFeedback, ValidationProvider}, fields),
         mixins: [
-            field
+            field,
+            conditional
         ],
         props: {
             schema: {
@@ -43,6 +50,10 @@
                 required: true
             },
             model: {
+                type: Object,
+                required: false
+            },
+            errors: {
                 type: Object,
                 required: false
             }
@@ -53,42 +64,34 @@
                 name: this.fieldName(this.schema)
             };
         },
-        inject: {
-            fndryFormState,
-            fndryFormParentForm
+        mounted() {
+
+            if (this.errors) {
+                const errors = objGet(this.errors, this.name, []);
+                if (errors.length > 0) {
+                    this.$refs.provider.applyResult({
+                        errors: errors, // array of string errors
+                        valid: false, // boolean state
+                        failedRules: {} // should be empty since this is a manual error.
+                    });
+                }
+            }
         },
         methods: {
-            getClasses(classConfig) {
-                let s = get(this.fndryFormState, this.name);
-                if (s) {
-                    return Object.keys(s.$error).reduce((classes, error) => {
-                        classes[classConfig.invalid + '-' + hyphenate(error)] = true;
-                        return classes;
-                    }, getClasses(classConfig, s));
-                }
+            fieldValue(field) {
+                return objGet(this.model, `${field.name}`);
             },
-            onInput($event) {
-                this.$emit('input', this.schema.name, $event.target.value);
+            onInput(value) {
+                this.$emit('input', this.schema.name, value);
             },
-            onChange($event) {
-                this.$emit('change', this.schema.name, $event.target.value);
+            onChange(value) {
+                this.$emit('change', this.schema.name, value);
             },
             onBlur() {
                 this.$emit('blur', this.schema.name);
             },
             onFocus() {
                 this.$emit('focus', this.schema.name);
-            },
-            fieldValue(schema) {
-                return get(this.model, `${schema.name}`);
-            }
-        },
-        computed: {
-            className() {
-                return this.getClasses(config.validateClasses);
-            },
-            inputClassName() {
-                return this.getClasses(config.inputClasses);
             }
         }
     };

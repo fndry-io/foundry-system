@@ -1,14 +1,15 @@
 <template>
     <div class="demo">
         <h2>demo</h2>
-        <div class="container">
-            <form-state :state="state" @submit.prevent="onSubmit">
-                <form-schema :schema="schema" :model="model" @model-update="onModelUpdate"></form-schema>
-                <button type="submit">Submit</button>
-            </form-state>
+        <div class="container text-left">
+            <ValidationObserver ref="observer" v-slot="{ invalid }" :slim="true">
+                <form @submit.prevent="onSubmit">
+                    <fndry-form-schema :schema="schema" :model="model" :errors="errors"></fndry-form-schema>
+                    <button type="submit">Submit</button>
+                </form>
+            </ValidationObserver>
 
             <pre>{{ model }}</pre>
-            <pre>{{ state }}</pre>
         </div>
     </div>
 </template>
@@ -17,9 +18,13 @@
     import FndryForm from "../../src";
     import extend from "extend";
     import {set} from "lodash";
+    import { ValidationObserver } from 'vee-validate';
 
     export default {
         name: 'demo',
+        components: {
+            ValidationObserver
+        },
         mixins: {
             FndryForm
         },
@@ -67,13 +72,16 @@
                                     type: 'text',
                                     name: 'name.first_name',
                                     value: 'bob',
-                                    required: true
+                                    required: true,
+                                    label: 'First Name'
                                 },
                                 {
                                     type: 'text',
                                     name: 'name.last_name',
                                     value: 'smith',
-                                    required: true
+                                    required: true,
+                                    label: 'Last Name',
+                                    rules: 'required'
                                 }
                             ]
                         },
@@ -85,17 +93,22 @@
                                     name: 'email',
                                     value: 'bob@domain.com',
                                     required: true,
-                                    rules: [
-                                        'required',
-                                        'email'
-                                    ]
+                                    label: 'Email',
+                                    placeholder: 'Your personal email...',
+                                    rules: 'required|email',
+                                    help: 'Add your email to get help'
                                 }
                             ]
                         }
                     ]
                 },
                 model: {},
-                state: {}
+                state: {},
+                errors: {
+                    'name.last_name': [
+                        'This field must be supplied'
+                    ]
+                }
             }
         },
         created(){
@@ -106,17 +119,14 @@
             this.model = extend({}, model);
         },
         methods: {
-            onModelUpdate(model) {
-                this.model = model;
-            },
-            onSubmit(){
-                if(this.state.$invalid) {
-                    // alert user and exit early
-                    console.log('invalid');
+            async onSubmit () {
+                const isValid = await this.$refs.observer.validate();
+                if (!isValid) {
+                    console.log('not valid');
                 } else {
-                    // otherwise submit form
                     console.log('valid');
                 }
+                // 🐿 ship it
             }
         }
     }

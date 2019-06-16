@@ -97,21 +97,20 @@ export default {
 			return baseClasses;
 		},
 
-        fieldId(schema) {
+        fieldId(field) {
             const idPrefix = objGet(this.options, "fieldIdPrefix", "");
-            return slugifyFormID(schema, idPrefix);
+            return slugifyFormID(field, idPrefix);
         },
-
-        fieldName(schema) {
-            return `${schema.name}`
+        fieldName(field) {
+            return `${field.name}`
         },
 
         // Get type of field 'field-xxx'. It'll be the name of HTML element
-        fieldType(schema) {
+        fieldType(field) {
 
             let type = "input";
 
-            switch (schema.type) {
+            switch (field.type) {
                 case 'autocomplete':
                     type = "auto-complete";
                     break;
@@ -145,9 +144,9 @@ export default {
                     break;
             }
 
-            type = (type === 'input')? (schema.multiline)? 'textArea': type : type;
+            type = (type === 'input')? (field.multiline)? 'textArea': type : type;
 
-            return "field-" + type;
+            return "fndry-field-" + type;
         },
 
 		fieldErrors(field) {

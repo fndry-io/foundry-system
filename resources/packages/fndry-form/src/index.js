@@ -1,11 +1,9 @@
-import FormState from './components/FormState';
 import FormSchema from './components/FormSchema';
-import FormComponent from './components/FormComponent';
+import FormType from './components/FormType';
 import FormGroup from './components/FormGroup';
-import FormField from './components/FormField';
-import FormRequest from './components/FormRequest';
+//import FormRequest from './components/FormRequest';
 
-import FormValidator from './directives/form-validator';
+import VeeValidate from 'vee-validate';
 
 import extend from 'extend';
 import { config } from './config';
@@ -17,26 +15,28 @@ function FndryFormBase (options) {
         [fndryFormConfig]: c
     });
     this.components = {
-        FormState,
-        FormField,
-        FormSchema,
-        FormComponent
+        'fndry-form-schema': FormSchema,
+        'fndry-form-type': FormType
     };
-    this.directives = { FormValidator };
 }
 
 export {
-    FormState,
-    FormComponent,
     FormSchema,
-    FormField,
-    FormRequest,
-    FormGroup
+    FormGroup,
+    FormType
 };
 
 export default class FndryForm extends FndryFormBase {
     static install(Vue, options) {
         Vue.mixin(new this(options));
+        Vue.use(VeeValidate, {
+            // This is the default
+            inject: true,
+            // Important to name this something other than 'fields'
+            fieldsBagName: 'veeFields',
+            // This is not required but avoids possible naming conflicts
+            errorBagName: 'veeErrors'
+        });
     }
     static get installed() {
         return !!this.install.done;

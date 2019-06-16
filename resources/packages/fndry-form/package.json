@@ -1,7 +1,7 @@
 {
   "name": "fndry-form",
-  "description": "A form generator and state manager based on a given schema",
-  "version": "0.0.0",
+  "description": "A form generator based on a given schema and that implements VeeValidation",
+  "version": "0.0.1",
   "private": false,
   "main": "dist/index.js",
   "files": [
@@ -30,8 +30,11 @@
     "postinstall": "./node_modules/.bin/local-link"
   },
   "dependencies": {
+    "bootstrap": "^4.3.1",
+    "bootstrap-vue": "^2.0.0-rc.23",
     "extend": "^3.0.2",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "vee-validate": "^2.2.10"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",

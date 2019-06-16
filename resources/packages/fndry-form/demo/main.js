@@ -6,7 +6,7 @@ import router from './router'
 
 const fndryForm = process.env.NODE_ENV === 'development'
   ? require('../src/index.js').default
-  : require('../src/index.js').default;
+  : require('../dist/index.js').default;
 
 Vue.config.productionTip = false;
 
@@ -19,4 +19,4 @@ new Vue({
   router,
   template: '<App/>',
   components: { App }
-})
+});

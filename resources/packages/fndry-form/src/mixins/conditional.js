@@ -77,7 +77,7 @@ export default {
         },
         determineVisibility(condition){
 
-            let model = this.vfg.model;
+            let model = this.model;
 
             let reference = condition['model'].split(".");
             let expression = condition['expression'];

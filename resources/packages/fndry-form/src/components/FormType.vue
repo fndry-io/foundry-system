@@ -1,23 +1,29 @@
 <template>
-    <div>
-        <component ref="child"
-                   v-if="fieldVisible(schema)"
-                   :is="fieldType(schema)"
-                   :model="model"
+    <span>
+        <component :is="fieldType(schema)"
                    :schema="schema"
+                   :model="model"
+                   :errors="errors"
                    v-on="$listeners"
         ></component>
-    </div>
+    </span>
 </template>
 <script>
 
     import conditional from '../mixins/conditional';
-    import {wrappers} from "../fields/index.js";
+    import {wrappers} from "../types/index.js";
 
-    console.log(wrappers);
-
+    /**
+     * Foundry Form Type
+     *
+     * A class to control the rendering of sub components based on the schema
+     *
+     * The purposes of this class is to control whether we use a wrapper component or the form group component to render
+     * inputs
+     *
+     */
     export default {
-        name: "form-component",
+        name: "fndry-form-type",
         components: wrappers,
         mixins: [
             conditional
@@ -28,6 +34,10 @@
                 required: true
             },
             model: {
+                type: Object,
+                required: false
+            },
+            errors: {
                 type: Object,
                 required: false
             }
@@ -43,9 +53,9 @@
                     'tag'];
 
                 if (wrappers.includes(fieldSchema.type)) {
-                    return `field-${fieldSchema.type}`;
+                    return `fndry-wrapper-${fieldSchema.type}`;
                 } else {
-                    return 'form-group';
+                    return 'fndry-form-group';
                 }
             }
         }

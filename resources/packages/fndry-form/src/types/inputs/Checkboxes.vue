@@ -12,15 +12,10 @@
 
 <script>
 
-    import { BFormCheckboxGroup } from 'bootstrap-vue'
-
     import abstractInput from '../abstractInput';
 
     export default {
         name: "fndry-field-checkboxes",
-        components: {
-            BFormCheckboxGroup
-        },
         mixins: [
             abstractInput
         ]

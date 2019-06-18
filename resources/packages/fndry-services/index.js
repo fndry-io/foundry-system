@@ -1,7 +1,19 @@
-import ApiService from 'services/ApiService';
-import TranslateService from 'services/TranslateService';
+import ApiService, {makeService} from './src/ApiService';
+import TranslateService from './src/TranslateService';
 
-export default {
+export {
     ApiService,
     TranslateService
 }
+
+const install = function(Vue, options){
+    Vue.prototype.$apiService = makeService({});
+};
+
+/**
+ * A request handling library
+ */
+export default {
+    install
+}
+

@@ -15,15 +15,10 @@
 
 <script>
 
-    import { BFormSelect } from 'bootstrap-vue'
-
     import abstractInput from '../abstractInput';
 
     export default {
         name: "fndry-field-select",
-        components: {
-            BFormSelect
-        },
         mixins: [
             abstractInput
         ]

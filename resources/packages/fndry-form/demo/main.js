@@ -2,18 +2,20 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import jQuery from 'jquery'
+import BootstrapVue from 'bootstrap-vue'
 
 import App from './App'
 import router from './router'
 
-const fndryForm = process.env.NODE_ENV === 'development'
+const FndryForm = process.env.NODE_ENV === 'development'
   ? require('../src/index.js').default
   : require('../dist/index.js').default;
 
 Vue.config.productionTip = false;
 
 // Using plugin
-Vue.use(fndryForm);
+Vue.use(BootstrapVue);
+Vue.use(FndryForm);
 
 jQuery.extend(true, jQuery.fn.datetimepicker.defaults, {
     icons: {

@@ -12,15 +12,10 @@
 
 <script>
 
-    import { BFormRadioGroup } from 'bootstrap-vue'
-
     import abstractInput from '../abstractInput';
 
     export default {
         name: "fndry-field-radio",
-        components: {
-            BFormRadioGroup
-        },
         mixins: [
             abstractInput
         ]

@@ -5,16 +5,17 @@
                     :schema="child"
                     :model="model"
                     :errors="errors"
-                    v-on="$listeners"
-                    @change="onChange"
-                    @input="onInput"
+                    @change="onUpdate"
+                    @input="onUpdate"
             ></fndry-form-type>
         </div>
     </div>
 </template>
 
 <script>
-    import {set} from 'lodash';
+    import {set, extend} from 'lodash';
+
+    import {getChildInputValues} from '../utils/schema';
 
     /**
      * Foundry Form Schema
@@ -28,23 +29,29 @@
                 type: Object,
                 required: true
             },
-            model: {
+            errors: {
                 type: Object,
                 required: false
             },
-            errors: {
+            data: {
                 type: Object,
                 required: false
             }
         },
+        data() {
+            return {
+                model: {}
+            };
+        },
+        created(){
+            let model = this.data ? extend({}, this.data) : {};
+            getChildInputValues(this.schema, model);
+            this.model = model;
+        },
         methods: {
-            onInput(field, value) {
+            onUpdate(field, value) {
                 set(this.model, field, value);
-                this.$emit('input', this.model);
-            },
-            onChange(field, value) {
-                set(this.model, field, value);
-                this.$emit('change', this.model);
+                this.$emit('update', this.model);
             },
         }
     }

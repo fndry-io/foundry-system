@@ -4,7 +4,6 @@ import __ from './TranslateService'
 const viewRequestUri = '/system/request/view';
 const handleRequestUri = '/system/request/handle';
 
-
 export const getViewRequestUri = (request) => {
     return route(viewRequestUri, Object.assign({}, {
         _request: request
@@ -160,7 +159,15 @@ export const route = (url, params) => {
     return data.url + queryString;
 };
 
-export default {
+//todo work out a better way for this, such as a class constructor or similar
+let axios = window.axios || require('axios');
+
+export const makeService = ({}) => {
+    return service;
+};
+
+const service = {
+
     /**
      * Call the API endpoint
      *
@@ -210,8 +217,8 @@ export default {
         console.log('calling...', options, _params);
 
         return new Promise(function(resolve, reject){
-            window.axios(options)
-                //call to the server successful (2xx)
+            axios(options)
+            //call to the server successful (2xx)
                 .then(function (response) {
                     console.log('response...', response);
                     handleResponse(response, resolve, reject);
@@ -223,7 +230,7 @@ export default {
                 })
             ;
         })
-        ;
+            ;
     },
     upload: function(url, file, onUploadProgress) {
         let method = 'POST';
@@ -249,7 +256,7 @@ export default {
         };
 
         return new Promise(function(resolve, reject){
-            window.axios(options)
+            axios(options)
             //call to the server successful (2xx)
                 .then(function (response) {
                     handleResponse(response, resolve, reject);
@@ -259,7 +266,16 @@ export default {
                     handleError(error, resolve, reject);
                 })
             ;
-        })
-            ;
-    }
-}
+        });
+    },
+    getViewUrl: function(request, params) {
+        let req = getViewRequestUri(request);
+        return route(req, params);
+    },
+    getHandleUrl: function(request, params) {
+        let req = getHandleRequestUri(request);
+        return route(req, params);
+    },
+};
+
+export default service;

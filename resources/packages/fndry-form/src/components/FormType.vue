@@ -1,5 +1,5 @@
 <template>
-    <span>
+    <span class="form-type">
         <component :is="fieldType(schema)"
                    :schema="schema"
                    :model="model"

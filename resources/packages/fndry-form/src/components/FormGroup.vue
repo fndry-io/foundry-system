@@ -65,16 +65,13 @@
             };
         },
         mounted() {
-
             if (this.errors) {
-                const errors = objGet(this.errors, this.name, []);
-                if (errors.length > 0) {
-                    this.$refs.provider.applyResult({
-                        errors: errors, // array of string errors
-                        valid: false, // boolean state
-                        failedRules: {} // should be empty since this is a manual error.
-                    });
-                }
+                this.applyErrors(this.errors);
+            }
+        },
+        watch: {
+            errors(newValue, oldValue){
+                this.applyErrors(newValue);
             }
         },
         methods: {
@@ -92,6 +89,16 @@
             },
             onFocus() {
                 this.$emit('focus', this.schema.name);
+            },
+            applyErrors(errors){
+                const _errors = objGet(errors, this.name, []);
+                if (_errors.length > 0) {
+                    this.$refs.provider.applyResult({
+                        errors: _errors, // array of string errors
+                        valid: false, // boolean state
+                        failedRules: {} // should be empty since this is a manual error.
+                    });
+                }
             }
         }
     };

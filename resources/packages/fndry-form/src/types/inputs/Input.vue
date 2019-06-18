@@ -17,15 +17,11 @@
 </template>
 
 <script>
-    import { BFormInput } from 'bootstrap-vue'
 
     import abstractInput from '../abstractInput';
 
     export default {
         name: "fndry-field-input",
-        components: {
-            BFormInput
-        },
         mixins: [
             abstractInput
         ]

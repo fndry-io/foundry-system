@@ -17,15 +17,10 @@
 </template>
 
 <script>
-    import {BFormTextarea} from 'bootstrap-vue'
-
     import abstractInput from '../abstractInput';
 
     export default {
         name: "fndry-field-textarea",
-        components: {
-            BFormTextarea
-        },
         mixins: [
             abstractInput
         ]

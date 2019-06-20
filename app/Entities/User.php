@@ -4,6 +4,7 @@ namespace Foundry\System\Entities;
 
 use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
+use Foundry\Core\Entities\Entity;
 use Foundry\Core\Entities\Traits\Uuidable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Foundry\Core\Entities\Traits\SoftDeletable;

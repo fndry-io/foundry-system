@@ -11,11 +11,8 @@ use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\System\Entities\Entity;
 use Foundry\System\Entities\User;
-use Foundry\System\Http\Resources\UserResource;
 use Foundry\System\Inputs\User\UserRegisterInput;
-use Foundry\System\Inputs\User\UsersFilterInput;
 use Foundry\System\Services\UserService;
-use Illuminate\Support\Collection;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
 class RegisterUserRequest extends FormRequest implements ViewableFormRequestInterface

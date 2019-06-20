@@ -3,26 +3,26 @@
 namespace Foundry\System\Inputs\User;
 
 use Foundry\Core\Inputs\Inputs;
-use Foundry\Core\Inputs\Types\TextInputType;
 use Foundry\Core\Support\InputTypeCollection;
+use Foundry\System\Inputs\User\Types\Email;
 
 /**
- * Class UsersFilterInput
+ * Class UserForgotPasswordInput
  *
  * @package Foundry\System\Inputs
  *
- * @property $search
+ * @property $email
  */
-class UsersFilterInput extends Inputs {
+class ForgotPasswordInput extends Inputs {
 
 	protected $fillable = [
-		'search'
+		'email'
 	];
 
 	public function types() : InputTypeCollection
 	{
 		return InputTypeCollection::fromTypes([
-			(new TextInputType('search', 'Search', false))
+			Email::input()
 		]);
 	}
 

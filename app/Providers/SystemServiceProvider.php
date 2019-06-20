@@ -181,8 +181,11 @@ class SystemServiceProvider extends ServiceProvider
 		app(\Foundry\Core\Contracts\FormRequestHandler::class)->register([
 			'Foundry\System\Http\Requests\Auth\LoginRequest',
 			'Foundry\System\Http\Requests\Auth\LogoutRequest',
+			'Foundry\System\Http\Requests\Auth\ForgotPasswordRequest',
+			'Foundry\System\Http\Requests\Auth\ResetPasswordRequest',
+			'Foundry\System\Http\Requests\Users\BrowseUsersRequest',
+			'Foundry\System\Http\Requests\Users\RegisterUserRequest',
 
-			'Foundry\System\Http\Requests\Users\BrowseUsersRequest'
 		]);
 
 	}

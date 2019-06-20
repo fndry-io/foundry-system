@@ -1,11 +1,12 @@
 <template>
-    <ValidationProvider ref="provider" :rules="schema.rules" :name="name" v-slot="{ validate, errors, valid, failedRules }" :slim="true">
+    <ValidationProvider ref="provider" :vid="getVid()" :rules="schema.rules" :name="name" v-slot="{ validate, errors, valid, failedRules }" :slim="true">
         <b-form-group
                 :id="`fieldset-${schema.name}`"
                 :description="schema.help"
                 :label="schema.label"
                 :label-for="schema.id"
                 :state="valid"
+                :class="{'required': schema.required}"
         >
             <div class="field-wrap">
                 <component ref="child"
@@ -29,7 +30,7 @@
 
 <script>
 
-    import {get as objGet, merge as objMerge} from "lodash";
+    import {get as objGet, merge as objMerge, each} from "lodash";
     import { BFormGroup, BFormInvalidFeedback } from 'bootstrap-vue'
     import { ValidationProvider } from 'vee-validate';
 
@@ -99,7 +100,22 @@
                         failedRules: {} // should be empty since this is a manual error.
                     });
                 }
+            },
+            getVid() {
+                if (this.schema.name.indexOf('_confirmation') !== false) {
+                    return this.schema.name;
+                }
+                return undefined;
             }
         }
     };
 </script>
+
+
+<style>
+    .form-group.required label::after {
+        display: inline;
+        content: ' *';
+        color: #dc3545;
+    }
+</style>

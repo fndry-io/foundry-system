@@ -12,6 +12,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Support\Facades\Hash;
 use Foundry\System\Repositories\UserRepository;
 use LaravelDoctrine\ORM\Auth\Authenticatable;
+use LaravelDoctrine\ORM\Notifications\Notifiable;
 
 /**
  * Class User Entity
@@ -27,6 +28,7 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	use Timestampable;
 	use Authenticatable;
 	use CanResetPassword;
+	use Notifiable;
 
 	/**
 	 * @var array The fillable values

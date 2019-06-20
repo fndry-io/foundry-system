@@ -46,9 +46,14 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="request">Select a Form</label>
-                                        <select id="request" class="form-control" @change="onListChange" v-model="request">
-                                            <option v-for="(name, index) in requests" :key="index">{{name}}</option>
-                                        </select>
+                                        <div class="input-group mb-3">
+                                            <select id="request" class="form-control" @change="onListChange" v-model="request">
+                                                <option v-for="(name, index) in requests" :key="index">{{name}}</option>
+                                            </select>
+                                            <div class="input-group-append">
+                                                <b-button variant="outline-primary" @click="getList">Reload</b-button>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div>
                                         <button @click="handleLoadRequest" class="btn btn-primary">Load Request</button>
@@ -59,7 +64,7 @@
                                     </div>
                                     <div v-if="request && type === 'inline'">
                                         <hr>
-                                        <fndry-request-form-inline :request="request" @success="onResponse" @fail="onResponse" @submitting="onSubmitting" :key="request"></fndry-request-form-inline>
+                                        <fndry-request-form-inline :title="true" :request="request" @success="onResponse" @fail="onResponse" @submitting="onSubmitting" :key="request"></fndry-request-form-inline>
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +127,7 @@
                 loading: true,
                 submitting: false,
                 requests: null,
-                type: 'modal',
+                type: 'inline',
                 url: null,
                 request: null,
                 response: null,

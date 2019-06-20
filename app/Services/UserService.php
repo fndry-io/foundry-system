@@ -5,12 +5,17 @@ namespace Foundry\System\Services;
 use Carbon\Carbon;
 use Foundry\Core\Requests\Response;
 use Foundry\System\Entities\User;
+use Foundry\System\Inputs\User\ForgotPasswordInput;
+use Foundry\System\Inputs\User\ResetPasswordInput;
 use Foundry\System\Inputs\User\UserLoginInput;
 use Foundry\System\Inputs\User\UserRegisterInput;
 use Foundry\System\Repositories\UserRepository;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class UserService {
 
@@ -132,6 +137,63 @@ class UserService {
 		}
 		$this->repository->save($user);
 		return Response::success($user);
+	}
+
+	/**
+	 * Request link to reset password
+	 *
+	 * @param ForgotPasswordInput $input
+	 * @return Response
+	 */
+	public function forgotPassword(ForgotPasswordInput $input)
+	{
+		$response = $this->broker()->sendResetLink(
+			$input->toArray()
+		);
+
+		if ($response == Password::RESET_LINK_SENT){
+			return Response::success();
+		}
+		else{
+			$user = $this->repository->findOneBy(['email' => $input->email]);
+			return $user? Response::error(__("Requested resource was not found"), 400)
+				: Response::error(__("Account with provided E-mail address not found!"), 404);
+		}
+	}
+
+	/**
+	 * Reset Password
+	 *
+	 * @param ResetPasswordInput $input
+	 * @return Response
+	 */
+	public function resetPassword(ResetPasswordInput $input)
+	{
+		$response = $this->broker()->reset( $input->toArray(), function ($user, $password) {
+			/**
+			 * @var $user User
+			 */
+			$user->setPassword($password);
+			$user->setRememberToken(Str::random(60));
+			$this->repository->save($user);
+			event(new PasswordReset($user));
+		} );
+
+		if($response === Password::PASSWORD_RESET){
+			return Response::success();
+		} else {
+			return Response::error(__("Account with provided E-mail address not found!"), 404);
+		}
+	}
+
+	/**
+	 * Get the broker to be used during password reset.
+	 *
+	 * @return \Illuminate\Contracts\Auth\PasswordBroker
+	 */
+	public function broker()
+	{
+		return Password::broker();
 	}
 
 	/**

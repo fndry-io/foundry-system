@@ -3,7 +3,6 @@
 namespace Foundry\System\Http\Requests\Users;
 
 use Foundry\Core\Entities\Contracts\EntityInterface;
-use Foundry\Core\Inputs\Types\DocType;
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
@@ -82,6 +81,8 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
     public function view() : FormType
     {
     	$form = $this->form();
+
+	    $form->setTitle(__('Filter Users'));
     	$form->setButtons((new SubmitButtonType(__('Filter'), $form->getAction())));
     	$form->addChildren(
     		RowType::withChildren($form->get('search'))

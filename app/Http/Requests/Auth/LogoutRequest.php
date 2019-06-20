@@ -3,6 +3,9 @@
 namespace Foundry\System\Http\Requests\Auth;
 
 use Foundry\Core\Entities\Contracts\EntityInterface;
+use Foundry\Core\Inputs\Types\FormType;
+use Foundry\Core\Inputs\Types\SubmitButtonType;
+use Foundry\Core\Inputs\Types\TagType;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
@@ -27,7 +30,7 @@ class LogoutRequest extends FormRequest implements ViewableFormRequestInterface
 	 */
 	public function getEntity($id)
 	{
-		return EntityManager::getRepository(User::class)->find($id);
+		return null;
 	}
 
 	/**
@@ -49,6 +52,20 @@ class LogoutRequest extends FormRequest implements ViewableFormRequestInterface
     {
         return UserService::service()->logout();
     }
+
+	/**
+	 * Make a viewable DocType for the request
+	 *
+	 * @return FormType
+	 */
+	public function view() : FormType
+	{
+		$form = $this->form();
+		$form->setTitle(__('Log Out'));
+		$form->addChildren((new TagType('div', __('You will now be logged out of the session'))));
+		$form->setButtons((new SubmitButtonType(__('Log Out'), $form->getAction())));
+		return $form;
+	}
 
 
 }

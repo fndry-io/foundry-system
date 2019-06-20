@@ -18,6 +18,11 @@ use LaravelDoctrine\ORM\Facades\EntityManager;
 class LoginRequest extends FormRequest implements ViewableFormRequestInterface
 {
 
+	/**
+	 * @var UserLoginInput
+	 */
+	protected $input;
+
 	public static function name(): String {
 		return 'foundry.system.auth.login';
 	}
@@ -36,7 +41,7 @@ class LoginRequest extends FormRequest implements ViewableFormRequestInterface
 	 */
 	public function getEntity($id)
 	{
-		return EntityManager::getRepository(User::class)->find($id);
+		return null;
 	}
 
 	/**
@@ -72,7 +77,8 @@ class LoginRequest extends FormRequest implements ViewableFormRequestInterface
     {
     	$form = $this->form();
 
-    	$form->setButtons((new SubmitButtonType(__('Login'), $form->getAction())));
+	    $form->setTitle(__('Login'));
+    	$form->setButtons((new SubmitButtonType(__('Log In'), $form->getAction())));
     	$form->addChildren(
     		RowType::withChildren($form->get('email')),
 		    RowType::withChildren($form->get('password'))

@@ -4,28 +4,25 @@ namespace Foundry\System\Inputs\User;
 
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Support\InputTypeCollection;
+use Foundry\System\Inputs\Types\Token;
 use Foundry\System\Inputs\User\Types\Email;
-use Foundry\System\Inputs\User\Types\FirstName;
-use Foundry\System\Inputs\User\Types\LastName;
 use Foundry\System\Inputs\User\Types\Password;
 use Foundry\System\Inputs\User\Types\PasswordConfirmation;
 
 /**
- * Class UserRegisterInput
+ * Class ResetPasswordInput
  *
  * @package Foundry\System\Inputs
  *
- * @property $first_name
- * @property $last_name
+ * @property $token
  * @property $email
  * @property $password
  * @property $super_admin
  */
-class UserRegisterInput extends Inputs {
+class ResetPasswordInput extends Inputs {
 
 	protected $fillable = [
-		'first_name',
-		'last_name',
+		'token',
 		'email',
 		'password',
 		'password_confirmation'
@@ -34,8 +31,7 @@ class UserRegisterInput extends Inputs {
 	public function types() : InputTypeCollection
 	{
 		return InputTypeCollection::fromTypes([
-			FirstName::input(),
-			LastName::input(),
+			Token::input()->setHelp(__('This was the code you received in the reset email')),
 			Email::input(),
 			Password::input()->addRule('min:8')->addRule('max:20')->addRule('confirmed:password_confirmation'),
 			PasswordConfirmation::input()

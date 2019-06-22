@@ -7,10 +7,13 @@ use Foundry\Core\Entities\Contracts\ApiTokenInterface;
 use Foundry\Core\Entities\Contracts\EntityInterface;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
+use Foundry\Core\Services\BaseService;
+use Foundry\Core\Services\Traits\HasRepository;
 use Foundry\System\Entities\User;
 use Foundry\System\Inputs\User\ForgotPasswordInput;
 use Foundry\System\Inputs\User\ResetPasswordInput;
 use Foundry\System\Inputs\User\UserEditInput;
+use Foundry\System\Inputs\User\UserInput;
 use Foundry\System\Inputs\User\UserLoginInput;
 use Foundry\System\Inputs\User\UserRegisterInput;
 use Foundry\System\Repositories\UserRepository;
@@ -19,48 +22,17 @@ use Illuminate\Auth\TokenGuard;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Auth\UserProvider;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
-class UserService {
+class UserService extends BaseService {
 
-	protected $repository;
-
-	protected $per_page = 20;
+	use HasRepository;
 
 	public function __construct(UserRepository $repository) {
-		$this->repository = $repository;
-	}
-
-	/**
-	 * @return User[]|LengthAwarePaginator
-	 */
-	public function all() : LengthAwarePaginator
-	{
-		$this->repository->paginateAll($this->per_page);
-	}
-
-	/**
-	 * @param $id
-	 *
-	 * @return null|object|User
-	 */
-	public function find($id)
-	{
-		return $this->repository->find($id);
-	}
-
-	/**
-	 * @param \Closure $builder
-	 *
-	 * @return User[]|LengthAwarePaginator
-	 */
-	public function filter(\Closure $builder = null) : LengthAwarePaginator
-	{
-		return $this->repository->filter($builder, $this->per_page);
+		$this->setRepository($repository);
 	}
 
 	/**
@@ -232,6 +204,35 @@ class UserService {
 		}
 	}
 
+
+	/**
+	 * @param UserInput|Inputs $input
+	 *
+	 * @return Response
+	 */
+	public function add(UserInput $input) : Response
+	{
+		$user = new User();
+		$user->fill($input);
+		$user->setPassword($input->password);
+		if ($input->password) {
+			$user->setPassword($input->password);
+		}
+		if (auth_user()->isSuperAdmin()) {
+
+			//todo change to control this in the form
+			$user->setActive(true);
+
+			if ($input->super_admin === true) {
+				$user->setSuperAdmin(true);
+			} elseif ($input->super_admin) {
+				$user->setSuperAdmin(false);
+			}
+		}
+		$this->repository->save($user);
+		return Response::success($user);
+	}
+
 	/**
 	 * @param UserEditInput|Inputs $input
 	 * @param User|EntityInterface $user
@@ -244,10 +245,16 @@ class UserService {
 		if ($input->password) {
 			$user->setPassword($input->password);
 		}
-		if ($input->super_admin === true) {
-			$user->setSuperAdmin(true);
-		} elseif ($input->super_admin) {
-			$user->setSuperAdmin(false);
+		if (auth_user()->isSuperAdmin()) {
+
+			//todo change to control this in the form
+			$user->setActive(true);
+
+			if ($input->super_admin === true) {
+				$user->setSuperAdmin(true);
+			} elseif ($input->super_admin) {
+				$user->setSuperAdmin(false);
+			}
 		}
 		$this->repository->save($user);
 		return Response::success($user);
@@ -276,12 +283,6 @@ class UserService {
 		return Password::broker();
 	}
 
-	/**
-	 * @return static
-	 */
-	static function service()
-	{
-		return app(static::class);
-	}
+
 
 }

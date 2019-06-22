@@ -21,7 +21,7 @@ use Foundry\System\Inputs\User\Types\PasswordConfirmation;
  * @property $password
  * @property $super_admin
  */
-class UserEditInput extends Inputs {
+class UserInput extends Inputs {
 
 	protected $fillable = [
 		'first_name',
@@ -40,6 +40,8 @@ class UserEditInput extends Inputs {
 			Password::input()->addRule('min:8')->addRule('max:20')->addRule('confirmed:password_confirmation')->setRequired(false),
 			PasswordConfirmation::input()->setRequired(false)
 		];
+		//todo add is super admin
+		//todo add roles
 		return InputTypeCollection::fromTypes($types);
 	}
 

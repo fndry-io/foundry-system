@@ -102,6 +102,8 @@ class SystemServiceProvider extends ServiceProvider
 //		$this->publishes([
 //			base_path('foundry/system/config/config.php') => config_path('foundry_system.php'),
 //		], 'config');
+
+
 	}
 
 	/**

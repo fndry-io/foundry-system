@@ -2,10 +2,11 @@
 
 namespace Foundry\System\Entities;
 
-use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
+use LaravelDoctrine\ACL\Mappings as ACL;
 use Foundry\Core\Entities\Entity;
-//use LaravelDoctrine\ACL\Contracts\Role as RoleContract;
+use LaravelDoctrine\ACL\Contracts\Role as RoleContract;
+use LaravelDoctrine\ACL\Permissions\HasPermissions;
 
 /**
  * Class Role Entity
@@ -15,7 +16,9 @@ use Foundry\Core\Entities\Entity;
  * @ORM\Table(name="roles")
  *
  */
-class Role extends Entity {
+class Role extends Entity implements RoleContract {
+
+	use HasPermissions;
 
 	/**
 	 * @var array The fillable values
@@ -51,4 +54,18 @@ class Role extends Entity {
 	{
 		return $this->name;
 	}
+
+	/**
+	 * @ACL\HasPermissions
+	 */
+	public $permissions;
+
+	/**
+	 * @return \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Permission[]
+	 */
+	public function getPermissions()
+	{
+		return $this->permissions;
+	}
+
 }

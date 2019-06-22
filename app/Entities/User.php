@@ -4,6 +4,7 @@ namespace Foundry\System\Entities;
 
 use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
+use LaravelDoctrine\ACL\Mappings as ACL;
 use Foundry\Core\Entities\Contracts\ApiTokenInterface;
 use Foundry\Core\Entities\Entity;
 use Foundry\Core\Entities\Traits\Uuidable;
@@ -13,8 +14,14 @@ use Foundry\Core\Entities\Traits\Timestampable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Support\Facades\Hash;
 use Foundry\System\Repositories\UserRepository;
+use LaravelDoctrine\ACL\Roles\HasRoles;
+use LaravelDoctrine\ACL\Permissions\HasPermissions;
 use LaravelDoctrine\ORM\Auth\Authenticatable;
 use LaravelDoctrine\ORM\Notifications\Notifiable;
+
+use LaravelDoctrine\ACL\Contracts\HasPermissions as HasPermissionsContract;
+use LaravelDoctrine\ACL\Contracts\HasRoles as HasRolesContract;
+
 
 /**
  * Class User Entity
@@ -26,7 +33,7 @@ use LaravelDoctrine\ORM\Notifications\Notifiable;
  * @property Carbon $last_login_at
  * @property Boolean $logged_in
  */
-class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword, ApiTokenInterface {
+class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword, ApiTokenInterface, HasRolesContract, HasPermissionsContract {
 
 	use Uuidable;
 	use SoftDeletable;
@@ -34,6 +41,8 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	use Authenticatable;
 	use CanResetPassword;
 	use Notifiable;
+	use HasPermissions;
+	use HasRoles;
 
 	/**
 	 * @var array The fillable values
@@ -117,6 +126,34 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	 * @ORM\Column(name="api_token_expires_at", type="datetime", nullable=true)
 	 */
 	protected $api_token_expires_at;
+
+	/**
+	 * @ACL\HasRoles()
+	 * @var \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[]
+	 */
+	protected $roles;
+
+	/**
+	 * @ACL\HasPermissions()
+	 * @var \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Permission[]
+	 */
+	public $permissions;
+
+	/**
+	 * @return \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[]
+	 */
+	public function getRoles()
+	{
+		return $this->roles;
+	}
+
+	/**
+	 * @return \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Permission[]
+	 */
+	public function getPermissions()
+	{
+		return $this->permissions;
+	}
 
 	/**
 	 * User constructor.

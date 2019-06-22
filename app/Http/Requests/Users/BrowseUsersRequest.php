@@ -2,6 +2,7 @@
 
 namespace Foundry\System\Http\Requests\Users;
 
+use Doctrine\ORM\QueryBuilder;
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
@@ -10,10 +11,10 @@ use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
+use Foundry\System\Entities\User;
 use Foundry\System\Http\Resources\UserResource;
 use Foundry\System\Inputs\User\UsersFilterInput;
 use Foundry\System\Services\UserService;
-use Illuminate\Support\Collection;
 
 class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
@@ -51,14 +52,15 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
     {
     	$response = $this->input->validate();
     	if ($response->isSuccess()) {
-    		$results = UserService::service()->filter(function($builder){
-    			return $builder;
-		    });
+		    $result = UserService::service()->browse(function(QueryBuilder $qb) {
 
-		    $data = $results->toArray();
-		    $data['data'] = UserResource::collection(Collection::make($results->items()));
+		    	return $qb
+				    ->addSelect('u.id', 'u.uuid', 'u.first_name', 'u.last_name', 'u.email')
+				    ->orderBy('u.first_name', 'ASC');
 
-    		return Response::success($data);
+		    }, $this->input('page', 1), $this->input('limit', 20) );
+
+    		return Response::success($result);
 	    }
 	    return $response;
     }
@@ -79,4 +81,6 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
 	    );
     	return $form;
     }
+
+
 }

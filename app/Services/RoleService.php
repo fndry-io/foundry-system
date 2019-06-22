@@ -5,47 +5,18 @@ namespace Foundry\System\Services;
 use Foundry\Core\Entities\Contracts\EntityInterface;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
+use Foundry\Core\Services\BaseService;
+use Foundry\Core\Services\Traits\HasRepository;
 use Foundry\System\Entities\Role;
 use Foundry\System\Inputs\Role\RoleInput;
 use Foundry\System\Repositories\RoleRepository;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class RoleService {
+class RoleService extends BaseService {
 
-	protected $repository;
-
-	protected $per_page = 20;
+	use HasRepository;
 
 	public function __construct(RoleRepository $repository) {
-		$this->repository = $repository;
-	}
-
-	/**
-	 * @return Role[]|LengthAwarePaginator
-	 */
-	public function all() : LengthAwarePaginator
-	{
-		$this->repository->paginateAll($this->per_page);
-	}
-
-	/**
-	 * @param $id
-	 *
-	 * @return null|object|User
-	 */
-	public function find($id)
-	{
-		return $this->repository->find($id);
-	}
-
-	/**
-	 * @param \Closure $builder
-	 *
-	 * @return Role[]|LengthAwarePaginator
-	 */
-	public function filter(\Closure $builder = null) : LengthAwarePaginator
-	{
-		return $this->repository->filter($builder, $this->per_page);
+		$this->setRepository($repository);
 	}
 
 	/**
@@ -53,7 +24,7 @@ class RoleService {
 	 *
 	 * @return Response
 	 */
-	public function create(RoleInput $input) : Response
+	public function add(RoleInput $input) : Response
 	{
 		$user = new Role($input->inputs());
 		$this->repository->save($user);
@@ -84,14 +55,6 @@ class RoleService {
 	{
 		$this->repository->delete($role);
 		return Response::success();
-	}
-
-	/**
-	 * @return static
-	 */
-	static function service()
-	{
-		return app(static::class);
 	}
 
 }

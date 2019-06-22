@@ -47,7 +47,7 @@ class AddUserRequest extends FormRequest implements ViewableFormRequestInterface
 	{
 		$response = $this->input->validate();
 		if ($response->isSuccess()) {
-			return UserService::service()->register($this->input);
+			return UserService::service()->add($this->input);
 		}
 		return $response;
 	}

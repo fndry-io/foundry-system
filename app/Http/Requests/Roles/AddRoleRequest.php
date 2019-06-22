@@ -47,7 +47,7 @@ class AddRoleRequest extends FormRequest implements ViewableFormRequestInterface
 	{
 		$response = $this->input->validate();
 		if ($response->isSuccess()) {
-			return RoleService::service()->create($this->input);
+			return RoleService::service()->add($this->input);
 		}
 		return $response;
 	}

@@ -2,6 +2,7 @@
 
 namespace Foundry\System\Http\Requests\Roles;
 
+use Doctrine\ORM\QueryBuilder;
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
@@ -51,14 +52,16 @@ class BrowseRolesRequest extends FormRequest implements ViewableFormRequestInter
     {
     	$response = $this->input->validate();
     	if ($response->isSuccess()) {
-    		$results = RoleService::service()->filter(function($builder){
-    			return $builder;
-		    });
 
-		    $data = $results->toArray();
-		    $data['data'] = RoleResource::collection(Collection::make($results->items()));
+		    $result = RoleService::service()->browse(function(QueryBuilder $qb) {
 
-    		return Response::success($data);
+			    return $qb
+				    ->addSelect('r.id', 'r.name')
+				    ->orderBy('r.name', 'ASC');
+
+		    }, $this->input('page', 1), $this->input('limit', 20) );
+
+		    return Response::success($result);
 	    }
 	    return $response;
     }

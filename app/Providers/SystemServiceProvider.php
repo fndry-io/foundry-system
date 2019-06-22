@@ -4,8 +4,11 @@ namespace Foundry\System\Providers;
 
 use Foundry\Core\Requests\FormRequestHandler;
 use Foundry\System\Console\Commands\UsersRegisterCommand;
+use Foundry\System\Entities\Role;
 use Foundry\System\Entities\User;
+use Foundry\System\Repositories\RoleRepository;
 use Foundry\System\Repositories\UserRepository;
+use Foundry\System\Services\RoleService;
 use Foundry\System\Services\UserService;
 use Illuminate\Foundation\Console\SymLinkCommand;
 use Illuminate\Foundation\Console\ThemeLinkCommand;
@@ -46,6 +49,12 @@ class SystemServiceProvider extends ServiceProvider
 			    $app['em']->getClassMetaData(User::class)
 		    );
 	    });
+	    $this->app->bind(RoleRepository::class, function($app) {
+		    return new RoleRepository(
+			    $app['em'],
+			    $app['em']->getClassMetaData(Role::class)
+		    );
+	    });
     }
 
 	public function registerServices()
@@ -55,7 +64,11 @@ class SystemServiceProvider extends ServiceProvider
 				resolve(UserRepository::class)
 			);
 		});
-
+		$this->app->bind(RoleService::class, function($app) {
+			return new RoleService(
+				resolve(RoleRepository::class)
+			);
+		});
 		$this->app->singleton( 'Foundry\Core\Contracts\FormRequestHandler', function () {
 			return new FormRequestHandler();
 		} );
@@ -178,16 +191,26 @@ class SystemServiceProvider extends ServiceProvider
 
 	public function registerFormRequests()
 	{
-		app(\Foundry\Core\Contracts\FormRequestHandler::class)->register([
+		$requests = [
+			//auth
 			'Foundry\System\Http\Requests\Auth\LoginRequest',
 			'Foundry\System\Http\Requests\Auth\LogoutRequest',
 			'Foundry\System\Http\Requests\Auth\ForgotPasswordRequest',
 			'Foundry\System\Http\Requests\Auth\ResetPasswordRequest',
+			//users
 			'Foundry\System\Http\Requests\Users\BrowseUsersRequest',
 			'Foundry\System\Http\Requests\Users\RegisterUserRequest',
+			'Foundry\System\Http\Requests\Users\AddUserRequest',
+			'Foundry\System\Http\Requests\Users\EditUserRequest',
+			'Foundry\System\Http\Requests\Users\DeleteUserRequest',
+			//roles
+			'Foundry\System\Http\Requests\Roles\BrowseRolesRequest',
+			'Foundry\System\Http\Requests\Roles\EditRoleRequest',
+			'Foundry\System\Http\Requests\Roles\AddRoleRequest',
+			'Foundry\System\Http\Requests\Roles\DeleteRoleRequest'
+		];
 
-		]);
-
+		app(\Foundry\Core\Contracts\FormRequestHandler::class)->register($requests);
 	}
 
 }

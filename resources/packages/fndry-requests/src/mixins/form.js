@@ -32,17 +32,19 @@ export default {
             state: {},
             model: {},
             errors: null,
-            response: {}
+            response: {},
+            dirty: false,
+            activeButton: null
         }
     },
-    mounted(){
+    created(){
         if(this.request) {
             this.getSchema();
         }
     },
     methods: {
         getSchema: function () {
-            this.$apiService.call(this.$apiService.getViewUrl(this.request, this.params), 'GET', {})
+            this.$fndryApiService.call(this.$fndryApiService.getViewUrl(this.request, this.params), 'GET', {})
                 .then((res) => {
                     this.setSchema(res.data);
                 }, (res) => {})
@@ -52,38 +54,48 @@ export default {
         },
         setSchema: function(data) {
             this.schema = data;
+            if (data.values) {
+                this.model = merge(this.model, data.values);
+            }
+            if (this.data) {
+                this.model = merge(this.model, this.data);
+            }
         },
         onModelUpdated(model){
+            this.dirty = true;
             this.model = model;
         },
-        async submit(action, method){
-            const isValid = await this.$refs.observer.validate();
-            if (isValid) {
-                this.onSubmitting();
-                this.submitting = true;
-                this.response = {};
-                this.errors = null;
+        submit(action, method){
+            this.$refs.observer.validate().then((isValid) => {
+                if (isValid) {
+                    this.onSubmitting();
+                    this.submitting = true;
+                    this.response = {};
+                    this.errors = null;
 
-                if (action === undefined) {
-                    action = this.$apiService.getHandleUrl(this.request, this.params);
-                }
-                if (method === undefined) {
-                    method = 'POST';
-                }
+                    if (action === undefined) {
+                        action = this.$fndryApiService.getHandleUrl(this.request, this.params);
+                    }
+                    if (method === undefined) {
+                        method = 'POST';
+                    }
 
-                this.$apiService.call(action, method, this.model)
-                    .then((response) => {
-                        this.response = response;
-                        this.onSuccess(response);
-                    }, (response) => {
-                        this.response = response;
-                        this.onFail(response);
-                    })
-                    .finally(() => {
-                        this.submitting = false;
-                    })
-                ;
-            }
+                    this.$fndryApiService.call(action, method, this.model)
+                        .then((response) => {
+                            this.response = response;
+                            this.onSuccess(response);
+                        }, (response) => {
+                            this.response = response;
+                            this.onFail(response);
+                        })
+                        .finally(() => {
+                            this.submitting = false;
+                        })
+                    ;
+                } else {
+                    this.activeButton = null;
+                }
+            });
         },
         onSubmitting: function(){
             this.$emit('submitting', this.model);
@@ -112,7 +124,8 @@ export default {
                 this.submit();
             }
         },
-        handleButtonClick(button){
+        handleButtonClick(button, key){
+            this.activeButton = key;
             switch (button.type) {
                 case 'submit':
                     let action = this.schema.action || '';

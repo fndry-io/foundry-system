@@ -10,7 +10,7 @@ use Foundry\Core\Inputs\Types\TagType;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
-use Foundry\System\Entities\Entity;
+use Foundry\Core\Entities\Entity;
 use Foundry\System\Entities\User;
 use Foundry\System\Inputs\Types\Token;
 use Foundry\System\Inputs\User\ForgotPasswordInput;

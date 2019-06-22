@@ -9,7 +9,7 @@
                 <form @submit.prevent="onSubmit" :class="{'form-inline':inline}">
                     <b-alert variant="warning" :show="response && response.error">{{response.error}}</b-alert>
                     <fndry-form-schema :schema="schema" :errors="errors" :data="data" @update="onModelUpdated" :inline="inline"></fndry-form-schema>
-                    <fndry-form-buttons :buttons="schema.buttons" @click="handleButtonClick" :submitting="submitting"></fndry-form-buttons>
+                    <fndry-form-buttons :buttons="schema.buttons" @click="handleButtonClick" :submitting="submitting" :cancelButton="cancelButton" :submitButton="submitButton"></fndry-form-buttons>
                 </form>
             </validation-observer>
         </div>
@@ -21,7 +21,9 @@
     import { extend } from 'lodash';
 
     import form from '../mixins/form';
-    import FndryFormButtons from './FormButtons';
+    import {FndryFormButtons} from 'fndry-form';
+
+    import styles from '../css/styles.css';
 
     export default {
         name: "fndry-request-form-inline",
@@ -46,7 +48,23 @@
                 default() {
                     return null;
                 }
-            }
+            },
+            submitButton: {
+                type: [Boolean, String, Object],
+                default() {
+                    return {
+                        label: 'Submit'
+                    }
+                }
+            },
+            cancelButton: {
+                type: [Boolean, String, Object],
+                default() {
+                    return {
+                        label: 'Cancel'
+                    }
+                }
+            },
         },
         components: {
             FndryFormButtons
@@ -64,44 +82,3 @@
         }
     }
 </script>
-
-<style type="text/css">
-    @media (max-width: 576px) {
-        .form-inline {
-            display: block;
-        }
-    }
-    @media (min-width: 576px) {
-        .form-inline {
-            display: flex;
-            align-items: flex-start;
-            flex-wrap: nowrap;
-            height: 100%;
-            margin: 0 -5px;
-        }
-        .form-inline .form-fields {
-            display: flex;
-            align-items: flex-start;
-            height: 100%;
-        }
-        .form-inline .form-field {
-            padding: 0 5px;
-        }
-        .form-inline .form-buttons {
-            display: flex;
-            align-items: flex-end;
-            height: 100%;
-            width: 30%;
-            margin: 0 5px;
-        }
-        .form-inline .form-buttons > div {
-            margin-top: 24px;
-        }
-        .form-inline .form-control {
-            width: 100%;
-        }
-        .form-inline .form-buttons button {
-            white-space: nowrap;
-        }
-    }
-</style>

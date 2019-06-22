@@ -2,6 +2,7 @@
 namespace Foundry\System\Http\Controllers;
 
 use Foundry\Core\Contracts\FormRequestHandler;
+use Foundry\Core\Exceptions\FormRequestException;
 use Foundry\Core\Requests\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,6 +22,12 @@ class FormRequestController extends Controller
 	{
 		$name = $request->input('_request');
 		return $handler->handle($name, $request)->toJsonResponse();
+
+		try {
+
+		} catch (FormRequestException $e) {
+			return Response::error('Request not found', 404)->toJsonResponse();
+		}
 	}
 
 	/**
@@ -35,6 +42,12 @@ class FormRequestController extends Controller
 	{
 		$name = $request->input('_request');
 		return $handler->view($name, $request)->toJsonResponse();
+
+		try {
+
+		} catch (FormRequestException $e) {
+			return Response::error('Request not found', 404)->toJsonResponse();
+		}
 	}
 
 	/**

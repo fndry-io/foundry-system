@@ -2,35 +2,32 @@
 
 namespace Foundry\System\Http\Requests\Auth;
 
-use Foundry\Core\Entities\Contracts\EntityInterface;
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Inputs\Types\TagType;
+use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
-use Foundry\System\Entities\Entity;
-use Foundry\System\Entities\User;
-use Foundry\System\Http\Requests\Traits\WithoutInput;
+use Foundry\Core\Requests\Traits\HasInput;
+use Foundry\System\Inputs\User\UserLogoutInput;
 use Foundry\System\Services\UserService;
-use LaravelDoctrine\ORM\Facades\EntityManager;
 
-class LogoutRequest extends FormRequest implements ViewableFormRequestInterface
+class LogoutRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
-	use WithoutInput;
+	use HasInput;
 
 	public static function name(): String {
 		return 'foundry.system.auth.logout';
 	}
 
 	/**
-	 * @param mixed $id
+	 * The input class for this form request
 	 *
-	 * @return EntityInterface|Entity|null|object|User
+	 * @return string|null
 	 */
-	public function getEntity($id)
-	{
-		return null;
+	static function getInputClass() {
+		return UserLogoutInput::class;
 	}
 
 	/**
@@ -50,7 +47,7 @@ class LogoutRequest extends FormRequest implements ViewableFormRequestInterface
 	 */
     public function handle() : Response
     {
-        return UserService::service()->logout();
+        return UserService::service()->logout($this->input('guard'));
     }
 
 	/**
@@ -66,6 +63,4 @@ class LogoutRequest extends FormRequest implements ViewableFormRequestInterface
 		$form->setButtons((new SubmitButtonType(__('Log Out'), $form->getAction())));
 		return $form;
 	}
-
-
 }

@@ -6,7 +6,7 @@ use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Inputs\Contracts\FieldOptions;
 use Foundry\Core\Inputs\Types\ChoiceInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
-use Foundry\System\Entities\Entity;
+use Foundry\Core\Entities\Entity;
 
 class Active extends ChoiceInputType implements Field, FieldOptions {
 

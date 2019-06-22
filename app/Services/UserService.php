@@ -3,14 +3,22 @@
 namespace Foundry\System\Services;
 
 use Carbon\Carbon;
+use Foundry\Core\Entities\Contracts\ApiTokenInterface;
+use Foundry\Core\Entities\Contracts\EntityInterface;
+use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\System\Entities\User;
 use Foundry\System\Inputs\User\ForgotPasswordInput;
 use Foundry\System\Inputs\User\ResetPasswordInput;
+use Foundry\System\Inputs\User\UserEditInput;
 use Foundry\System\Inputs\User\UserLoginInput;
 use Foundry\System\Inputs\User\UserRegisterInput;
 use Foundry\System\Repositories\UserRepository;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\TokenGuard;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Auth\StatefulGuard;
+use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
@@ -55,78 +63,116 @@ class UserService {
 		return $this->repository->filter($builder, $this->per_page);
 	}
 
+	/**
+	 * @param UserLoginInput $input
+	 *
+	 * @return Response
+	 */
 	public function login(UserLoginInput $input) : Response
 	{
-		//if current logged in user, log them out first
-		if (auth_user()) {
-			Auth::logout();
-		}
-
 		$inputs = $input->inputs();
 
-		$user = $this->repository->findBy([
-			'email' => $inputs['email']
-		]);
+		/**
+		 * @var Guard $guard
+		 */
+		$guard = Auth::guard($input->guard);
 
-		if($user) {
-//			//determine the guard for this user and load that guard for authentication
-//			switch ($user->guard_name) {
-//				case 'store':
-//					Auth::shouldUse('store');
-//					break;
-//				default:
-//					break;
-//			}
-
-			if(Auth::attempt([
-				'email' => $inputs['email'],
-				'password' => $inputs['password']
-			])){
-				/**
-				 * @var $user User
-				 */
-				$user = Auth::user();
-
-				//detect if the user is no longer active
-				if (!$user->isActive()) {
-					Auth::logout();
-					return Response::error(__("Account no longer active, please contact the Okinus Support Team"), 403);
-				} else {
-					return $this->returnSessionUser($user);
-				}
-
-			}
+		//if current logged in user, log them out first
+		if ($guard->check() && $guard instanceof StatefulGuard) {
+			$guard->logout();
 		}
-		return Response::error(__("Permission denied, wrong password and username combination"), 401);
+
+		/**
+		 * @var UserProvider $provider
+		 */
+		$provider = $guard->getProvider();
+
+		if($provider->retrieveByCredentials([
+			'email' => $inputs['email'],
+			'password' => $inputs['password']
+		])){
+
+			/**
+			 * @var $user User
+			 */
+			$user = $this->repository->findOneBy([
+				'email' => $inputs['email']
+			]);
+
+			//detect if the user is longer active
+			if ($user->isActive()) {
+				$guard->setUser($user);
+				return $this->returnGuardUser($guard);
+			} else {
+				return Response::error(__("Account no longer active, please contact the Support Team"), 403);
+			}
+		} else {
+			return Response::error(__("Permission denied, wrong password and username combination"), 401);
+		}
 	}
 
-	public function logout()
+	public function logout($guard = null)
 	{
-		//if current logged in user, log them out first
-		if (auth_user()) {
-			Auth::logout();
+		$guard = Auth::guard($guard);
+		if ($guard->check()) {
+
+			//if the guard is an api guard, remove the token
+			if ($guard instanceof TokenGuard) {
+				/**
+				 * @var User $user
+				 */
+				$user = $guard->user();
+				$user->setApiToken(null);
+				$this->repository->save($user);
+			}
+
+			//if current logged in user, log them out first
+			if ($guard instanceof StatefulGuard) {
+				Auth::logout();
+				Session::invalidate();
+			}
+
 		}
-		Session::invalidate();
 		return Response::success();
 	}
 
 	/**
-	 * @param $user
+	 * @param Guard $guard
 	 *
 	 * @return Response
 	 */
-	public function returnSessionUser(User $user) : Response
+	public function returnGuardUser(Guard $guard = null) : Response
 	{
+		/**
+		 * @var $user User
+		 */
+		$user = $guard->user();
 		$user->logged_in = true;
 		$user->last_login_at = new Carbon();
+
+		$data = [
+			'user' => $user->only(['id', 'uuid', 'first_name', 'last_name', 'email'])
+		];
+
+		if ($guard instanceof TokenGuard && $user instanceof ApiTokenInterface) {
+			$token = Str::random(60);
+
+			//todo update to ensure the user token expires and the token guard loads it correctly
+			$user->setApiToken($token);
+			$user->setApiTokenExpiresAt(Carbon::now()->addDays(3));
+			$data['token'] = hash('sha256', $token);
+		}
+
 		$this->repository->save($user);
 
-		return Response::success([
-			'user' => $user->only(['id', 'uuid', 'first_name', 'last_name', 'email']),
-			//'token' => $user->createToken('app')->accessToken
-		]);
+		return Response::success($data);
 	}
 
+	/**
+	 * @param UserRegisterInput|Inputs $input
+	 *
+	 * @return Response
+	 */
 	public function register(UserRegisterInput $input) : Response
 	{
 		$user = new User($input->inputs());
@@ -184,6 +230,40 @@ class UserService {
 		} else {
 			return Response::error(__("Account with provided E-mail address not found!"), 404);
 		}
+	}
+
+	/**
+	 * @param UserEditInput|Inputs $input
+	 * @param User|EntityInterface $user
+	 *
+	 * @return Response
+	 */
+	public function edit(UserEditInput $input, User $user) : Response
+	{
+		$user->fill($input);
+		if ($input->password) {
+			$user->setPassword($input->password);
+		}
+		if ($input->super_admin === true) {
+			$user->setSuperAdmin(true);
+		} elseif ($input->super_admin) {
+			$user->setSuperAdmin(false);
+		}
+		$this->repository->save($user);
+		return Response::success($user);
+	}
+
+	/**
+	 * Delete a user
+	 *
+	 * @param User|EntityInterface $user
+	 *
+	 * @return Response
+	 */
+	public function delete(User $user) : Response
+	{
+		$this->repository->delete($user);
+		return Response::success($user);
 	}
 
 	/**

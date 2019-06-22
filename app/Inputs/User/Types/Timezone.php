@@ -4,7 +4,7 @@ namespace Foundry\System\Inputs\User\Types;
 
 use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Inputs\Contracts\FieldOptions;
-use Foundry\System\Entities\Entity;
+use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Types\ChoiceInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 

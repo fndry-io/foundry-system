@@ -1,6 +1,6 @@
 <template>
     <validation-observer ref="observer" v-slot="{ invalid }" :slim="true">
-        <b-modal ref="modal" v-model="show" scrollable :title="getModalTitle()" :hide-footer="loading" :size="size">
+        <b-modal ref="modal" v-model="show" scrollable :title="getModalTitle()" :hide-footer="loading" :size="size" @hide="canHide">
             <div v-if="loading" class="text-center">
                 <b-spinner label="Loading..."></b-spinner>
             </div>
@@ -11,7 +11,7 @@
                 </form>
             </div>
             <template v-if="!loading" slot="modal-footer">
-                <fndry-form-buttons :buttons="schema.buttons" @click="handleButtonClick" :submitting="submitting"></fndry-form-buttons>
+                <fndry-form-buttons :active="activeButton" :buttons="schema.buttons" @click="handleButtonClick" :submitting="submitting"></fndry-form-buttons>
             </template>
         </b-modal>
     </validation-observer>
@@ -22,7 +22,7 @@
     import { extend } from 'lodash';
 
     import form from '../mixins/form';
-    import FndryFormButtons from './FormButtons';
+    import {FndryFormButtons} from 'fndry-form';
 
     export default {
         name: "fndry-request-form-modal",
@@ -47,7 +47,8 @@
         },
         data(){
             return {
-                show: true
+                show: true,
+                allowClose: false
             }
         },
         methods: {
@@ -64,6 +65,25 @@
             onCancel: function(){
                 this.$emit('cancel');
                 this.hideModal();
+            },
+            canHide: function(bvModalEvt){
+                if (this.allowClose === false) {
+                    if (this.dirty) {
+                        bvModalEvt.preventDefault();
+                        this.$bvModal.msgBoxConfirm('Looks like you made some changes, are you sure you want to cancel? Any changes would be lost.', {
+                            okTitle: 'Close',
+                            cancelTitle: 'Continue',
+                        }).then((value) => {
+                            if (value === true) {
+                                this.allowClose = true;
+                                this.onCancel();
+                            }
+                        })
+                    } else {
+                        this.allowClose = true;
+                        this.onCancel();
+                    }
+                }
             },
             getModalTitle() {
                 if (this.schema) {

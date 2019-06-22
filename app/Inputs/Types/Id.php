@@ -5,7 +5,7 @@ namespace Plugins\Foundry\System\Models\Fields\Generic;
 use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 use Foundry\Core\Inputs\Types\NumberInputType;
-use Foundry\System\Entities\Entity;
+use Foundry\Core\Entities\Entity;
 
 class Id extends NumberInputType implements Field {
 

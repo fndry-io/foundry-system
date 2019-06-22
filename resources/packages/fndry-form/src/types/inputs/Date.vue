@@ -20,7 +20,7 @@
     import datePicker from 'vue-bootstrap-datetimepicker';
 
     // Import date picker css
-    import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
+    //import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
 
     import abstractInput from '../abstractInput';
 

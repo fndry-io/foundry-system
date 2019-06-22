@@ -1,9 +1,21 @@
-import Vue from 'vue';
-import RequestFormModal from '../components/RequestFormModal';
-import RequestFormInline from '../components/RequestFormInline';
+import RequestFormModal from '../components/RequestFormModal.vue';
+import RequestFormConfirmModal from '../components/RequestFormConfirmModal.vue';
+import RequestFormInline from '../components/RequestFormInline.vue';
 
-const FormModal = Vue.extend(RequestFormModal);
-const FormInline = Vue.extend(RequestFormInline);
+let FormModal;
+let FormInline;
+let ConfirmModal;
+
+export const makeRequestForm = (Vue) => {
+    FormModal = Vue.extend(RequestFormModal);
+    FormInline = Vue.extend(RequestFormInline);
+    return requestForm;
+};
+
+export const makeRequestConfirm = (Vue) => {
+    ConfirmModal = Vue.extend(RequestFormConfirmModal);
+    return confirmModal;
+};
 
 /**
  * Request a form
@@ -45,7 +57,8 @@ export const modalForm = (request, {data, params, size, position}) => {
             params,
             size,
             position
-        }
+        },
+        parent: this
     });
 
     vNode = modal.$mount();
@@ -95,7 +108,8 @@ export const inlineForm = (request, {target, data, params, inline}) => {
                     params,
                     data,
                     inline
-                }
+                },
+                parent: this
             });
 
             vNode = form.$mount();
@@ -126,6 +140,63 @@ export const inlineForm = (request, {target, data, params, inline}) => {
         });
         form.$on('cancel', () => {
             reject({reason:'cancel'});
+        });
+
+    });
+
+};
+
+/**
+ * Display a request inside a modal
+ *
+ * @param {string} request The request name
+ * @param {null|object} data default data to load inside of the form
+ * @param {null|object} params Default params for the request
+ * @param {string} size The size of the modal
+ * @param {string} position The modal position
+ * @return {Promise<any>}
+ */
+export const confirmModal = (request, {
+    params,
+    data,
+    title,
+    message,
+    size
+}) => {
+
+    let modal, vNode;
+
+    modal = new ConfirmModal({
+        propsData: {
+            request,
+            params,
+            data,
+            title,
+            message,
+            size
+        },
+        parent: this
+    });
+
+    vNode = modal.$mount();
+
+    const remove = () => {
+        vNode.$el.remove();
+        modal.$destroy();
+    };
+
+    return new Promise((accept, reject) => {
+
+        modal.$on('success', (response) => {
+            remove();
+            accept(response);
+        });
+        modal.$on('fail', (response) => {
+            reject('fail', response);
+        });
+        modal.$on('cancel', () => {
+            remove();
+            reject('cancel');
         });
 
     });

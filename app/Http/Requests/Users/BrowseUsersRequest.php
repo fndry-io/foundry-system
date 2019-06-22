@@ -2,22 +2,22 @@
 
 namespace Foundry\System\Http\Requests\Users;
 
-use Foundry\Core\Entities\Contracts\EntityInterface;
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
+use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
-use Foundry\System\Entities\Entity;
-use Foundry\System\Entities\User;
+use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Http\Resources\UserResource;
 use Foundry\System\Inputs\User\UsersFilterInput;
 use Foundry\System\Services\UserService;
 use Illuminate\Support\Collection;
 
-class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInterface
+class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
+	use HasInput;
 
 	public static function name(): String {
 		return 'foundry.system.users.browse';
@@ -26,18 +26,8 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
 	/**
 	 * @return string
 	 */
-	public static function getInputClass(): string {
+	static function getInputClass(): string {
 		return UsersFilterInput::class;
-	}
-
-	/**
-	 * @param mixed $id
-	 *
-	 * @return EntityInterface|Entity|null|object|User
-	 */
-	public function getEntity($id)
-	{
-		return null;
 	}
 
 	/**

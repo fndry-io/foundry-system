@@ -12,8 +12,8 @@ import App from './App'
 import router from './router'
 
 const FndryRequest = process.env.NODE_ENV === 'development'
-    ? require('../src/fndry-requests').default
-    : require('../dist/fndry-requests').default;
+    ? require('../src/index').default
+    : require('../dist/bundle').default;
 
 Vue.config.productionTip = false;
 Vue.config.silent = true;
@@ -27,7 +27,6 @@ Vue.use(FndryForm);
 // Import CSS
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-
 
 /* eslint-disable no-new */
 new Vue({

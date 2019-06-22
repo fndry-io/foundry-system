@@ -6,17 +6,19 @@ use Foundry\Core\Entities\Contracts\EntityInterface;
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
+use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
-use Foundry\System\Entities\Entity;
+use Foundry\Core\Entities\Entity;
+use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Entities\User;
 use Foundry\System\Inputs\User\UserLoginInput;
 use Foundry\System\Services\UserService;
-use LaravelDoctrine\ORM\Facades\EntityManager;
 
-class LoginRequest extends FormRequest implements ViewableFormRequestInterface
+class LoginRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
+	use HasInput;
 
 	/**
 	 * @var UserLoginInput
@@ -85,4 +87,5 @@ class LoginRequest extends FormRequest implements ViewableFormRequestInterface
 	    );
     	return $form;
     }
+
 }

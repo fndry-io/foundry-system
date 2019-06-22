@@ -147,7 +147,7 @@ export const route = (url, params) => {
 
     let data = updateUrlPlaceholders(url, params, true);
     let queryString = '';
-    if (Object.keys(data.data).length > 0) {
+    if (data.data && Object.keys(data.data).length > 0) {
         queryString = decodeURIComponent( jQuery.param( data.data ) );
         if (data.url.indexOf('?') === -1) {
             queryString = "?" + queryString;
@@ -159,14 +159,12 @@ export const route = (url, params) => {
     return data.url + queryString;
 };
 
-//todo work out a better way for this, such as a class constructor or similar
-let axios = window.axios || require('axios');
 
-export const makeService = ({}) => {
-    return service;
+const ApiService = function(Vue){
+    this.vm = Vue.prototype;
 };
 
-const service = {
+ApiService.prototype = {
 
     /**
      * Call the API endpoint
@@ -184,7 +182,7 @@ const service = {
      * @param {object} params The parameters to send to the server
      * @return {Promise} A promise
      */
-    call: function(url, method, params) {
+    call(url, method, params) {
         if (method === undefined) {
             method = 'GET';
         } else {
@@ -216,8 +214,9 @@ const service = {
 
         console.log('calling...', options, _params);
 
-        return new Promise(function(resolve, reject){
-            axios(options)
+        return new Promise((resolve, reject) => {
+
+            this.vm.$http(options)
             //call to the server successful (2xx)
                 .then(function (response) {
                     console.log('response...', response);
@@ -230,9 +229,8 @@ const service = {
                 })
             ;
         })
-            ;
     },
-    upload: function(url, file, onUploadProgress) {
+    upload(url, file, onUploadProgress){
         let method = 'POST';
 
         let formData = new FormData();
@@ -256,7 +254,7 @@ const service = {
         };
 
         return new Promise(function(resolve, reject){
-            axios(options)
+            this.$http(options)
             //call to the server successful (2xx)
                 .then(function (response) {
                     handleResponse(response, resolve, reject);
@@ -268,14 +266,22 @@ const service = {
             ;
         });
     },
-    getViewUrl: function(request, params) {
+    getViewUrl(request, params){
         let req = getViewRequestUri(request);
         return route(req, params);
     },
-    getHandleUrl: function(request, params) {
+    getHandleUrl(request, params){
         let req = getHandleRequestUri(request);
         return route(req, params);
     },
+    handle(request, params = {}, data = {}){
+        let url = this.getHandleUrl(request, params);
+        return this.call(url, 'POST', data);
+    },
+    view(request, params = {}, data = {}){
+        let url = this.getViewUrl(request, params);
+        return this.call(url, 'GET', data);
+    }
 };
 
-export default service;
+export default ApiService;

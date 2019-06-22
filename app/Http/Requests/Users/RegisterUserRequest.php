@@ -2,26 +2,20 @@
 
 namespace Foundry\System\Http\Requests\Users;
 
-use Foundry\Core\Entities\Contracts\EntityInterface;
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
+use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
-use Foundry\System\Entities\Entity;
-use Foundry\System\Entities\User;
+use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Inputs\User\UserRegisterInput;
 use Foundry\System\Services\UserService;
-use LaravelDoctrine\ORM\Facades\EntityManager;
 
-class RegisterUserRequest extends FormRequest implements ViewableFormRequestInterface
+class RegisterUserRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
-
-	/**
-	 * @var UserRegisterInput
-	 */
-	protected $input;
+	use HasInput;
 
 	public static function name(): String {
 		return 'foundry.system.users.register';
@@ -32,16 +26,6 @@ class RegisterUserRequest extends FormRequest implements ViewableFormRequestInte
 	 */
 	public static function getInputClass(): string {
 		return UserRegisterInput::class;
-	}
-
-	/**
-	 * @param mixed $id
-	 *
-	 * @return EntityInterface|Entity|null|object|User
-	 */
-	public function getEntity($id)
-	{
-		return EntityManager::getRepository(User::class)->find($id);
 	}
 
 	/**

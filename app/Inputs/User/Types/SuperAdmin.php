@@ -3,7 +3,7 @@
 namespace Foundry\System\Inputs\User\Types;
 
 use Foundry\Core\Inputs\Contracts\Field;
-use Foundry\System\Entities\Entity;
+use Foundry\Core\Entities\Entity;
 use Illuminate\Database\Eloquent\Model;
 use Foundry\Core\Inputs\Contracts\FieldOptions;
 use Foundry\Core\Inputs\Types\ChoiceInputType;

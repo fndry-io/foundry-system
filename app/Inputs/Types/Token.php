@@ -3,7 +3,7 @@
 namespace Foundry\System\Inputs\Types;
 
 use Foundry\Core\Inputs\Contracts\Field;
-use Foundry\System\Entities\Entity;
+use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Types\TextInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 

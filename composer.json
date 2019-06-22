@@ -16,7 +16,8 @@
   ],
   "require": {
     "php": "^7.2",
-    "foundry/core": "1.0.x-dev"
+    "foundry/core": "1.0.x-dev",
+    "laravel-doctrine/acl": "1.0.*"
   },
   "extra": {
     "laravel": {

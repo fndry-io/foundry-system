@@ -3,18 +3,21 @@
         <slot>
             <span v-if="buttons">
                     <span v-for="(button, index) in buttons">
-                        <b-button :variant="buttonVariant(button)" :disabled="submitting" @click="() => handleClick(button)" :key="index">
+                        <b-button :variant="buttonVariant(button)" :disabled="submitting" @click="() => handleClick(button, index)" :key="index">
                             {{button.label}}
+                            <b-spinner v-if="active === index" small label="Loading" type="grow" style="margin-left: 15px"></b-spinner>
                         </b-button>
                     </span>
             </span>
             <div v-else>
-                <button v-if="submitButton !== false" type="submit" class="btn btn-primary" :disabled="submitting" @click="() => handleClick(submit)">
+                <button v-if="submitButton !== false" type="submit" class="btn btn-primary" :disabled="submitting" @click="() => handleClick(submit, 'submit')">
                     {{submit.label}}
+                    <b-spinner v-if="active === 'submit'" small label="Loading" type="grow" style="margin-left: 15px"></b-spinner>
                 </button>
             </div>
-            <button v-if="cancelButton !== false" type="button" class="btn" :disabled="submitting" @click="() => handleClick(cancel)">
+            <button v-if="cancelButton !== false" type="button" class="btn" :disabled="submitting" @click="() => handleClick(cancel, 'cancel')">
                 {{cancel.label}}
+                <b-spinner v-if="active === 'cancel'" small label="Loading" type="grow" style="margin-left: 15px"></b-spinner>
             </button>
         </slot>
     </div>
@@ -33,20 +36,30 @@
             },
             submitButton: {
                 type: [Boolean, String, Object],
-                default: {
-                    label: 'Submit'
+                default() {
+                    return {
+                        label: 'Submit'
+                    }
                 }
             },
             cancelButton: {
                 type: [Boolean, String, Object],
-                default: {
-                    label: 'Cancel'
+                default() {
+                    return {
+                        label: 'Cancel'
+                    }
                 }
             },
             buttons: {
                 type: [Array, Boolean],
                 default() {
                     return false;
+                }
+            },
+            active: {
+                type: [String,Number],
+                default() {
+                    return null;
                 }
             }
         },
@@ -57,8 +70,8 @@
             };
         },
         methods: {
-            handleClick(button){
-                this.$emit('click', button);
+            handleClick(button, index){
+                this.$emit('click', button, index);
             },
             buttonVariant(button) {
                 if (button.variant) {

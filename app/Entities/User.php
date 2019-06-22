@@ -4,6 +4,7 @@ namespace Foundry\System\Entities;
 
 use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
+use Foundry\Core\Entities\Contracts\ApiTokenInterface;
 use Foundry\Core\Entities\Entity;
 use Foundry\Core\Entities\Traits\Uuidable;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -21,8 +22,11 @@ use LaravelDoctrine\ORM\Notifications\Notifiable;
  * @package Foundry\System\Entities
  * @ORM\Entity(repositoryClass="Foundry\System\Repositories\UserRepository")
  * @ORM\Table(name="users")
+ *
+ * @property Carbon $last_login_at
+ * @property Boolean $logged_in
  */
-class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword {
+class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword, ApiTokenInterface {
 
 	use Uuidable;
 	use SoftDeletable;
@@ -103,6 +107,16 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	 * @ORM\Column(type="boolean")
 	 */
 	protected $logged_in = false;
+
+	/**
+	 * @ORM\Column(name="api_token", type="string", nullable=true)
+	 */
+	protected $api_token;
+
+	/**
+	 * @ORM\Column(name="api_token_expires_at", type="datetime", nullable=true)
+	 */
+	protected $api_token_expires_at;
 
 	/**
 	 * User constructor.
@@ -239,8 +253,35 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 		return $this->first_name . ' ' . $this->last_name;
 	}
 
+	/**
+	 * @return mixed
+	 */
+	public function getApiToken(){
+		return $this->api_token;
+	}
 
+	/**
+	 * @param string|null $token
+	 */
+	public function setApiToken(string $token = null)
+	{
+		$this->api_token = $token;
+	}
 
+	/**
+	 * @return \DateTime
+	 */
+	public function getApiTokenExpiresAt()
+	{
+		return $this->api_token_expires_at;
+	}
 
+	/**
+	 * @param Carbon|null $date
+	 */
+	public function setApiTokenExpiresAt(Carbon $date = null)
+	{
+		$this->api_token_expires_at = $date;
+	}
 
 }

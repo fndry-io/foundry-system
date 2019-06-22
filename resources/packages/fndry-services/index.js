@@ -1,13 +1,15 @@
-import ApiService, {makeService} from './src/ApiService';
-import TranslateService from './src/TranslateService';
+import ApiService from './src/ApiService';
+import AuthStore from './src/store/auth';
 
 export {
-    ApiService,
-    TranslateService
+    AuthStore
 }
 
 const install = function(Vue, options){
-    Vue.prototype.$apiService = makeService({});
+    /**
+     * @type {ApiService}
+     */
+    Vue.prototype.$fndryApiService = new ApiService(Vue);
 };
 
 /**

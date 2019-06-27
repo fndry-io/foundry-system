@@ -24,7 +24,6 @@ class UserLoginInput extends Inputs {
 	protected $fillable = [
 		'email',
 		'password',
-		'remember_me',
 		'guard'
 	];
 
@@ -33,7 +32,6 @@ class UserLoginInput extends Inputs {
 		return InputTypeCollection::fromTypes([
 			Email::input(),
 			Password::input(),
-			RememberMe::input(),
 			(new HiddenInputType('guard'))->setRequired(false)
 		]);
 	}

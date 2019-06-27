@@ -35,16 +35,5 @@ class UserRepository extends EntityRepository {
 		return $qb->getQuery()->getArrayResult();
 	}
 
-	public function labelListFromArray($results)
-	{
-		$list = [];
-		foreach ($results as $result) {
-			$list[] = [
-				'value' => $result['id'],
-				'text' => $result['label'],
-			];
-		}
-		return $list;
-	}
 
 }

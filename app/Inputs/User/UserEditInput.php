@@ -36,7 +36,9 @@ class UserEditInput extends Inputs {
 		$types = [
 			FirstName::input(),
 			LastName::input(),
-			Email::input(),
+			Email::input()->setRules([
+				'unique:Foundry\System\Entities\User,email',
+			]),
 			Password::input()->addRule('min:8')->addRule('max:20')->addRule('confirmed:password_confirmation')->setRequired(false),
 			PasswordConfirmation::input()->setRequired(false)
 		];

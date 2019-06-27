@@ -24,10 +24,9 @@ class User extends ReferenceInputType implements Field {
 			'user',
 			route('foundry.system.users.list', [], false)
 		))
-			//todo the exists rule is not yet supported
-//			->setRules([
-//				'exists:users,id'
-//			])
+			->setRules([
+				'exists:Foundry\System\Entities\User,id',
+			])
 			->setSortable(false)
 			->setOptions([])
 			->setTextKey(['last_name', 'first_name'], ', ')

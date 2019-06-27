@@ -1,6 +1,6 @@
 <template>
     <validation-observer ref="observer" v-slot="{ invalid }" :slim="true">
-        <b-modal ref="modal" v-model="show" scrollable :title="getModalTitle()" :hide-footer="loading" :size="size" @hide="canHide">
+        <b-modal ref="modal" v-model="show" scrollable :title="getModalTitle()" :hide-footer="loading" :size="size" @hide="canHide" modal-class="request-modal">
             <div v-if="loading" class="text-center">
                 <b-spinner label="Loading..."></b-spinner>
             </div>

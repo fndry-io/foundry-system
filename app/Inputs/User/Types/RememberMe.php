@@ -4,10 +4,8 @@ namespace Foundry\System\Inputs\User\Types;
 
 use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Entities\Entity;
-use Illuminate\Database\Eloquent\Model;
 use Foundry\Core\Inputs\Contracts\FieldOptions;
 use Foundry\Core\Inputs\Types\ChoiceInputType;
-use Foundry\Core\Inputs\Types\InputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 
 class RememberMe extends ChoiceInputType implements Field, FieldOptions {

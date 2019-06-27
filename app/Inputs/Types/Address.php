@@ -25,6 +25,9 @@ class Address extends ReferenceInputType implements Field {
 			'address',
 			null
 		))
+			->setRules([
+				'exists:Foundry\System\Entities\Address,id',
+			])
 			->setSortable(false)
 			->setOptions([])
 			->setTextKey(['street', 'city', 'country', 'code'], ', ')

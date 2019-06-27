@@ -2,9 +2,8 @@
 
 namespace Foundry\System\Entities;
 
-use Doctrine\ORM\Mapping as ORM;
-use LaravelDoctrine\ACL\Mappings as ACL;
 use Foundry\Core\Entities\Entity;
+use Foundry\Core\Entities\Traits\Timestampable;
 use LaravelDoctrine\ACL\Contracts\Role as RoleContract;
 use LaravelDoctrine\ACL\Permissions\HasPermissions;
 
@@ -12,13 +11,12 @@ use LaravelDoctrine\ACL\Permissions\HasPermissions;
  * Class Role Entity
  *
  * @package Foundry\System\Entities
- * @ORM\Entity(repositoryClass="Foundry\System\Repositories\RoleRepository")
- * @ORM\Table(name="roles")
  *
  */
-class Role extends Entity implements RoleContract {
+class Role extends Entity {
 
 	use HasPermissions;
+	use Timestampable;
 
 	/**
 	 * @var array The fillable values
@@ -27,16 +25,13 @@ class Role extends Entity implements RoleContract {
 		'name'
 	];
 
-	/**
-	 * @ORM\Id
-	 * @ORM\Column(type="integer")
-	 * @ORM\GeneratedValue(strategy="AUTO")
-	 */
+	protected $visible = [
+		'id',
+		'name'
+	];
+
 	protected $id;
 
-	/**
-	 * @ORM\Column(type="string")
-	 */
 	protected $name;
 
 	/**
@@ -55,17 +50,17 @@ class Role extends Entity implements RoleContract {
 		return $this->name;
 	}
 
-	/**
-	 * @ACL\HasPermissions
-	 */
-	public $permissions;
-
-	/**
-	 * @return \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Permission[]
-	 */
-	public function getPermissions()
-	{
-		return $this->permissions;
-	}
+//	/**
+//	 * @ACL\HasPermissions
+//	 */
+//	public $permissions;
+//
+//	/**
+//	 * @return \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Permission[]
+//	 */
+//	public function getPermissions()
+//	{
+//		return $this->permissions;
+//	}
 
 }

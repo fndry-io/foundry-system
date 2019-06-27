@@ -11,7 +11,6 @@ use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
-use Foundry\System\Entities\User;
 use Foundry\System\Http\Resources\UserResource;
 use Foundry\System\Inputs\User\UsersFilterInput;
 use Foundry\System\Services\UserService;
@@ -25,10 +24,12 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
 	}
 
 	/**
-	 * @return string
+	 * @param $inputs
+	 *
+	 * @return \Foundry\Core\Inputs\Inputs|UsersFilterInput
 	 */
-	static function getInputClass(): string {
-		return UsersFilterInput::class;
+	public function makeInput($inputs) {
+		return new UsersFilterInput($inputs);
 	}
 
 	/**
@@ -39,7 +40,7 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
     public function authorize()
     {
     	//todo update to use the permissions
-        return true;
+        return !!($this->user());
     }
 
 	/**
@@ -50,19 +51,15 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
 	 */
     public function handle() : Response
     {
-    	$response = $this->input->validate();
-    	if ($response->isSuccess()) {
-		    $result = UserService::service()->browse(function(QueryBuilder $qb) {
+	    $result = UserService::service()->browse(function(QueryBuilder $qb) {
 
-		    	return $qb
-				    ->addSelect('u.id', 'u.uuid', 'u.first_name', 'u.last_name', 'u.email')
-				    ->orderBy('u.first_name', 'ASC');
+	        return $qb
+			    ->addSelect('u.id', 'u.uuid', 'u.first_name', 'u.last_name', 'u.email')
+			    ->orderBy('u.first_name', 'ASC');
 
-		    }, $this->input('page', 1), $this->input('limit', 20) );
+	    }, $this->input('page', 1), $this->input('limit', 20) );
 
-    		return Response::success($result);
-	    }
-	    return $response;
+        return Response::success($result);
     }
 
 	/**

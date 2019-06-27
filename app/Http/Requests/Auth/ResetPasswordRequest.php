@@ -7,10 +7,12 @@ use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Inputs\Types\TagType;
+use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Entities\Entity;
+use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Entities\User;
 use Foundry\System\Inputs\Types\Token;
 use Foundry\System\Inputs\User\ForgotPasswordInput;
@@ -20,8 +22,9 @@ use Foundry\System\Inputs\User\Types\Password;
 use Foundry\System\Inputs\User\Types\PasswordConfirmation;
 use Foundry\System\Services\UserService;
 
-class ResetPasswordRequest extends FormRequest implements ViewableFormRequestInterface
+class ResetPasswordRequest extends FormRequest implements InputInterface, ViewableFormRequestInterface
 {
+	use HasInput;
 
 	/**
 	 * @var ResetPasswordInput
@@ -33,10 +36,12 @@ class ResetPasswordRequest extends FormRequest implements ViewableFormRequestInt
 	}
 
 	/**
-	 * @return string
+	 * @param $inputs
+	 *
+	 * @return \Foundry\Core\Inputs\Inputs|ResetPasswordInput
 	 */
-	public static function getInputClass(): string {
-		return ResetPasswordInput::class;
+	public function makeInput($inputs) {
+		return new ResetPasswordInput($inputs);
 	}
 
 	/**

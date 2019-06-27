@@ -24,10 +24,12 @@ class LogoutRequest extends FormRequest implements ViewableFormRequestInterface,
 	/**
 	 * The input class for this form request
 	 *
-	 * @return string|null
+	 * @param $inputs
+	 *
+	 * @return \Foundry\Core\Inputs\Inputs|UserLogoutInput
 	 */
-	static function getInputClass() {
-		return UserLogoutInput::class;
+	public function makeInput($inputs) {
+		return new UserLogoutInput($inputs);
 	}
 
 	/**
@@ -37,7 +39,7 @@ class LogoutRequest extends FormRequest implements ViewableFormRequestInterface,
      */
     public function authorize()
     {
-        return !!(auth_user());
+        return true;
     }
 
 	/**

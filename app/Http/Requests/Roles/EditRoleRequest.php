@@ -22,10 +22,12 @@ class EditRoleRequest extends RoleRequest implements ViewableFormRequestInterfac
 	}
 
 	/**
+	 * @param $inputs
+	 *
 	 * @return string
 	 */
-	public static function getInputClass(): string {
-		return RoleInput::class;
+	public function makeInput($inputs) {
+		return new RoleInput($inputs);
 	}
 
 	/**
@@ -35,7 +37,7 @@ class EditRoleRequest extends RoleRequest implements ViewableFormRequestInterfac
 	 */
 	public function authorize()
 	{
-		return !!(auth_user());
+		return !!($this->user());
 	}
 
 	/**
@@ -45,11 +47,7 @@ class EditRoleRequest extends RoleRequest implements ViewableFormRequestInterfac
 	 */
 	public function handle() : Response
 	{
-		$response = $this->input->validate();
-		if ($response->isSuccess()) {
-			return RoleService::service()->edit($this->input, $this->getEntity());
-		}
-		return $response;
+		return RoleService::service()->edit($this->input, $this->getEntity());
 	}
 
 	/**

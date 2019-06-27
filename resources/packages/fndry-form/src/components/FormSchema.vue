@@ -1,6 +1,6 @@
 <template>
     <div class="form-fields">
-        <div class="form-field" v-for="(child, index) in schema.children" :key="index">
+        <div class="form-field" v-for="(child, index) in type.children" :key="index">
             <fndry-form-type
                     :schema="child"
                     :model="model"
@@ -16,6 +16,7 @@
     import {set, extend} from 'lodash';
 
     import {getChildInputValues} from '../utils/schema';
+    import schema, {process} from "../mixins/schema";
 
     /**
      * Foundry Form Schema
@@ -24,6 +25,9 @@
      */
     export default {
         name: 'fndry-form-schema',
+        mixins: [
+            schema
+        ],
         props: {
             schema: {
                 type: Object,
@@ -40,19 +44,22 @@
         },
         data() {
             return {
-                model: {}
+                model: {},
+                type: extend({}, this.schema)
             };
         },
         created(){
             let model = this.data ? extend({}, this.data) : {};
             getChildInputValues(this.schema, model);
+            process(this.type, model);
             this.model = model;
         },
         methods: {
             onUpdate(field, value) {
                 set(this.model, field, value);
                 this.$emit('update', this.model);
-            },
+                process(this.type, this.model);
+            }
         }
     }
 </script>

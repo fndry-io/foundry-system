@@ -19,8 +19,7 @@ class DeleteUserRequest extends UserRequest
 	 */
 	public function authorize()
 	{
-		return true;
-		return (auth_user());
+		return !!($this->user());
 	}
 
 	/**

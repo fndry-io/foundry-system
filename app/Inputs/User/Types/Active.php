@@ -20,8 +20,6 @@ class Active extends ChoiceInputType implements Field, FieldOptions {
 			'active',
 			__( 'Active' ),
 			true,
-			false,
-			false,
 			Active::options()
 		) )
 			->setHelp()

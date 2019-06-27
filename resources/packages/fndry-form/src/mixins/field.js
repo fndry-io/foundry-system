@@ -71,6 +71,20 @@ import { get as objGet, forEach, isNil, isArray, isString, isFunction } from "lo
 // };
 
 export default {
+    props: {
+        schema: {
+            type: Object,
+            required: true
+        },
+        model: {
+            type: Object,
+            required: false
+        },
+        errors: {
+            type: Object,
+            required: false
+        }
+    },
 	methods: {
 		// Get style classes of field
 		fieldRowClasses(field) {

@@ -14,5 +14,10 @@ export default {
             type: Object,
             required: false
         }
+    },
+    watch: {
+        schema: function(newVal, oldVal) { // watch it
+            console.log('Prop changed: ', newVal, ' | was: ', oldVal)
+        }
     }
 }

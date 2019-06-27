@@ -3,6 +3,7 @@
 namespace Foundry\System\Services;
 
 use Carbon\Carbon;
+use Foundry\Core\Auth\TokenGuard;
 use Foundry\Core\Entities\Contracts\ApiTokenInterface;
 use Foundry\Core\Entities\Contracts\EntityInterface;
 use Foundry\Core\Inputs\Inputs;
@@ -18,7 +19,6 @@ use Foundry\System\Inputs\User\UserLoginInput;
 use Foundry\System\Inputs\User\UserRegisterInput;
 use Foundry\System\Repositories\UserRepository;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Auth\TokenGuard;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -45,7 +45,7 @@ class UserService extends BaseService {
 		$inputs = $input->inputs();
 
 		/**
-		 * @var Guard $guard
+		 * @var Guard|StatefulGuard $guard
 		 */
 		$guard = Auth::guard($input->guard);
 
@@ -132,7 +132,7 @@ class UserService extends BaseService {
 			//todo update to ensure the user token expires and the token guard loads it correctly
 			$user->setApiToken($token);
 			$user->setApiTokenExpiresAt(Carbon::now()->addDays(3));
-			$data['token'] = hash('sha256', $token);
+			$data['token'] = $token;
 		}
 
 		$this->repository->save($user);
@@ -270,7 +270,7 @@ class UserService extends BaseService {
 	public function delete(User $user) : Response
 	{
 		$this->repository->delete($user);
-		return Response::success($user);
+		return Response::success();
 	}
 
 	/**

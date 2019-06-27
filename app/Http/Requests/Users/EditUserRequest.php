@@ -22,10 +22,12 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 	}
 
 	/**
-	 * @return string
+	 * @param $inputs
+	 *
+	 * @return \Foundry\Core\Inputs\Inputs|UserEditInput
 	 */
-	public static function getInputClass(): string {
-		return UserEditInput::class;
+	public function makeInput($inputs) {
+		return new UserEditInput($inputs);
 	}
 
 	/**
@@ -35,8 +37,7 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 	 */
 	public function authorize()
 	{
-		return true;
-		return (auth_user());
+		return !!($this->user());
 	}
 
 	/**
@@ -46,11 +47,7 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 	 */
 	public function handle() : Response
 	{
-		$response = $this->input->validate();
-		if ($response->isSuccess()) {
-			return UserService::service()->edit($this->input, $this->getEntity());
-		}
-		return $response;
+		return UserService::service()->edit($this->input, $this->getEntity());
 	}
 
 	/**
@@ -62,7 +59,7 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 	{
 		$form = $this->form();
 
-		$form->setTitle(__('Create User'));
+		$form->setTitle(__('Edit User'));
 		$form->setButtons((new SubmitButtonType(__('Save'), $form->getAction())));
 		$form->addChildren(
 			RowType::withChildren($form->get('first_name'), $form->get('last_name')),

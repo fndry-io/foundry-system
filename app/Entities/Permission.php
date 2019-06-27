@@ -5,7 +5,6 @@ namespace Foundry\System\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use LaravelDoctrine\ACL\Contracts\Permission as PermissionContract;
 /**
- * @ORM\Entity
  */
 class Permission implements PermissionContract
 {

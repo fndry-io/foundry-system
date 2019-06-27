@@ -17,15 +17,17 @@ class RegisterUserRequest extends FormRequest implements ViewableFormRequestInte
 {
 	use HasInput;
 
-	public static function name(): String {
+	public static function name(): string {
 		return 'foundry.system.users.register';
 	}
 
 	/**
-	 * @return string
+	 * @param $inputs
+	 *
+	 * @return \Foundry\Core\Inputs\Inputs|UserRegisterInput
 	 */
-	public static function getInputClass(): string {
-		return UserRegisterInput::class;
+	public function makeInput($inputs) {
+		return new UserRegisterInput($inputs);
 	}
 
 	/**
@@ -45,11 +47,7 @@ class RegisterUserRequest extends FormRequest implements ViewableFormRequestInte
 	 */
 	public function handle() : Response
 	{
-		$response = $this->input->validate();
-		if ($response->isSuccess()) {
-			return UserService::service()->register($this->input);
-		}
-		return $response;
+		return UserService::service()->register($this->input);
 	}
 
 	/**

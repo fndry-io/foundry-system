@@ -1,6 +1,6 @@
-import RequestFormModal from '../components/RequestFormModal.vue';
-import RequestFormConfirmModal from '../components/RequestFormConfirmModal.vue';
-import RequestFormInline from '../components/RequestFormInline.vue';
+import RequestFormModal from '../components/RequestFormModal';
+import RequestFormConfirmModal from '../components/RequestFormConfirmModal';
+import RequestFormInline from '../components/RequestFormInline';
 
 let FormModal;
 let FormInline;
@@ -21,16 +21,16 @@ export const makeRequestConfirm = (Vue) => {
  * Request a form
  *
  * @param {string} request The request name
- * @param {string} type The type of form to display [inline|modal]
+ * @param {string} type The type of form to display [target|modal]
  * @param {object} options The options to pass to the sub components
  * @see modalForm
- * @see inlineForm
+ * @see targetForm
  *
  * @returns {Promise<any>}
  */
-export const requestForm = (request, type = 'inline', options = {}) => {
-    if (type === 'inline') {
-        return inlineForm(request, options);
+export const requestForm = (request, type = 'modal', options = {}) => {
+    if (type === 'target') {
+        return targetForm(request, options);
     } else {
         return modalForm(request, options);
     }
@@ -57,8 +57,7 @@ export const modalForm = (request, {data, params, size, position}) => {
             params,
             size,
             position
-        },
-        parent: this
+        }
     });
 
     vNode = modal.$mount();
@@ -96,7 +95,7 @@ export const modalForm = (request, {data, params, size, position}) => {
  * @param {boolean} inline If to display the fields inline
  * @return {Promise<any>}
  */
-export const inlineForm = (request, {target, data, params, inline}) => {
+export const targetForm = (request, {target, data, params, inline}) => {
 
     let form, vNode, $target;
 
@@ -108,8 +107,7 @@ export const inlineForm = (request, {target, data, params, inline}) => {
                     params,
                     data,
                     inline
-                },
-                parent: this
+                }
             });
 
             vNode = form.$mount();

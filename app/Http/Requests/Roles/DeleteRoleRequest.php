@@ -15,7 +15,7 @@ class DeleteRoleRequest  extends RoleRequest implements EntityRequestInterface
 
 	public function authorize()
 	{
-		return !!(auth_user());
+		return !!($this->user());
 	}
 
 	/**

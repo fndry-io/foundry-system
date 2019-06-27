@@ -22,11 +22,9 @@ class SuperAdmin extends ChoiceInputType implements Field, FieldOptions {
 			'is_super_admin',
 			__( 'Is Super Admin' ),
 			true,
-			false,
-			false,
 			static::options()
 		) )
-			->setHelp()
+			->setExpanded(true)
 			->setSortable( false );
 	}
 

@@ -13,6 +13,7 @@ use Foundry\System\Services\UserService;
 use Illuminate\Foundation\Console\SymLinkCommand;
 use Illuminate\Foundation\Console\ThemeLinkCommand;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class SystemServiceProvider extends ServiceProvider
@@ -24,6 +25,7 @@ class SystemServiceProvider extends ServiceProvider
 	 * @var bool
 	 */
 	protected $defer = false;
+
 
     /**
      * Register any application services.
@@ -38,7 +40,6 @@ class SystemServiceProvider extends ServiceProvider
 	    //$this->app->register(BroadcastServiceProvider::class);
 	    $this->registerRepositories();
 	    $this->registerServices();
-	    $this->registerFormRequests();
     }
 
     public function registerRepositories()
@@ -181,38 +182,14 @@ class SystemServiceProvider extends ServiceProvider
 
 	public function registerGates()
 	{
-//		Gate::before(function ($user, $ability) {
-//			/**
-//			 * @var User $user
-//			 */
-//			if ($user->isAdmin()) {
-//				return true;
-//			}
-//		});
-	}
-
-	public function registerFormRequests()
-	{
-		$requests = [
-			//auth
-			'Foundry\System\Http\Requests\Auth\LoginRequest',
-			'Foundry\System\Http\Requests\Auth\LogoutRequest',
-			'Foundry\System\Http\Requests\Auth\ForgotPasswordRequest',
-			'Foundry\System\Http\Requests\Auth\ResetPasswordRequest',
-			//users
-			'Foundry\System\Http\Requests\Users\BrowseUsersRequest',
-			'Foundry\System\Http\Requests\Users\RegisterUserRequest',
-			'Foundry\System\Http\Requests\Users\AddUserRequest',
-			'Foundry\System\Http\Requests\Users\EditUserRequest',
-			'Foundry\System\Http\Requests\Users\DeleteUserRequest',
-			//roles
-			'Foundry\System\Http\Requests\Roles\BrowseRolesRequest',
-			'Foundry\System\Http\Requests\Roles\EditRoleRequest',
-			'Foundry\System\Http\Requests\Roles\AddRoleRequest',
-			'Foundry\System\Http\Requests\Roles\DeleteRoleRequest'
-		];
-
-		app(\Foundry\Core\Contracts\FormRequestHandler::class)->register($requests);
+		Gate::before(function (User $user, $ability) {
+			/**
+			 * @var User $user
+			 */
+			if ($user->isSuperAdmin()) {
+				return true;
+			}
+		});
 	}
 
 }

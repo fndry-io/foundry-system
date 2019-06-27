@@ -2,25 +2,17 @@
 
 namespace Foundry\System\Entities;
 
-use Doctrine\ORM\Mapping as ORM;
 use LaravelDoctrine\ACL\Contracts\Organisation;
-use LaravelDoctrine\ACL\Mappings as ACL;
 
 /**
- * @ORM\Entity
+ * Account
+ *
+ * @package Foundry\System\Entities
  */
 class Account implements Organisation
 {
-	/**
-	 * @ORM\Column(type="integer")
-	 * @ORM\Id
-	 * @ORM\GeneratedValue(strategy="AUTO")
-	 */
 	protected $id;
 
-	/**
-	 * @ORM\Column(type="string")
-	 */
 	protected $name;
 
 	/**

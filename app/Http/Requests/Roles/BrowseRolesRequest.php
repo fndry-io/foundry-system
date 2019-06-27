@@ -25,10 +25,12 @@ class BrowseRolesRequest extends FormRequest implements ViewableFormRequestInter
 	}
 
 	/**
-	 * @return string
+	 * @param $inputs
+	 *
+	 * @return \Foundry\Core\Inputs\Inputs|SearchFilterInput
 	 */
-	static function getInputClass(): string {
-		return SearchFilterInput::class;
+	public function makeInput($inputs) {
+		return new SearchFilterInput($inputs);
 	}
 
 	/**
@@ -39,7 +41,7 @@ class BrowseRolesRequest extends FormRequest implements ViewableFormRequestInter
     public function authorize()
     {
     	//todo update to use the permissions
-	    return !!(auth_user());
+	    return !!($this->user());
     }
 
 	/**
@@ -50,20 +52,15 @@ class BrowseRolesRequest extends FormRequest implements ViewableFormRequestInter
 	 */
     public function handle() : Response
     {
-    	$response = $this->input->validate();
-    	if ($response->isSuccess()) {
+	    $result = RoleService::service()->browse(function(QueryBuilder $qb) {
 
-		    $result = RoleService::service()->browse(function(QueryBuilder $qb) {
+		    return $qb
+			    ->addSelect('r.id', 'r.name')
+			    ->orderBy('r.name', 'ASC');
 
-			    return $qb
-				    ->addSelect('r.id', 'r.name')
-				    ->orderBy('r.name', 'ASC');
+	    }, $this->input('page', 1), $this->input('limit', 20) );
 
-		    }, $this->input('page', 1), $this->input('limit', 20) );
-
-		    return Response::success($result);
-	    }
-	    return $response;
+	    return Response::success($result);
     }
 
 	/**

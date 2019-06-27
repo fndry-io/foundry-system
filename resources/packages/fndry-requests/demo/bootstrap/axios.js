@@ -1,41 +1,40 @@
 import Qs from 'qs';
+import Axios from 'axios';
 
-/**
- * We'll load the axios HTTP library which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
- */
+const token = localStorage.getItem('token');
 
-window.axios = require('axios');
+const axios = {
+    install(Vue, options) {
+        /**
+         * We'll load the axios HTTP library which allows us to easily issue requests
+         * to our Laravel back-end. This library automatically handles sending the
+         * CSRF token as a header based on the value of the "XSRF" token cookie.
+         */
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        Vue.prototype.$http = Axios;
 
-// Format nested params correctly
-window.axios.interceptors.request.use(config => {
+        if (token) {
+            Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+        }
 
-    config.paramsSerializer = params => {
-        // Qs is already included in the Axios package
-        return Qs.stringify(params, {
-            arrayFormat: "brackets",
-            encode: false
+        Vue.prototype.$http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+        // Format nested params correctly
+        Vue.prototype.$http.interceptors.request.use(config => {
+
+            config.paramsSerializer = params => {
+                // Qs is already included in the Axios package
+                return Qs.stringify(params, {
+                    arrayFormat: "brackets",
+                    encode: false
+                });
+            };
+
+            return config;
         });
-    };
 
-    return config;
-});
+        Vue.prototype.$http.defaults.timeout = 10000;
+    }
+};
 
-/**
- * Next we will register the CSRF Token as a common header with Axios so that
- * all outgoing HTTP requests automatically have it attached. This is just
- * a simple convenience so we don't have to attach every token manually.
- */
-
-let token = document.head.querySelector('meta[name="csrf-token"]');
-
-if (token) {
-    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-} else {
-    //console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
-}
-
-window.axios.defaults.timeout = 10000;
+export default axios;

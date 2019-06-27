@@ -6,10 +6,11 @@
                 :label="schema.label"
                 :label-for="schema.id"
                 :state="valid"
-                :class="{'required': schema.required}"
+                :required="fieldRequired(schema)"
+                :class="{'required': fieldRequired(schema)}"
         >
             <div class="field-wrap">
-                <component ref="child"
+                <component ref="name"
                            :is="fieldType(schema)"
                            :schema="schema"
                            :id="schema.id"
@@ -19,6 +20,7 @@
                            @change="onChange"
                            :state="valid"
                            :validation="{validate}"
+                           :required="fieldRequired(schema)"
                 ></component>
             </div>
             <b-form-invalid-feedback :state="valid">
@@ -34,31 +36,17 @@
     import { BFormGroup, BFormInvalidFeedback } from 'bootstrap-vue'
     import { ValidationProvider } from 'vee-validate';
 
-    import {fields} from "../types/index.js";
-    import field from "../mixins/field.js";
-    import conditional from "../mixins/conditional";
+    import fields from "../types/fields";
+    import field from "../mixins/field";
+    import schema from "../mixins/schema";
 
     export default {
         name: "form-group",
         components: objMerge({BFormGroup, BFormInvalidFeedback, ValidationProvider}, fields),
         mixins: [
             field,
-            conditional
+            schema
         ],
-        props: {
-            schema: {
-                type: Object,
-                required: true
-            },
-            model: {
-                type: Object,
-                required: false
-            },
-            errors: {
-                type: Object,
-                required: false
-            }
-        },
         data() {
             return {
                 value: this.fieldValue(this.schema),

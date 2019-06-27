@@ -201,7 +201,10 @@ ApiService.prototype = {
             headers: {
                 'accept': 'application/json',
                 'content-type': 'application/json',
-            }
+            },
+            validateStatus: (status) => {
+                return true; // I'm always returning true, you may want to do it depending on the status received
+            },
         };
 
         //do any parameter replacements in the URL
@@ -217,13 +220,13 @@ ApiService.prototype = {
         return new Promise((resolve, reject) => {
 
             this.vm.$http(options)
-            //call to the server successful (2xx)
-                .then(function (response) {
+                //call to the server successful (2xx)
+                .then((response) => {
                     console.log('response...', response);
                     handleResponse(response, resolve, reject);
                 })
                 //call to server failed (!=2xx)
-                .catch(function (error) {
+                .catch((error) => {
                     console.log('error...', error);
                     handleError(error, resolve, reject);
                 })
@@ -266,20 +269,18 @@ ApiService.prototype = {
             ;
         });
     },
-    getViewUrl(request, params){
-        let req = getViewRequestUri(request);
-        return route(req, params);
+    getViewUrl(uri, params){
+        return route(uri, params);
     },
-    getHandleUrl(request, params){
-        let req = getHandleRequestUri(request);
-        return route(req, params);
+    getHandleUrl(uri, params){
+        return route(uri, params);
     },
-    handle(request, params = {}, data = {}){
-        let url = this.getHandleUrl(request, params);
+    handle(uri, params = {}, data = {}){
+        let url = this.getHandleUrl(uri, params);
         return this.call(url, 'POST', data);
     },
-    view(request, params = {}, data = {}){
-        let url = this.getViewUrl(request, params);
+    view(uri, params = {}, data = {}){
+        let url = this.getViewUrl(uri, params);
         return this.call(url, 'GET', data);
     }
 };

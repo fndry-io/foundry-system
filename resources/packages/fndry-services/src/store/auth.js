@@ -32,20 +32,17 @@ const auth = {
     actions: {
         login({commit}, data){
             return new Promise((resolve, reject) => {
-                this._vm.$fndryApiService.handle('foundry.system.auth.login', {}, data).then((response) => {
+                this._vm.$fndryApiService.handle('/api/auth/login', {}, data).then((response) => {
                     commit('auth_success', response.data);
                     localStorage.setItem('token', response.data.token);
-                    this._vm.$http.defaults.headers.common['Authorization'] = response.data.token;
+                    this._vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
                     resolve(response);
                 });
             })
         },
         logout({commit}){
             return new Promise((resolve, reject) => {
-                this._vm.$fndryApiService.handle('foundry.system.auth.logout', {}, {guard: 'api'}).then((response) => {
-
-
-
+                this._vm.$fndryApiService.handle('/api/auth/logout', {}, {guard: 'api'}).then((response) => {
                     commit('auth_reset');
                     localStorage.removeItem('token');
                     delete this._vm.$http.defaults.headers.common['Authorization'];

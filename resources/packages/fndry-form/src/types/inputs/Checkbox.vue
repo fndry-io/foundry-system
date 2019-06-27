@@ -5,6 +5,8 @@
             v-model="model"
             v-on="$listeners"
             :switch="schema.switch"
+            :value="schema.checkedValue"
+            :unchecked-value="schema.uncheckedValue"
     >
         {{schema.label}}
     </b-form-checkbox>

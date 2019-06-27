@@ -7,16 +7,19 @@ use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Inputs\Types\TagType;
+use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Entities\Entity;
+use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Entities\User;
 use Foundry\System\Inputs\User\ForgotPasswordInput;
 use Foundry\System\Services\UserService;
 
-class ForgotPasswordRequest extends FormRequest implements ViewableFormRequestInterface
+class ForgotPasswordRequest extends FormRequest implements InputInterface, ViewableFormRequestInterface
 {
+	use HasInput;
 
 	/**
 	 * @var ForgotPasswordInput
@@ -28,20 +31,12 @@ class ForgotPasswordRequest extends FormRequest implements ViewableFormRequestIn
 	}
 
 	/**
-	 * @return string
-	 */
-	public static function getInputClass(): string {
-		return ForgotPasswordInput::class;
-	}
-
-	/**
-	 * @param mixed $id
+	 * @param $inputs
 	 *
-	 * @return EntityInterface|Entity|null|object|User
+	 * @return \Foundry\Core\Inputs\Inputs|ForgotPasswordInput
 	 */
-	public function getEntity($id)
-	{
-		return null;
+	public function makeInput($inputs) {
+		return new ForgotPasswordInput($inputs);
 	}
 
 	/**
@@ -61,11 +56,7 @@ class ForgotPasswordRequest extends FormRequest implements ViewableFormRequestIn
 	 */
 	public function handle() : Response
 	{
-		$response = $this->input->validate();
-		if ($response->isSuccess()) {
-			return UserService::service()->forgotPassword($this->input);
-		}
-		return $response;
+		return UserService::service()->forgotPassword($this->input);
 	}
 
 	/**

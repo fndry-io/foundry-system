@@ -28,7 +28,13 @@ export const getInputValues = (schema, model) => {
     //console.log(schema);
 	if (schema.hasOwnProperty('name')) {
 		if (get(model, schema.name, undefined) === undefined) {
-            if (schema.hasOwnProperty('value')) {
+            if (schema.hasOwnProperty('type') && (schema.type === 'switch' || schema.type === 'checkbox')) {
+            	if (schema.value === schema.checkedValue) {
+                    set(model, schema.name, schema.value);
+				} else {
+                    set(model, schema.name, schema.uncheckedValue);
+				}
+            } else if (schema.hasOwnProperty('value')) {
                 set(model, schema.name, schema.value);
             } else if(schema.multiple === true) {
                 set(model, schema.name, []);

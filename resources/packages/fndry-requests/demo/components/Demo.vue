@@ -1,7 +1,7 @@
 <template>
     <div class="demo">
         <h2>Request/Response Tester</h2>
-        <div class="container text-left">
+        <div class="text-left">
             <div class="m-4">
                 <div v-if="loading" class="text-center">
                     <b-spinner label="Loading..."></b-spinner>
@@ -48,23 +48,27 @@
                                         <label for="request">Select a Form</label>
                                         <div class="input-group mb-3">
                                             <select id="request" class="form-control" @change="onListChange" v-model="request">
-                                                <option v-for="(name, index) in requests" :key="index">{{name}}</option>
+                                                <option v-for="(name, uri) in requests" :key="name" :value="uri">{{name}}</option>
                                             </select>
                                             <div class="input-group-append">
                                                 <b-button variant="outline-primary" @click="getList">Reload</b-button>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="entity">Entity</label>
+                                        <input id="entity" class="form-control" v-model="options.params._entity">
+                                    </div>
                                     <div>
-                                        <button @click="handleLoadRequest" class="btn btn-primary">Load Request</button>
+                                        <button @click="handleLoadRequest" class="btn btn-primary">View Request</button> &nbsp; <button @click="handleSubmitRequest" class="btn btn-primary">Submit Request</button>
                                     </div>
                                     <div v-if="request && type === 'target'">
                                         <hr>
                                         <div id="inlineFormTarget"></div>
                                     </div>
-                                    <div v-if="request && type === 'inline'">
+                                    <div v-if="request && type === 'inline' && inline">
                                         <hr>
-                                        <fndry-request-form-inline :title="true" :request="request" @success="onResponse" @fail="onResponse" @submitting="onSubmitting" :key="request"></fndry-request-form-inline>
+                                        <fndry-request-form-inline :params="options.params" :title="true" :request="request" @success="onResponse" @fail="onResponse" @submitting="onSubmitting" :key="key"></fndry-request-form-inline>
                                     </div>
                                 </div>
                             </div>
@@ -131,16 +135,22 @@
                 url: null,
                 request: null,
                 response: null,
-                route: '/system/request/view',
                 state: {},
                 schema: {},
                 model: {},
+                inline: false,
+                key: 0,
+
                 options: {
                     target: 'inlineFormTarget',
                     size: 'lg',
                     inline: false,
                     data: {
-                        email: 'admin@domain.com'
+                        email: 'admin@domain.com',
+                        guard: 'api'
+                    },
+                    params: {
+                        _entity: ''
                     }
                 }
             }
@@ -157,6 +167,7 @@
              */
             onListChange() {
                 this.response = null;
+                this.inline = false;
             },
 
             /**
@@ -164,8 +175,8 @@
              */
             getList(){
                 this.loading = true;
-                this.$apiService
-                    .call('/system/request/all', 'GET', {})
+                this.$fndryApiService
+                    .call('/api/system/request/all', 'GET', {})
                     .then((response) => {
                         this.requests = response.data;
                         this.loading = false;
@@ -192,11 +203,28 @@
             },
 
             handleLoadRequest() {
-                this.$fndryRequestForm(this.request, this.type, this.options).then(({response, model}) => {
-                    this.onResponse(response, model);
-                }).catch(({type, response, model}) => {
-                    this.onResponse(response, model);
-                });
+                this.key++;
+                if (this.type === 'inline') {
+                    this.inline = true;
+                } else {
+                    this.inline = false;
+                    this.$fndryRequestForm(this.request, this.type, this.options).then(({response, model}) => {
+                        this.onResponse(response, model);
+                    }).catch(({type, response, model}) => {
+                        this.onResponse(response, model);
+                    });
+                }
+
+            },
+            handleSubmitRequest() {
+                this.onSubmitting({});
+                this.$fndryApiService.call(this.$fndryApiService.getViewUrl(this.request, merge({}, this.options.params)), 'POST', {})
+                    .then((res) => {
+                        this.onResponse(res, {});
+                    }).catch((res) => {
+                        this.onResponse(res, {});
+                    })
+                ;
             }
         }
     }

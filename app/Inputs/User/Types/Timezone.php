@@ -20,8 +20,6 @@ class Timezone extends ChoiceInputType implements Field, FieldOptions {
 			'timezone',
 			__( 'TimeZone' ),
 			true,
-			false,
-			false,
 			static::options()
 		) )
 			->setDefault("America/New_York")

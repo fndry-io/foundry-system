@@ -44,7 +44,7 @@ export default {
     },
     methods: {
         getSchema: function () {
-            this.$fndryApiService.call(this.$fndryApiService.getViewUrl(this.request, this.params), 'GET', {})
+            this.$fndryApiService.call(this.$fndryApiService.getViewUrl(this.request, this.params), 'GET', {_form: true})
                 .then((res) => {
                     this.setSchema(res.data);
                 }, (res) => {})
@@ -87,6 +87,7 @@ export default {
                         }, (response) => {
                             this.response = response;
                             this.onFail(response);
+                            console.log(response);
                         })
                         .finally(() => {
                             this.submitting = false;

@@ -30,20 +30,12 @@ class LoginRequest extends FormRequest implements ViewableFormRequestInterface, 
 	}
 
 	/**
-	 * @return string
-	 */
-	public static function getInputClass(): string {
-		return UserLoginInput::class;
-	}
-
-	/**
-	 * @param mixed $id
+	 * @param $input
 	 *
-	 * @return EntityInterface|Entity|null|object|User
+	 * @return \Foundry\Core\Inputs\Inputs|UserLoginInput
 	 */
-	public function getEntity($id)
-	{
-		return null;
+	public function makeInput($input) {
+		return new UserLoginInput($input);
 	}
 
 	/**
@@ -63,11 +55,7 @@ class LoginRequest extends FormRequest implements ViewableFormRequestInterface, 
 	 */
     public function handle() : Response
     {
-    	$response = $this->input->validate();
-    	if ($response->isSuccess()) {
-    		return UserService::service()->login($this->input);
-	    }
-	    return $response;
+        return UserService::service()->login($this->input);
     }
 
 	/**

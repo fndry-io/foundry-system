@@ -22,10 +22,12 @@ class AddRoleRequest extends FormRequest implements ViewableFormRequestInterface
 	}
 
 	/**
-	 * @return string
+	 * @param $inputs
+	 *
+	 * @return \Foundry\Core\Inputs\Inputs|RoleInput
 	 */
-	public static function getInputClass(): string {
-		return RoleInput::class;
+	public function makeInput($inputs) {
+		return new RoleInput($inputs);
 	}
 
 	/**
@@ -35,7 +37,7 @@ class AddRoleRequest extends FormRequest implements ViewableFormRequestInterface
 	 */
 	public function authorize()
 	{
-		return !!(auth_user());
+		return !!($this->user());
 	}
 
 	/**
@@ -45,11 +47,7 @@ class AddRoleRequest extends FormRequest implements ViewableFormRequestInterface
 	 */
 	public function handle() : Response
 	{
-		$response = $this->input->validate();
-		if ($response->isSuccess()) {
-			return RoleService::service()->add($this->input);
-		}
-		return $response;
+		return RoleService::service()->add($this->input);
 	}
 
 	/**

@@ -1,5 +1,5 @@
 <template>
-    <span class="form-type">
+    <span class="form-type" v-if="schema.visible">
         <component :is="fieldType(schema)"
                    :schema="schema"
                    :model="model"
@@ -10,8 +10,7 @@
 </template>
 <script>
 
-    import conditional from '../mixins/conditional';
-    import {wrappers} from "../types/index.js";
+    import wrappers from "../types/wrappers.js";
 
     /**
      * Foundry Form Type
@@ -25,9 +24,6 @@
     export default {
         name: "fndry-form-type",
         components: wrappers,
-        mixins: [
-            conditional
-        ],
         props: {
             schema: {
                 type: Object,

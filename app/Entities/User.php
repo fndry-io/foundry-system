@@ -3,12 +3,9 @@
 namespace Foundry\System\Entities;
 
 use Carbon\Carbon;
-use Doctrine\ORM\Mapping as ORM;
-use LaravelDoctrine\ACL\Mappings as ACL;
 use Foundry\Core\Entities\Contracts\ApiTokenInterface;
 use Foundry\Core\Entities\Entity;
 use Foundry\Core\Entities\Traits\Uuidable;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Foundry\Core\Entities\Traits\SoftDeletable;
 use Foundry\Core\Entities\Traits\Timestampable;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -27,13 +24,12 @@ use LaravelDoctrine\ACL\Contracts\HasRoles as HasRolesContract;
  * Class User Entity
  *
  * @package Foundry\System\Entities
- * @ORM\Entity(repositoryClass="Foundry\System\Repositories\UserRepository")
- * @ORM\Table(name="users")
  *
  * @property Carbon $last_login_at
  * @property Boolean $logged_in
+ *
  */
-class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword, ApiTokenInterface, HasRolesContract, HasPermissionsContract {
+class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword, ApiTokenInterface {
 
 	use Uuidable;
 	use SoftDeletable;
@@ -41,8 +37,8 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	use Authenticatable;
 	use CanResetPassword;
 	use Notifiable;
-	use HasPermissions;
-	use HasRoles;
+//	use HasPermissions;
+//	use HasRoles;
 
 	/**
 	 * @var array The fillable values
@@ -55,105 +51,76 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 
 	protected $hidden = [
 		'password',
+		'super_admin',
+		'active'
 	];
 
-	/**
-	 * @ORM\Id
-	 * @ORM\GeneratedValue
-	 * @ORM\Column(type="integer")
-	 */
+	protected $visible = [
+		'id',
+		'uuid',
+		'first_name',
+		'last_name',
+		'email',
+		'active',
+		'super_admin',
+		'timezone',
+		'last_login_at',
+		'created_at',
+		'updated_at',
+		'deleted_at'
+	];
+
 	protected $id;
 
-	/**
-	 * @ORM\Column(type="string", nullable=false, unique=true)
-	 */
 	protected $email;
 
-	/**
-	 * @var string Password
-	 * @ORM\Column(type="string", nullable=false)
-	 */
 	protected $password;
 
-	/**
-	 * @var string First Name
-	 * @ORM\Column(type="string", nullable=false)
-	 */
 	protected $first_name;
 
-	/**
-	 * @var string Last Name
-	 * @ORM\Column(type="string", nullable=false)
-	 */
 	protected $last_name;
 
-	/**
-	 * @var boolean Is Active
-	 * @ORM\Column(type="boolean")
-	 */
 	protected $active = false;
 
-	/**
-	 * @var boolean Is Super Admin
-	 * @ORM\Column(type="boolean")
-	 */
 	protected $super_admin = false;
 
-	/**
-	 * @var string Timezone
-	 * @ORM\Column(type="string", nullable=true)
-	 */
 	protected $timezone;
 
-	/**
-	 * @ORM\Column(name="last_login_at", type="datetime", nullable=true)
-	 * @var Carbon
-	 */
 	protected $last_login_at;
 
-	/**
-	 * @var boolean Logged in
-	 * @ORM\Column(type="boolean")
-	 */
 	protected $logged_in = false;
 
-	/**
-	 * @ORM\Column(name="api_token", type="string", nullable=true)
-	 */
 	protected $api_token;
 
-	/**
-	 * @ORM\Column(name="api_token_expires_at", type="datetime", nullable=true)
-	 */
 	protected $api_token_expires_at;
 
-	/**
-	 * @ACL\HasRoles()
-	 * @var \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[]
-	 */
-	protected $roles;
+//	/**
+//	 * @ACL\HasRoles()
+//	 * @var \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[]
+//	 */
+//	protected $roles;
 
-	/**
-	 * @ACL\HasPermissions()
-	 * @var \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Permission[]
-	 */
-	public $permissions;
+//	/**
+//	 * @ACL\HasPermissions()
+//	 * @var \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Permission[]
+//	 */
+//	public $permissions;
+//
+//	/**
+//	 * @return \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[]
+//	 */
+//	public function getRoles()
+//	{
+//		return $this->roles;
+//	}
 
-	/**
-	 * @return \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[]
-	 */
-	public function getRoles()
-	{
-		return $this->roles;
-	}
-
-	/**
-	 * @return \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Permission[]
-	 */
-	public function getPermissions()
-	{
-		return $this->permissions;
-	}
+//	/**
+//	 * @return \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Permission[]
+//	 */
+//	public function getPermissions()
+//	{
+//		return $this->permissions;
+//	}
 
 	/**
 	 * User constructor.
@@ -319,6 +286,12 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	public function setApiTokenExpiresAt(Carbon $date = null)
 	{
 		$this->api_token_expires_at = $date;
+	}
+
+	public function can($ability)
+	{
+		//todo correct this to the permissions
+		return true;
 	}
 
 }

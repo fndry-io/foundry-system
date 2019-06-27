@@ -27,8 +27,6 @@ class RememberMe extends ChoiceInputType implements Field, FieldOptions {
 			'remember_me',
 			__( 'Remember Me' ),
 			false,
-			false,
-			false,
 			static::options()
 		) )
 			->setHelp()

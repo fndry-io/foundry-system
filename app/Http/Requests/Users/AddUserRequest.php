@@ -10,6 +10,7 @@ use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
+use Foundry\System\Inputs\User\UserInput;
 use Foundry\System\Inputs\User\UserRegisterInput;
 use Foundry\System\Services\UserService;
 
@@ -22,10 +23,12 @@ class AddUserRequest extends FormRequest implements ViewableFormRequestInterface
 	}
 
 	/**
-	 * @return string
+	 * @param $inputs
+	 *
+	 * @return \Foundry\Core\Inputs\Inputs|UserInput
 	 */
-	public static function getInputClass(): string {
-		return UserRegisterInput::class;
+	public function makeInput($inputs) {
+		return new UserInput($inputs);
 	}
 
 	/**
@@ -35,7 +38,7 @@ class AddUserRequest extends FormRequest implements ViewableFormRequestInterface
 	 */
 	public function authorize()
 	{
-		return true;
+		return !!($this->user());
 	}
 
 	/**
@@ -45,11 +48,7 @@ class AddUserRequest extends FormRequest implements ViewableFormRequestInterface
 	 */
 	public function handle() : Response
 	{
-		$response = $this->input->validate();
-		if ($response->isSuccess()) {
-			return UserService::service()->add($this->input);
-		}
-		return $response;
+		return UserService::service()->add($this->input);
 	}
 
 	/**

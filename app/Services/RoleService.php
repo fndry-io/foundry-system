@@ -26,9 +26,9 @@ class RoleService extends BaseService {
 	 */
 	public function add(RoleInput $input) : Response
 	{
-		$user = new Role($input->inputs());
-		$this->repository->save($user);
-		return Response::success($user);
+		$role = new Role($input->inputs());
+		$this->repository->save($role);
+		return Response::success($role);
 	}
 
 	/**

@@ -153,6 +153,9 @@ export default {
                 case 'tag':
                     type = 'tag';
                     break;
+                case 'hidden':
+                    type = 'hidden';
+                    break;
                 case 'date':
                 case "datetime":
                     type = 'date';

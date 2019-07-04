@@ -11,6 +11,9 @@ Validator.extend('nullable', {
 
 });
 
+Validator.extend('exists', () => true);
+Validator.extend('unique', () => true);
+
 Validator.extend('in', {
     getMessage: field => 'The ' + field + ' value is not in the allowed values.',
     validate: (value, args) => {

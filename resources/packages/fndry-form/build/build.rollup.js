@@ -17,14 +17,14 @@ var banner =
   ' */\n'
 
 rollup.rollup({
-    entry: path.resolve(__dirname, '..', 'src/fndry-form.js'),
+    entry: path.resolve(__dirname, '..', 'src/index.js'),
     plugins: [
       babel(),
       uglify()
     ]
 })
 .then(bundle => {
-    return write(path.resolve(__dirname, '../dist/fndry-form.js'), bundle.generate({
+    return write(path.resolve(__dirname, '../dist/index.js'), bundle.generate({
         format: 'umd',
         moduleName: 'fndryForm'
     }).code)

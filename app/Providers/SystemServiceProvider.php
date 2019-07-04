@@ -3,6 +3,7 @@
 namespace Foundry\System\Providers;
 
 use Foundry\Core\Requests\FormRequestHandler;
+use Foundry\Core\Support\ServiceProvider;
 use Foundry\System\Console\Commands\UsersRegisterCommand;
 use Foundry\System\Entities\Role;
 use Foundry\System\Entities\User;
@@ -14,7 +15,7 @@ use Illuminate\Foundation\Console\SymLinkCommand;
 use Illuminate\Foundation\Console\ThemeLinkCommand;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\ServiceProvider;
+
 
 class SystemServiceProvider extends ServiceProvider
 {
@@ -88,8 +89,8 @@ class SystemServiceProvider extends ServiceProvider
 		$this->registerFactories();
 		$this->registerCommands();
 		$this->loadMigrationsFrom(base_path('foundry/system/database/migrations'));
+		$this->mergeDoctrinePaths(base_path('foundry/system/config/mappings'));
 		$this->registerGates();
-
 	}
 
 
@@ -103,7 +104,6 @@ class SystemServiceProvider extends ServiceProvider
 //		$this->publishes([
 //			base_path('foundry/system/config/config.php') => config_path('foundry_system.php'),
 //		], 'config');
-
 
 	}
 

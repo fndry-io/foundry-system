@@ -1,9 +1,9 @@
 <template>
-    <component :is="button ? `b-button` : `b-link`" :variant="variant" :size="size" @click.prevent="onClick">
+    <component :is="tag" :variant="variant" :size="size" @click.prevent="onClick">
         <slot>
             <span v-if="buttonIcon" :class="buttonIcon" aria-hidden="true"></span>
             <span v-if="buttonText"><span v-if="buttonIcon">&nbsp;</span>{{buttonText}}</span>
-            <b-spinner v-if="submitting" small label="Loading" type="grow" style="margin-left: 15px"></b-spinner>
+            <b-spinner v-if="submitting" small label="Loading" type="grow" style="margin-left: 10px"></b-spinner>
         </slot>
     </component>
 </template>
@@ -20,6 +20,12 @@
                 type: Object,
                 default() {
                     return {}
+                }
+            },
+            tag: {
+                type: String,
+                default(){
+                    return 'b-button'
                 }
             },
             method: {

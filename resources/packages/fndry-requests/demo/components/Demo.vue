@@ -9,7 +9,7 @@
 
                 <div v-if="!loading">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Request</h5>
@@ -55,24 +55,40 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="entity">Entity</label>
-                                        <input id="entity" class="form-control" v-model="options.params._entity">
+                                    <div class="mt-5 mb-5">
+                                        <div class="form-group">
+                                            <label>Parameters</label>
+                                            <div v-if="params">
+                                                <div v-for="(param, index) in params" :key="index">
+                                                    <div class="form-group">
+                                                        <div class="input-group">
+                                                            <input class="form-control" :name="`key${index}`" :value="params[index].key" @input="(e) => updateParamKey(e, index)" placeholder="name...">
+                                                            <input class="form-control" :name="`value${index}`" :value="params[index].value" @input="(e) => updateParamValue(e, index)" placeholder="value...">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-outline-secondary" type="button" @click="() => removeParam(index)">X</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div v-else>
+                                                None set
+                                            </div>
+                                        </div>
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-outline-primary" type="button" @click="addParam">Add Blank</button>
+                                            <button class="btn btn-outline-secondary" type="button" @click="addEntity">Add Entity</button>
+                                            <button class="btn btn-outline-danger" type="button" @click="clearParams">Reset</button>
+                                        </div>
+
                                     </div>
+
                                     <div>
-                                        <button @click="handleLoadRequest" class="btn btn-primary">View Request</button> &nbsp; <button @click="handleSubmitRequest" class="btn btn-primary">Submit Request</button>
-                                    </div>
-                                    <div v-if="request && type === 'target'">
-                                        <hr>
-                                        <div id="inlineFormTarget"></div>
-                                    </div>
-                                    <div v-if="request && type === 'inline' && inline">
-                                        <hr>
-                                        <fndry-request-form-inline :params="options.params" :title="true" :request="request" @success="onResponse" @fail="onResponse" @submitting="onSubmitting" :key="key"></fndry-request-form-inline>
+                                        <button @click="handleLoadRequest" class="btn btn-primary">Load Request</button> &nbsp; <button @click="handleSubmitRequest" class="btn btn-primary">Submit Request</button>
                                     </div>
                                 </div>
                             </div>
-                            &nbsp;
+
                             <div class="card" v-if="request && model">
                                 <div class="card-body" >
                                     <h5 class="card-title">Model Output</h5>
@@ -82,8 +98,29 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+
+                            <div v-if="request && type === 'target'">
+                                <div class="card">
+                                    <div class="card-body" >
+                                        <div id="inlineFormTarget"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div v-if="request && type === 'inline' && inline">
+                                <div class="card">
+                                    <div class="card-body" >
+                                        <fndry-request-form-inline :params="options.params" :title="true" :request="request" @success="onResponse" @fail="onResponse" @submitting="onSubmitting" :key="key"></fndry-request-form-inline>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-4">
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Response</h5>
@@ -112,7 +149,7 @@
 
     import VueJsonPretty from 'vue-json-pretty';
     import FndryRequestFormInline from '../../src/components/RequestFormInline';
-    import {merge} from 'lodash';
+    import {merge, uniqueId, forEach} from 'lodash';
 
     /**
      * Request Form Tester
@@ -141,6 +178,18 @@
                 inline: false,
                 key: 0,
 
+                defaults: {
+                    edit: {
+                        entity: {
+                            key: '_entity',
+                            value: ''
+                        }
+                    }
+                },
+                params: {
+
+                },
+
                 options: {
                     target: 'inlineFormTarget',
                     size: 'lg',
@@ -149,9 +198,7 @@
                         email: 'admin@domain.com',
                         guard: 'api'
                     },
-                    params: {
-                        _entity: ''
-                    }
+                    params: {}
                 }
             }
         },
@@ -204,6 +251,9 @@
 
             handleLoadRequest() {
                 this.key++;
+                this.options.params = this.getParams();
+                this.options = merge({}, this.options);
+
                 if (this.type === 'inline') {
                     this.inline = true;
                 } else {
@@ -218,13 +268,54 @@
             },
             handleSubmitRequest() {
                 this.onSubmitting({});
-                this.$fndryApiService.call(this.$fndryApiService.getViewUrl(this.request, merge({}, this.options.params)), 'POST', {})
+                let params = this.getParams();
+                this.$fndryApiService.call(this.$fndryApiService.getViewUrl(this.request, params), 'POST', {})
                     .then((res) => {
                         this.onResponse(res, {});
                     }).catch((res) => {
                         this.onResponse(res, {});
                     })
                 ;
+            },
+            updateParamKey(e, index){
+                if (this.params[index]) {
+                    this.params[index].key = e.target.value;
+                }
+            },
+            updateParamValue(e, index){
+                if (this.params[index]) {
+                    this.params[index].value = e.target.value;
+                }
+            },
+            addParam(){
+                let id = uniqueId();
+                this.params[id] = {
+                    key: '',
+                    value: ''
+                };
+                this.params = merge({}, this.params);
+            },
+            removeParam(index){
+                delete(this.params[index]);
+                this.params = merge({}, this.params);
+            },
+            clearParams(){
+                this.params = {};
+            },
+            getParams() {
+                let params = {};
+                forEach(this.params, function(item){
+                    params[item.key] = item.value;
+                });
+                return params
+            },
+            addEntity(){
+                this.params = merge({}, this.params, {
+                    entity: {
+                        key: '_entity',
+                        value: '',
+                    }
+                });
             }
         }
     }

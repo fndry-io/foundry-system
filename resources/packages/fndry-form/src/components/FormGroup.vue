@@ -8,6 +8,7 @@
                 :state="valid"
                 :required="fieldRequired(schema)"
                 :class="{'required': fieldRequired(schema)}"
+                v-if="schema.type !== 'hidden'"
         >
             <div class="field-wrap">
                 <component ref="name"
@@ -27,6 +28,14 @@
                 <span v-for="(error, index) in errors" :key="index">{{error}}</span>
             </b-form-invalid-feedback>
         </b-form-group>
+        <fndry-field-hidden
+                ref="name"
+                :id="schema.id"
+                :name="name"
+                v-model="value"
+                @input="onInput"
+                @change="onChange"
+        ></fndry-field-hidden>
     </ValidationProvider>
 </template>
 

@@ -3,7 +3,7 @@
   "description": "A form generator based on a given schema and that implements VeeValidation",
   "version": "0.0.1",
   "private": true,
-  "main": "src/fndry-form.js",
+  "main": "src/index.js",
   "files": [
     "dist/*.js",
     "src"

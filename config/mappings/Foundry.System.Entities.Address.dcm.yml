@@ -1,0 +1,50 @@
+# Address.dcm.yml
+Foundry\System\Entities\Address:
+  type: entity
+  repositoryClass: Foundry\System\Repositories\AddressRepository
+  table: addresses
+  indexes:
+    address_street_index:
+      columns: [ street ]
+    address_city_index:
+      columns: [ city ]
+    address_region_index:
+      columns: [ region ]
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    type:
+      type: string
+      length: 30
+      nullable: true
+    street:
+      type: string
+      length: 100
+      nullable: true
+    city:
+      type: string
+      length: 50
+      nullable: true
+    region:
+      type: string
+      length: 30
+      nullable: true
+    country:
+      type: string
+      length: 2
+      nullable: true
+    code:
+      type: string
+      length: 10
+      nullable: true
+    created_at:
+      type: datetime
+    updated_at:
+      type: datetime
+      nullable: true
+    deleted_at:
+      type: datetime
+      nullable: true

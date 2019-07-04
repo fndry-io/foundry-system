@@ -1,0 +1,67 @@
+# User.dcm.yml
+Foundry\System\Entities\User:
+  type: entity
+  repositoryClass: Foundry\System\Repositories\UserRepository
+  table: users
+  indexes:
+    users_first_name_index:
+      columns: [ first_name ]
+    users_last_name_index:
+      columns: [ last_name ]
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    uuid:
+      type: string
+      length: 36
+    email:
+      type: string
+      length: 255
+      unique: true
+    password:
+      type: string
+      length: 255
+    first_name:
+      type: string
+      length: 50
+    last_name:
+      type: string
+      length: 50
+    active:
+      type: boolean
+      options:
+        default: false
+    super_admin:
+      type: boolean
+      options:
+        default: false
+    timezone:
+      type: string
+      length: 255
+      nullable: true
+    last_login_at:
+      type: datetime
+      nullable: true
+    logged_in:
+      type: boolean
+      options:
+        default: false
+    api_token:
+      type: string
+      length: 80
+      nullable: true
+      unique: true
+    api_token_expires_at:
+      type: datetime
+      nullable: true
+    created_at:
+      type: datetime
+    updated_at:
+      type: datetime
+      nullable: true
+    deleted_at:
+      type: datetime
+      nullable: true

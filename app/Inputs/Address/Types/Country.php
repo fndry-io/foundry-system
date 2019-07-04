@@ -12,6 +12,9 @@ class Country extends ChoiceInputType implements Field, FieldOptions {
 
 	static $countries = array
 	(
+		'GB' => 'United Kingdom',
+		'US' => 'United States',
+
 		'AF' => 'Afghanistan',
 		'AX' => 'Aland Islands',
 		'AL' => 'Albania',
@@ -242,8 +245,6 @@ class Country extends ChoiceInputType implements Field, FieldOptions {
 		'UG' => 'Uganda',
 		'UA' => 'Ukraine',
 		'AE' => 'United Arab Emirates',
-		'GB' => 'United Kingdom',
-		'US' => 'United States',
 		'UM' => 'United States Outlying Islands',
 		'UY' => 'Uruguay',
 		'UZ' => 'Uzbekistan',
@@ -271,6 +272,7 @@ class Country extends ChoiceInputType implements Field, FieldOptions {
 			false,
 			static::options()
 		) )
+			->setDefault('US')
 			->setSortable( true );
 	}
 

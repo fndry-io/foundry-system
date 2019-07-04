@@ -7,17 +7,17 @@ use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Types\TelInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 
-class Telephone extends TelInputType implements Field {
+class Phone extends TelInputType implements Field {
 
 	/**
 	 * @param Entity|null $entity
 	 *
-	 * @return Inputable|Telephone
+	 * @return Inputable|Phone
 	 */
 	static function input( Entity &$entity = null ): Inputable {
 		return ( new static(
-			'telephone',
-			__( 'Telephone' ),
+			'phone',
+			__( 'Phone' ),
 			true
 		) )
 			->setMax( 10 );

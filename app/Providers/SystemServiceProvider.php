@@ -166,7 +166,7 @@ class SystemServiceProvider extends ServiceProvider
 		$this->commands([
 //			UsersRegisterCommand::class,
 //			ThemeLinkCommand::class,
-//			SymLinkCommand::class
+			SymLinkCommand::class
 		]);
 	}
 

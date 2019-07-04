@@ -3,8 +3,8 @@
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 
-import FndryServices from 'fndry-services';
-import FndryForm from 'fndry-form';
+import FndryServices from '../../fndry-services';
+import FndryForm from '../../fndry-form/src';
 
 require('./bootstrap/axios');
 

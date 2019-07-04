@@ -1,5 +1,5 @@
 import { ValidationObserver } from 'vee-validate';
-import FndryForm from 'fndry-form';
+import FndryForm from '../../../fndry-form/src';
 import {each, merge} from 'lodash';
 
 export default {

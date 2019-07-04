@@ -21,7 +21,7 @@
     import { extend } from 'lodash';
 
     import form from '../mixins/form';
-    import {FndryFormButtons} from 'fndry-form';
+    import {FndryFormButtons} from '../../../fndry-form/src';
 
     import styles from '../css/styles.css';
 

@@ -22,7 +22,7 @@
     import { extend } from 'lodash';
 
     import form from '../mixins/form';
-    import {FndryFormButtons} from 'fndry-form';
+    import {FndryFormButtons} from '../../../fndry-form/src';
 
     export default {
         name: "fndry-request-form-modal",

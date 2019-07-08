@@ -170,7 +170,7 @@ class UserService extends BaseService {
 		);
 
 		if ($response == Password::RESET_LINK_SENT){
-			return Response::success();
+			return Response::success([], __('Please check your email for reset instructions.'));
 		}
 		else{
 			$user = $this->repository->findOneBy(['email' => $input->email]);

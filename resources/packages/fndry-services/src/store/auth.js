@@ -31,24 +31,26 @@ const auth = {
     },
     actions: {
         login({commit}, data){
-            return new Promise((resolve, reject) => {
-                this._vm.$fndryApiService.handle('/api/auth/login', {}, data).then((response) => {
-                    commit('auth_success', response.data);
-                    localStorage.setItem('token', response.data.token);
-                    this._vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
-                    resolve(response);
-                });
-            })
+            return this._vm.$fndryApiService.handle('/api/auth/login', {}, data).then((response) => {
+                commit('auth_success', response.data);
+                localStorage.setItem('token', response.data.token);
+                this._vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
+                return response;
+            });
         },
         logout({commit}){
-            return new Promise((resolve, reject) => {
-                this._vm.$fndryApiService.handle('/api/auth/logout', {}, {guard: 'api'}).then((response) => {
-                    commit('auth_reset');
-                    localStorage.removeItem('token');
-                    delete this._vm.$http.defaults.headers.common['Authorization'];
-                    resolve(response);
-                });
-            })
+            return this._vm.$fndryApiService.handle('/api/auth/logout', {}, {guard: 'api'}).then((response) => {
+                commit('auth_reset');
+                localStorage.removeItem('token');
+                delete this._vm.$http.defaults.headers.common['Authorization'];
+                return response;
+            });
+        },
+        forgotPassword({commit}, data){
+            return this._vm.$fndryApiService.handle('/api/auth/forgot', {}, data);
+        },
+        resetPassword({commit}, data){
+            return this._vm.$fndryApiService.handle('/api/auth/reset', {}, data);
         }
     }
 };

@@ -16,6 +16,10 @@ FormRequestHandler::route('/auth/forgot',               'Foundry\System\Http\Req
 FormRequestHandler::route('/auth/reset',                'Foundry\System\Http\Requests\Auth\ResetPasswordRequest');
 FormRequestHandler::route('/auth/register',             'Foundry\System\Http\Requests\Users\RegisterUserRequest');
 
+Route::middleware('auth:api')->group( function () {
+	//auth user
+	FormRequestHandler::route( '/auth/edit', 'Foundry\System\Http\Requests\Auth\EditUserRequest' );
+});
 
 Route::prefix('system')->middleware('auth:api')->group( function () {
 

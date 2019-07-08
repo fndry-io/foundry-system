@@ -1,6 +1,6 @@
 <?php
 
-namespace Foundry\System\Http\Requests\Users;
+namespace Foundry\System\Http\Requests\Auth;
 
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
@@ -19,7 +19,7 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 	use HasInput;
 
 	public static function name(): String {
-		return 'foundry.system.users.edit';
+		return 'foundry.system.auth.edit';
 	}
 
 	/**
@@ -73,17 +73,15 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 
 		$form->setTitle(__('Edit User'));
 		$form->setButtons((new SubmitButtonType(__('Save'), $form->getAction())));
-		$form->addChildren(
+		$form->addChildren((new SectionType(__('Details')))->addChildren(
 			RowType::withChildren($form->get('first_name'), $form->get('last_name')),
 			RowType::withChildren($form->get('email'))
+		));
+		$form->addChildren(
+			(new SectionType(__('Password'), __('If you need to change the password set the values below or leave them blank to leave the password as is.')))->addChildren(
+				RowType::withChildren($form->get('password')->setValue(null), $form->get('password_confirmation')->setValue(null))
+			)
 		);
-		//if (auth_user()->id === $this->entity->getId() || (auth_user()->isAdmin() && !auth_user()->isSuperAdmin())) {
-			$form->addChildren(
-				(new SectionType(__('Password'), __('If you need to change the password for this user set the values below or leave them blank to leave the password as is.')))->addChildren(
-					RowType::withChildren($form->get('password')->setValue(null), $form->get('password_confirmation')->setValue(null))
-				)
-			);
-		//}
 		return $form;
 	}
 }

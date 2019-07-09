@@ -109,11 +109,12 @@ class UserService extends BaseService {
 	}
 
 	/**
-	 * @param Guard $guard
+	 * @param Guard $guard The guard which contains the user to return
+	 * @param Boolean $setToken Generate or Refresh the token assigned to the user
 	 *
 	 * @return Response
 	 */
-	public function returnGuardUser(Guard $guard = null) : Response
+	public function returnGuardUser(Guard $guard = null, $setToken = true) : Response
 	{
 		/**
 		 * @var $user User
@@ -127,11 +128,16 @@ class UserService extends BaseService {
 		];
 
 		if ($guard instanceof TokenGuard && $user instanceof ApiTokenInterface) {
-			$token = Str::random(60);
 
-			//todo update to ensure the user token expires and the token guard loads it correctly
-			$user->setApiToken($token);
-			$user->setApiTokenExpiresAt(Carbon::now()->addDays(3));
+			if ($setToken) {
+				$token = Str::random(60);
+
+				//todo update to ensure the user token expires and the token guard loads it correctly
+				$user->setApiToken($token);
+				$user->setApiTokenExpiresAt(Carbon::now()->addDays(3));
+			} else {
+				$token = $user->api_token;
+			}
 			$data['token'] = $token;
 		}
 

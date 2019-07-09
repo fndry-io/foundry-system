@@ -19,6 +19,7 @@ FormRequestHandler::route('/auth/register',             'Foundry\System\Http\Req
 Route::middleware('auth:api')->group( function () {
 	//auth user
 	FormRequestHandler::route( '/auth/edit', 'Foundry\System\Http\Requests\Auth\EditUserRequest' );
+	FormRequestHandler::route( '/auth/user', 'Foundry\System\Http\Requests\Auth\ReadUserRequest' );
 });
 
 Route::prefix('system')->middleware('auth:api')->group( function () {

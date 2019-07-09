@@ -38,6 +38,14 @@ const auth = {
                 return response;
             });
         },
+        user({commit}, data){
+            return this._vm.$fndryApiService.handle('/api/auth/user', {}, data).then((response) => {
+                commit('auth_success', response.data);
+                localStorage.setItem('token', response.data.token);
+                this._vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
+                return response;
+            });
+        },
         logout({commit}){
             return this._vm.$fndryApiService.handle('/api/auth/logout', {}, {guard: 'api'}).then((response) => {
                 commit('auth_reset');

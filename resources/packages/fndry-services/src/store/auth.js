@@ -39,7 +39,7 @@ const auth = {
             });
         },
         user({commit}, data){
-            return this._vm.$fndryApiService.handle('/api/auth/user', {}, data).then((response) => {
+            return this._vm.$fndryApiService.call('/api/auth/user', 'GET', {}).then((response) => {
                 commit('auth_success', response.data);
                 localStorage.setItem('token', response.data.token);
                 this._vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;

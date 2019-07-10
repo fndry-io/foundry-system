@@ -71,8 +71,8 @@
                     if (this.dirty) {
                         bvModalEvt.preventDefault();
                         this.$bvModal.msgBoxConfirm('Looks like you made some changes, are you sure you want to cancel? Any changes would be lost.', {
-                            okTitle: 'Close',
-                            cancelTitle: 'Continue',
+                            okTitle: 'Discard',
+                            cancelTitle: 'Keep',
                         }).then((value) => {
                             if (value === true) {
                                 this.allowClose = true;

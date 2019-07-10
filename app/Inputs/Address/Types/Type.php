@@ -22,6 +22,7 @@ class Type extends ChoiceInputType implements Field, FieldOptions {
 			false,
 			static::options()
 		) )
+			->setDefault('head')
 			->setSortable( true );
 	}
 

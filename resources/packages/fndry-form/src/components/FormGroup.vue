@@ -110,7 +110,7 @@
 
 
 <style>
-    .form-group.required label::after {
+    .form-group.required > label::after {
         display: inline;
         content: ' *';
         color: #dc3545;

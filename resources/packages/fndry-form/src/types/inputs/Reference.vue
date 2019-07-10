@@ -29,21 +29,21 @@
                 ></b-form-input>
                 <div class="input-group-append">
                     <b-dropdown id="dropdown-right" right variant="primary">
-                        <b-dropdown-text v-for="(button, index) in schema.buttons" :key="index" v-if="canDisplayButton(button)">
-                            <fndry-request-button
-                                    :request="button.action"
-                                    :params="{_entity: model}"
-                                    :button="false"
-                                    :variant="button.variant ? button.variant : ``"
-                                    :size="button.size ? button.size : `size`"
-                                    type="modal"
-                                    :button-icon="button.icon"
-                                    :button-text="button.label"
-                                    @success="onRequestButtonSuccess"
-                                    class="d-block"
-                            ></fndry-request-button>
-                        </b-dropdown-text>
-                        <b-dropdown-text v-if="model"><b-link class="text-danger d-block" @click="unset">Unset</b-link></b-dropdown-text>
+                        <fndry-request-button
+                                v-for="(button, index) in schema.buttons"
+                                :key="index"
+                                v-if="canDisplayButton(button)"
+                                tag="b-dropdown-item"
+                                :request="button.action"
+                                :params="{_entity: model}"
+                                :variant="button.variant ? button.variant : ``"
+                                :size="button.size ? button.size : `size`"
+                                type="modal"
+                                :button-icon="button.icon"
+                                :button-text="button.label"
+                                @success="onRequestButtonSuccess"
+                        ></fndry-request-button>
+                        <b-dropdown-item v-if="model" @click="unset">Unset</b-dropdown-item>
                     </b-dropdown>
                 </div>
             </div>

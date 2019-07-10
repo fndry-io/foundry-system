@@ -17,7 +17,7 @@ class Region extends TextInputType implements Field {
 	static function input( Entity &$entity = null ): Inputable {
 		return ( new static(
 			'region',
-			__( 'Region' ),
+			__( 'Region / State' ),
 			false
 		) )
 			->setMax( 50 )

@@ -19,7 +19,7 @@ class UpdatedAt extends DateTimeInputType implements Field
         return (new static(
             'updated_at',
             __('Updated At'),
-            true
+	        false
         ))
             ->setSortable(true);
     }

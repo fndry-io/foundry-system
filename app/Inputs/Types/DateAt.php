@@ -7,19 +7,19 @@ use Foundry\Core\Inputs\Types\Contracts\Inputable;
 use Foundry\Core\Inputs\Types\DateTimeInputType;
 use Foundry\Core\Entities\Entity;
 
-class DeletedAt extends DateTimeInputType implements Field
+class DateAt extends DateTimeInputType implements Field
 {
 	/**
 	 * @param Entity|null $entity
 	 *
-	 * @return Inputable|DeletedAt
+	 * @return Inputable|DateAt
 	 */
     static function input( Entity &$entity = null ): Inputable
     {
         return (new static(
-            'deleted_at',
-            __('Deleted At'),
-	        false
+            'date_at',
+            __('Date At'),
+            false
         ))
             ->setSortable(true);
     }

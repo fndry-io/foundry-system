@@ -28,23 +28,20 @@
                         @focus="onFocus"
                 ></b-form-input>
                 <div class="input-group-append">
-                    <b-dropdown id="dropdown-right" right variant="primary">
-                        <fndry-request-button
-                                v-for="(button, index) in schema.buttons"
-                                :key="index"
-                                v-if="canDisplayButton(button.type)"
-                                tag="b-dropdown-item"
-                                :request="button.action"
-                                :params="{_entity: model}"
-                                :variant="button.variant ? button.variant : ``"
-                                :size="button.size ? button.size : `size`"
-                                type="modal"
-                                :button-icon="button.icon"
-                                :button-text="button.label"
-                                @success="onRequestButtonSuccess"
-                        ></fndry-request-button>
-                        <b-dropdown-item v-if="canDisplayButton('unset')" @click="unset">Unset</b-dropdown-item>
-                    </b-dropdown>
+                    <fndry-request-button
+                            v-for="(button, index) in schema.buttons"
+                            :key="index"
+                            v-if="canDisplayButton(button.type)"
+                            :request="button.action"
+                            :params="{_entity: model}"
+                            :variant="button.variant ? button.variant : ``"
+                            :size="button.size ? button.size : `size`"
+                            type="modal"
+                            :button-icon="button.icon"
+                            :button-text="button.label"
+                            @success="onRequestButtonSuccess"
+                    ></fndry-request-button>
+                    <b-button v-if="canDisplayButton('unset')" @click="unset">Unset</b-button>
                 </div>
             </div>
             <small class="form-text" v-if="search && search.length < 3">
@@ -220,12 +217,14 @@
             },
             canDisplayButton(type) {
 
+                console.log(this.model);
+
                 switch (type) {
+                    case 'add':
+                        return isNull(this.model) || this.model === undefined;
                     case 'edit':
                     case 'unset':
-                        return !isNull(this.model);
-                    case 'add':
-                        return isNull(this.model);
+                        return !isNull(this.model) && this.model !== undefined;
                     default:
                         return true;
                 }

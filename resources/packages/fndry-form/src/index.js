@@ -27,6 +27,15 @@ Validator.extend('in', {
     }
 });
 
+Validator.extend('numeric', {
+    getMessage: field => 'The ' + field + ' value must be a valid number.',
+    validate: (value, args) => {
+        let regex = new RegExp('^([0-9\.]+)$');
+        return regex.test(value);
+    }
+});
+
+
 export {
     FndryFormSchema,
     FndryFormGroup,

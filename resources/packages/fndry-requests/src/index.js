@@ -1,4 +1,4 @@
-import {makeRequestForm, makeRequestConfirm} from './utils/instanceMethods';
+import {makeRequestForm, makeRequestConfirm, makeRequestPanel} from './utils/instanceMethods';
 import RequestButton from './components/RequestButton';
 import RequestFormInline from './components/RequestFormInline';
 
@@ -26,6 +26,11 @@ Plugin.install = function (Vue, options) {
      * @see confirmModal
      */
     Vue.prototype.$fndryRequestConfirm = makeRequestConfirm(Vue);
+
+    /**
+     * @see requestForm
+     */
+    Vue.prototype.$fndryRequestPanel = makeRequestPanel(Vue);
 
 };
 

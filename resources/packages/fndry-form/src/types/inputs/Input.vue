@@ -12,6 +12,7 @@
                       :required="schema.required"
                       v-on="$listeners"
                       :state="state"
+                      :step="schema.step"
         ></b-form-input>
     </div>
 </template>

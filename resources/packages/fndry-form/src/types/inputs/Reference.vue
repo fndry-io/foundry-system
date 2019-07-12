@@ -32,7 +32,7 @@
                         <fndry-request-button
                                 v-for="(button, index) in schema.buttons"
                                 :key="index"
-                                v-if="canDisplayButton(button)"
+                                v-if="canDisplayButton(button.type)"
                                 tag="b-dropdown-item"
                                 :request="button.action"
                                 :params="{_entity: model}"
@@ -43,7 +43,7 @@
                                 :button-text="button.label"
                                 @success="onRequestButtonSuccess"
                         ></fndry-request-button>
-                        <b-dropdown-item v-if="model" @click="unset">Unset</b-dropdown-item>
+                        <b-dropdown-item v-if="canDisplayButton('unset')" @click="unset">Unset</b-dropdown-item>
                     </b-dropdown>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                 <li
                         v-for="(result, i) in results"
                         :key="i"
-                        @click.prevent="setResult(i)"
+                        @click.prevent="setResult(result)"
                 >
                     {{ extractItem(result).text }}
                 </li>
@@ -73,7 +73,7 @@
 <script>
 
     import abstractInput from '../abstractInput';
-    import {debounce, isEmpty, isString, isObject, forEach, extend} from 'lodash';
+    import {debounce, isEmpty, isNull, isString, isObject, forEach, extend} from 'lodash';
 
     export default {
         name: 'reference-input',
@@ -96,9 +96,15 @@
                 model: null,
                 isAsync: this.schema.url,
                 options: this.schema.url? []: this.items,
-                loading: false,
-
+                loading: false
             };
+        },
+        created() {
+            let result = this.extractItem(this.reference);
+
+            this.search = result.text;
+            this.label = result.text;
+            this.model = result.value;
         },
         methods: {
             isEmpty(object){
@@ -165,16 +171,21 @@
                     return item[key];
                 }
             },
-            setResult(index) {
-                this.reference = extend({},  this.results[index]);
+            setResult(data) {
+                if (data === null) {
+                    this.reference = null;
+                    this.search = '';
+                    this.label = '';
+                    this.model = null;
+                } else {
+                    this.reference = extend({},  data);
 
-                let result = this.extractItem(this.reference);
+                    let result = this.extractItem(this.reference);
 
-                console.log(this.reference, result);
-
-                this.search = result.text;
-                this.label = result.text;
-                this.model = result.value;
+                    this.search = result.text;
+                    this.label = result.text;
+                    this.model = result.value;
+                }
 
                 this.$emit('input', this.model);
                 this.open = false;
@@ -193,32 +204,32 @@
             onFocus() {
                 this.$emit('focus');
             },
-            onRequestButtonSuccess({response, model}) {
-
+            onRequestButtonSuccess({response}) {
                 this.setResult(response.data);
             },
             unset(){
                 this.$bvModal.msgBoxConfirm('Are you sure you want to unset the value of this field?')
                     .then((answer) => {
                         if (answer === true) {
-                            this.setResult({value: null, text: ''});
+                            this.setResult(null);
                         }
                     })
                     .catch(err => {
                         // An error occurred
                     })
             },
-            canDisplayButton(button) {
-                switch(button.type) {
-                    case 'add':
-                        return true;
+            canDisplayButton(type) {
+
+                switch (type) {
                     case 'edit':
-                        return !!(this.model);
+                    case 'unset':
+                        return !isNull(this.model);
+                    case 'add':
+                        return isNull(this.model);
+                    default:
+                        return true;
                 }
-                return false;
             }
-        },
-        watch: {
         },
         mounted() {
 

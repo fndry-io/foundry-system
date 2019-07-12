@@ -28,4 +28,11 @@ export default {
             model: this.value
         }
     },
+    methods: {
+        getStep(){
+            if (this.schema.type === 'number') {
+                console.log(this.schema);
+            }
+        }
+    }
 }

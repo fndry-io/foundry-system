@@ -50,7 +50,7 @@
             size: {
                 type: String,
                 default() {
-                    return 'lg'
+                    return ''
                 }
             },
             variant: {

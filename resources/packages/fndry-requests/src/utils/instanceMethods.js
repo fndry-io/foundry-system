@@ -1,8 +1,10 @@
 import RequestFormModal from '../components/RequestFormModal';
 import RequestFormConfirmModal from '../components/RequestFormConfirmModal';
 import RequestFormInline from '../components/RequestFormInline';
+import RequestPanel from '../components/RequestPanel';
 
 let FormModal;
+let PanelModal;
 let FormInline;
 let ConfirmModal;
 
@@ -15,6 +17,39 @@ export const makeRequestForm = (Vue) => {
 export const makeRequestConfirm = (Vue) => {
     ConfirmModal = Vue.extend(RequestFormConfirmModal);
     return confirmModal;
+};
+
+export const makeRequestPanel = (Vue) => {
+    PanelModal = Vue.extend(RequestPanel);
+    return requestPanel;
+};
+
+
+export const requestPanel = (title, panel, {request, params, method}, panelProps) => {
+
+    let modal, vNode;
+
+    modal = new PanelModal({
+        propsData: {
+            title,
+            panel,
+            request, params, method,
+            panelProps
+        }
+    });
+
+    vNode = modal.$mount();
+
+    const remove = () => {
+        vNode.$el.remove();
+        modal.$destroy();
+    };
+
+    modal.$on('close', (response, model) => {
+        remove();
+    });
+
+    return modal;
 };
 
 /**
@@ -200,3 +235,4 @@ export const confirmModal = (request, {
     });
 
 };
+

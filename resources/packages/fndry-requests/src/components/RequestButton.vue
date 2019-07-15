@@ -22,6 +22,12 @@
                     return {}
                 }
             },
+            data: {
+                type: Object,
+                default() {
+                    return {}
+                }
+            },
             tag: {
                 type: String,
                 default(){

@@ -1,6 +1,6 @@
 <?php
 
-namespace Foundry\System\Entities\Traits;
+namespace Foundry\System\Entities\Contracts;
 
 interface HasIdentity {
 

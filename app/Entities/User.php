@@ -67,7 +67,8 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 		'last_login_at',
 		'created_at',
 		'updated_at',
-		'deleted_at'
+		'deleted_at',
+		'username'
 	];
 
 	protected $id;
@@ -292,6 +293,11 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	{
 		//todo correct this to the permissions
 		return true;
+	}
+
+	public function getUsername()
+	{
+		return $this->first_name . " " . $this->last_name;
 	}
 
 }

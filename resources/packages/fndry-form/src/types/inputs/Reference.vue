@@ -138,7 +138,6 @@
                         }
                     }, (res) => {
                         //todo show error
-                       //console.log(res);
                     })
                     .finally(() => {
                         this.loading = false;
@@ -216,9 +215,6 @@
                     })
             },
             canDisplayButton(type) {
-
-                console.log(this.model);
-
                 switch (type) {
                     case 'add':
                         return isNull(this.model) || this.model === undefined;
@@ -231,8 +227,6 @@
             }
         },
         mounted() {
-
-            //console.log(this.schema);
             if (this.reference) {
                 let result = this.extractItem(this.reference);
                 this.search = result.text;

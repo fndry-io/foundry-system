@@ -1,6 +1,7 @@
 import {makeRequestForm, makeRequestConfirm, makeRequestPanel} from './utils/instanceMethods';
 import RequestButton from './components/RequestButton';
 import RequestFormInline from './components/RequestFormInline';
+import RequestForm from './components/RequestForm';
 
 /**
  * FndryRequests
@@ -43,7 +44,8 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 export {
     RequestFormInline as FndryRequestFormInline,
-    RequestButton as FndryRequestButton
+    RequestButton as FndryRequestButton,
+    RequestForm as FndryRequestForm
 }
 
 export default Plugin

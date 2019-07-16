@@ -3,7 +3,7 @@
         <div v-if="loading" class="text-center">
             <b-spinner label="Loading..."></b-spinner>
         </div>
-        <div v-else-if="response.data">
+        <div v-else-if="!request || response.data">
             <component :is="panel" :data="response.data" :panel="panelProps" @update="onUpdate"></component>
         </div>
     </b-modal>
@@ -53,6 +53,8 @@
         created(){
             if(this.request) {
                 this.getData();
+            } else {
+                this.loading = false;
             }
         },
         methods: {

@@ -119,20 +119,20 @@
                     case 'modal':
                         $request = this.$fndryRequestForm(this.request, 'modal', merge({},
                             this.modalOptions,
-                            {params: this.params}
+                            {params: this.params, data: this.data}
                         ));
                         break;
                     case 'action':
                         $request = this.$fndryApiService.call(
                             this.$fndryApiService.getHandleUrl(this.request, this.params),
                             this.method,
-                            this.data)
-                        ;
+                            this.data
+                        );
                         break;
                     case 'confirm':
                         $request = this.$fndryRequestConfirm(this.request, merge({},
                             this.confirmOptions,
-                            {params: this.params}
+                            {params: this.params, data: this.data}
                         ));
                         break;
                 }

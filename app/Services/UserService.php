@@ -77,6 +77,15 @@ class UserService extends BaseService {
 		return Response::error(__("Permission denied, wrong password and username combination"), 401);
 	}
 
+	/**
+	 * Log the user out of the given guard
+	 *
+	 * If no guard is supplied, it will use the system default
+	 *
+	 * @param null $guard
+	 *
+	 * @return Response
+	 */
 	public function logout($guard = null)
 	{
 		$guard = Auth::guard($guard);
@@ -88,7 +97,7 @@ class UserService extends BaseService {
 				 * @var User $user
 				 */
 				$user = $guard->user();
-				$user->setApiToken(null);
+				$guard->clearToken($user);
 				$this->repository->save($user);
 			}
 

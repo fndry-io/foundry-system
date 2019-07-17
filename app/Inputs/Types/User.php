@@ -29,7 +29,7 @@ class User extends ReferenceInputType implements Field {
 			])
 			->setSortable(false)
 			->setOptions([])
-			->setTextKey(['last_name', 'first_name'], ', ')
+			->setTextKey(['display_name', 'username'], ', ')
 			->setValueKey('id')
 		;
 

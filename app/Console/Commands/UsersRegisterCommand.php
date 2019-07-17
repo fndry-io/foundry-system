@@ -16,8 +16,8 @@ class UsersRegisterCommand extends Command
      * @var string
      */
     protected $signature = 'foundry:system:register-user
-        {first_name : The users first name}
-        {last_name : The users last name} 
+        {username : The users first name}
+        {display_name : The users last name} 
         {email : The email address of the user to create}
     ';
 
@@ -75,10 +75,10 @@ class UsersRegisterCommand extends Command
 		    $response = $this->service->register($entity);
 		    if ($response->isSuccess()) {
 			    $user = $response->getData();
-			    $user = $user->only(['id', 'first_name', 'last_name', 'email', 'super_admin']);
+			    $user = $user->only(['id', 'username', 'display_name', 'email', 'super_admin']);
 			    $user['password'] = $password;
 			    $this->info('User registered');
-			    $this->table(['ID', 'First Name', 'Last Name', 'Email', 'Super Admin', 'Password'], [$user]);
+			    $this->table(['ID', 'Username', 'Display Name', 'Email', 'Super Admin', 'Password'], [$user]);
 			    return;
 		    }
 	    }

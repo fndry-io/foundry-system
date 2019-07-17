@@ -45,8 +45,8 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	 * @var array The fillable values
 	 */
 	protected $fillable = [
-		'first_name',
-		'last_name',
+		'username',
+		'display_name',
 		'email'
 	];
 
@@ -59,8 +59,8 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	protected $visible = [
 		'id',
 		'uuid',
-		'first_name',
-		'last_name',
+		'username',
+		'display_name',
 		'email',
 		'active',
 		'super_admin',
@@ -76,9 +76,9 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 
 	protected $password;
 
-	protected $first_name;
+	protected $username;
 
-	protected $last_name;
+	protected $display_name;
 
 	protected $active = false;
 
@@ -157,29 +157,29 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	/**
 	 * @return string
 	 */
-	public function getFirstName(): string {
-		return $this->first_name;
+	public function getUsername(): string {
+		return $this->username;
 	}
 
 	/**
-	 * @param string $first_name
+	 * @param string $username
 	 */
-	public function setFirstName( string $first_name ): void {
-		$this->first_name = $first_name;
+	public function setUsername( string $username ): void {
+		$this->username = $username;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getLastName(): string {
-		return $this->last_name;
+	public function getDisplayName(): string {
+		return $this->display_name;
 	}
 
 	/**
-	 * @param string $last_name
+	 * @param string $display_name
 	 */
-	public function setLastName( string $last_name ): void {
-		$this->last_name = $last_name;
+	public function setDisplayName( string $display_name ): void {
+		$this->display_name = $display_name;
 	}
 
 	/**
@@ -238,23 +238,11 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 		$this->timezone = $timezone;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getFullName()
-	{
-		return $this->first_name . ' ' . $this->last_name;
-	}
 
 	public function can($ability)
 	{
 		//todo correct this to the permissions
 		return true;
-	}
-
-	public function getUsername()
-	{
-		return $this->first_name . " " . $this->last_name;
 	}
 
 }

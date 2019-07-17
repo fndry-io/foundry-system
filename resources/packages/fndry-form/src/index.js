@@ -36,6 +36,16 @@ Validator.extend('numeric', {
 });
 
 
+Validator.extend('username', {
+    getMessage: field => 'The ' + field + ' value must only contain alpha numeric characters, numbers or _.',
+    validate: (value, args) => {
+        let regex = new RegExp('^[A-Za-z0-9_]+$');
+        return regex.test(value);
+    }
+});
+
+
+
 export {
     FndryFormSchema,
     FndryFormGroup,

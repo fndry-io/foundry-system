@@ -54,8 +54,8 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
 	    $result = UserService::service()->browse(function(QueryBuilder $qb) {
 
 	        return $qb
-			    ->addSelect('u.id', 'u.uuid', 'u.first_name', 'u.last_name', 'u.email')
-			    ->orderBy('u.first_name', 'ASC');
+			    ->addSelect('u.id', 'u.uuid', 'u.username', 'u.display_name', 'u.email')
+			    ->orderBy('u.display_name', 'ASC');
 
 	    }, $this->input('page', 1), $this->input('limit', 20) );
 

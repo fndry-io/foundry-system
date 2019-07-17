@@ -4,6 +4,7 @@ namespace Foundry\System\Http\Requests\Users;
 
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
+use Foundry\Core\Inputs\Types\SectionType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
@@ -62,10 +63,15 @@ class RegisterUserRequest extends FormRequest implements ViewableFormRequestInte
 		$form->setTitle(__('Create And Account'));
 		$form->setButtons((new SubmitButtonType(__('Register'), $form->getAction())));
 		$form->addChildren(
-			RowType::withChildren($form->get('first_name'), $form->get('last_name')),
-			RowType::withChildren($form->get('email')),
-			RowType::withChildren($form->get('password')),
-			RowType::withChildren($form->get('password_confirmation'))
+			(new SectionType(__('Details')))->addChildren(
+				RowType::withChildren($form->get('username'), $form->get('display_name')),
+				RowType::withChildren($form->get('email'))
+			)
+		);
+		$form->addChildren(
+			(new SectionType(__('Password')))->addChildren(
+				RowType::withChildren($form->get('password'), $form->get('password_confirmation'))
+			)
 		);
 		return $form;
 	}

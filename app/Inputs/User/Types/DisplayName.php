@@ -9,19 +9,20 @@ use Foundry\Core\Inputs\Types\TextInputType;
 use Foundry\Core\Inputs\Types\InputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 
-class LastName extends TextInputType implements Field {
+class DisplayName extends TextInputType implements Field {
 
 	/**
 	 * @param Entity|null $entity
 	 *
-	 * @return Inputable|LastName
+	 * @return Inputable|DisplayName
 	 */
 	static function input( Entity &$entity = null ): Inputable {
 		return ( new static(
-			'last_name',
-			__( 'Last Name' ),
+			'display_name',
+			__( 'Display Name' ),
 			true
 		) )
+			->setHelp(__('A unique name that is displayed to other users in the system. This will typically be your First and Last name.'))
 			->setMax( 100 )
 			->setSortable( true );
 	}

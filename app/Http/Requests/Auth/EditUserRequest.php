@@ -74,7 +74,7 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 		$form->setTitle(__('Edit User'));
 		$form->setButtons((new SubmitButtonType(__('Save'), $form->getAction())));
 		$form->addChildren((new SectionType(__('Details')))->addChildren(
-			RowType::withChildren($form->get('first_name'), $form->get('last_name')),
+			RowType::withChildren($form->get('username'), $form->get('display_name')),
 			RowType::withChildren($form->get('email'))
 		));
 		$form->addChildren(

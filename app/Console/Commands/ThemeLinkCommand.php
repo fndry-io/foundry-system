@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Foundation\Console;
+namespace Foundry\System\Console\Commands;
 
 use Illuminate\Console\Command;
 

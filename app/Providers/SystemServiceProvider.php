@@ -4,17 +4,15 @@ namespace Foundry\System\Providers;
 
 use Foundry\Core\Requests\FormRequestHandler;
 use Foundry\Core\Support\ServiceProvider;
-use Foundry\System\Console\Commands\UsersRegisterCommand;
 use Foundry\System\Entities\Role;
 use Foundry\System\Entities\User;
 use Foundry\System\Repositories\RoleRepository;
 use Foundry\System\Repositories\UserRepository;
 use Foundry\System\Services\RoleService;
 use Foundry\System\Services\UserService;
-use Illuminate\Foundation\Console\SymLinkCommand;
-use Illuminate\Foundation\Console\ThemeLinkCommand;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 
 
 class SystemServiceProvider extends ServiceProvider
@@ -91,6 +89,10 @@ class SystemServiceProvider extends ServiceProvider
 		$this->loadMigrationsFrom(base_path('foundry/system/database/migrations'));
 		$this->mergeDoctrinePaths(base_path('foundry/system/config/mappings'));
 		$this->registerGates();
+
+		Validator::extend('username', function ($attribute, $value, $parameters, $validator) {
+			return preg_match('/^[A-Za-z0-9_]+$/', $value);
+		});
 	}
 
 
@@ -166,7 +168,7 @@ class SystemServiceProvider extends ServiceProvider
 		$this->commands([
 //			UsersRegisterCommand::class,
 //			ThemeLinkCommand::class,
-			SymLinkCommand::class
+//			SymLinkCommand::class
 		]);
 	}
 

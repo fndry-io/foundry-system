@@ -118,7 +118,7 @@ class UserService extends BaseService {
 		$user->last_login_at = new Carbon();
 
 		$data = [
-			'user' => $user->only(['id', 'uuid', 'first_name', 'last_name', 'email'])
+			'user' => $user->only(['id', 'uuid', 'username', 'display_name', 'email'])
 		];
 
 		if ($guard instanceof TokenGuard && $user instanceof HasApiToken) {

@@ -24,14 +24,15 @@ class UserRepository extends EntityRepository {
 	public function getLabelList($name, $limit = 20) {
 
 		$qb = $this->query();
-		$qb->select('u.id', 'u.first_name, u.last_name');
+		$qb->select('u.id', 'u.username, u.display_name');
 		$qb->where($qb->expr()->orX(
-			$qb->expr()->like('u.first_name', ':name'),
-			$qb->expr()->like('u.last_name', ':name'),
+			$qb->expr()->like('u.username', ':name'),
+			$qb->expr()->like('u.display_name', ':name'),
 			$qb->expr()->like('u.email', ':name')
 		));
 		$qb->setParameter('name', "%$name%");
 		$qb->setMaxResults($limit);
+
 		return $qb->getQuery()->getArrayResult();
 	}
 

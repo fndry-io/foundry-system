@@ -48,6 +48,14 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 				'required',
 				Rule::unique('Foundry\System\Entities\User', 'email')->ignore($this->getEntity()->id)
 			];
+			$rules['username'] = [
+				'required',
+				Rule::unique('Foundry\System\Entities\User', 'username')->ignore($this->getEntity()->id)
+			];
+			$rules['display_name'] = [
+				'required',
+				Rule::unique('Foundry\System\Entities\User', 'display_name')->ignore($this->getEntity()->id)
+			];
 		}
 		return $rules;
 	}
@@ -74,8 +82,10 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 		$form->setTitle(__('Edit User'));
 		$form->setButtons((new SubmitButtonType(__('Save'), $form->getAction())));
 		$form->addChildren(
-			RowType::withChildren($form->get('first_name'), $form->get('last_name')),
-			RowType::withChildren($form->get('email'))
+			(new SectionType(__('Details')))->addChildren(
+				RowType::withChildren($form->get('username'), $form->get('display_name')),
+				RowType::withChildren($form->get('email'))
+			)
 		);
 		//if (auth_user()->id === $this->entity->getId() || (auth_user()->isAdmin() && !auth_user()->isSuperAdmin())) {
 			$form->addChildren(

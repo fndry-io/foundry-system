@@ -4,10 +4,10 @@ Foundry\System\Entities\User:
   repositoryClass: Foundry\System\Repositories\UserRepository
   table: users
   indexes:
-    users_first_name_index:
-      columns: [ first_name ]
-    users_last_name_index:
-      columns: [ last_name ]
+    users_username_index:
+      columns: [ username ]
+    users_display_name_index:
+      columns: [ display_name ]
   id:
     id:
       type: integer
@@ -17,6 +17,10 @@ Foundry\System\Entities\User:
     uuid:
       type: string
       length: 36
+    username:
+      type: string
+      length: 50
+      unique: true
     email:
       type: string
       length: 255
@@ -24,12 +28,9 @@ Foundry\System\Entities\User:
     password:
       type: string
       length: 255
-    first_name:
+    display_name:
       type: string
-      length: 50
-    last_name:
-      type: string
-      length: 50
+      length: 100
     active:
       type: boolean
       options:

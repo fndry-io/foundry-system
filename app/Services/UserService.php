@@ -59,28 +59,23 @@ class UserService extends BaseService {
 		 */
 		$provider = $guard->getProvider();
 
-		if($provider->retrieveByCredentials([
-			'email' => $inputs['email'],
-			'password' => $inputs['password']
+		/**
+		 * @var $user User
+		 */
+		if($user = $provider->retrieveByCredentials([
+			'email' => $inputs['email']
 		])){
-
-			/**
-			 * @var $user User
-			 */
-			$user = $this->repository->findOneBy([
-				'email' => $inputs['email']
-			]);
-
-			//detect if the user is longer active
-			if ($user->isActive()) {
-				$guard->setUser($user);
-				return $this->returnGuardUser($guard);
-			} else {
-				return Response::error(__("Account no longer active, please contact the Support Team"), 403);
+			if ($provider->validateCredentials($user, $inputs)) {
+				//detect if the user is longer active
+				if ($user->isActive()) {
+					$guard->setUser($user);
+					return $this->returnGuardUser($guard);
+				} else {
+					return Response::error(__("Account no longer active, please contact the Support Team"), 403);
+				}
 			}
-		} else {
-			return Response::error(__("Permission denied, wrong password and username combination"), 401);
 		}
+		return Response::error(__("Permission denied, wrong password and username combination"), 401);
 	}
 
 	public function logout($guard = null)

@@ -279,6 +279,9 @@ class UserService extends BaseService {
 	 */
 	public function delete(User $user) : Response
 	{
+		if ($user->isSuperAdmin()) {
+			return Response::error(__('You cannot delete a Super User'), 408);
+		}
 		$this->repository->delete($user);
 		return Response::success();
 	}

@@ -4,11 +4,13 @@ namespace Foundry\System\Inputs\User\Types;
 
 use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Inputs\Contracts\FieldOptions;
-use Foundry\Core\Inputs\Types\ChoiceInputType;
+use Foundry\Core\Inputs\Types\CheckboxInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 use Foundry\Core\Entities\Entity;
 
-class Active extends ChoiceInputType implements Field, FieldOptions {
+class Active extends CheckboxInputType implements Field, FieldOptions {
+
+	protected $cast = 'int';
 
 	/**
 	 * @param Entity|null $entity
@@ -18,11 +20,12 @@ class Active extends ChoiceInputType implements Field, FieldOptions {
 	static function input( Entity &$entity = null ): Inputable {
 		return ( new static(
 			'active',
-			__( 'Active' ),
-			true,
-			Active::options()
+			__( 'Access Enabled' ),
+			false
 		) )
-			->setHelp()
+			->setDefault(false)
+			->setOptions(static::options())
+			->setHelp(__('Enables or Disables the users access to the system.'))
 			->setSortable( true );
 	}
 

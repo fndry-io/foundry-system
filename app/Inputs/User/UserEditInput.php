@@ -4,11 +4,13 @@ namespace Foundry\System\Inputs\User;
 
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Support\InputTypeCollection;
+use Foundry\System\Inputs\User\Types\Active;
 use Foundry\System\Inputs\User\Types\Email;
 use Foundry\System\Inputs\User\Types\Username;
 use Foundry\System\Inputs\User\Types\DisplayName;
 use Foundry\System\Inputs\User\Types\Password;
 use Foundry\System\Inputs\User\Types\PasswordConfirmation;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class UserEditInput
@@ -23,14 +25,6 @@ use Foundry\System\Inputs\User\Types\PasswordConfirmation;
  */
 class UserEditInput extends Inputs {
 
-	protected $fillable = [
-		'username',
-		'display_name',
-		'email',
-		'password',
-		'password_confirmation'
-	];
-
 	public function types() : InputTypeCollection
 	{
 		$types = [
@@ -41,6 +35,12 @@ class UserEditInput extends Inputs {
 			Password::input()->addRule('min:8')->addRule('max:20')->addRule('confirmed:password_confirmation')->setRequired(false),
 			PasswordConfirmation::input()->setRequired(false)
 		];
+
+		if (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {
+			$types[] = Active::input();
+			//todo add role
+		}
+
 		return InputTypeCollection::fromTypes($types);
 	}
 

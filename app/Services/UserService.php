@@ -252,6 +252,11 @@ class UserService extends BaseService {
 				$user->setSuperAdmin(false);
 			}
 		}
+
+		if (!$user->isSuperAdmin() && $input->offsetExists('active')) {
+			$user->setActive((bool) $input->active);
+		}
+
 		$this->repository->save($user);
 		return Response::success($user);
 	}

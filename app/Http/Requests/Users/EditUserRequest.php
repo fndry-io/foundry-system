@@ -12,6 +12,7 @@ use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Inputs\User\UserEditInput;
 use Foundry\System\Services\UserService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class EditUserRequest extends UserRequest implements ViewableFormRequestInterface, InputInterface
@@ -87,13 +88,22 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 				RowType::withChildren($form->get('email'))
 			)
 		);
-		//if (auth_user()->id === $this->entity->getId() || (auth_user()->isAdmin() && !auth_user()->isSuperAdmin())) {
+		if (Auth::user()->id === $this->entity->getId() || Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {
 			$form->addChildren(
-				(new SectionType(__('Password'), __('If you need to change the password for this user set the values below or leave them blank to leave the password as is.')))->addChildren(
+				(new SectionType(__('Password'), __('If you need to change the password set the values below or leave them blank to leave the password as is.')))->addChildren(
 					RowType::withChildren($form->get('password')->setValue(null), $form->get('password_confirmation')->setValue(null))
 				)
 			);
-		//}
+		}
+		if (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {
+			if (!$this->entity->isSuperAdmin()) {
+				$children = [];
+				$children[] = RowType::withChildren($form->get('active'));
+				$form->addChildren(
+					(new SectionType(__('Access'), __('Controls the access this user has to the system.')))->addChildren(...$children)
+				);
+			}
+		}
 		return $form;
 	}
 }

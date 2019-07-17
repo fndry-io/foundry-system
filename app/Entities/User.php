@@ -213,6 +213,13 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	/**
 	 * @return bool
 	 */
+	public function isAdmin(): bool {
+		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
 	public function isSuperAdmin(): bool {
 		return $this->super_admin;
 	}

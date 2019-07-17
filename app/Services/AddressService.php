@@ -2,7 +2,7 @@
 
 namespace Foundry\System\Services;
 
-use Foundry\Core\Entities\Contracts\EntityInterface;
+use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
@@ -34,7 +34,7 @@ class AddressService extends BaseService {
 
 	/**
 	 * @param AddressInput|Inputs $input
-	 * @param Address|EntityInterface $address
+	 * @param Address|Entity $address
 	 *
 	 * @return Response
 	 */
@@ -48,7 +48,7 @@ class AddressService extends BaseService {
 	/**
 	 * Delete a user
 	 *
-	 * @param Address|EntityInterface $address
+	 * @param Address|Entity $address
 	 *
 	 * @return Response
 	 */

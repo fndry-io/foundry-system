@@ -4,8 +4,7 @@ namespace Foundry\System\Services;
 
 use Carbon\Carbon;
 use Foundry\Core\Auth\TokenGuard;
-use Foundry\Core\Entities\Contracts\ApiTokenInterface;
-use Foundry\Core\Entities\Contracts\EntityInterface;
+use Foundry\Core\Entities\Contracts\HasApiToken;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
@@ -122,16 +121,12 @@ class UserService extends BaseService {
 			'user' => $user->only(['id', 'uuid', 'first_name', 'last_name', 'email'])
 		];
 
-		if ($guard instanceof TokenGuard && $user instanceof ApiTokenInterface) {
+		if ($guard instanceof TokenGuard && $user instanceof HasApiToken) {
 
 			if ($setToken) {
-				$token = Str::random(60);
-
-				//todo update to ensure the user token expires and the token guard loads it correctly
-				$user->setApiToken($token);
-				$user->setApiTokenExpiresAt(Carbon::now()->addDays(3));
+				$token = $guard->setToken($user);
 			} else {
-				$token = $user->api_token;
+				$token = $guard->getToken($user);
 			}
 			$data['token'] = $token;
 		}
@@ -236,7 +231,7 @@ class UserService extends BaseService {
 
 	/**
 	 * @param UserEditInput|Inputs $input
-	 * @param User|EntityInterface $user
+	 * @param User $user
 	 *
 	 * @return Response
 	 */
@@ -264,7 +259,7 @@ class UserService extends BaseService {
 	/**
 	 * Delete a user
 	 *
-	 * @param User|EntityInterface $user
+	 * @param User $user
 	 *
 	 * @return Response
 	 */

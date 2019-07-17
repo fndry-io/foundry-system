@@ -2,7 +2,7 @@
 
 namespace Foundry\System\Services;
 
-use Foundry\Core\Entities\Contracts\EntityInterface;
+use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
@@ -33,7 +33,7 @@ class RoleService extends BaseService {
 
 	/**
 	 * @param RoleInput|Inputs $input
-	 * @param Role|EntityInterface $role
+	 * @param Role|Entity $role
 	 *
 	 * @return Response
 	 */
@@ -47,7 +47,7 @@ class RoleService extends BaseService {
 	/**
 	 * Delete a user
 	 *
-	 * @param Role|EntityInterface $role
+	 * @param Role|Entity $role
 	 *
 	 * @return Response
 	 */

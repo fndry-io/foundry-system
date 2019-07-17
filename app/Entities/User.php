@@ -3,16 +3,15 @@
 namespace Foundry\System\Entities;
 
 use Carbon\Carbon;
-use Foundry\Core\Entities\Contracts\ApiTokenInterface;
+use Foundry\Core\Entities\Contracts\HasApiToken;
 use Foundry\Core\Entities\Entity;
+use Foundry\Core\Entities\Traits\ApiTokenable;
+use Foundry\Core\Entities\Traits\Identifiable;
 use Foundry\Core\Entities\Traits\Uuidable;
 use Foundry\Core\Entities\Traits\SoftDeletable;
 use Foundry\Core\Entities\Traits\Timestampable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Support\Facades\Hash;
-use Foundry\System\Repositories\UserRepository;
-use LaravelDoctrine\ACL\Roles\HasRoles;
-use LaravelDoctrine\ACL\Permissions\HasPermissions;
 use LaravelDoctrine\ORM\Auth\Authenticatable;
 use LaravelDoctrine\ORM\Notifications\Notifiable;
 
@@ -29,7 +28,7 @@ use LaravelDoctrine\ACL\Contracts\HasRoles as HasRolesContract;
  * @property Boolean $logged_in
  *
  */
-class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword, ApiTokenInterface {
+class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword, HasApiToken {
 
 	use Uuidable;
 	use SoftDeletable;
@@ -37,6 +36,8 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	use Authenticatable;
 	use CanResetPassword;
 	use Notifiable;
+	use ApiTokenable;
+	use Identifiable;
 //	use HasPermissions;
 //	use HasRoles;
 
@@ -71,8 +72,6 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 		'username'
 	];
 
-	protected $id;
-
 	protected $email;
 
 	protected $password;
@@ -90,10 +89,6 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	protected $last_login_at;
 
 	protected $logged_in = false;
-
-	protected $api_token;
-
-	protected $api_token_expires_at;
 
 //	/**
 //	 * @ACL\HasRoles()
@@ -149,7 +144,7 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	 */
 	public function getAuthIdentifier()
 	{
-		return $this->id;
+		return $this->getId();
 	}
 
 	/**
@@ -157,13 +152,6 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	 */
 	public function setPassword( string $password ): void {
 		$this->password = Hash::make($password);
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getId() {
-		return $this->id;
 	}
 
 	/**
@@ -256,37 +244,6 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	public function getFullName()
 	{
 		return $this->first_name . ' ' . $this->last_name;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getApiToken(){
-		return $this->api_token;
-	}
-
-	/**
-	 * @param string|null $token
-	 */
-	public function setApiToken(string $token = null)
-	{
-		$this->api_token = $token;
-	}
-
-	/**
-	 * @return \DateTime
-	 */
-	public function getApiTokenExpiresAt()
-	{
-		return $this->api_token_expires_at;
-	}
-
-	/**
-	 * @param Carbon|null $date
-	 */
-	public function setApiTokenExpiresAt(Carbon $date = null)
-	{
-		$this->api_token_expires_at = $date;
 	}
 
 	public function can($ability)

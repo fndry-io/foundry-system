@@ -2,9 +2,10 @@
 
 namespace Foundry\System\Entities;
 
-use Carbon\Carbon;
+use Foundry\Core\Entities\Contracts\HasIdentity;
 use Foundry\Core\Entities\Entity;
 use Foundry\Core\Entities\Traits\Addressable;
+use Foundry\Core\Entities\Traits\Identifiable;
 use Foundry\Core\Entities\Traits\SoftDeletable;
 use Foundry\Core\Entities\Traits\Timestampable;
 
@@ -14,11 +15,12 @@ use Foundry\Core\Entities\Traits\Timestampable;
  * @package Foundry\System\Entities
  *
  */
-class Address extends Entity {
+class Address extends Entity implements HasIdentity {
 
 	use Addressable;
 	use Timestampable;
 	use SoftDeletable;
+	use Identifiable;
 
 	/**
 	 * @var array The fillable values
@@ -42,19 +44,5 @@ class Address extends Entity {
 		'code',
 	];
 
-	protected $id;
-
-	public function __construct( array $properties = [] ) {
-		parent::__construct( $properties );
-		$this->setCreatedAt(new Carbon());
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
 
 }

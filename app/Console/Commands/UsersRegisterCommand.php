@@ -15,9 +15,9 @@ class UsersRegisterCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'foundry:system:register-user
-        {username : The users first name}
-        {display_name : The users last name} 
+    protected $signature = 'foundry:system:users:register
+        {username : The username}
+        {display_name : The users display name} 
         {email : The email address of the user to create}
     ';
 

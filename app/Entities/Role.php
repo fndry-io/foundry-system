@@ -2,7 +2,9 @@
 
 namespace Foundry\System\Entities;
 
+use Foundry\Core\Entities\Contracts\HasIdentity;
 use Foundry\Core\Entities\Entity;
+use Foundry\Core\Entities\Traits\Identifiable;
 use Foundry\Core\Entities\Traits\Timestampable;
 use LaravelDoctrine\ACL\Contracts\Role as RoleContract;
 use LaravelDoctrine\ACL\Permissions\HasPermissions;
@@ -13,10 +15,11 @@ use LaravelDoctrine\ACL\Permissions\HasPermissions;
  * @package Foundry\System\Entities
  *
  */
-class Role extends Entity {
+class Role extends Entity implements HasIdentity {
 
 	use HasPermissions;
 	use Timestampable;
+	use Identifiable;
 
 	/**
 	 * @var array The fillable values
@@ -30,17 +33,8 @@ class Role extends Entity {
 		'name'
 	];
 
-	protected $id;
-
 	protected $name;
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
 
 	/**
 	 * @return string

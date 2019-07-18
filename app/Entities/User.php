@@ -4,6 +4,7 @@ namespace Foundry\System\Entities;
 
 use Carbon\Carbon;
 use Foundry\Core\Entities\Contracts\HasApiToken;
+use Foundry\Core\Entities\Contracts\HasIdentity;
 use Foundry\Core\Entities\Entity;
 use Foundry\Core\Entities\Traits\ApiTokenable;
 use Foundry\Core\Entities\Traits\Identifiable;
@@ -28,7 +29,7 @@ use LaravelDoctrine\ACL\Contracts\HasRoles as HasRolesContract;
  * @property Boolean $logged_in
  *
  */
-class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword, HasApiToken {
+class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword, HasApiToken, HasIdentity {
 
 	use Uuidable;
 	use SoftDeletable;
@@ -127,7 +128,6 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	public function __construct( array $properties = [] ) {
 		parent::__construct( $properties );
 		$this->setUuid();
-		$this->setCreatedAt(new Carbon());
 		$this->setTimezone(config('app.timezone'));
 	}
 

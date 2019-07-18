@@ -42,9 +42,15 @@ Foundry\System\Entities\Address:
       nullable: true
     created_at:
       type: datetime
+      gedmo:
+        timestampable:
+          on: create
     updated_at:
       type: datetime
       nullable: true
+      gedmo:
+        timestampable:
+          on: update
     deleted_at:
       type: datetime
       nullable: true

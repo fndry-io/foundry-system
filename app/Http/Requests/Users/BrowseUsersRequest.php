@@ -51,11 +51,27 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
 	 */
     public function handle() : Response
     {
-	    $result = UserService::service()->browse(function(QueryBuilder $qb) {
+    	$input = $this->input;
+	    $result = UserService::service()->browse(function(QueryBuilder $qb) use ($input) {
 
-	        return $qb
+	        $qb
 			    ->addSelect('u.id', 'u.uuid', 'u.username', 'u.display_name', 'u.email', 'u.active')
 			    ->orderBy('u.display_name', 'ASC');
+
+		    if ($search = $input->input('search', null)) {
+			    $qb->where($qb->expr()->orX(
+				    $qb->expr()->like('u.username', ':search'),
+				    $qb->expr()->like('u.display_name', ':search'),
+				    $qb->expr()->like('u.email', ':search')
+			    ));
+			    $qb->setParameter(':search', $search);
+		    }
+
+	        if ($input->input('deleted', false)) {
+		        $qb->getEntityManager()->getFilters()->disable('soft-deleteable');
+	        }
+
+	        return $qb;
 
 	    }, $this->input('page', 1), $this->input('limit', 20) );
 

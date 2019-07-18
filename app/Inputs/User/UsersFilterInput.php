@@ -3,6 +3,7 @@
 namespace Foundry\System\Inputs\User;
 
 use Foundry\Core\Inputs\Inputs;
+use Foundry\Core\Inputs\Types\CheckboxInputType;
 use Foundry\Core\Inputs\Types\TextInputType;
 use Foundry\Core\Support\InputTypeCollection;
 
@@ -15,13 +16,10 @@ use Foundry\Core\Support\InputTypeCollection;
  */
 class UsersFilterInput extends Inputs {
 
-	protected $fillable = [
-		'search'
-	];
-
 	public function types() : InputTypeCollection
 	{
 		return InputTypeCollection::fromTypes([
+			(new CheckboxInputType('deleted', 'Show Deleted', false))->setCast('boolean'),
 			(new TextInputType('search', 'Search', false))
 		]);
 	}

@@ -20,7 +20,9 @@ class Url extends TextInputType implements Field {
 			__( 'Url' ),
 			true
 		) )
+			->setPlaceholder('http://...')
 			->addRule('url')
+			->setHelp(__('Enter a valid URL starting with http:// or https://. E.G. http://www.google.com'))
 			->setMax( 1024 );
 	}
 

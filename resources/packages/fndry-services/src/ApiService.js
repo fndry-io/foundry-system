@@ -33,8 +33,14 @@ function handleResponse(response, resolve, reject)
     if (response.data !== null && response.data.hasOwnProperty('status')) {
         handleResponseData(response.data, resolve, reject);
     } else {
-        //throw new Error(__('An invalid response was returned from the server.'));
-        reject(makeResponse(false, null, __('An invalid response was returned from the server.'), response.status));
+
+        if (response.data !== null && response.data.hasOwnProperty('message')) {
+            reject(makeResponse(false, null, response.data.message, response.status));
+        } else if (response.status === 500) {
+            reject(makeResponse(false, null, __('An invalid response was returned from the server.'), response.status));
+        } else {
+            reject(makeResponse(false, null, response.message, response.status));
+        }
     }
 }
 
@@ -177,13 +183,17 @@ const handleCall = function (options, that) {
             }
             return response;
         }, (response) => {
-            that.vm.$toasted.show(response.error, {
-                icon: 'exclamation-circle'
-            });
+            if (response.code !== 401) {
+                that.vm.$toasted.show(response.error, {
+                    icon: 'exclamation-circle'
+                });
+            }
             return Promise.reject(response);
         })
         ;
 };
+
+
 ApiService.prototype = {
 
     /**

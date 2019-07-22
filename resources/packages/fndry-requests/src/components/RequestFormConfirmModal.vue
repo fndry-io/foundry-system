@@ -73,7 +73,7 @@
                         this.onSuccess(response);
                     }, (response) => {
                         this.response = response;
-                        this.onFail(response);
+                        this.onCancel(response);
                     })
                     .finally(() => {
                         this.submitting = false;

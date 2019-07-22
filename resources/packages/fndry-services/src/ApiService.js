@@ -215,23 +215,28 @@ ApiService.prototype = {
             delete(options.data);
         }
 
-        console.log('calling...', options, _params);
+        //console.log('calling...', options, _params);
 
         return new Promise((resolve, reject) => {
-
             this.vm.$http(options)
-                //call to the server successful (2xx)
-                .then((response) => {
-                    console.log('response...', response);
+            //call to the server successful (2xx)
+                .then(function (response) {
                     handleResponse(response, resolve, reject);
                 })
                 //call to server failed (!=2xx)
-                .catch((error) => {
-                    console.log('error...', error);
+                .catch(function (error) {
                     handleError(error, resolve, reject);
                 })
             ;
-        })
+        }).then((response) => {
+            return response;
+        }, (response) => {
+            this.vm.$toasted.show( response.error, {
+                icon : 'exclamation-circle'
+            });
+            return response;
+        });
+
     },
     upload(url, file, onUploadProgress){
         let method = 'POST';
@@ -260,13 +265,24 @@ ApiService.prototype = {
             this.$http(options)
             //call to the server successful (2xx)
                 .then(function (response) {
+                    console.log('error', response);
                     handleResponse(response, resolve, reject);
                 })
                 //call to server failed (!=2xx)
                 .catch(function (error) {
+                    console.log('error', error);
                     handleError(error, resolve, reject);
                 })
             ;
+        }).then((response) => {
+            return response;
+        }, (response) => {
+            this.vm.$toasted.error(response.data.message, {
+                title: 'Error',
+                autoHideDelay: 5000,
+                appendToast: append
+            });
+            return response;
         });
     },
     getViewUrl(uri, params){

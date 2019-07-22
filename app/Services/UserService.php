@@ -267,7 +267,7 @@ class UserService extends BaseService {
 		}
 
 		$this->repository->save($user);
-		return Response::success($user);
+		return Response::success($user, __('User Updated'));
 	}
 
 	/**

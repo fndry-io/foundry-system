@@ -74,12 +74,12 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 		$form->setTitle(__('Edit User'));
 		$form->setButtons((new SubmitButtonType(__('Save'), $form->getAction())));
 		$form->addChildren((new SectionType(__('Details')))->addChildren(
-			RowType::withChildren($form->get('username'), $form->get('display_name')),
-			RowType::withChildren($form->get('email'))
+			RowType::withChildren($form->get('username')->setAutocomplete(false), $form->get('display_name')->setAutocomplete(false)),
+			RowType::withChildren($form->get('email')->setAutocomplete(false))
 		));
 		$form->addChildren(
 			(new SectionType(__('Password'), __('If you need to change the password set the values below or leave them blank to leave the password as is.')))->addChildren(
-				RowType::withChildren($form->get('password')->setValue(null), $form->get('password_confirmation')->setValue(null))
+				RowType::withChildren($form->get('password')->setValue(null)->setAutocomplete(false), $form->get('password_confirmation')->setValue(null)->setAutocomplete(false))
 			)
 		);
 		return $form;

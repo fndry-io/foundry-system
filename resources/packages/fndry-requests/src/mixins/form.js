@@ -47,7 +47,10 @@ export default {
             this.$fndryApiService.call(this.$fndryApiService.getViewUrl(this.request, this.params), 'GET', {_form: true})
                 .then((res) => {
                     this.setSchema(res.data);
-                }, (res) => {})
+                }, (res) => {
+                    this.loading = false;
+                    this.onCancel();
+                })
                 .finally(() => {
                     this.loading = false;
                 });

@@ -34,5 +34,16 @@ export default {
                 console.log(this.schema);
             }
         }
+    },
+    computed: {
+        autocomplete: function(){
+            if (this.schema.autocomplete === false) {
+                return 'off';
+            } else if(this.schema.autocomplete === true) {
+                return 'on'
+            } else {
+                return undefined;
+            }
+        }
     }
 }

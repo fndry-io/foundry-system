@@ -29,18 +29,12 @@ function handleResponse(response, resolve, reject)
     //if (config.debug) console.log('Response:', response);
     //console.log('Server Response', response);
 
-    //we hav an api response
+    //we have an api response
     if (response.data !== null && response.data.hasOwnProperty('status')) {
         handleResponseData(response.data, resolve, reject);
     } else {
-        let message = '';
-        if(response.data.message) {
-            //invalid response from the server
-            message = response.data.message;
-        } else {
-            message = __('An invalid response was returned from the server.');
-        }
-        reject(makeResponse(false, null, message, 502));
+        //throw new Error(__('An invalid response was returned from the server.'));
+        reject(makeResponse(false, null, __('An invalid response was returned from the server.'), response.status));
     }
 }
 
@@ -81,9 +75,9 @@ function handleError(error, resolve, reject)
     } else {
         // Something happened in setting up the request that triggered an Error
         //console.log('Error', error.message);
-        let msg = __('An invalid response was returned from the server.');
+        //let msg = __('An invalid response was returned from the server.');
         //invalid response from the server
-        reject(makeResponse(false, null, msg, 500));
+        reject(makeResponse(false, null, error.message, 500));
     }
 }
 
@@ -164,6 +158,32 @@ const ApiService = function(Vue){
     this.vm = Vue.prototype;
 };
 
+const handleCall = function (options, that) {
+    return new Promise((resolve, reject) => {
+        that.vm.$http(options)
+            .then(function (response) {
+                handleResponse(response, resolve, reject);
+            })
+            .catch(function (error) {
+                handleError(error, resolve, reject);
+            })
+        ;
+    })
+        .then((response) => {
+            if (response.message) {
+                that.vm.$toasted.show(response.message, {
+                    icon: 'check'
+                });
+            }
+            return response;
+        }, (response) => {
+            that.vm.$toasted.show(response.error, {
+                icon: 'exclamation-circle'
+            });
+            return Promise.reject(response);
+        })
+        ;
+};
 ApiService.prototype = {
 
     /**
@@ -217,25 +237,7 @@ ApiService.prototype = {
 
         //console.log('calling...', options, _params);
 
-        return new Promise((resolve, reject) => {
-            this.vm.$http(options)
-            //call to the server successful (2xx)
-                .then(function (response) {
-                    handleResponse(response, resolve, reject);
-                })
-                //call to server failed (!=2xx)
-                .catch(function (error) {
-                    handleError(error, resolve, reject);
-                })
-            ;
-        }).then((response) => {
-            return response;
-        }, (response) => {
-            this.vm.$toasted.show( response.error, {
-                icon : 'exclamation-circle'
-            });
-            return response;
-        });
+        return handleCall(options, this);
 
     },
     upload(url, file, onUploadProgress){
@@ -261,29 +263,7 @@ ApiService.prototype = {
             data: formData
         };
 
-        return new Promise(function(resolve, reject){
-            this.$http(options)
-            //call to the server successful (2xx)
-                .then(function (response) {
-                    console.log('error', response);
-                    handleResponse(response, resolve, reject);
-                })
-                //call to server failed (!=2xx)
-                .catch(function (error) {
-                    console.log('error', error);
-                    handleError(error, resolve, reject);
-                })
-            ;
-        }).then((response) => {
-            return response;
-        }, (response) => {
-            this.vm.$toasted.error(response.data.message, {
-                title: 'Error',
-                autoHideDelay: 5000,
-                appendToast: append
-            });
-            return response;
-        });
+        return handleCall(options, this);
     },
     getViewUrl(uri, params){
         return route(uri, params);

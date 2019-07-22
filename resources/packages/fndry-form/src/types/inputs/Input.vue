@@ -6,7 +6,7 @@
                       v-model="model"
                       :placeholder="schema.placeholder"
                       :disabled="disabled"
-                      :autocomplete="schema.autocomplete"
+                      :autocomplete="autocomplete"
                       :min="schema.min"
                       :max="schema.max"
                       :required="schema.required"

@@ -85,7 +85,7 @@ Foundry\System\Entities\User:
       type: string
       length: 50
       nullable: true
-  oneToOne:
+  manyToOne:
     supervisor:
       targetEntity: Foundry\System\Entities\User
       fetch: LAZY

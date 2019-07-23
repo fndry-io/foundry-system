@@ -159,6 +159,9 @@ export default {
                 case 'tel':
                     type = 'telephone';
                     break;
+                case 'money':
+                    type = 'money';
+                    break;
                 case 'date':
                 case "datetime":
                     type = 'date';

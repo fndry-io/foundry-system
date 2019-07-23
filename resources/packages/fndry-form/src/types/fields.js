@@ -1,5 +1,6 @@
 import Input from './inputs/Input';
 import Telephone from './inputs/Telephone';
+import Money from './inputs/Money';
 import TextArea from './inputs/TextArea';
 import Checkbox from './inputs/Checkbox';
 import Checkboxes from './inputs/Checkboxes';
@@ -12,6 +13,7 @@ import Hidden from './inputs/Hidden';
 export default {
     'fndry-field-input': Input,
     'fndry-field-telephone': Telephone,
+    'fndry-field-money': Money,
     'fndry-field-textarea': TextArea,
     'fndry-field-checkbox': Checkbox,
     'fndry-field-checkboxes': Checkboxes,

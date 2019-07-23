@@ -7,11 +7,9 @@
                       :placeholder="schema.placeholder"
                       :disabled="disabled"
                       :autocomplete="autocomplete"
-                      :min="schema.min"
-                      :max="schema.max"
+                      :maxLength="maxLength"
                       :required="schema.required"
                       :state="state"
-                      :step="schema.step"
                       @input="onInput"
                       @change="onChange"
                       @blur="$emit('blur')"
@@ -54,6 +52,11 @@
                     return value;
                 }
 
+            }
+        },
+        computed: {
+            maxLength: function() {
+                return this.schema.max.toString().length + 5;
             }
         }
 

@@ -22,7 +22,7 @@ class Type extends ChoiceInputType implements Field, FieldOptions {
 			false,
 			static::options()
 		) )
-			->setDefault('head')
+			->setDefault('main')
 			->setSortable( true );
 	}
 
@@ -36,7 +36,7 @@ class Type extends ChoiceInputType implements Field, FieldOptions {
 	 */
 	static function options( \Closure $closure = null, $value = null ): array {
 		return [
-			"head" => "Head Office",
+			"main" => "Main Office",
 			"regional" => "Regional Office",
 			"home" => "Home"
 		];

@@ -17,7 +17,7 @@ class Code extends TextInputType implements Field {
 	static function input( Entity &$entity = null ): Inputable {
 		return ( new static(
 			'code',
-			__( 'Postal Code' ),
+			__( 'Zip Code' ),
 			false
 		) )
 			->setMax( 10 )

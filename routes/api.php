@@ -30,6 +30,7 @@ Route::prefix('system')->middleware('auth:api')->group( function () {
 	FormRequestHandler::route('/users/list',            'Foundry\System\Http\Requests\Users\ListUsersRequest');
 	FormRequestHandler::route('/users/{_entity}/edit',  'Foundry\System\Http\Requests\Users\EditUserRequest');
 	FormRequestHandler::route('/users/{_entity}/delete','Foundry\System\Http\Requests\Users\DeleteUserRequest');
+	FormRequestHandler::route('/users/{_entity}/restore','Foundry\System\Http\Requests\Users\RestoreUserRequest');
 	//FormRequestHandler::route('/users/{_entity}',       'Foundry\System\Http\Requests\Users\ReadUserRequest');
 
 	//roles

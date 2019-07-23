@@ -303,6 +303,21 @@ class UserService extends BaseService {
 	}
 
 	/**
+	 * Delete a user
+	 *
+	 * @param User $user
+	 *
+	 * @return Response
+	 */
+	public function restore(User $user) : Response
+	{
+		$user->setDeletedAt(null);
+		$this->repository->save($user);
+		return Response::success();
+	}
+
+
+	/**
 	 * Get the broker to be used during password reset.
 	 *
 	 * @return \Illuminate\Contracts\Auth\PasswordBroker

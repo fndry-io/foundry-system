@@ -88,6 +88,7 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 				RowType::withChildren($form->get('email')->setAutocomplete(false))
 			)
 		);
+
 		if (Auth::user()->id === $this->entity->getId() || Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {
 			$form->addChildren(
 				(new SectionType(__('Password'), __('If you need to change the password set the values below or leave them blank to leave the password as is.')))->addChildren(
@@ -95,6 +96,14 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 				)
 			);
 		}
+
+		$form->addChildren(
+			(new SectionType(__('Job Title & Position')))->addChildren(
+				RowType::withChildren($form->get('job_title')->setAutocomplete(false), $form->get('job_department')->setAutocomplete(false)),
+				RowType::withChildren($form->get('supervisor')->setAutocomplete(false))
+			)
+		);
+
 		if (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {
 			if (!$this->entity->isSuperAdmin()) {
 				$children = [];

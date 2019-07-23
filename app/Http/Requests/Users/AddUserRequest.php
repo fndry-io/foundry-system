@@ -70,11 +70,20 @@ class AddUserRequest extends FormRequest implements ViewableFormRequestInterface
 				RowType::withChildren($form->get('email')->setAutocomplete(false))
 			)
 		);
+
 		$form->addChildren(
 			(new SectionType(__('Password')))->addChildren(
-				RowType::withChildren($form->get('password')->setAutocomplete(false), $form->get('password_confirmation')->setAutocomplete(false))
+				RowType::withChildren($form->get('password')->setAutocomplete(false)->setRequired(true), $form->get('password_confirmation')->setAutocomplete(false)->setRequired(true))
 			)
 		);
+
+		$form->addChildren(
+			(new SectionType(__('Job Title & Position')))->addChildren(
+				RowType::withChildren($form->get('job_title')->setAutocomplete(false), $form->get('job_department')->setAutocomplete(false)),
+				RowType::withChildren($form->get('supervisor')->setAutocomplete(false))
+			)
+		);
+
 		return $form;
 	}
 }

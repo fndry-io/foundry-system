@@ -37,13 +37,7 @@ export default {
     },
     computed: {
         autocomplete: function(){
-            if (this.schema.autocomplete === false) {
-                return 'off';
-            } else if(this.schema.autocomplete === true) {
-                return 'on'
-            } else {
-                return undefined;
-            }
+            return this.schema.autocomplete;
         }
     }
 }

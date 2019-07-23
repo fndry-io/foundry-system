@@ -4,8 +4,11 @@ namespace Foundry\System\Inputs\User;
 
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Support\InputTypeCollection;
+use Foundry\System\Inputs\Types\User;
 use Foundry\System\Inputs\User\Types\Active;
 use Foundry\System\Inputs\User\Types\Email;
+use Foundry\System\Inputs\User\Types\JobDepartment;
+use Foundry\System\Inputs\User\Types\JobTitle;
 use Foundry\System\Inputs\User\Types\Username;
 use Foundry\System\Inputs\User\Types\DisplayName;
 use Foundry\System\Inputs\User\Types\Password;
@@ -33,7 +36,10 @@ class UserEditInput extends Inputs {
 			DisplayName::input()->addRule('unique:Foundry\System\Entities\User,display_name'),
 			Email::input()->addRule('unique:Foundry\System\Entities\User,email'),
 			Password::input()->addRule('min:8')->addRule('max:20')->addRule('confirmed:password_confirmation')->setRequired(false),
-			PasswordConfirmation::input()->setRequired(false)
+			PasswordConfirmation::input()->setRequired(false),
+			JobTitle::input(),
+			JobDepartment::input(),
+			User::input()->setLabel(__('Supervisor'))->setName('supervisor')
 		];
 
 		if (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {

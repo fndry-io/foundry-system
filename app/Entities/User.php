@@ -48,7 +48,9 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	protected $fillable = [
 		'username',
 		'display_name',
-		'email'
+		'email',
+		'job_title',
+		'job_department'
 	];
 
 	protected $hidden = [
@@ -70,7 +72,10 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 		'created_at',
 		'updated_at',
 		'deleted_at',
-		'username'
+		'username',
+		'job_title',
+		'job_department',
+		'supervisor'
 	];
 
 	protected $email;
@@ -90,6 +95,12 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	protected $last_login_at;
 
 	protected $logged_in = false;
+
+	protected $job_title;
+
+	protected $job_department;
+
+	protected $supervisor;
 
 //	/**
 //	 * @ACL\HasRoles()
@@ -251,5 +262,48 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 		//todo correct this to the permissions
 		return true;
 	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getSupervisor() {
+		return $this->supervisor;
+	}
+
+	/**
+	 * @param mixed $supervisor
+	 */
+	public function setSupervisor( $supervisor ): void {
+		$this->supervisor = $supervisor;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getJobTitle() {
+		return $this->job_title;
+	}
+
+	/**
+	 * @param mixed $job_title
+	 */
+	public function setJobTitle( $job_title ): void {
+		$this->job_title = $job_title;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getJobDepartment() {
+		return $this->job_department;
+	}
+
+	/**
+	 * @param mixed $job_department
+	 */
+	public function setJobDepartment( $job_department ): void {
+		$this->job_department = $job_department;
+	}
+
 
 }

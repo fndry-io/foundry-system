@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use LaravelDoctrine\ORM\Facades\EntityManager;
 
 class UserService extends BaseService {
 
@@ -234,6 +235,13 @@ class UserService extends BaseService {
 				$user->setSuperAdmin(false);
 			}
 		}
+
+		if ($input->supervisor) {
+			if ($supervisor = EntityManager::getRepository(User::class)->find($input->supervisor)) {
+				$user->setSupervisor($supervisor);
+			}
+		}
+
 		$this->repository->save($user);
 		return Response::success($user);
 	}
@@ -264,6 +272,14 @@ class UserService extends BaseService {
 
 		if (!$user->isSuperAdmin() && $input->offsetExists('active')) {
 			$user->setActive((bool) $input->active);
+		}
+
+		if ($input->supervisor) {
+			if ($supervisor = EntityManager::getRepository(User::class)->find($input->supervisor)) {
+				if ($supervisor->getId() !== $user->getId()) {
+					$user->setSupervisor($supervisor);
+				}
+			}
 		}
 
 		$this->repository->save($user);

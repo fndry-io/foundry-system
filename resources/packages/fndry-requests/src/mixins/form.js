@@ -90,7 +90,6 @@ export default {
                         }, (response) => {
                             this.response = response;
                             this.onFail(response);
-                            console.log(response);
                         })
                         .finally(() => {
                             this.submitting = false;

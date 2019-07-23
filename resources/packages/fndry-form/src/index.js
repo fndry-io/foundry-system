@@ -27,10 +27,10 @@ Validator.extend('in', {
     }
 });
 
-Validator.extend('numeric', {
-    getMessage: field => 'The ' + field + ' value must be a valid number.',
+Validator.extend('telephone', {
+    getMessage: field => 'The ' + field + ' value must be a phone number.',
     validate: (value, args) => {
-        let regex = new RegExp('^([0-9\.]+)$');
+        let regex = new RegExp('^\\+[0-9]{1,15}$');
         return regex.test(value);
     }
 });

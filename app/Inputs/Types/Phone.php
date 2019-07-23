@@ -20,7 +20,10 @@ class Phone extends TelInputType implements Field {
 			__( 'Phone' ),
 			true
 		) )
-			->setMax( 10 );
+			->setMax( 16 )
+			->setPlaceholder('+1 ...')
+			->setHelp(__('An international contact number starting with a dialing code. E.G. +1 555 555 5555'))
+			;
 	}
 
 }

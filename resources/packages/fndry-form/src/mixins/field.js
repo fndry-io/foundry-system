@@ -156,6 +156,9 @@ export default {
                 case 'hidden':
                     type = 'hidden';
                     break;
+                case 'tel':
+                    type = 'telephone';
+                    break;
                 case 'date':
                 case "datetime":
                     type = 'date';

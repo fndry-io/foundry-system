@@ -93,6 +93,9 @@ class SystemServiceProvider extends ServiceProvider
 		Validator::extend('username', function ($attribute, $value, $parameters, $validator) {
 			return preg_match('/^[A-Za-z0-9_]+$/', $value);
 		});
+		Validator::extend('telephone', function ($attribute, $value, $parameters, $validator) {
+			return preg_match('/^\+[0-9]{1,15}$/', $value);
+		});
 	}
 
 

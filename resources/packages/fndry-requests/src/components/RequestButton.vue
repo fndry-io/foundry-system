@@ -1,5 +1,5 @@
 <template>
-    <component :is="tag" :variant="variant" :size="size" @click.prevent="onClick">
+    <component :is="tag" :variant="variant" :size="size" @click.prevent="onClick" :title="title">
         <slot>
             <span v-if="buttonIcon" :class="buttonIcon" aria-hidden="true"></span>
             <span v-if="buttonText"><span v-if="buttonIcon">&nbsp;</span>{{buttonText}}</span>
@@ -16,6 +16,7 @@
         name: 'fndry-request-button',
         props: {
             request: String,
+            title: String,
             params: {
                 type: Object,
                 default() {

@@ -64,7 +64,7 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
 				    $qb->expr()->like('u.display_name', ':search'),
 				    $qb->expr()->like('u.email', ':search')
 			    ));
-			    $qb->setParameter(':search', $search);
+			    $qb->setParameter(':search', "%" . $search . "%");
 		    }
 
 	        if ($input->input('deleted', false)) {

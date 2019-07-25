@@ -9,6 +9,7 @@ use Foundry\System\Inputs\User\Types\Active;
 use Foundry\System\Inputs\User\Types\Email;
 use Foundry\System\Inputs\User\Types\JobDepartment;
 use Foundry\System\Inputs\User\Types\JobTitle;
+use Foundry\System\Inputs\User\Types\SuperAdmin;
 use Foundry\System\Inputs\User\Types\Username;
 use Foundry\System\Inputs\User\Types\DisplayName;
 use Foundry\System\Inputs\User\Types\Password;
@@ -45,6 +46,10 @@ class UserEditInput extends Inputs {
 		if (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {
 			$types[] = Active::input();
 			//todo add role
+		}
+
+		if (Auth::user()->isSuperAdmin()) {
+			$types[] = SuperAdmin::input();
 		}
 
 		return InputTypeCollection::fromTypes($types);

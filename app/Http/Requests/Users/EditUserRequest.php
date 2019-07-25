@@ -104,14 +104,17 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 			)
 		);
 
-		if (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {
-			if (!$this->entity->isSuperAdmin()) {
-				$children = [];
-				$children[] = RowType::withChildren($form->get('active'));
-				$form->addChildren(
-					(new SectionType(__('Access'), __('Controls the access this user has to the system.')))->addChildren(...$children)
-				);
+		if ($this->entity->getId() !== Auth::user()->getId() && $this->entity->getId() !== 1 && (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())) {
+			$children = [];
+			$children[] = $form->get('active');
+			if (Auth::user()->isSuperAdmin()) {
+				$children[] = $form->get('super_admin');
 			}
+			$form->addChildren(
+				(new SectionType(__('Access'), __('Controls the access this user has to the system.')))->addChildren(RowType::withChildren(
+					RowType::withChildren(...$children)
+				))
+			);
 		}
 
 		return $form;

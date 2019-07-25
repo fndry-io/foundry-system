@@ -258,19 +258,11 @@ class UserService extends BaseService {
 		if ($input->password) {
 			$user->setPassword($input->password);
 		}
-		if (auth_user()->isSuperAdmin()) {
-
-			//todo change to control this in the form
-			$user->setActive(true);
-
-			if ($input->super_admin === true) {
-				$user->setSuperAdmin(true);
-			} elseif ($input->super_admin) {
-				$user->setSuperAdmin(false);
-			}
+		if (Auth::user()->isSuperAdmin() && $user->getId() !== Auth::user()->getId()) {
+			$user->setSuperAdmin($input->super_admin);
 		}
 
-		if (!$user->isSuperAdmin() && $input->offsetExists('active')) {
+		if ($input->offsetExists('active') && $user->getId() !== Auth::user()->getId()) {
 			$user->setActive((bool) $input->active);
 		}
 

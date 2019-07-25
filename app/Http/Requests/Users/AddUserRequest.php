@@ -14,6 +14,7 @@ use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Inputs\User\UserInput;
 use Foundry\System\Inputs\User\UserRegisterInput;
 use Foundry\System\Services\UserService;
+use Illuminate\Support\Facades\Auth;
 
 class AddUserRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
@@ -83,6 +84,21 @@ class AddUserRequest extends FormRequest implements ViewableFormRequestInterface
 				RowType::withChildren($form->get('supervisor')->setAutocomplete(false))
 			)
 		);
+
+		if (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {
+			$children = [];
+			$children[] = $form->get('active');
+
+			if (Auth::user()->isSuperAdmin()) {
+				$children[] = $form->get('super_admin');
+			}
+
+			$form->addChildren(
+				(new SectionType(__('Access'), __('Controls the access this user has to the system.')))->addChildren(
+					RowType::withChildren(...$children)
+				)
+			);
+		}
 
 		return $form;
 	}

@@ -113,6 +113,7 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 				);
 			}
 		}
+
 		return $form;
 	}
 }

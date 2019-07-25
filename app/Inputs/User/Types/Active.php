@@ -8,9 +8,7 @@ use Foundry\Core\Inputs\Types\CheckboxInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 use Foundry\Core\Entities\Entity;
 
-class Active extends CheckboxInputType implements Field, FieldOptions {
-
-	protected $cast = 'int';
+class Active extends CheckboxInputType implements Field {
 
 	/**
 	 * @param Entity|null $entity
@@ -24,16 +22,8 @@ class Active extends CheckboxInputType implements Field, FieldOptions {
 			false
 		) )
 			->setDefault(false)
-			->setOptions(static::options())
 			->setHelp(__('Enables or Disables the users access to the system.'))
 			->setSortable( true );
-	}
-
-	static function options( \Closure $closure = null, $value = null ): array {
-		return [
-			0 => __( 'No' ),
-			1 => __( 'Yes' )
-		];
 	}
 
 }

@@ -6,7 +6,7 @@ use Foundry\Core\Entities\Contracts\HasIdentity;
 use Foundry\Core\Entities\Entity;
 use Foundry\Core\Entities\Traits\Addressable;
 use Foundry\Core\Entities\Traits\Identifiable;
-use Foundry\Core\Entities\Traits\SoftDeletable;
+use Foundry\Core\Entities\Traits\SoftDeleteable;
 use Foundry\Core\Entities\Traits\Timestampable;
 
 /**
@@ -19,7 +19,7 @@ class Address extends Entity implements HasIdentity {
 
 	use Addressable;
 	use Timestampable;
-	use SoftDeletable;
+	use SoftDeleteable;
 	use Identifiable;
 
 	/**

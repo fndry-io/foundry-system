@@ -3,11 +3,6 @@ Foundry\System\Entities\Address:
   type: entity
   repositoryClass: Foundry\System\Repositories\AddressRepository
   table: addresses
-  gedmo:
-    soft_deleteable:
-      field_name: deleted_at
-      time_aware: true
-      hard_delete: true
   indexes:
     address_street_index:
       columns: [ street ]

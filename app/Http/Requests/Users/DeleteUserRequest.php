@@ -3,10 +3,8 @@
 namespace Foundry\System\Http\Requests\Users;
 
 use Foundry\Core\Requests\Response;
-use Foundry\Core\Requests\Traits\HasEntity;
 use Foundry\System\Entities\User;
 use Foundry\System\Services\UserService;
-use LaravelDoctrine\ORM\Facades\EntityManager;
 
 class DeleteUserRequest extends UserRequest
 {
@@ -21,7 +19,6 @@ class DeleteUserRequest extends UserRequest
 	 */
 	public function findEntity($id)
 	{
-		EntityManager::getFilters()->disable('soft-deleteable');
 		return parent::findEntity($id);
 	}
 

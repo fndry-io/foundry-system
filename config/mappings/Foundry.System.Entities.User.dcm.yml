@@ -3,11 +3,6 @@ Foundry\System\Entities\User:
   type: entity
   repositoryClass: Foundry\System\Repositories\UserRepository
   table: users
-  gedmo:
-    soft_deleteable:
-      field_name: deleted_at
-      time_aware: true
-      hard_delete: true
   indexes:
     users_username_index:
       columns: [ username ]

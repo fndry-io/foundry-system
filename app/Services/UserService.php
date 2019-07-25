@@ -308,11 +308,11 @@ class UserService extends BaseService {
 	 * @param User $user
 	 *
 	 * @return Response
+	 * @throws \Exception
 	 */
 	public function restore(User $user) : Response
 	{
-		$user->setDeletedAt(null);
-		$this->repository->save($user);
+		$this->repository->restore($user);
 		return Response::success();
 	}
 

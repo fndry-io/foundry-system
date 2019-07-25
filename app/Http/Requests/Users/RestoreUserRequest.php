@@ -21,7 +21,6 @@ class RestoreUserRequest extends UserRequest
 	 */
 	public function findEntity($id)
 	{
-		EntityManager::getFilters()->disable('soft-deleteable');
 		return parent::findEntity($id);
 	}
 

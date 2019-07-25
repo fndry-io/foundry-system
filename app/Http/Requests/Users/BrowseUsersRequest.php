@@ -51,15 +51,17 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
 	 */
     public function handle() : Response
     {
-    	$input = $this->input;
-	    $result = UserService::service()->browse(function(QueryBuilder $qb) use ($input) {
+	    $inputs = $this->input;
+	    $result = UserService::service()->browse(function(QueryBuilder $qb) use ($inputs) {
 
 	        $qb
 			    ->addSelect('u.id', 'u.uuid', 'u.username', 'u.display_name', 'u.email', 'u.active', 'u.deleted_at')
 			    ->orderBy('u.display_name', 'ASC');
 
-		    if ($search = $input->input('search', null)) {
-			    $qb->where($qb->expr()->orX(
+		    $where = $qb->expr()->andX();
+
+		    if ($search = $inputs->input('search', null)) {
+			    $where->add($qb->expr()->orX(
 				    $qb->expr()->like('u.username', ':search'),
 				    $qb->expr()->like('u.display_name', ':search'),
 				    $qb->expr()->like('u.email', ':search')
@@ -67,9 +69,13 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
 			    $qb->setParameter(':search', "%" . $search . "%");
 		    }
 
-	        if ($input->input('deleted', false)) {
-		        $qb->getEntityManager()->getFilters()->disable('soft-deleteable');
-	        }
+		    if (!$inputs->input('deleted', false)) {
+			    $where->add($qb->expr()->isNull('u.deleted_at'));
+		    }
+
+		    if ($where->count() > 0) {
+			    $qb->where($where);
+		    }
 
 	        return $qb;
 

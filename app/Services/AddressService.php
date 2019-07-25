@@ -58,4 +58,17 @@ class AddressService extends BaseService {
 		return Response::success();
 	}
 
+	/**
+	 * Delete a user
+	 *
+	 * @param Address|Entity $address
+	 *
+	 * @return Response
+	 */
+	public function restore(Address $address) : Response
+	{
+		$this->repository->restore($address);
+		return Response::success();
+	}
+
 }

@@ -5,11 +5,12 @@ namespace Foundry\System\Entities;
 use Carbon\Carbon;
 use Foundry\Core\Entities\Contracts\HasApiToken;
 use Foundry\Core\Entities\Contracts\HasIdentity;
+use Foundry\Core\Entities\Contracts\IsSoftDeletable;
 use Foundry\Core\Entities\Entity;
 use Foundry\Core\Entities\Traits\ApiTokenable;
 use Foundry\Core\Entities\Traits\Identifiable;
 use Foundry\Core\Entities\Traits\Uuidable;
-use Foundry\Core\Entities\Traits\SoftDeletable;
+use Foundry\Core\Entities\Traits\SoftDeleteable;
 use Foundry\Core\Entities\Traits\Timestampable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Support\Facades\Hash;
@@ -29,10 +30,10 @@ use LaravelDoctrine\ACL\Contracts\HasRoles as HasRolesContract;
  * @property Boolean $logged_in
  *
  */
-class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword, HasApiToken, HasIdentity {
+class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword, HasApiToken, HasIdentity, IsSoftDeletable {
 
 	use Uuidable;
-	use SoftDeletable;
+	use SoftDeleteable;
 	use Timestampable;
 	use Authenticatable;
 	use CanResetPassword;

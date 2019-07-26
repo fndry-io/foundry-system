@@ -27,7 +27,7 @@ class UserRepository extends EntityRepository {
 
 		$where = $qb->expr()->andX();
 
-		if ($deleted) {
+		if (!$deleted) {
 			$where->add($qb->expr()->isNull('u.deleted_at'));
 		}
 

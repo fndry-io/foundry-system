@@ -27,6 +27,7 @@ Route::prefix('system')->middleware('auth:api')->group( function () {
 	//users
 	FormRequestHandler::route('/users',                 'Foundry\System\Http\Requests\Users\BrowseUsersRequest');
 	FormRequestHandler::route('/users/add',             'Foundry\System\Http\Requests\Users\AddUserRequest');
+	FormRequestHandler::route('/users/add-bulk',             'Foundry\System\Http\Requests\Users\BulkAddUserRequest');
 	FormRequestHandler::route('/users/list',            'Foundry\System\Http\Requests\Users\ListUsersRequest');
 	FormRequestHandler::route('/users/{_entity}/edit',  'Foundry\System\Http\Requests\Users\EditUserRequest');
 	FormRequestHandler::route('/users/{_entity}/delete','Foundry\System\Http\Requests\Users\DeleteUserRequest');

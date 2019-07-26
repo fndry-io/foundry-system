@@ -46,6 +46,9 @@ const auth = {
                 return response;
             });
         },
+        reset({commit}){
+            commit('auth_reset');
+        },
         logout({commit}){
             return this._vm.$fndryApiService.handle('/api/auth/logout', {}, {guard: 'api'}).then((response) => {
                 commit('auth_reset');

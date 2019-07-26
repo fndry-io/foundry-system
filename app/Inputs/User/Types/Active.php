@@ -21,7 +21,7 @@ class Active extends CheckboxInputType implements Field {
 			__( 'Access Enabled' ),
 			false
 		) )
-			->setDefault(false)
+			->setDefault(true)
 			->setHelp(__('Enables or Disables the users access to the system.'))
 			->setSortable( true );
 	}

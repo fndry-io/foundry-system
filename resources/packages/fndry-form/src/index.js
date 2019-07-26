@@ -3,6 +3,9 @@ import FndryFormType from './components/FormType';
 import FndryFormGroup from './components/FormGroup';
 import FndryFormButtons from './components/FormButtons';
 
+import abstractWrapper from './types/abstractWrapper';
+import abstractInput from './types/abstractInput';
+
 import VeeValidate, { Validator } from 'vee-validate';
 
 Validator.extend('nullable', {
@@ -59,6 +62,8 @@ export {
     FndryFormGroup,
     FndryFormType,
     FndryFormButtons,
+    abstractWrapper,
+    abstractInput
 };
 
 /**
@@ -95,5 +100,6 @@ FndryForm.install = function (Vue, options) {
 if (typeof window !== 'undefined' && window.Vue) {
     window.Vue.use(FndryForm)
 }
+
 
 export default FndryForm

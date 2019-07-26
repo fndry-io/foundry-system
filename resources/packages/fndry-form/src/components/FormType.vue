@@ -52,6 +52,8 @@
 
                 if (wrappers.includes(fieldSchema.type)) {
                     return `fndry-wrapper-${fieldSchema.type}`;
+                } else if(fieldSchema.custom) {
+                    return fieldSchema.type;
                 } else {
                     return 'fndry-form-group';
                 }

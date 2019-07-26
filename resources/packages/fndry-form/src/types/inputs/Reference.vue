@@ -33,7 +33,7 @@
                             :key="index"
                             v-if="canDisplayButton(button.type)"
                             :request="button.action"
-                            :params="{_entity: model}"
+                            :params="{_entity: model, ...schema.params}"
                             :variant="button.variant ? button.variant : ``"
                             :size="button.size ? button.size : `size`"
                             type="modal"
@@ -70,7 +70,7 @@
 <script>
 
     import abstractInput from '../abstractInput';
-    import {debounce, isEmpty, isNull, isString, isObject, forEach, extend} from 'lodash';
+    import {debounce, isEmpty, isNull, isString, isObject, forEach, extend, merge} from 'lodash';
 
     export default {
         name: 'reference-input',
@@ -120,8 +120,9 @@
             },
             getItems(){
 
-                let params = {};
-                params[this.schema.query] = this.search;
+                let params = merge({}, this.schema.params, {
+                    [this.schema.query]: this.search
+                });
 
                 this.$fndryApiService.call(`${this.schema.url}`, 'GET', params)
                     .then((res) => {
@@ -183,7 +184,7 @@
                     this.model = result.value;
                 }
 
-                this.$emit('input', this.model);
+                this.$emit('change', this.model);
                 this.open = false;
             },
             onBlur() {

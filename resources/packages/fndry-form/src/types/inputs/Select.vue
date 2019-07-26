@@ -29,7 +29,8 @@
         data() {
             return {
                 options: [],
-                groups: {}
+                groups: {},
+                model: this.value ? this.value : []
             }
         },
         created(){

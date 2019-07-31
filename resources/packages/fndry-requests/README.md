@@ -1,28 +1,29 @@
-# fndry-form
+# hello-world
 
-> A form generator and state manager based on a given schema
-
-### Development Setup
-
-``` bash
-# install deps
+## Project setup
+```
 npm install
-
-# serve demo at localhost:8080
-npm run dev
-
-# build library and demo
-npm run build
-
-# build library
-npm run build:library
-
-# build demo
-npm run build:demo
 ```
 
-## License
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
 
-[MIT](http://opensource.org/licenses/MIT)
+### Compiles and minifies for production
+```
+npm run build
+```
 
-Copyright (c) 2019 Greg Gunner
+### Run your tests
+```
+npm run test
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

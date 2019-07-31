@@ -1,0 +1,57 @@
+# File.dcm.yml
+Foundry\System\Entities\File:
+  type: entity
+  repositoryClass: Foundry\System\Repositories\FileRepository
+  table: files
+  indexes:
+    files_name_index:
+      columns: [ name ]
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    uuid:
+      type: string
+      length: 36
+      unique: true
+    name:
+      type: string
+      length: 255
+    original_name:
+      type: string
+      length: 255
+    type:
+      type: string
+      length: 255
+    ext:
+      type: string
+      length: 5
+    size:
+      type: decimal
+      precision: 18
+      scale: 2
+    created_at:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+    updated_at:
+      type: datetime
+      nullable: true
+      gedmo:
+        timestampable:
+          on: update
+    deleted_at:
+      type: datetime
+      nullable: true
+  manyToOne:
+    folder:
+      targetEntity: Foundry\System\Entities\Folder
+      mappedBy: files
+      joinColumn:
+        name: folder_id
+        referencedColumnName: id
+        onDelete: SET NULL
+      cascade: [ detach ]

@@ -4,18 +4,32 @@ import Vue from 'vue'
 import jQuery from 'jquery'
 import BootstrapVue from 'bootstrap-vue'
 
+import FndryServices from '../../fndry-services';
+import FndryRequest from '../../fndry-requests/src';
+
 import App from './App'
 import router from './router'
 
-const FndryForm = process.env.NODE_ENV === 'development'
-  ? require('../src/index.js').default
-  : require('../dist/index.js').default;
+import FndryForm from '../src'
+
+// const FndryForm = process.env.NODE_ENV === 'development'
+//   ? require('../src/index.js').default
+//   : require('../dist/index.js').default;
 
 Vue.config.productionTip = false;
+
+/**
+ * Bootstrap the app
+ */
+import {axios} from './bootstrap';
+
+Vue.use(axios);
 
 // Using plugin
 Vue.use(BootstrapVue);
 Vue.use(FndryForm);
+Vue.use(FndryServices);
+Vue.use(FndryRequest);
 
 jQuery.extend(true, jQuery.fn.datetimepicker.defaults, {
     icons: {

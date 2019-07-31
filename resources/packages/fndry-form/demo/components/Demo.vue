@@ -61,6 +61,34 @@
                             type: 'row',
                             children: [
                                 {
+                                    type: 'file',
+                                    name: 'file',
+                                    action: '/api/system/files/upload',
+                                    required: true,
+                                    label: 'File Upload',
+                                    multiple: false
+                                },
+                                {
+                                    type: 'file',
+                                    name: 'file_multiple',
+                                    action: '/api/system/files/upload',
+                                    deleteUrl: '/api/system/files/{_entity}/delete',
+                                    value: [
+                                        {
+                                            id: 17,
+                                            original_name: "Dulux_Pearlglo_WB.pdf"
+                                        }
+                                    ],
+                                    required: true,
+                                    label: 'File Upload (multiple)',
+                                    multiple: true
+                                }
+                            ]
+                        },
+                        {
+                            type: 'row',
+                            children: [
+                                {
                                     type: 'email',
                                     name: 'email',
                                     value: 'bob@domain.com',

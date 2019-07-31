@@ -46,5 +46,8 @@ Route::prefix('system')->middleware('auth:api')->group( function () {
 	FormRequestHandler::route('/addresses/{_entity}/edit',  'Foundry\System\Http\Requests\Addresses\EditAddressRequest');
 	FormRequestHandler::route('/addresses/{_entity}/delete','Foundry\System\Http\Requests\Addresses\DeleteAddressRequest');
 
+	FormRequestHandler::route('/files/upload',                 'Foundry\System\Http\Requests\Files\UploadFileRequest');
+	FormRequestHandler::route('/files/{_entity}/delete',       'Foundry\System\Http\Requests\Files\DeleteFileRequest');
+
 });
 

@@ -46,8 +46,16 @@ Route::prefix('system')->middleware('auth:api')->group( function () {
 	FormRequestHandler::route('/addresses/{_entity}/edit',  'Foundry\System\Http\Requests\Addresses\EditAddressRequest');
 	FormRequestHandler::route('/addresses/{_entity}/delete','Foundry\System\Http\Requests\Addresses\DeleteAddressRequest');
 
+	//files
 	FormRequestHandler::route('/files/upload',                 'Foundry\System\Http\Requests\Files\UploadFileRequest');
 	FormRequestHandler::route('/files/{_entity}/delete',       'Foundry\System\Http\Requests\Files\DeleteFileRequest');
+
+	//folders
+	FormRequestHandler::route('/folders/add',             'Foundry\System\Http\Requests\Folders\AddFolderRequest');
+	FormRequestHandler::route('/folders/{_entity}/edit',  'Foundry\System\Http\Requests\Folders\EditFolderRequest');
+	FormRequestHandler::route('/folders/{_entity}/delete','Foundry\System\Http\Requests\Folders\DeleteFolderRequest');
+	FormRequestHandler::route('/folders/{_entity}',       'Foundry\System\Http\Requests\Folders\ReadFolderRequest');
+	FormRequestHandler::route('/folders/{_entity}/files/add','Foundry\System\Http\Requests\Folders\AddFileToFolderRequest');
 
 });
 

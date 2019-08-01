@@ -30,7 +30,6 @@ class FileService extends BaseService {
 	 */
 	public function add(FileInput $input) : Response
 	{
-
 		$values = $input->inputs();
 		$values['name'] = $input->getFile()->store('files');
 		$values['original_name'] = $input->getFile()->getClientOriginalName();
@@ -50,17 +49,19 @@ class FileService extends BaseService {
 	/**
 	 * Delete a file
 	 *
-	 * @param File|Entity $file
+	 * @param File $file
+	 * @param bool $force
+	 * @param bool $flush
 	 *
 	 * @return Response
 	 */
-	public function delete(File $file) : Response
+	public function delete(File $file, $force = false, $flush = true) : Response
 	{
 		$this->repository->delete($file, false);
-		if ($file instanceof IsSoftDeletable && $file->isDeleted()) {
+		if ($file instanceof IsSoftDeletable && $file->isDeleted() || $force) {
 			Storage::delete($file->name);
 		}
-		$this->repository->flush();
+		if ($flush) $this->repository->flush();
 		return Response::success();
 	}
 

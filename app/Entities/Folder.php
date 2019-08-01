@@ -49,6 +49,21 @@ class Folder extends Entity implements HasIdentity, IsSoftDeletable, IsNestedTre
 	public function __construct( array $properties = [] ) {
 		parent::__construct( $properties );
 		$this->files = new ArrayCollection();
+		$this->setUuid();
+	}
+
+	/**
+	 * @return File[]
+	 */
+	public function getFiles() {
+		return $this->files;
+	}
+
+	/**
+	 * @param File[] $files
+	 */
+	public function setFiles( array $files ): void {
+		$this->files = $files;
 	}
 
 }

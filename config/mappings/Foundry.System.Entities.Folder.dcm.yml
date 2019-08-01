@@ -9,6 +9,10 @@ Foundry\System\Entities\Folder:
   indexes:
     folders_name_index:
       columns: [ name ]
+    folders_reference_type_index:
+      columns: [ reference_type ]
+    folders_reference_id_index:
+      columns: [ reference_id ]
   id:
     id:
       type: integer
@@ -22,6 +26,13 @@ Foundry\System\Entities\Folder:
     name:
       type: string
       length: 255
+    reference_type:
+      type: string
+      length: 255
+      nullable: true
+    reference_id:
+      type: bigint
+      nullable: true
     lft:
       type: integer
       gedmo:
@@ -71,9 +82,9 @@ Foundry\System\Entities\Folder:
       targetEntity: Foundry\System\Entities\Folder
       mappedBy: parent
       orderBy:
-        lft: ASC
+        name: ASC
     files:
       targetEntity: Foundry\System\Entities\File
       mappedBy: folder
       orderBy:
-        lft: ASC
+        name: ASC

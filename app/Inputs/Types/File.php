@@ -12,7 +12,7 @@ class File extends FileInputType implements Field {
 	/**
 	 * @param Entity|null $entity
 	 *
-	 * @return Inputable
+	 * @return Inputable|File
 	 */
 	static function input( Entity &$entity = null ): Inputable {
 		return (new static(
@@ -20,9 +20,10 @@ class File extends FileInputType implements Field {
 			__('File'),
 			true
 		))
-			//->addRule('exists:files,id')
-			->setAction(routeUri('foundry.system.files.upload'))
-			->setDeleteUrl(routeUri('foundry.system.files.delete'))
+			->setPlaceholder(__('Click to browse for a file'))
+			->addRule('file')
+			->setAction(resourceUri('foundry.system.files.upload'))
+			->setDeleteUrl(resourceUri('foundry.system.files.delete'))
 			;
 	}
 

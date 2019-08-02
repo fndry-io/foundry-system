@@ -1,0 +1,49 @@
+# PickList.dcm.yml
+Foundry\System\Entities\PickListItem:
+  type: entity
+  repositoryClass: Foundry\System\Repositories\PickListItemRepository
+  table: picklist_items
+  indexes:
+    picklist_items_name_index:
+      columns: [ name ]
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+     name:
+       type: string
+       length: 50
+     description:
+       type: text
+       nullable: true
+     slug:
+       type: string
+       length: 100
+     sequence:
+       type: integer
+       default: 0
+     status:
+       type: boolean
+       default: false
+     created_at:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+     updated_at:
+      type: datetime
+      nullable: true
+      gedmo:
+        timestampable:
+          on: update
+  manyToOne:
+     picklist:
+        targetEntity: Foundry\System\Entities\PickList
+        inversedBy: items
+        fetch: LAZY
+        joinColumn:
+          name: picklist_id
+          referencedColumnName: id
+          onDelete: CASCADE

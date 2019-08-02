@@ -46,6 +46,18 @@ Route::prefix('system')->middleware('auth:api')->group( function () {
 	FormRequestHandler::route('/addresses/{_entity}/edit',  'Foundry\System\Http\Requests\Addresses\EditAddressRequest');
 	FormRequestHandler::route('/addresses/{_entity}/delete','Foundry\System\Http\Requests\Addresses\DeleteAddressRequest');
 
+    //PickList
+    FormRequestHandler::route('/picklists',                 'Foundry\System\Http\Requests\PickLists\BrowsePickListsRequest');
+    FormRequestHandler::route('/picklists/add',             'Foundry\System\Http\Requests\PickLists\AddPickListRequest');
+    FormRequestHandler::route('/picklists/{_entity}/edit',  'Foundry\System\Http\Requests\PickLists\EditPickListRequest');
+    FormRequestHandler::route('/picklists/{_entity}',       'Foundry\System\Http\Requests\PickLists\ReadPickListRequest');
+
+    //PickList
+    FormRequestHandler::route('/picklist/items',                 'Foundry\System\Http\Requests\PickListItems\BrowsePickListItemRequest');
+    FormRequestHandler::route('/picklistitems/add',             'Foundry\System\Http\Requests\PickListItems\AddPickListItemRequest');
+    FormRequestHandler::route('/picklistitems/{_entity}/edit',  'Foundry\System\Http\Requests\PickListItems\EditPickListItemRequest');
+    FormRequestHandler::route('/picklistitems/{_entity}',       'Foundry\System\Http\Requests\PickListItems\ReadPickListItemRequest');
+
 	//files
 	FormRequestHandler::route('/files/upload',                 'Foundry\System\Http\Requests\Files\UploadFileRequest');
 	FormRequestHandler::route('/files/upload/image',           'Foundry\System\Http\Requests\Files\UploadImageFileRequest');

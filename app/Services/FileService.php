@@ -13,6 +13,7 @@ use Foundry\System\Entities\File;
 use Foundry\System\Entities\Folder;
 use Foundry\System\Entities\User;
 use Foundry\System\Inputs\File\FileInput;
+use Foundry\System\Inputs\Folder\FolderInput;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use LaravelDoctrine\ORM\Facades\EntityManager;
@@ -48,13 +49,18 @@ class FileService extends BaseService {
 
 		$file = new File($values);
 
-		if ($folder = $input->input('folder')) {
-			if ($folder = EntityManager::getRepository(Folder::class)->find($folder)) {
-				$file->folder = $folder;
+		$this->repository->save($file);
+
+		if ($parent = $input->input('folder')) {
+			if ($parent = EntityManager::getRepository(Folder::class)->find($parent)) {
+				$folder = new Folder();
+				$folder->setFile($file);
+				$folder->setParent($parent);
+				EntityManager::persist($folder);
+				EntityManager::flush();
 			}
 		}
 
-		$this->repository->save($file);
 		return Response::success($file);
 	}
 

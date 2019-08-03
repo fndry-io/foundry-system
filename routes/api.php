@@ -66,11 +66,12 @@ Route::prefix('system')->middleware('auth:api')->group( function () {
 	Route::get('/files/{_entity}',          'FilesController@read');
 
 	//Folders
-	FormRequestHandler::route('/folders/add',             'Foundry\System\Http\Requests\Folders\AddFolderRequest');
 	FormRequestHandler::route('/folders/{_entity}/edit',  'Foundry\System\Http\Requests\Folders\EditFolderRequest');
 	FormRequestHandler::route('/folders/{_entity}/delete','Foundry\System\Http\Requests\Folders\DeleteFolderRequest');
 	FormRequestHandler::route('/folders/{_entity}',       'Foundry\System\Http\Requests\Folders\ReadFolderRequest');
-	FormRequestHandler::route('/folders/{_entity}/files/add','Foundry\System\Http\Requests\Folders\AddFileToFolderRequest');
+	FormRequestHandler::route('/folders/{_entity}/browse','Foundry\System\Http\Requests\Folders\BrowseFolderRequest');
+	FormRequestHandler::route('/folders/{_entity}/add-file','Foundry\System\Http\Requests\Folders\AddFileRequest');
+	FormRequestHandler::route('/folders/{_entity}/add-folder','Foundry\System\Http\Requests\Folders\AddFolderRequest');
 
 });
 

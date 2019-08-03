@@ -2,6 +2,7 @@
 
 namespace Foundry\System\Services;
 
+use Doctrine\ORM\QueryBuilder;
 use Foundry\Core\Entities\Contracts\HasIdentity;
 use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Inputs;
@@ -11,8 +12,8 @@ use Foundry\Core\Services\Traits\HasRepository;
 use Foundry\System\Entities\Folder;
 use Foundry\System\Inputs\Folder\FolderEditInput;
 use Foundry\System\Inputs\Folder\FolderInput;
+use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Repositories\FolderRepository;
-use Illuminate\Support\Collection;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
 class FolderService extends BaseService {
@@ -26,6 +27,63 @@ class FolderService extends BaseService {
 
 	public function __construct() {
 		$this->setRepository(EntityManager::getRepository(Folder::class));
+	}
+
+	/**
+	 * Browse the contents of a folder
+	 *
+	 * @param Folder $folder
+	 * @param SearchFilterInput $input
+	 * @param int $page
+	 * @param int $perPage
+	 *
+	 * @return Response
+	 */
+	public function browse( Folder $folder, SearchFilterInput $input, $page = 1, $perPage = 20 ): Response {
+
+		$result = $this->getRepository()->filter(function(QueryBuilder $qb) use ($folder, $input) {
+
+			$qb
+				->addSelect([
+					'folder.id',
+					'folder.name',
+					'folder.created_at',
+					'folder.updated_at',
+					'folder.is_file',
+					'file.type as file_type',
+					'file.original_name as file_name',
+					'file.uuid as file_uuid',
+					'file.id as file_id',
+					'file.size as file_size',
+					'file.created_at as file_created_at',
+					'file.updated_at as file_updated_at',
+				])
+				->leftJoin('folder.file', 'file')
+				->orderBy('folder.is_file', 'ASC')
+				->orderBy('folder.name', 'ASC');
+
+			$where = $qb->expr()->andX();
+
+			$where->add($qb->expr()->eq('folder.parent', ':parent'));
+			$qb->setParameter(':parent', $folder->getId());
+
+			if ($search = $input->input('search')) {
+				$where->add($qb->expr()->orX(
+					$qb->expr()->like('folder.name', ':search')
+				));
+				$qb->setParameter(':search', "%" . $search . "%");
+			}
+
+			$where->add($qb->expr()->isNull('folder.deleted_at'));
+			$where->add($qb->expr()->isNull('file.deleted_at'));
+
+			$qb->where($where);
+
+			return $qb;
+
+		}, $page, $perPage);
+
+		return Response::success($result);
 	}
 
 	/**
@@ -124,21 +182,6 @@ class FolderService extends BaseService {
 	{
 		$this->repository->restore($folder);
 		return Response::success();
-	}
-
-	/**
-	 * @param Folder $folder
-	 *
-	 * @return Response
-	 */
-	public function withContents(Folder $folder){
-		return Response::success(new Collection([
-			'folder' => $folder->toArray(),
-			'folders' => $this->repository->getChildren($folder),
-			'files' => (new Collection($folder->getFiles()))->filter(function($file){
-				return !$file->isDeleted();
-			})
-		]));
 	}
 
 

@@ -9,14 +9,15 @@ use Foundry\Core\Requests\Contracts\EntityRequestInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Support\InputTypeCollection;
+use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Inputs\Types\File;
 use Foundry\System\Services\FolderService;
 
-class AddFileToFolderRequest extends FolderRequest implements ViewableFormRequestInterface, EntityRequestInterface
+class AddFileRequest extends FolderRequest implements ViewableFormRequestInterface, EntityRequestInterface
 {
 
 	public static function name(): String {
-		return 'foundry.system.folders.files.add';
+		return 'foundry.system.folders.add.file';
 	}
 
 	/**
@@ -36,7 +37,7 @@ class AddFileToFolderRequest extends FolderRequest implements ViewableFormReques
 	 */
 	public function handle() : Response
 	{
-		return FolderService::service()->withContents($this->getEntity());
+		return FolderService::service()->browse($this->getEntity(), new SearchFilterInput());
 	}
 
 	/**

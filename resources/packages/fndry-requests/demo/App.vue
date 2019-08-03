@@ -33,12 +33,17 @@
 </script>
 
 <style>
+
+    body {
+        background-color: #2f2f2f !important;
+    }
+
     #app {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-align: center;
-        color: #2c3e50;
+        color: #efefef;
         margin-top: 20px;
     }
 
@@ -46,8 +51,18 @@
         font-weight: normal;
     }
 
+    hr {
+        color: #ccc;
+        border-color: #ccc;
+    }
+
     a {
-        color: #333;
+        color: #ccc;
+    }
+
+    .card {
+        background: #ccc !important;
+        color: #000;
     }
 
 </style>

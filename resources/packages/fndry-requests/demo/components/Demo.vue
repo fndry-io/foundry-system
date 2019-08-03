@@ -20,7 +20,7 @@
                                             <div class="input-group-append">
                                                 <b-button variant="outline-primary" @click="getList">Reload</b-button>
                                                 <b-dropdown id="dropdown-params" text="Params">
-                                                    <b-dropdown-item @click="addParam">Add Blank</b-dropdown-item>
+                                                    <b-dropdown-item @click="() => addParam()">Add Blank</b-dropdown-item>
                                                     <b-dropdown-item @click="addEntity">Add Entity</b-dropdown-item>
                                                     <b-dropdown-item @click="addReference">Add Reference</b-dropdown-item>
                                                     <b-dropdown-item @click="clearParams">Reset</b-dropdown-item>

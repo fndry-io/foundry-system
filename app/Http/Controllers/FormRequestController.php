@@ -3,12 +3,20 @@ namespace Foundry\System\Http\Controllers;
 
 use Foundry\Core\Exceptions\FormRequestException;
 use Foundry\Core\Facades\FormRequestHandler;
+use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * Class FormRequestController
+ *
+ * This class is responsible for loading a form request based on its static:name method value and will call either the
+ * handle method or return the view method with the forms schema
+ *
+ * @package Foundry\System\Http\Controllers
+ */
 class FormRequestController extends Controller
 {
 
@@ -16,52 +24,45 @@ class FormRequestController extends Controller
 	 * Handles a form request
 	 *
 	 * @param Request $request
-	 * @param null $_entity
 	 *
 	 * @return JsonResponse
+	 * @throws FormRequestException
+	 * @throws \Illuminate\Auth\Access\AuthorizationException
+	 * @throws \Illuminate\Validation\ValidationException
 	 */
-	public function handle(Request $request, $_entity = null)
+	public function resolve(Request $request)
 	{
 		$name = $request->route()->getName();
+
+		$form = FormRequestHandler::form($name, $request);
+
+		$form->setContainer(app());
+
+		$form->validateAuthorization();
+
 		if ($request->input('_form', false)) {
-			return FormRequestHandler::view($name, $request, $_entity)->toJsonResponse();
+
+			if ( $form instanceof ViewableFormRequestInterface ) {
+				return Response::success( $form->view() )->toJsonResponse();
 		} else {
-			return FormRequestHandler::handle($name, $request, $_entity)->toJsonResponse();
+				throw new FormRequestException( sprintf( 'Requested form %s must be an instance of ViewableFormRequestInterface to be viewable', get_class($form) ) );
 		}
 
-//		try {
-//
-//		} catch (FormRequestException $e) {
-//			return Response::error('Request not found', 404)->toJsonResponse();
-//		}
+		} else {
+			$form->validateInputs();
+
+			return $form->handle( )->toJsonResponse();
+
+		}
 	}
 
-//	/**
-//	 * Handles a form view request
-//	 *
-//	 * @param Request $request
-//	 * @param FormRequestHandler $handler
-//	 *
-//	 * @return \Illuminate\Contracts\View\Factory|JsonResponse|\Illuminate\View\View
-//	 */
-//	public function display(Request $request, FormRequestHandler $handler)
-//	{
-//		$name = $request->input('_request');
-//
-//		$response = $handler->view($name, $request);
-//
-//		if (config('app.env') != 'local') abort(401);
-//
-//		$list = $handler->forms();
-//		sort($list);
-//
-//		return view('foundry_system::pages.form', [
-//			'name' => $name,
-//			'list' => $list,
-//			'form' => $response->getData()
-//		]);
-//	}
-
+	/**
+	 * Return a list of the registered forms
+	 *
+	 * This is typically used for testing
+	 *
+	 * @return Response
+	 */
 	public function all()
 	{
 		$forms = FormRequestHandler::forms();

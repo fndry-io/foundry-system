@@ -2,14 +2,17 @@
 
 namespace Foundry\System\Http\Requests\Files;
 
+use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
+use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Inputs\File\FileInput;
 use Foundry\System\Services\FileService;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 
-abstract class BaseUploadFileRequest extends FormRequest {
+abstract class BaseUploadFileRequest extends FormRequest implements InputInterface {
+
+	use HasInput;
 
 	/**
 	 * {@inheritdoc}
@@ -21,10 +24,41 @@ abstract class BaseUploadFileRequest extends FormRequest {
 	/**
 	 * @return array
 	 */
-	public function rules(){
+	public function rules() {
+
+		$rules = ['file'];
+		if ($types = $this->fileTypes()) {
+			$rules[] = 'mimes:' . implode(',', $types);
+		}
+		if ($size = $this->fileSize()) {
+			$rules[] = 'max:' . $size;
+		}
 		return [
-			'file' => 'file'
+			'file' => implode('|', $rules)
 		];
+	}
+
+	/**
+	 * The max file size to allow
+	 *
+	 * @return int
+	 */
+	public function fileSize()
+	{
+		return 15000;
+	}
+
+	/**
+	 * The list of file types to support
+	 */
+	public function fileTypes()
+	{
+		return [];
+	}
+
+	public function isPublic()
+	{
+		return false;
 	}
 
 	/**
@@ -32,13 +66,14 @@ abstract class BaseUploadFileRequest extends FormRequest {
 	 *
 	 * Override this function to customise the file upload with your own max size and file types
 	 *
-	 * @param UploadedFile $file
+	 * @param $inputs
 	 *
-	 * @return FileInput
+	 * @see FileInput::fromUploadedFile
+	 * @return \Foundry\Core\Inputs\Inputs|FileInput
 	 */
-	protected function makeFileInput(UploadedFile $file) : FileInput
-	{
-		return FileInput::fromUploadedFile($file);
+	public function makeInput( $inputs ) {
+		$input = FileInput::fromUploadedFile($this->file, $inputs, $this->isPublic());
+		return $input;
 	}
 
 	/**
@@ -46,11 +81,11 @@ abstract class BaseUploadFileRequest extends FormRequest {
 	 */
 	public function handle(): Response
 	{
-		$input = $this->makeFileInput($this->file);
-		$validate = $input->validate();
-		if (!$validate->isSuccess()) {
-			return $validate;
+		$validation = $this->input->validate();
+		if (!$validation->isSuccess()) {
+			return $validation;
 		}
-		return FileService::service()->add($input);
+
+		return FileService::service()->add($this->input);
 	}
 }

@@ -11,7 +11,9 @@ use Foundry\Core\Services\BaseService;
 use Foundry\Core\Services\Traits\HasRepository;
 use Foundry\System\Entities\File;
 use Foundry\System\Entities\Folder;
+use Foundry\System\Entities\User;
 use Foundry\System\Inputs\File\FileInput;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
@@ -30,9 +32,18 @@ class FileService extends BaseService {
 	 */
 	public function add(FileInput $input) : Response
 	{
-
 		$values = $input->inputs();
-		$values['name'] = $input->getFile()->store('files');
+
+		$visibility = 'private';
+
+		if ($input->input('is_public',  false)) {
+			$visibility = 'public';
+		}
+
+		$file = $input->getFile()->store($visibility);
+		Storage::setVisibility($file, $visibility);
+
+		$values['name'] = $file;
 		$values['original_name'] = $input->getFile()->getClientOriginalName();
 
 		$file = new File($values);
@@ -50,17 +61,19 @@ class FileService extends BaseService {
 	/**
 	 * Delete a file
 	 *
-	 * @param File|Entity $file
+	 * @param File $file
+	 * @param bool $force
+	 * @param bool $flush
 	 *
 	 * @return Response
 	 */
-	public function delete(File $file) : Response
+	public function delete(File $file, $force = false, $flush = true) : Response
 	{
 		$this->repository->delete($file, false);
-		if ($file instanceof IsSoftDeletable && $file->isDeleted()) {
+		if ($file instanceof IsSoftDeletable && $file->isDeleted() || $force) {
 			Storage::delete($file->name);
 		}
-		$this->repository->flush();
+		if ($flush) $this->repository->flush();
 		return Response::success();
 	}
 
@@ -77,5 +90,6 @@ class FileService extends BaseService {
 		$this->repository->restore($file);
 		return Response::success();
 	}
+
 
 }

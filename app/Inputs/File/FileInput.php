@@ -8,8 +8,12 @@ use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Inputs\File\Types\Ext;
 use Foundry\System\Inputs\File\Types\Size;
 use Foundry\System\Inputs\File\Types\Type;
+use Foundry\System\Inputs\File\Types\IsPublic;
+use Foundry\System\Inputs\Types\Folder;
+use Foundry\System\Inputs\Types\ReferenceId;
+use Foundry\System\Inputs\Types\ReferenceType;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Validation\Rules\In;
+use Illuminate\Support\Arr;
 
 /**
  * Class AddressInput
@@ -43,24 +47,34 @@ class FileInput extends Inputs {
 	public function types() : InputTypeCollection
 	{
 		return InputTypeCollection::fromTypes([
+			Folder::input(),
+			ReferenceType::input(),
+			ReferenceId::input(),
 			Type::input(),
 			Ext::input(),
-			Size::input()
+			Size::input(),
+			IsPublic::input()
 		]);
 	}
 
-	static function fromUploadedFile(UploadedFile $file, array $types = null, int $maxSize = null){
-		$input = new FileInput([
+	/**
+	 * @param UploadedFile $file The uploaded file
+	 * @param array $inputs The inputs from the request
+	 * @param boolean $is_public If the file is public
+	 *
+	 * @return FileInput
+	 */
+	static function fromUploadedFile(UploadedFile $file, array $inputs = [], $is_public = false){
+		$input = new static([
+			'folder' => Arr::get($inputs, 'folder'),
+			'reference_type' => Arr::get($inputs, 'reference_type'),
+			'reference_id' => Arr::get($inputs, 'reference_id'),
 			'type' => $file->getMimeType(),
-			'ext'  => $file->getExtension(),
-			'size' => round($file->getSize() / 1000, 2)
+			'ext'  => $file->getClientOriginalExtension(),
+			'size' => round($file->getSize() / 1000, 2),
+			'is_public' => $is_public
 		]);
-		if ($types) {
-			$input->getType('type')->addRule(new In($types));
-		}
-		if ($maxSize) {
-			$input->getType('size')->addRule('max:' . $maxSize);
-		}
+
 		$input->setFile($file);
 		return $input;
 	}

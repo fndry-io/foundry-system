@@ -32,6 +32,16 @@ Foundry\System\Entities\File:
       type: decimal
       precision: 18
       scale: 2
+    is_public:
+      type: boolean
+      default: 0
+    reference_type:
+      type: string
+      length: 255
+      nullable: true
+    reference_id:
+      type: bigint
+      nullable: true
     created_at:
       type: datetime
       gedmo:

@@ -7,6 +7,7 @@ use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -28,6 +29,7 @@ class FormRequestController extends Controller
 	 * @return JsonResponse
 	 * @throws FormRequestException
 	 * @throws \Illuminate\Auth\Access\AuthorizationException
+	 * @throws \Illuminate\Contracts\Container\BindingResolutionException
 	 * @throws \Illuminate\Validation\ValidationException
 	 */
 	public function resolve(Request $request)
@@ -36,7 +38,7 @@ class FormRequestController extends Controller
 
 		$form = FormRequestHandler::form($name, $request);
 
-		$form->setContainer(app());
+		$form->setContainer(app())->setRedirector(app()->make(Redirector::class));
 
 		$form->validateAuthorization();
 
@@ -44,9 +46,9 @@ class FormRequestController extends Controller
 
 			if ( $form instanceof ViewableFormRequestInterface ) {
 				return Response::success( $form->view() )->toJsonResponse();
-		} else {
+			} else {
 				throw new FormRequestException( sprintf( 'Requested form %s must be an instance of ViewableFormRequestInterface to be viewable', get_class($form) ) );
-		}
+			}
 
 		} else {
 			$form->validateInputs();

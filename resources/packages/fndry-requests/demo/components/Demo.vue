@@ -9,101 +9,71 @@
 
                 <div v-if="!loading">
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="card">
+                        <div class="col-md-6">
+                            <div class="card mb-2">
                                 <div class="card-body">
-                                    <h5 class="card-title">Request</h5>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <b-form-group label="Type of Form">
-                                                    <b-form-radio v-model="type" name="type" value="inline">Inline</b-form-radio>
-                                                    <b-form-radio v-model="type" name="type" value="target">Target</b-form-radio>
-                                                    <b-form-radio v-model="type" name="type" value="modal">Modal</b-form-radio>
-                                                </b-form-group>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div v-if="type === 'target'" class="form-group">
-                                                <b-form-group label="Target">
-                                                    <b-form-radio v-model="options.target" name="target" value="inlineFormTarget" inline>inlineFormTarget</b-form-radio>
-                                                </b-form-group>
-                                            </div>
-                                            <div v-if="type === 'target'" class="form-group">
-                                                <b-form-checkbox v-model="options.inline" name="check-button" switch>
-                                                    Inline Fields
-                                                </b-form-checkbox>
-                                            </div>
-                                            <div v-if="type === 'modal'" class="form-group">
-                                                <b-form-group label="Size">
-                                                    <b-form-radio v-model="options.size" name="size" value="sm">Small</b-form-radio>
-                                                    <b-form-radio v-model="options.size" name="size" value="lg">Large</b-form-radio>
-                                                    <b-form-radio v-model="options.size" name="size" value="xl">Extra Large</b-form-radio>
-                                                </b-form-group>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="form-group">
-                                        <label for="request">Select a Form</label>
                                         <div class="input-group mb-3">
                                             <select id="request" class="form-control" @change="onListChange" v-model="request">
                                                 <option v-for="(name, uri) in requests" :key="name" :value="uri">{{name}}</option>
                                             </select>
                                             <div class="input-group-append">
                                                 <b-button variant="outline-primary" @click="getList">Reload</b-button>
+                                                <b-dropdown id="dropdown-params" text="Params">
+                                                    <b-dropdown-item @click="addParam">Add Blank</b-dropdown-item>
+                                                    <b-dropdown-item @click="addEntity">Add Entity</b-dropdown-item>
+                                                    <b-dropdown-item @click="addReference">Add Reference</b-dropdown-item>
+                                                    <b-dropdown-item @click="clearParams">Reset</b-dropdown-item>
+                                                </b-dropdown>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="mt-5 mb-5">
-                                        <div class="form-group">
-                                            <label>Parameters</label>
-                                            <div v-if="params">
-                                                <div v-for="(param, index) in params" :key="index">
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <input class="form-control" :name="`key${index}`" :value="params[index].key" @input="(e) => updateParamKey(e, index)" placeholder="name...">
-                                                            <input class="form-control" :name="`value${index}`" :value="params[index].value" @input="(e) => updateParamValue(e, index)" placeholder="value...">
-                                                            <div class="input-group-append">
-                                                                <button class="btn btn-outline-secondary" type="button" @click="() => removeParam(index)">X</button>
-                                                            </div>
-                                                        </div>
+                                    <div v-if="params" class="mb-3">
+                                        <div v-for="(param, index) in params" :key="index">
+                                            <div class="form-group mb-0">
+                                                <div class="input-group">
+                                                    <input class="form-control" :name="`key${index}`" :value="params[index].key" @input="(e) => updateParamKey(e, index)" placeholder="name...">
+                                                    <input class="form-control" :name="`value${index}`" :value="params[index].value" @input="(e) => updateParamValue(e, index)" placeholder="value...">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-secondary" type="button" @click="() => removeParam(index)">X</button>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div v-else>
-                                                None set
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <b-form-group label="">
+                                                <b-form-radio v-model="type" name="type" value="inline" inline>Inline</b-form-radio>
+                                                <b-form-radio v-model="type" name="type" value="target" inline>Target</b-form-radio>
+                                                <b-form-radio v-model="type" name="type" value="modal" inline>Modal</b-form-radio>
+                                            </b-form-group>
+                                            <div v-if="type === 'target'">
+                                                <b-form-group>
+                                                    <b-form-radio v-model="options.target" name="target" value="inlineFormTarget" inline>inlineFormTarget</b-form-radio>
+                                                    <b-form-checkbox v-if="type === 'target'" v-model="options.inline" name="check-button" switch inline>
+                                                        Inline Fields
+                                                    </b-form-checkbox>
+                                                </b-form-group>
+                                            </div>
+                                            <div v-if="type === 'modal'">
+                                                <b-form-group>
+                                                    <b-form-radio v-model="options.size" name="size" value="sm" inline>Small</b-form-radio>
+                                                    <b-form-radio v-model="options.size" name="size" value="lg" inline>Large</b-form-radio>
+                                                    <b-form-radio v-model="options.size" name="size" value="xl" inline>Extra Large</b-form-radio>
+                                                </b-form-group>
                                             </div>
                                         </div>
-                                        <div class="btn-group" role="group">
-                                            <button class="btn btn-outline-primary" type="button" @click="addParam">Add Blank</button>
-                                            <button class="btn btn-outline-secondary" type="button" @click="addEntity">Add Entity</button>
-                                            <button class="btn btn-outline-danger" type="button" @click="clearParams">Reset</button>
+                                        <div class="col buttons text-right">
+                                            <button @click="handleLoadRequest" class="btn btn-primary">View</button>&nbsp;
+                                            <button @click="handleSubmitRequest" class="btn btn-primary">Handle</button>
                                         </div>
-
-                                    </div>
-
-                                    <div>
-                                        <button @click="handleLoadRequest" class="btn btn-primary">Load Request</button> &nbsp; <button @click="handleSubmitRequest" class="btn btn-primary">Submit Request</button>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="card" v-if="request && model">
-                                <div class="card-body" >
-                                    <h5 class="card-title">Model Output</h5>
-                                    <hr>
-                                    <div>
-                                        <vue-json-pretty :data="model"></vue-json-pretty>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-md-4">
 
                             <div v-if="request && type === 'target'">
-                                <div class="card">
+                                <div class="card mb-2">
                                     <div class="card-body" >
                                         <div id="inlineFormTarget"></div>
                                     </div>
@@ -111,29 +81,33 @@
                             </div>
 
                             <div v-if="request && type === 'inline' && inline">
-                                <div class="card">
+                                <div class="card mb-2">
                                     <div class="card-body" >
                                         <fndry-request-form-inline :params="options.params" :title="true" :request="request" @success="onResponse" @fail="onResponse" @submitting="onSubmitting" :key="key"></fndry-request-form-inline>
                                     </div>
                                 </div>
                             </div>
 
-
                         </div>
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Response</h5>
-                                    <hr>
-                                    <div v-if="response">
-                                        <vue-json-pretty :data="response"></vue-json-pretty>
-                                    </div>
-                                    <div v-else>
-                                        No response yet...
-                                    </div>
-                                    <div v-if="submitting" class="text-center">
-                                        <b-spinner label="Loading..."></b-spinner>
-                                    </div>
+                        <div class="col-md-6">
+                            <div class="mb-4" v-if="request && model">
+                                <h5 class="card-title">Model Output</h5>
+                                <hr>
+                                <div>
+                                    <vue-json-pretty :data="model"></vue-json-pretty>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <h5 class="card-title">Response</h5>
+                                <hr>
+                                <div v-if="response">
+                                    <vue-json-pretty :data="response"></vue-json-pretty>
+                                </div>
+                                <div v-else>
+                                    No response yet...
+                                </div>
+                                <div v-if="submitting" class="text-center">
+                                    <b-spinner label="Loading..."></b-spinner>
                                 </div>
                             </div>
                         </div>
@@ -149,7 +123,7 @@
 
     import VueJsonPretty from 'vue-json-pretty';
     import FndryRequestFormInline from '../../src/components/RequestFormInline';
-    import {merge, uniqueId, forEach} from 'lodash';
+    import {merge, uniqueId, forEach, findKey} from 'lodash';
 
     /**
      * Request Form Tester
@@ -204,6 +178,13 @@
         },
         mounted() {
             this.getList();
+            if (this.$route.query) {
+                forEach(this.$route.query, (value, key) => {
+                    if (key !== 'request') {
+                        this.addParam(key, value);
+                    }
+                })
+            }
         },
         methods: {
 
@@ -227,6 +208,12 @@
                     .then((response) => {
                         this.requests = response.data;
                         this.loading = false;
+                        if (this.$route.query.request) {
+                            let uri;
+                            if (uri = findKey(this.requests, (name) => name === this.$route.query.request)) {
+                                this.request = uri;
+                            }
+                        }
                     })
                 ;
             },
@@ -287,11 +274,11 @@
                     this.params[index].value = e.target.value;
                 }
             },
-            addParam(){
-                let id = uniqueId();
+            addParam(key = null, value = ''){
+                let id = (key) ? key : uniqueId();
                 this.params[id] = {
-                    key: '',
-                    value: ''
+                    key: key,
+                    value: value
                 };
                 this.params = merge({}, this.params);
             },
@@ -310,12 +297,11 @@
                 return params
             },
             addEntity(){
-                this.params = merge({}, this.params, {
-                    entity: {
-                        key: '_entity',
-                        value: '',
-                    }
-                });
+                this.addParam('_entity', '');
+            },
+            addReference(){
+                this.addParam('reference_type', '');
+                this.addParam('reference_id', '');
             }
         }
     }

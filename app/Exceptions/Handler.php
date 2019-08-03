@@ -34,7 +34,7 @@ class Handler extends ExceptionHandler
 	 *
 	 * @return mixed|void
 	 * @throws Exception
-     */
+	 */
     public function report(Exception $exception)
     {
         parent::report($exception);

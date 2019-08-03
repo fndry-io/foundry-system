@@ -2,9 +2,10 @@
 
 namespace Foundry\System\Http\Requests\PickLists;
 
-
 use Doctrine\ORM\QueryBuilder;
 use Foundry\Core\Inputs\Types\FormType;
+use Foundry\Core\Inputs\Types\RowType;
+use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
@@ -18,10 +19,14 @@ class BrowsePickListsRequest extends FormRequest implements ViewableFormRequestI
     use HasInput;
 
 	public static function name(): String {
-		return 'picklists.picklists.browse';
+		return 'foundry.system.pick-lists.browse';
 	}
 
-
+	/**
+	 * @param $inputs
+	 *
+	 * @return \Foundry\Core\Inputs\Inputs|SearchFilterInput
+	 */
     public function makeInput($inputs) {
         return new SearchFilterInput($inputs);
     }
@@ -58,6 +63,9 @@ class BrowsePickListsRequest extends FormRequest implements ViewableFormRequestI
         return Response::success($result);
 	}
 
+	/**
+	 * @return FormType
+	 */
     public function view() : FormType
     {
         $form = $this->form();

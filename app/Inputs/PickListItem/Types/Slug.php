@@ -20,6 +20,7 @@ class Slug extends TextInputType implements Field {
 			__( 'Slug' ),
 			true
 		) )
+			->setReadonly(true)
 			->setMax( 100 )
 			->setSortable( true );
 	}

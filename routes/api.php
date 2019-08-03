@@ -46,27 +46,26 @@ Route::prefix('system')->middleware('auth:api')->group( function () {
 	FormRequestHandler::route('/addresses/{_entity}/edit',  'Foundry\System\Http\Requests\Addresses\EditAddressRequest');
 	FormRequestHandler::route('/addresses/{_entity}/delete','Foundry\System\Http\Requests\Addresses\DeleteAddressRequest');
 
-    //PickList
-    FormRequestHandler::route('/picklists',                 'Foundry\System\Http\Requests\PickLists\BrowsePickListsRequest');
-    FormRequestHandler::route('/picklists/add',             'Foundry\System\Http\Requests\PickLists\AddPickListRequest');
-    FormRequestHandler::route('/picklists/{_entity}/edit',  'Foundry\System\Http\Requests\PickLists\EditPickListRequest');
-    FormRequestHandler::route('/picklists/{_entity}',       'Foundry\System\Http\Requests\PickLists\ReadPickListRequest');
+	//PickList Items
+	FormRequestHandler::route('/pick-list-items/add',             'Foundry\System\Http\Requests\PickListItems\AddPickListItemRequest');
+	FormRequestHandler::route('/pick-list-items/{_entity}/edit',  'Foundry\System\Http\Requests\PickListItems\EditPickListItemRequest');
 
     //PickList
-    FormRequestHandler::route('/picklist/items',                 'Foundry\System\Http\Requests\PickListItems\BrowsePickListItemRequest');
-    FormRequestHandler::route('/picklistitems/add',             'Foundry\System\Http\Requests\PickListItems\AddPickListItemRequest');
-    FormRequestHandler::route('/picklistitems/{_entity}/edit',  'Foundry\System\Http\Requests\PickListItems\EditPickListItemRequest');
-    FormRequestHandler::route('/picklistitems/{_entity}',       'Foundry\System\Http\Requests\PickListItems\ReadPickListItemRequest');
+    FormRequestHandler::route('/pick-lists',                 'Foundry\System\Http\Requests\PickLists\BrowsePickListsRequest');
+    FormRequestHandler::route('/pick-lists/add',             'Foundry\System\Http\Requests\PickLists\AddPickListRequest');
+    FormRequestHandler::route('/pick-lists/{_entity}/edit',  'Foundry\System\Http\Requests\PickLists\EditPickListRequest');
+    FormRequestHandler::route('/pick-lists/{_entity}',       'Foundry\System\Http\Requests\PickLists\ReadPickListRequest');
+	FormRequestHandler::route('/pick-lists/{_entity}/items', 'Foundry\System\Http\Requests\PickLists\BrowsePickListItemsRequest');
 
-	//files
+	//Files
 	FormRequestHandler::route('/files/upload',                 'Foundry\System\Http\Requests\Files\UploadFileRequest');
 	FormRequestHandler::route('/files/upload/image',           'Foundry\System\Http\Requests\Files\UploadImageFileRequest');
 	FormRequestHandler::route('/files/{_entity}/delete',       'Foundry\System\Http\Requests\Files\DeleteFileRequest');
 
 	Route::get('/files/{_entity}/download', 'FilesController@download');
-	Route::get('/files/{_entity}', 'FilesController@read');
+	Route::get('/files/{_entity}',          'FilesController@read');
 
-	//folders
+	//Folders
 	FormRequestHandler::route('/folders/add',             'Foundry\System\Http\Requests\Folders\AddFolderRequest');
 	FormRequestHandler::route('/folders/{_entity}/edit',  'Foundry\System\Http\Requests\Folders\EditFolderRequest');
 	FormRequestHandler::route('/folders/{_entity}/delete','Foundry\System\Http\Requests\Folders\DeleteFolderRequest');

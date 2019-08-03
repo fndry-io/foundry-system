@@ -28,7 +28,6 @@ class PickListItemInput extends Inputs {
 		return InputTypeCollection::fromTypes([
 			Name::input(),
 			Description::input(),
-			Slug::input(),
 			Sequence::input(),
 			Status::input(),
             DefaultItem::input(),

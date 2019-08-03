@@ -2,18 +2,17 @@
 
 namespace Foundry\System\Entities;
 
-
 use Foundry\Core\Entities\Entity;
 use Foundry\Core\Entities\Traits\Fillable;
 use Foundry\Core\Entities\Traits\Timestampable;
 use Foundry\Core\Entities\Traits\Visible;
-use Foundry\Core\Entities\Contracts\HasReference;
 use Foundry\Core\Entities\Contracts\HasIdentity;
 use Foundry\Core\Entities\Traits\Identifiable;
-use Foundry\Core\Entities\Traits\Referencable;
 
 /**
- * Checklist
+ * Class PickListItem
+ *
+ * @package Foundry\System\Entities
  */
 class PickListItem extends Entity implements  HasIdentity
 {
@@ -26,11 +25,8 @@ class PickListItem extends Entity implements  HasIdentity
 	protected $fillable = [
 		'name',
 		'description',
-		'slug',
 		'sequence',
-		'status',
-        'picklist',
-		'default_item'
+		'status'
 	];
 
 	protected $visible = [
@@ -40,9 +36,6 @@ class PickListItem extends Entity implements  HasIdentity
         'slug',
         'sequence',
         'status',
-        'picklist',
-		'items',
-        'default_item',
 		'created_at',
 		'updated_at'
 	];
@@ -63,21 +56,28 @@ class PickListItem extends Entity implements  HasIdentity
 	protected $slug;
 
     /**
-     * @var number|null
+     * @var integer
      */
     protected $sequence = 0;
 
+	/**
+	 * @var boolean
+	 */
+    protected $default_item = false;
 
-    protected $default_item=0;
     /**
-     * @var Picklist
+     * @var PickList
      */
     protected $picklist;
 
     /**
      * @var Boolean
      */
-    protected $status = false;
+    protected $status;
 
+	/**
+	 * @var boolean If the pick list is system generated
+	 */
+	protected $is_system = false;
 
 }

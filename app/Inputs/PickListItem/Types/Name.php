@@ -20,7 +20,7 @@ class Name extends TextInputType implements Field {
 			__( 'Name' ),
 			true
 		) )
-			->setMax( 100 )
+			->setMax( 50 )
 			->setSortable( true );
 	}
 

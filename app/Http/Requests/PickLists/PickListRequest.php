@@ -19,7 +19,7 @@ abstract class PickListRequest extends FormRequest implements EntityRequestInter
 	 */
 	public function findEntity($id)
 	{
-		return EntityManager::getRepository(PickList::class)->findOneBy(['id' => $id]);
+		return EntityManager::getRepository(PickList::class)->find($id);
 	}
 
 }

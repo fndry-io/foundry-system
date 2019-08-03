@@ -2,19 +2,16 @@
 
 namespace Foundry\System\Http\Requests\PickLists;
 
-use Foundry\Core\Requests\Contracts\EntityRequestInterface;
-use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
-use Foundry\Core\Entities\Contracts\HasIdentity;
-use Foundry\System\Services\PickListService;
-use LaravelDoctrine\ORM\Facades\EntityManager;
-use Modules\Foundry\Checklists\Services\ChecklistService;
 
 class ReadPickListRequest extends PickListRequest
 {
 
+	/**
+	 * @return String
+	 */
 	public static function name(): String {
-		return 'picklists.picklists.entity';
+		return 'foundry.system.pick-lists.read';
 	}
 
 	/**
@@ -27,7 +24,9 @@ class ReadPickListRequest extends PickListRequest
 		return !!($this->user());
 	}
 
-
+	/**
+	 * @return Response
+	 */
 	public function handle() : Response
     {
         return Response::success($this->getEntity());

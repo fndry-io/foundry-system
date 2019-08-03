@@ -6,7 +6,6 @@ use Foundry\Core\Requests\Contracts\EntityRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Traits\HasEntity;
 use Foundry\System\Entities\PickListItem;
-
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
 abstract class PickListItemRequest extends FormRequest implements EntityRequestInterface
@@ -16,11 +15,11 @@ abstract class PickListItemRequest extends FormRequest implements EntityRequestI
 	/**
 	 * @param mixed $id
 	 *
-	 * @return null|Picklist|object
+	 * @return null|PickListItem|object
 	 */
 	public function findEntity($id)
 	{
-		return EntityManager::getRepository(PickListItem::class)->findOneBy(['id' => $id]);
+		return EntityManager::getRepository(PickListItem::class)->find($id);
 	}
 
 }

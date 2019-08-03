@@ -21,6 +21,7 @@ class Slug extends TextInputType implements Field {
 			true
 		) )
 			->setMax( 100 )
+			->setReadonly(true)
 			->setSortable( true );
 	}
 

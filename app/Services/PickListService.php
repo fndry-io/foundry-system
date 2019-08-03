@@ -44,11 +44,4 @@ class PickListService extends BaseService {
 		return Response::success($pickList);
 	}
 
-
-	public function restore(PickList $pickList) : Response
-	{
-		$this->repository->restore($pickList);
-		return Response::success();
-	}
-
 }

@@ -12,25 +12,20 @@ use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Inputs\PickListItem\PickListEditItemInput;
-use Foundry\System\Inputs\PickListItem\PickListItemInput;
-use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Services\PickListItemService;
-use Foundry\System\Services\PickListService;
-use Foundry\System\Inputs\PickList\PickListInput;
-
 
 class EditPickListItemRequest extends PickListItemRequest implements ViewableFormRequestInterface, EntityRequestInterface, InputInterface
 {
 	use HasInput;
 
 	public static function name(): String {
-		return 'picklistitems.picklistitems.edit';
+		return 'foundry.system.pick-list-items.edit';
 	}
 
 	/**
 	 * @param $inputs
 	 *
-	 * @return \Foundry\Core\Inputs\Inputs|ChecklistInput
+	 * @return \Foundry\Core\Inputs\Inputs|PickListEditItemInput
 	 */
 	public function makeInput($inputs) {
 		return new PickListEditItemInput($inputs);
@@ -65,18 +60,20 @@ class EditPickListItemRequest extends PickListItemRequest implements ViewableFor
 	{
 		$form = $this->form();
 
-		$form->setTitle(__('Update Picklist Item'));
+		$form->setTitle(__('Update Pick List Item'));
 		$form->setButtons((new SubmitButtonType(__('Update'), $form->getAction())));
 
-		$picklist = (new SectionType(__('Details')))->addChildren(
-            RowType::withChildren($form->get('name')),
-            RowType::withChildren($form->get('description')),
-            RowType::withChildren($form->get('status'))
+		$entity = $this->getEntity();
 
+		$item = (new SectionType(__('Details')))->addChildren(
+			RowType::withChildren($form->get('name')),
+			RowType::withChildren($form->get('description')),
+			RowType::withChildren($form->get('status'), $form->get('default_item')->setValue(($entity->picklist->default_item === $entity->getId()))),
+			RowType::withChildren($form->get('sequence'))
 		);
 
 		$form->addChildren(
-			$picklist
+			$item
 		);
 
 		return $form;

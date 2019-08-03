@@ -11,7 +11,6 @@ use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
-use Foundry\System\Entities\PickList;
 use Foundry\System\Inputs\PickList\PickListInput;
 use Foundry\System\Services\PickListService;
 
@@ -20,7 +19,7 @@ class AddPickListRequest extends FormRequest implements InputInterface, Viewable
 	use HasInput;
 
 	public static function name(): String {
-		return 'picklists.picklists.add';
+		return 'foundry.system.pick-lists.add';
 	}
 
 	/**
@@ -61,14 +60,12 @@ class AddPickListRequest extends FormRequest implements InputInterface, Viewable
 
         $form = $this->form();
 
-        $form->setTitle(__('Create New Picklist'));
+        $form->setTitle(__('Create New Pick List'));
         $form->setButtons((new SubmitButtonType(__('Create'), $form->getAction())));
 
         $picklist = (new SectionType(__('Details')))->addChildren(
             RowType::withChildren($form->get('name')),
-            RowType::withChildren($form->get('description')),
-            RowType::withChildren($form->get('slug')),
-            RowType::withChildren($form->get('status'))
+            RowType::withChildren($form->get('description'))
         );
 
         $form->addChildren(

@@ -12,38 +12,49 @@ Foundry\System\Entities\PickListItem:
       generator:
         strategy: AUTO
   fields:
-     name:
-       type: string
-       length: 50
-     description:
-       type: text
-       nullable: true
-     slug:
-       type: string
-       length: 100
-     sequence:
-       type: integer
-       default: 0
-     status:
-       type: boolean
-       default: false
-     created_at:
+    name:
+      type: string
+      length: 50
+    description:
+      type: text
+      nullable: true
+    slug:
+      type: string
+      length: 100
+      gedmo:
+        slug:
+          separator: _
+          style: lower
+          updatable: false
+          unique: true
+          fields:
+            - name
+    sequence:
+      type: integer
+      default: 0
+    status:
+      type: boolean
+      default: false
+    is_system:
+      type: boolean
+      default: false
+    created_at:
       type: datetime
       gedmo:
         timestampable:
           on: create
-     updated_at:
+    updated_at:
       type: datetime
       nullable: true
       gedmo:
         timestampable:
           on: update
   manyToOne:
-     picklist:
-        targetEntity: Foundry\System\Entities\PickList
-        inversedBy: items
-        fetch: LAZY
-        joinColumn:
-          name: picklist_id
-          referencedColumnName: id
-          onDelete: CASCADE
+    picklist:
+      targetEntity: Foundry\System\Entities\PickList
+      inversedBy: items
+      fetch: LAZY
+      joinColumn:
+        name: picklist_id
+        referencedColumnName: id
+        onDelete: RESTRICT

@@ -2,9 +2,7 @@
 
 namespace Foundry\System\Http\Requests\PickListItems;
 
-use Doctrine\ORM\EntityManager;
 use Foundry\Core\Inputs\Types\FormType;
-use Foundry\Core\Inputs\Types\HiddenInputType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SectionType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
@@ -21,8 +19,11 @@ class AddPickListItemRequest extends FormRequest implements InputInterface, View
 {
 	use HasInput;
 
+	/**
+	 * @return String
+	 */
 	public static function name(): String {
-		return 'picklistitems.picklistitems.add';
+		return 'foundry.system.pick-list-items.add';
 	}
 
 	/**
@@ -47,6 +48,7 @@ class AddPickListItemRequest extends FormRequest implements InputInterface, View
 	 * Handle the request
 	 *
 	 * @return Response
+	 * @throws \Doctrine\ORM\ORMException
 	 */
 	public function handle() : Response
 	{
@@ -62,18 +64,14 @@ class AddPickListItemRequest extends FormRequest implements InputInterface, View
 	{
         $form = $this->form();
 
-        $form->setTitle(__('Create New Picklist Item'));
+        $form->setTitle(__('Create New Pick List Item'));
         $form->setButtons((new SubmitButtonType(__('Create'), $form->getAction())));
 
 		$item = (new SectionType(__('Details')))->addChildren(
             RowType::withChildren($form->get('name')),
             RowType::withChildren($form->get('description')),
-            RowType::withChildren($form->get('sequence')),
-            RowType::withChildren($form->get('slug')),
-            RowType::withChildren($form->get('status')),
-            RowType::withChildren($form->get('default_item'))
-
-
+            RowType::withChildren($form->get('status'), $form->get('default_item')),
+            RowType::withChildren($form->get('sequence'))
 		);
 
         $form->addChildren(

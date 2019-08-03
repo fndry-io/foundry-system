@@ -33,24 +33,23 @@ class PickListItemService extends BaseService {
         if ($id = $input->input('picklist')) {
             if ($picklist = EntityManager::getRepository(PickList::class)->find($id)) {
                 $pickListItem->picklist = $picklist;
-
             }
         }
 
 		$this->repository->save($pickListItem);
-        if ($input->input('default_item') && $input->input('picklist')) {
-            $id = $input->input('picklist');
-            $picklist = EntityManager::getRepository(PickList::class)->find($id);
-            $picklist->default_item=$pickListItem->getId();
-            EntityManager::getRepository(PickList::class)->flush($picklist);
-        }
-        $this->repository->flush($pickListItem);
+
+		if ($input->input('default_item') && $pickListItem->picklist) {
+			$pickListItem->picklist->default_item = $pickListItem->getId();
+			EntityManager::persist($pickListItem->picklist);
+		}
+
+        $this->repository->flush();
 
         return Response::success($pickListItem);
 	}
 
 	/**
-	 * @param PickListItemInput|Inputs $input
+	 * @param PickListEditItemInput|Inputs $input
 	 * @param PickListItem|Entity $pickListItem
 	 *
 	 * @return Response
@@ -58,24 +57,17 @@ class PickListItemService extends BaseService {
 	public function edit(PickListEditItemInput $input, PickListItem $pickListItem) : Response
 	{
 		$pickListItem->fill($input);
-
-        if ($id = $input->input('picklist')) {
-            if ($picklist = EntityManager::getRepository(PickList::class)->find($id)) {
-                $pickListItem->picklist = $picklist;
-            }
-        }
-
-
-
 		$this->repository->save($pickListItem);
+
+		if ($input->input('default_item') && $pickListItem->picklist) {
+			$pickListItem->picklist->default_item = $pickListItem->getId();
+			EntityManager::persist($pickListItem->picklist);
+		}
+
+		$this->repository->flush();
+
 		return Response::success($pickListItem);
 	}
 
-
-	public function restore(PickListItem $pickListItem) : Response
-	{
-		$this->repository->restore($pickListItem);
-		return Response::success();
-	}
 
 }

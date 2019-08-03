@@ -11,8 +11,6 @@ use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
-use Foundry\System\Entities\PickList;
-use Foundry\System\Http\Requests\PickLists\PickListRequest;
 use Foundry\System\Inputs\PickList\PickListInput;
 use Foundry\System\Services\PickListService;
 use Modules\Foundry\Checklists\Inputs\Checklist\ChecklistInput;
@@ -22,7 +20,7 @@ class EditPickListRequest extends PickListRequest implements ViewableFormRequest
 	use HasInput;
 
 	public static function name(): String {
-		return 'picklists.picklists.edit';
+		return 'foundry.system.pick-lists.edit';
 	}
 
 	/**
@@ -63,14 +61,12 @@ class EditPickListRequest extends PickListRequest implements ViewableFormRequest
 	{
 		$form = $this->form();
 
-		$form->setTitle(__('Update Picklist'));
+		$form->setTitle(__('Update Pick List'));
 		$form->setButtons((new SubmitButtonType(__('Update'), $form->getAction())));
 
 		$item = (new SectionType(__('Details')))->addChildren(
             RowType::withChildren($form->get('name')),
-            RowType::withChildren($form->get('description')),
-            RowType::withChildren($form->get('slug')),
-            RowType::withChildren($form->get('status'))
+            RowType::withChildren($form->get('description'))
 		);
 
 		$form->addChildren(

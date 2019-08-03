@@ -12,35 +12,43 @@ Foundry\System\Entities\PickList:
       generator:
         strategy: AUTO
   fields:
-     name:
-       type: string
-       length: 50
-     description:
-       type: text
-       nullable: true
-     slug:
-       type: string
-       length: 100
-     status:
-       type: boolean
-       default: false
-     default_item:
-       type: integer
-       nullable: true
-     created_at:
+    name:
+      type: string
+      length: 50
+    description:
+      type: text
+      nullable: true
+    slug:
+      type: string
+      length: 100
+      gedmo:
+        slug:
+          separator: _
+          style: lower
+          updatable: false
+          unique: true
+          fields:
+            - name
+    default_item:
+      type: integer
+      nullable: true
+    is_system:
+      type: boolean
+      default: false
+    created_at:
       type: datetime
       gedmo:
         timestampable:
           on: create
-     updated_at:
+    updated_at:
       type: datetime
       nullable: true
       gedmo:
         timestampable:
           on: update
   oneToMany:
-      items:
-          targetEntity: Foundry\System\Entities\PickListItem
-          mappedBy: picklist
-          cascade: [ persist ]
-          fetch: LAZY
+    items:
+      targetEntity: Foundry\System\Entities\PickListItem
+      mappedBy: picklist
+      cascade: [ persist ]
+      fetch: LAZY

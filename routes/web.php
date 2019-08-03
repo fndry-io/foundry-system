@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -10,6 +12,13 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::prefix('system')->group( function () {
+
+	Route::get('/files/{_entity}/download', 'FilesController@download');
+	Route::get('/files/{_entity}', 'FilesController@read');
+
+});
 
 if (config('app.env') !== 'production') {
 

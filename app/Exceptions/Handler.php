@@ -3,6 +3,7 @@
 namespace Foundry\System\Exceptions;
 
 use Exception;
+use Foundry\Core\Requests\Response;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -29,9 +30,11 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
-     * @return void
-     */
+	 * @param Exception $exception
+	 *
+	 * @return mixed|void
+	 * @throws Exception
+	 */
     public function report(Exception $exception)
     {
         parent::report($exception);
@@ -46,6 +49,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+    	if ($request->expectsJson()) {
+		    return Response::fromException($exception)->toJsonResponse();
+	    }
         return parent::render($request, $exception);
     }
 }

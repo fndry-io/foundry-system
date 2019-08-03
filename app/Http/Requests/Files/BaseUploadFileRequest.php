@@ -25,9 +25,40 @@ abstract class BaseUploadFileRequest extends FormRequest implements InputInterfa
 	 * @return array
 	 */
 	public function rules() {
+
+		$rules = ['file'];
+		if ($types = $this->fileTypes()) {
+			$rules[] = 'mimes:' . implode(',', $types);
+		}
+		if ($size = $this->fileSize()) {
+			$rules[] = 'max:' . $size;
+		}
 		return [
-			'file' => 'file'
+			'file' => implode('|', $rules)
 		];
+	}
+
+	/**
+	 * The max file size to allow
+	 *
+	 * @return int
+	 */
+	public function fileSize()
+	{
+		return 15000;
+	}
+
+	/**
+	 * The list of file types to support
+	 */
+	public function fileTypes()
+	{
+		return [];
+	}
+
+	public function isPublic()
+	{
+		return false;
 	}
 
 	/**
@@ -40,13 +71,21 @@ abstract class BaseUploadFileRequest extends FormRequest implements InputInterfa
 	 * @see FileInput::fromUploadedFile
 	 * @return \Foundry\Core\Inputs\Inputs|FileInput
 	 */
-	abstract public function makeInput( $inputs );
+	public function makeInput( $inputs ) {
+		$input = FileInput::fromUploadedFile($this->file, $inputs, $this->isPublic());
+		return $input;
+	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function handle(): Response
 	{
+		$validation = $this->input->validate();
+		if (!$validation->isSuccess()) {
+			return $validation;
+		}
+
 		return FileService::service()->add($this->input);
 	}
 }

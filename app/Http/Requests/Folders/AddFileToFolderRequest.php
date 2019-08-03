@@ -48,7 +48,7 @@ class AddFileToFolderRequest extends FolderRequest implements ViewableFormReques
 	{
 		$form = $this->form();
 
-		$file = File::input()->setMultiple(false);
+		$file = File::input()->setMultiple(true);
 		$input = new SimpleInputs([], InputTypeCollection::fromTypes([ $file ]));
 
 		$form->attachInputCollection( $input->types() );

@@ -2,18 +2,11 @@
 
 namespace Foundry\System\Http\Requests\Files;
 
-use Foundry\Core\Requests\Contracts\EntityRequestInterface;
-use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
-use Foundry\Core\Requests\Traits\HasEntity;
-use Foundry\System\Entities\File;
 use Foundry\System\Services\FileService;
 use Illuminate\Support\Facades\Auth;
-use LaravelDoctrine\ORM\Facades\EntityManager;
 
-abstract class BaseDeleteFileRequest extends FormRequest implements EntityRequestInterface {
-
-	use HasEntity;
+abstract class BaseDeleteFileRequest extends FileRequest {
 
 	/**
 	 * {@inheritdoc}
@@ -31,7 +24,4 @@ abstract class BaseDeleteFileRequest extends FormRequest implements EntityReques
 		return FileService::service()->delete($this->getEntity());
 	}
 
-	public function findEntity( $id ) {
-		return EntityManager::getRepository(File::class)->find($id);
-	}
 }

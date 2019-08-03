@@ -18,7 +18,7 @@ class Ext extends TextInputType implements Field {
 		return ( new static(
 			'ext',
 			__( 'Ext' ),
-			false
+			true
 		) )
 			->setMax( 5 )
 			->setSortable( true );

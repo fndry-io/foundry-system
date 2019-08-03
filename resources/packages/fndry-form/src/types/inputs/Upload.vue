@@ -1,23 +1,5 @@
 <template>
     <div class="file-uploader">
-        <b-form-file
-                :id="id"
-                :name="name"
-                :state="state"
-                placeholder="Choose a file..."
-                drop-placeholder="Drop file here..."
-                :accept="getAcceptAttributes()"
-                :multiple="schema.multiple"
-                :placeholder="placeholder"
-                :disabled="!uploadable"
-                :readonly="schema.readonly"
-                :required="schema.required"
-                :value="model"
-                ref="file"
-                @change="handleFileUpload"
-                :file-name-formatter="formatNames"
-                no-drop
-        ></b-form-file>
 
         <div v-if="files.length > 0"
              v-for="(file, index) in files"
@@ -55,10 +37,30 @@
                     </div>
                 </div>
                 <div class="invalid-feedback" v-if="file.failed">
-                    {{file.error}}
+                    <span v-if="file.validation" v-for="error in file.validation" style="display: block;">{{error}}</span>
+                    <span v-else>{{file.error}}</span>
                 </div>
             </div>
         </div>
+
+        <b-form-file
+                :id="id"
+                :name="name"
+                :state="state"
+                placeholder="Choose a file..."
+                drop-placeholder="Drop file here..."
+                :accept="getAcceptAttributes()"
+                :multiple="schema.multiple"
+                :placeholder="placeholder"
+                :disabled="!uploadable"
+                :readonly="schema.readonly"
+                :required="schema.required"
+                :value="model"
+                ref="file"
+                @change="handleFileUpload"
+                :file-name-formatter="formatNames"
+                no-drop
+        ></b-form-file>
     </div>
 </template>
 
@@ -124,6 +126,15 @@
                             this.upload[index].uploading = false;
                             this.upload[index].failed = true;
                             this.upload[index].error = (response.error) ? response.error : 'Unable to upload file';
+                            this.upload[index].validation = [];
+                            if (response.code === 422 && response.data) {
+                                forEach(response.data, (errors) => {
+                                    forEach(errors, (error) => {
+                                        this.upload[index].validation.push(error);
+                                    });
+                                });
+                            }
+
                         })
                         .finally(() => {
                             this.onChange();

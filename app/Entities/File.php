@@ -29,14 +29,13 @@ class File extends Entity implements HasIdentity, IsSoftDeletable, IsReferenceab
 	protected $visible = [
 		'id',
 		'uuid',
-		'name',
 		'original_name',
 		'type',
-		'ext',
 		'size',
 		'created_at',
 		'updated_at',
-		'deleted_at'
+		'deleted_at',
+		'is_public'
 	];
 
 	protected $fillable = [
@@ -44,7 +43,8 @@ class File extends Entity implements HasIdentity, IsSoftDeletable, IsReferenceab
 		'original_name',
 		'type',
 		'ext',
-		'size'
+		'size',
+		'is_public'
 	];
 
 	/**
@@ -77,10 +77,22 @@ class File extends Entity implements HasIdentity, IsSoftDeletable, IsReferenceab
 	 */
 	protected $folder;
 
+	/**
+	 * @var boolean
+	 */
+	protected $is_public;
 
 	public function __construct( array $properties = [] ) {
 		parent::__construct( $properties );
 		$this->setUuid();
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isPublic()
+	{
+		return $this->is_public;
 	}
 
 }

@@ -11,7 +11,9 @@ use Foundry\Core\Services\BaseService;
 use Foundry\Core\Services\Traits\HasRepository;
 use Foundry\System\Entities\File;
 use Foundry\System\Entities\Folder;
+use Foundry\System\Entities\User;
 use Foundry\System\Inputs\File\FileInput;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
@@ -31,7 +33,17 @@ class FileService extends BaseService {
 	public function add(FileInput $input) : Response
 	{
 		$values = $input->inputs();
-		$values['name'] = $input->getFile()->store('files');
+
+		$visibility = 'private';
+
+		if ($input->input('is_public',  false)) {
+			$visibility = 'public';
+		}
+
+		$file = $input->getFile()->store($visibility);
+		Storage::setVisibility($file, $visibility);
+
+		$values['name'] = $file;
 		$values['original_name'] = $input->getFile()->getClientOriginalName();
 
 		$file = new File($values);
@@ -78,5 +90,6 @@ class FileService extends BaseService {
 		$this->repository->restore($file);
 		return Response::success();
 	}
+
 
 }

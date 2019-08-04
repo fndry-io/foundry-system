@@ -9,11 +9,17 @@ use Foundry\Core\Services\BaseService;
 use Foundry\Core\Services\Traits\HasRepository;
 use Foundry\System\Entities\PickList;
 use Foundry\System\Inputs\PickList\PickListInput;
+use Foundry\System\Repositories\PickListRepository;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
 class PickListService extends BaseService {
 
 	use HasRepository;
+
+	/**
+	 * @var PickListRepository
+	 */
+	protected $repository;
 
 	public function __construct() {
 		$this->setRepository(EntityManager::getRepository(PickList::class));
@@ -41,6 +47,7 @@ class PickListService extends BaseService {
 	{
 		$pickList->fill($input);
 		$this->repository->save($pickList);
+		$this->repository->clearCachedSelectableList($pickList->slug);
 		return Response::success($pickList);
 	}
 

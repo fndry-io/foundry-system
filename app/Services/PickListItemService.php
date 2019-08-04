@@ -11,7 +11,6 @@ use Foundry\System\Entities\PickList;
 use Foundry\System\Entities\PickListItem;
 use Foundry\System\Inputs\PickListItem\PickListEditItemInput;
 use Foundry\System\Inputs\PickListItem\PickListItemInput;
-use Foundry\System\Repositories\PickListItemRepository;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
 class PickListItemService extends BaseService {
@@ -43,6 +42,8 @@ class PickListItemService extends BaseService {
 			EntityManager::persist($pickListItem->picklist);
 		}
 
+		EntityManager::getRepository(PickList::class)->clearCachedSelectableList($pickListItem->picklist->slug);
+
         $this->repository->flush();
 
         return Response::success($pickListItem);
@@ -63,6 +64,8 @@ class PickListItemService extends BaseService {
 			$pickListItem->picklist->default_item = $pickListItem->getId();
 			EntityManager::persist($pickListItem->picklist);
 		}
+
+		EntityManager::getRepository(PickList::class)->clearCachedSelectableList($pickListItem->picklist->slug);
 
 		$this->repository->flush();
 

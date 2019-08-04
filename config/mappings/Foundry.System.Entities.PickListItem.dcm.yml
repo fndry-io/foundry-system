@@ -23,7 +23,7 @@ Foundry\System\Entities\PickListItem:
       length: 100
       gedmo:
         slug:
-          separator: _
+          separator: -
           style: lower
           updatable: false
           unique: true

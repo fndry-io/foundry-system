@@ -6,8 +6,22 @@ use Foundry\System\Entities\PickList;
 use Illuminate\Support\Arr;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
+/**
+ * Trait PickListable
+ *
+ * A trait to help is using pick lists in ChoiceInputTypes
+ *
+ * @package Foundry\System\Inputs\Types\Traits
+ */
 trait PickListable {
 
+	/**
+	 * @param string $identifier The pick list slug/identifier to find the pick list options from
+	 * @param string $valueKey The property of the pick list item to use as the value in the options
+	 * @param string $labelKey The property of the pick list item to use as the label in the options
+	 *
+	 * @return $this
+	 */
 	protected function setPickList($identifier, $valueKey = 'id', $labelKey = 'name')
 	{
 		$picklist = EntityManager::getRepository(PickList::class)->getCachedSelectableList($identifier);

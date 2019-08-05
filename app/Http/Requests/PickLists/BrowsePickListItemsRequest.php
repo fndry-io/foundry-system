@@ -49,13 +49,13 @@ class BrowsePickListItemsRequest extends PickListRequest implements ViewableForm
 
             $qb
                 ->addSelect('picklist_item')
-                ->orderBy('picklist_item.name', 'ASC');
+                ->orderBy('picklist_item.label', 'ASC');
 
 	        $where = $qb->expr()->andX();
 
 	        if ($search = $inputs->input('search')) {
 		        $where->add($qb->expr()->orX(
-			        $qb->expr()->like('picklist_item.name', ':search')
+			        $qb->expr()->like('picklist_item.label', ':search')
 		        ));
 		        $qb->setParameter(':search', "%" . $search . "%");
 	        }

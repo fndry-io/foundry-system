@@ -65,7 +65,7 @@ class EditPickListRequest extends PickListRequest implements ViewableFormRequest
 		$form->setButtons((new SubmitButtonType(__('Update'), $form->getAction())));
 
 		$item = (new SectionType(__('Details')))->addChildren(
-            RowType::withChildren($form->get('name')),
+            RowType::withChildren($form->get('label')),
             RowType::withChildren($form->get('description'))
 		);
 

@@ -7,9 +7,11 @@ use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Contracts\FieldOptions;
 use Foundry\Core\Inputs\Types\ChoiceInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
+use Foundry\System\Inputs\Types\Traits\PickListable;
 
-class Type extends ChoiceInputType implements Field, FieldOptions {
+class Type extends ChoiceInputType implements Field {
 
+    use PickListable;
 	/**
 	 * @param Entity|null $entity
 	 *
@@ -19,26 +21,13 @@ class Type extends ChoiceInputType implements Field, FieldOptions {
 		return ( new static(
 			'type',
 			__( 'Type' ),
-			false,
-			static::options()
+			false
 		) )
 			->setDefault('main')
-			->setSortable( true );
+			->setSortable( true )
+            ->setPickList('address_type', 'identifier')
+            ;
 	}
 
-	/**
-	 * The input options
-	 *
-	 * @param \Closure $closure A query builder to modify the query if needed
-	 * @param mixed $value
-	 *
-	 * @return array
-	 */
-	static function options( \Closure $closure = null, $value = null ): array {
-		return [
-			"main" => "Main Office",
-			"regional" => "Regional Office",
-			"home" => "Home"
-		];
-	}
+
 }

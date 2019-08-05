@@ -68,7 +68,7 @@ class AddPickListItemRequest extends FormRequest implements InputInterface, View
         $form->setButtons((new SubmitButtonType(__('Create'), $form->getAction())));
 
 		$item = (new SectionType(__('Details')))->addChildren(
-            RowType::withChildren($form->get('name')),
+            RowType::withChildren($form->get('label')),
             RowType::withChildren($form->get('description')),
             RowType::withChildren($form->get('status'), $form->get('default_item')),
             RowType::withChildren($form->get('sequence'))

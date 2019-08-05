@@ -4,21 +4,21 @@ Foundry\System\Entities\PickListItem:
   repositoryClass: Foundry\System\Repositories\PickListItemRepository
   table: picklist_items
   indexes:
-    picklist_items_name_index:
-      columns: [ name ]
+    picklist_items_label_index:
+      columns: [ label ]
   id:
     id:
       type: integer
       generator:
         strategy: AUTO
   fields:
-    name:
+    label:
       type: string
       length: 50
     description:
       type: text
       nullable: true
-    slug:
+    identifier:
       type: string
       length: 100
       gedmo:
@@ -28,7 +28,7 @@ Foundry\System\Entities\PickListItem:
           updatable: false
           unique: true
           fields:
-            - name
+            - label
     sequence:
       type: integer
       default: 0

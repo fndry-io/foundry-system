@@ -54,7 +54,7 @@ class BrowsePickListsRequest extends FormRequest implements ViewableFormRequestI
 
             $qb
                 ->addSelect('picklist')
-                ->orderBy('picklist.name', 'ASC');
+                ->orderBy('picklist.label', 'ASC');
 
             return $qb;
 

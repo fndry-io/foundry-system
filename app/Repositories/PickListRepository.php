@@ -19,7 +19,7 @@ class PickListRepository  extends EntityRepository {
     public function getLabelList() {
 
         $qb = $this->query();
-        $qb->select('picklist.id', 'picklist.name');
+        $qb->select('picklist.id', 'picklist.label');
         return $qb->getQuery()->getArrayResult();
     }
 
@@ -28,17 +28,17 @@ class PickListRepository  extends EntityRepository {
 	 *
 	 * @return mixed
 	 */
-    public function getCachedSelectableList(string $slug)
+    public function getCachedSelectableList(string $identifier)
     {
-    	return Cache::rememberForever('picklist::' . $slug, function() use ($slug){
-		    if ($picklist = $this->findOneBy(['slug' => $slug])) {
+    	return Cache::rememberForever('picklist::' . $identifier, function() use ($identifier){
+		    if ($picklist = $this->findOneBy(['identifier' => $identifier])) {
 			    /**
 			     * @var QueryBuilder $qb
 			     */
 			    $qb = EntityManager::getRepository(PickListItem::class)->query();
-			    $qb->select('picklist_item.id', 'picklist_item.slug', 'picklist_item.name');
+			    $qb->select('picklist_item.id', 'picklist_item.identifier', 'picklist_item.label');
 			    $qb->orderBy('picklist_item.sequence', 'ASC');
-			    $qb->orderBy('picklist_item.name', 'ASC');
+			    $qb->orderBy('picklist_item.label', 'ASC');
 
 			    $where = $qb->expr()->andX();
 
@@ -56,17 +56,17 @@ class PickListRepository  extends EntityRepository {
 			    return $picklist;
 
 		    } else {
-			    throw new \Exception(sprintf('Pick List %s does not exist', $slug));
+			    throw new \Exception(sprintf('Pick List %s does not exist', $identifier));
 		    }
 	    });
     }
 
 	/**
-	 * @param string $slug
+	 * @param string $identifier
 	 */
-    public function clearCachedSelectableList(string $slug)
+    public function clearCachedSelectableList(string $identifier)
     {
-	    Cache::forget('picklist::' . $slug);
+	    Cache::forget('picklist::' . $identifier);
     }
 
 }

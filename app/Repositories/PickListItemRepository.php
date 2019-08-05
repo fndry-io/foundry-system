@@ -14,7 +14,7 @@ class PickListItemRepository  extends EntityRepository {
     public function getLabelList() {
 
         $qb = $this->query();
-        $qb->select('picklist_item.id', 'picklist_item.name');
+        $qb->select('picklist_item.id', 'picklist_item.label');
         return $qb->getQuery()->getArrayResult();
     }
 

@@ -23,15 +23,15 @@ class PickList extends Entity implements HasIdentity
 	use Visible;
 
 	protected $fillable = [
-		'name',
+		'label',
 		'description'
 	];
 
 	protected $visible = [
 		'id',
-        'name',
+        'label',
         'description',
-        'slug',
+        'identifier',
         'default_item',
 		'created_at',
 		'updated_at'
@@ -40,7 +40,7 @@ class PickList extends Entity implements HasIdentity
 	/**
 	 * @var string
 	 */
-	protected $name;
+	protected $label;
 
 	/**
      * @var string
@@ -50,7 +50,7 @@ class PickList extends Entity implements HasIdentity
 	/**
 	 * @var string
 	 */
-	protected $slug;
+	protected $identifier;
 
     /**
      * @var \Doctrine\Common\Collections\Collection|PickListItem[]

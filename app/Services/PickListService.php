@@ -47,7 +47,7 @@ class PickListService extends BaseService {
 	{
 		$pickList->fill($input);
 		$this->repository->save($pickList);
-		$this->repository->clearCachedSelectableList($pickList->slug);
+		$this->repository->clearCachedSelectableList($pickList->identifier);
 		return Response::success($pickList);
 	}
 

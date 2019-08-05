@@ -1,13 +1,13 @@
 <?php
 
-namespace Foundry\System\Inputs\PickList\Types;
+namespace Foundry\System\Inputs\PickListItem\Types;
 
 use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Types\TextInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 
-class Slug extends TextInputType implements Field {
+class Identifier extends TextInputType implements Field {
 
 	/**
 	 * @param Entity|null $entity
@@ -16,12 +16,12 @@ class Slug extends TextInputType implements Field {
 	 */
 	static function input( Entity &$entity = null ): Inputable {
 		return ( new static(
-			'slug',
-			__( 'Slug' ),
+			'identifier',
+			__( 'Identifier' ),
 			true
 		) )
-			->setMax( 100 )
 			->setReadonly(true)
+			->setMax( 100 )
 			->setSortable( true );
 	}
 

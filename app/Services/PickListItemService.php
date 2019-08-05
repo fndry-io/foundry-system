@@ -42,7 +42,7 @@ class PickListItemService extends BaseService {
 			EntityManager::persist($pickListItem->picklist);
 		}
 
-		EntityManager::getRepository(PickList::class)->clearCachedSelectableList($pickListItem->picklist->slug);
+		EntityManager::getRepository(PickList::class)->clearCachedSelectableList($pickListItem->picklist->identifier);
 
         $this->repository->flush();
 
@@ -65,7 +65,7 @@ class PickListItemService extends BaseService {
 			EntityManager::persist($pickListItem->picklist);
 		}
 
-		EntityManager::getRepository(PickList::class)->clearCachedSelectableList($pickListItem->picklist->slug);
+		EntityManager::getRepository(PickList::class)->clearCachedSelectableList($pickListItem->picklist->identifier);
 
 		$this->repository->flush();
 

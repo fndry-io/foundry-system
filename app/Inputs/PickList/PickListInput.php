@@ -5,7 +5,7 @@ namespace Foundry\System\Inputs\PickList;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Inputs\PickList\Types\Description;
-use Foundry\System\Inputs\PickList\Types\Name;
+use Foundry\System\Inputs\PickListItem\Types\Label;
 
 /**
  * Class ChecklistInput
@@ -19,7 +19,7 @@ class PickListInput extends Inputs {
 	public function types() : InputTypeCollection
 	{
 		return InputTypeCollection::fromTypes([
-			Name::input(),
+			Label::input(),
 			Description::input()
 		]);
 	}

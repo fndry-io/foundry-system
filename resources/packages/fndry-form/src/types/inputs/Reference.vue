@@ -101,7 +101,7 @@
                 this.setResult(this.value);
             }
             //If we have a value already set, we need to update the UI to reflect the correct item
-            if (this.results && this.value) {
+            else if (this.results && this.value) {
                 let result = this.extractResult(this.value);
                 let item = this.extractItem(result);
                 this.search = item.text;

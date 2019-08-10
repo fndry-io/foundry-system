@@ -267,6 +267,13 @@
             valueKey: function(){
                 return this.schema.valueKey ? this.schema.valueKey : 'value';
             }
+        },
+        watch: {
+            'value': function(newValue, oldValue){
+                if (isObject(newValue)) {
+                    this.setResult(newValue);
+                }
+            }
         }
 
     };

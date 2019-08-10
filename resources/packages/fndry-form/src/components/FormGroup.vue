@@ -29,6 +29,7 @@
             </b-form-invalid-feedback>
         </b-form-group>
         <fndry-field-hidden
+                v-else
                 ref="name"
                 :id="schema.id"
                 :name="name"
@@ -77,9 +78,11 @@
                 return objGet(this.model, `${field.name}`);
             },
             onInput(value) {
+                this.value = value;
                 this.$emit('input', this.schema.name, value);
             },
             onChange(value) {
+                this.value = value;
                 this.$emit('change', this.schema.name, value);
             },
             onBlur() {

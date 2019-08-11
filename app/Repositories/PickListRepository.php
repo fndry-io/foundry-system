@@ -24,7 +24,7 @@ class PickListRepository  extends EntityRepository {
     }
 
 	/**
-	 * @param string $slug
+	 * @param string $identifier
 	 *
 	 * @return mixed
 	 */

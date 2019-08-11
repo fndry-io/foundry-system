@@ -6,6 +6,8 @@
             v-on="$listeners"
             :options="schema.options"
             :stacked="!schema.inline"
+            :value-field="schema.valueKey"
+            :text-field="schema.textKey"
     ></b-form-radio-group>
 
 </template>

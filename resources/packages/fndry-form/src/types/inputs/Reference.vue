@@ -17,7 +17,7 @@
                         :id="id"
                         :name="name"
                         v-model="search"
-                        :placeholder="getPlaceholder()"
+                        :placeholder="placeholder"
                         :disabled="disabled"
                         :autocomplete="schema.autocomplete"
                         :min="schema.min"
@@ -47,7 +47,7 @@
             <small class="form-text" v-if="search && search.length < 3">
                 Type {{ 3 - search.length }} or more character(s)
             </small>
-            <small class="form-text" v-if="!loading && search && search.length > 3 && isEmpty(results) && !(model)">
+            <small class="form-text" v-if="!loading && search && search.length >= 3 && results && results.length === 0">
                 No result matching your search criteria found!
             </small>
             <ul
@@ -70,7 +70,7 @@
 <script>
 
     import abstractInput from '../abstractInput';
-    import {debounce, isEmpty, isNull, isString, isObject, forEach, extend, merge} from 'lodash';
+    import {debounce, isEmpty, isNull, isString, isObject, forEach, extend, merge, find} from 'lodash';
 
     export default {
         name: 'reference-input',
@@ -87,38 +87,49 @@
         data() {
             return {
                 open: false,
-                results: [],
+                results: (this.schema.options) ? [...this.schema.options]: [],
                 search: '',
-                reference: (this.value) ? extend({}, this.value) : {},
+                reference: {},
                 model: null,
                 isAsync: this.schema.url,
                 options: this.schema.url? []: this.items,
                 loading: false
             };
         },
-        created() {
-            let result = this.extractItem(this.reference);
-
-            this.search = result.text;
-            this.label = result.text;
-            this.model = result.value;
+        mounted() {
+            if (isObject(this.value)) {
+                this.setResult(this.value);
+            }
+            //If we have a value already set, we need to update the UI to reflect the correct item
+            else if (this.results && this.value) {
+                let result = this.extractResult(this.value);
+                let item = this.extractItem(result);
+                this.search = item.text;
+                this.label = item.text;
+                this.model = item.value;
+            }
+            document.addEventListener('click', this.handleClickOutside);
+        },
+        destroyed() {
+            document.removeEventListener('click', this.handleClickOutside)
         },
         methods: {
             isEmpty(object){
                 return isEmpty(object)
             },
-            getPlaceholder(){
-                return this.schema.url ? 'Search...' : this.schema.placeholder;
-            },
             onChange() {
                 this.results = null;
                 if(!this.loading && this.search && this.search.length >= 3){
                     this.loading = true;
-                    let bounce = debounce(this.getItems, 300);
+                    let bounce = debounce(this.getResults, 300);
                     bounce();
                 }
             },
-            getItems(){
+
+            /**
+             * Gets results from the server
+             */
+            getResults(){
 
                 let params = merge({}, this.schema.params, {
                     [this.schema.query]: this.search
@@ -146,12 +157,23 @@
                     })
 
             },
+
+            extractResult(value){
+                return find(this.results, (result) => result[this.valueKey] === value);
+            },
+
+            /**
+             * Extracts the text and value from the given entity/item
+             *
+             * The idea here is the results/options can be an array of entities, allowing us to easily extract what we need
+             *
+             * @param item
+             * @return {{text: *, value: *}}
+             */
             extractItem(item){
-                let t = this.schema.textKey ? this.schema.textKey : 'text';
-                let v = this.schema.valueKey ? this.schema.valueKey : 'value';
                 return {
-                    text: this.extractItemText(item, t),
-                    value: item[v]
+                    text: this.extractItemText(item, this.textKey),
+                    value: item[this.valueKey]
                 };
             },
             extractItemText(item, key){
@@ -168,20 +190,28 @@
                     return item[key];
                 }
             },
-            setResult(data) {
-                if (data === null) {
+
+            /**
+             * Set the result to the given entity
+             *
+             * This will also set the current reference on the data
+             *
+             * @param entity
+             */
+            setResult(entity) {
+                if (entity === null) {
                     this.reference = null;
                     this.search = '';
                     this.label = '';
                     this.model = null;
                 } else {
-                    this.reference = extend({},  data);
+                    this.reference = extend({},  entity);
 
-                    let result = this.extractItem(this.reference);
+                    let item = this.extractItem(this.reference);
 
-                    this.search = result.text;
-                    this.label = result.text;
-                    this.model = result.value;
+                    this.search = item.text;
+                    this.label = item.text;
+                    this.model = item.value;
                 }
 
                 this.$emit('change', this.model);
@@ -227,19 +257,25 @@
                 }
             }
         },
-        mounted() {
-            if (this.reference) {
-                let result = this.extractItem(this.reference);
-                this.search = result.text;
-                this.label = result.text;
-                this.model = result.value;
+        computed: {
+            placeholder: function(){
+                return this.schema.url ? 'Search...' : this.schema.placeholder;
+            },
+            textKey: function(){
+                return this.schema.textKey ? this.schema.textKey : 'text';
+            },
+            valueKey: function(){
+                return this.schema.valueKey ? this.schema.valueKey : 'value';
             }
-
-            document.addEventListener('click', this.handleClickOutside);
         },
-        destroyed() {
-            document.removeEventListener('click', this.handleClickOutside)
+        watch: {
+            'value': function(newValue, oldValue){
+                if (isObject(newValue)) {
+                    this.setResult(newValue);
+                }
+            }
         }
+
     };
 </script>
 

@@ -7,7 +7,6 @@ use Foundry\Core\Entities\Contracts\HasIdentity;
 use Foundry\Core\Repositories\EntityRepository;
 use Foundry\System\Entities\Folder;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
-use Illuminate\Support\Collection;
 
 class FolderRepository extends EntityRepository {
 
@@ -31,11 +30,6 @@ class FolderRepository extends EntityRepository {
 	public function getTreeRepository()
 	{
 		return $this->tree;
-	}
-
-	public function getChildren(Folder $folder)
-	{
-		return new Collection($this->getTreeRepository()->children($folder, true, 'name'));
 	}
 
 	/**

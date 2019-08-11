@@ -40,12 +40,6 @@ Route::prefix('system')->middleware('auth:api')->group( function () {
 	FormRequestHandler::route('/roles/{_entity}/edit',  'Foundry\System\Http\Requests\Roles\EditRoleRequest');
 	FormRequestHandler::route('/roles/{_entity}/delete','Foundry\System\Http\Requests\Roles\DeleteRoleRequest');
 
-	//address
-	FormRequestHandler::route('/addresses',                 'Foundry\System\Http\Requests\Addresses\BrowseAddressesRequest');
-	FormRequestHandler::route('/addresses/add',             'Foundry\System\Http\Requests\Addresses\AddAddressRequest');
-	FormRequestHandler::route('/addresses/{_entity}/edit',  'Foundry\System\Http\Requests\Addresses\EditAddressRequest');
-	FormRequestHandler::route('/addresses/{_entity}/delete','Foundry\System\Http\Requests\Addresses\DeleteAddressRequest');
-
 	//PickList Items
 	FormRequestHandler::route('/pick-list-items/add',             'Foundry\System\Http\Requests\PickListItems\AddPickListItemRequest');
 	FormRequestHandler::route('/pick-list-items/{_entity}/edit',  'Foundry\System\Http\Requests\PickListItems\EditPickListItemRequest');
@@ -66,11 +60,12 @@ Route::prefix('system')->middleware('auth:api')->group( function () {
 	Route::get('/files/{_entity}',          'FilesController@read');
 
 	//Folders
-	FormRequestHandler::route('/folders/add',             'Foundry\System\Http\Requests\Folders\AddFolderRequest');
 	FormRequestHandler::route('/folders/{_entity}/edit',  'Foundry\System\Http\Requests\Folders\EditFolderRequest');
 	FormRequestHandler::route('/folders/{_entity}/delete','Foundry\System\Http\Requests\Folders\DeleteFolderRequest');
 	FormRequestHandler::route('/folders/{_entity}',       'Foundry\System\Http\Requests\Folders\ReadFolderRequest');
-	FormRequestHandler::route('/folders/{_entity}/files/add','Foundry\System\Http\Requests\Folders\AddFileToFolderRequest');
+	FormRequestHandler::route('/folders/{_entity}/browse','Foundry\System\Http\Requests\Folders\BrowseFolderRequest');
+	FormRequestHandler::route('/folders/{_entity}/add-file','Foundry\System\Http\Requests\Folders\AddFileRequest');
+	FormRequestHandler::route('/folders/{_entity}/add-folder','Foundry\System\Http\Requests\Folders\AddFolderRequest');
 
 });
 

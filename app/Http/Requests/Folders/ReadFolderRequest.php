@@ -30,7 +30,7 @@ class ReadFolderRequest extends FolderRequest
 	 */
     public function handle() : Response
     {
-	    return FolderService::service()->withContents($this->getEntity());
+	    return Response::success($this->getEntity());
     }
 
 }

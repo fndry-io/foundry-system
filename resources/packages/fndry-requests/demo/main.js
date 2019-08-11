@@ -6,6 +6,9 @@ import BootstrapVue from 'bootstrap-vue'
 import FndryServices from '../../fndry-services';
 import FndryForm from '../../fndry-form/src';
 
+
+import CompanyPersonSection from '../../../../../../themes/agm/grabby/resources/ui/src/types/contacts/CompanyPersonSection'
+
 require('./bootstrap/axios');
 
 /**
@@ -30,6 +33,8 @@ router.beforeEach((to, from, next) => {
         next();
     }
 });
+
+Vue.component('company-person-section', CompanyPersonSection);
 
 
 const FndryRequest = process.env.NODE_ENV === 'development'

@@ -12,6 +12,7 @@ use Foundry\System\Inputs\Types\Traits\PickListable;
 class Type extends ChoiceInputType implements Field {
 
     use PickListable;
+
 	/**
 	 * @param Entity|null $entity
 	 *

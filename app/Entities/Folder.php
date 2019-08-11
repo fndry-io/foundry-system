@@ -1,7 +1,6 @@
 <?php
 namespace Foundry\System\Entities;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Foundry\Core\Entities\Contracts\HasIdentity;
 use Foundry\Core\Entities\Contracts\IsNestedTreeable;
 use Foundry\Core\Entities\Contracts\IsSoftDeletable;
@@ -42,28 +41,50 @@ class Folder extends Entity implements HasIdentity, IsSoftDeletable, IsNestedTre
 	protected $name;
 
 	/**
-	 * @var File[]
+	 * @var File
 	 */
-	protected $files;
+	protected $file;
+
+	/**
+	 * @var boolean
+	 */
+	protected $is_file = false;
 
 	public function __construct( array $properties = [] ) {
 		parent::__construct( $properties );
-		$this->files = new ArrayCollection();
 		$this->setUuid();
 	}
 
 	/**
-	 * @return File[]
+	 * @return File
 	 */
-	public function getFiles() {
-		return $this->files;
+	public function getFile() {
+		return $this->file;
 	}
 
 	/**
-	 * @param File[] $files
+	 * @param File $file
 	 */
-	public function setFiles( array $files ): void {
-		$this->files = $files;
+	public function setFile( File $file ): void {
+		$this->file = $file;
+		$this->name = $file->original_name;
+		$this->is_file = true;
 	}
+
+	/**
+	 * Determine if the folder is a directory
+	 *
+	 * @return bool
+	 */
+	public function isDirectory()
+	{
+		return !($this->file);
+	}
+
+	public function isFile()
+	{
+		return !!($this->file);
+	}
+
 
 }

@@ -13,12 +13,12 @@ use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Inputs\Folder\FolderInput;
 use Foundry\System\Services\FolderService;
 
-class AddFolderRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
+class AddFolderRequest extends FolderRequest implements ViewableFormRequestInterface, InputInterface
 {
 	use HasInput;
 
 	public static function name(): String {
-		return 'foundry.system.folders.add';
+		return 'foundry.system.folders.add.folder';
 	}
 
 	/**
@@ -27,6 +27,7 @@ class AddFolderRequest extends FormRequest implements ViewableFormRequestInterfa
 	 * @return \Foundry\Core\Inputs\Inputs|FolderInput
 	 */
 	public function makeInput($inputs) {
+		$inputs['parent'] = $this->getEntity()->getId();
 		return new FolderInput($inputs);
 	}
 

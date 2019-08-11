@@ -19,7 +19,7 @@ abstract class FolderRequest extends FormRequest implements EntityRequestInterfa
 	 */
 	public function findEntity($id)
 	{
-		return EntityManager::getRepository(Folder::class)->find($id);
+		return EntityManager::getRepository(Folder::class)->findOneBy(['id' => $id, 'is_file' => false]);
 	}
 
 }

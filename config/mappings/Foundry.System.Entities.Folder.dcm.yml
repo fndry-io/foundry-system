@@ -26,6 +26,9 @@ Foundry\System\Entities\Folder:
     name:
       type: string
       length: 255
+    is_file:
+      type: boolean
+      default: false
     reference_type:
       type: string
       length: 255
@@ -83,8 +86,13 @@ Foundry\System\Entities\Folder:
       mappedBy: parent
       orderBy:
         name: ASC
-    files:
+  oneToOne:
+    file:
       targetEntity: Foundry\System\Entities\File
-      mappedBy: folder
-      orderBy:
-        name: ASC
+      inversedBy: folder
+      nullable: true
+      joinColumn:
+        name: file_id
+        referencedColumnName: id
+        onDelete: CASCADE
+      cascade: [ persist ]

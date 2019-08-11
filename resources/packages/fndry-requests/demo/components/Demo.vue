@@ -8,8 +8,8 @@
                 </div>
 
                 <div v-if="!loading">
-                    <div class="row">
-                        <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="flex-grow-0" style="max-width:700px; min-width: 500px;">
                             <div class="card mb-2">
                                 <div class="card-body">
                                     <div class="form-group">
@@ -89,7 +89,7 @@
                             </div>
 
                         </div>
-                        <div class="col-md-6">
+                        <div class="flex-grow-1 ml-4">
                             <div class="mb-4" v-if="request && model">
                                 <h5 class="card-title">Model Output</h5>
                                 <hr>

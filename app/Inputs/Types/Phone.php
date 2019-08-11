@@ -18,7 +18,7 @@ class Phone extends TelInputType implements Field {
 		return ( new static(
 			'phone',
 			__( 'Phone' ),
-			true
+			false
 		) )
 			->setMax( 16 )
 			->setPlaceholder('+1 ...')

@@ -16,13 +16,13 @@ use LaravelDoctrine\ORM\Facades\EntityManager;
 trait PickListable {
 
 	/**
-	 * @param string $identifier The pick list slug/identifier to find the pick list options from
+	 * @param string $identifier The pick list identifier to find the pick list options from
 	 * @param string $valueKey The property of the pick list item to use as the value in the options
 	 * @param string $labelKey The property of the pick list item to use as the label in the options
 	 *
 	 * @return $this
 	 */
-	protected function setPickList($identifier, $valueKey = 'id', $labelKey = 'name')
+	protected function setPickList($identifier, $valueKey = 'id', $labelKey = 'label')
 	{
 		$picklist = EntityManager::getRepository(PickList::class)->getCachedSelectableList($identifier);
 

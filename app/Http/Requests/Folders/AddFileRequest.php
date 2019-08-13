@@ -62,6 +62,11 @@ class AddFileRequest extends FolderRequest implements ViewableFormRequestInterfa
 			$file->setFolder($this->getEntity());
 		}
 
+		$file->setParams([
+			'reference_type' => $this->input('reference_type'),
+			'reference_id' => $this->input('reference_id')
+		]);
+
 		$form->setTitle(__('Add File'));
 		$form->setButtons((new SubmitButtonType(__('Done'), $form->getAction())));
 		$form->addChildren(

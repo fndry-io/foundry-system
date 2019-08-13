@@ -20,12 +20,12 @@ export const makeRequestConfirm = (Vue) => {
 };
 
 export const makeRequestPanel = (Vue) => {
-    PanelModal = Vue.extend(RequestPanel);
+    PanelModal = Vue.component('fndry-panel-modal', RequestPanel);
     return requestPanel;
 };
 
 
-export const requestPanel = (title, panel, {request, params, method}, panelProps) => {
+export const requestPanel = (title, panel, {request, params, method}, panelProps, parent) => {
 
     let modal, vNode;
 

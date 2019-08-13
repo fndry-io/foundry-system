@@ -54,6 +54,7 @@ Route::prefix('system')->middleware('auth:api')->group( function () {
 	//Files
 	FormRequestHandler::route('/files/upload',                 'Foundry\System\Http\Requests\Files\UploadFileRequest');
 	FormRequestHandler::route('/files/upload/image',           'Foundry\System\Http\Requests\Files\UploadImageFileRequest');
+	FormRequestHandler::route('/files/browse',                 'Foundry\System\Http\Requests\Files\BrowseFilesRequest');
 	FormRequestHandler::route('/files/{_entity}/delete',       'Foundry\System\Http\Requests\Files\DeleteFileRequest');
 
 	Route::get('/files/{_entity}/download', 'FilesController@download');

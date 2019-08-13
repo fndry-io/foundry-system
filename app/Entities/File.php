@@ -44,7 +44,9 @@ class File extends Entity implements HasIdentity, IsSoftDeletable, IsReferenceab
 		'type',
 		'ext',
 		'size',
-		'is_public'
+		'is_public',
+		'reference_type',
+		'reference_id'
 	];
 
 	/**

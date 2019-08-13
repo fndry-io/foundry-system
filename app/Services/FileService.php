@@ -2,6 +2,8 @@
 
 namespace Foundry\System\Services;
 
+use Doctrine\ORM\QueryBuilder;
+use Foundry\Core\Entities\Contracts\HasReference;
 use Foundry\Core\Entities\Contracts\IsReferenceable;
 use Foundry\Core\Entities\Contracts\IsSoftDeletable;
 use Foundry\Core\Entities\Entity;
@@ -14,6 +16,7 @@ use Foundry\System\Entities\Folder;
 use Foundry\System\Entities\User;
 use Foundry\System\Inputs\File\FileInput;
 use Foundry\System\Inputs\Folder\FolderInput;
+use Foundry\System\Inputs\SearchFilterInput;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use LaravelDoctrine\ORM\Facades\EntityManager;
@@ -24,6 +27,58 @@ class FileService extends BaseService {
 
 	public function __construct() {
 		$this->setRepository(EntityManager::getRepository(File::class));
+	}
+
+	/**
+	 * Browse for files associated with an entity
+	 *
+	 * @param HasReference $entity
+	 * @param SearchFilterInput $input
+	 * @param int $page
+	 * @param int $perPage
+	 *
+	 * @return Response
+	 */
+	public function browse( HasReference $entity, SearchFilterInput $input, $page = 1, $perPage = 20 ): Response {
+
+		$result = $this->getRepository()->filter(function(QueryBuilder $qb) use ($entity, $input) {
+
+			$qb
+				->addSelect([
+					'file.type',
+					'file.original_name as name',
+					'file.uuid',
+					'file.id',
+					'file.size',
+					'file.created_at',
+					'file.updated_at',
+					'file.updated_at',
+				])
+				->addOrderBy('file.name', 'ASC');
+
+			$where = $qb->expr()->andX();
+
+			$where->add($qb->expr()->eq('file.reference_type', ':reference_type'));
+			$where->add($qb->expr()->eq('file.reference_id', ':reference_id'));
+			$qb->setParameter(':reference_type', get_class($entity));
+			$qb->setParameter(':reference_id', $entity->getId());
+
+			if ($search = $input->input('search')) {
+				$where->add($qb->expr()->orX(
+					$qb->expr()->like('file.original_name', ':search')
+				));
+				$qb->setParameter(':search', "%" . $search . "%");
+			}
+
+			$where->add($qb->expr()->isNull('file.deleted_at'));
+
+			$qb->where($where);
+
+			return $qb;
+
+		}, $page, $perPage);
+
+		return Response::success($result);
 	}
 
 	/**

@@ -87,7 +87,7 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 
 	protected $display_name;
 
-	protected $active = false;
+	protected $active = true;
 
 	protected $super_admin = false;
 

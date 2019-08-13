@@ -2,6 +2,7 @@
 namespace Foundry\System\Entities;
 
 use Foundry\Core\Entities\Contracts\HasIdentity;
+use Foundry\Core\Entities\Contracts\HasReference;
 use Foundry\Core\Entities\Contracts\IsNestedTreeable;
 use Foundry\Core\Entities\Contracts\IsSoftDeletable;
 use Foundry\Core\Entities\Entity;
@@ -19,7 +20,7 @@ use Foundry\Core\Entities\Traits\Uuidable;
  *
  * @package Foundry\System\Entities
  */
-class Folder extends Entity implements HasIdentity, IsSoftDeletable, IsNestedTreeable {
+class Folder extends Entity implements HasIdentity, IsSoftDeletable, IsNestedTreeable, HasReference {
 
 	use Identifiable;
 	use SoftDeleteable;

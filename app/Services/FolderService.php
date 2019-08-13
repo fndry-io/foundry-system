@@ -9,12 +9,14 @@ use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
 use Foundry\Core\Services\Traits\HasRepository;
+use Foundry\System\Entities\Contracts\HasFolder;
 use Foundry\System\Entities\Folder;
 use Foundry\System\Inputs\Folder\FolderEditInput;
 use Foundry\System\Inputs\Folder\FolderInput;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Repositories\FolderRepository;
 use LaravelDoctrine\ORM\Facades\EntityManager;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class FolderService extends BaseService {
 
@@ -59,8 +61,8 @@ class FolderService extends BaseService {
 					'file.updated_at as file_updated_at',
 				])
 				->leftJoin('folder.file', 'file')
-				->orderBy('folder.is_file', 'ASC')
-				->orderBy('folder.name', 'ASC');
+				->addOrderBy('folder.is_file', 'ASC')
+				->addOrderBy('folder.name', 'ASC');
 
 			$where = $qb->expr()->andX();
 

@@ -4,10 +4,10 @@ namespace Foundry\System\Http\Requests\Folders;
 
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
+use Foundry\Core\Inputs\Types\SectionType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
-use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Inputs\Folder\FolderInput;
@@ -48,18 +48,31 @@ class AddFolderRequest extends FolderRequest implements ViewableFormRequestInter
 	 */
 	public function handle() : Response
 	{
-		return FolderService::service()->add($this->input);
+		return FolderService::service()->add($this->getInput());
 	}
 
 	/**
 	 * @return FormType
 	 */
 	public function form(): FormType {
-		return parent::form()->setAction( route( $this::name(), [
+
+		$form   = new FormType( static::name() );
+		$params = [
+			'_entity' => $this->getEntity()->getId(),
 			'reference_type' => $this->input('reference_type'),
 			'reference_id' => $this->input('reference_id'),
 			'parent' => $this->input('parent')
-		] , false) );
+		];
+
+		if ( $this instanceof InputInterface) {
+			$form->attachInputCollection( $this->getInput()->getTypes() );
+			$form->setValues( $this->getInput()->getTypes()->values() );
+		}
+
+		$form->setAction( route( $this::name(), $params, false) );
+		$form->setRequest( $this );
+
+		return $form;
 	}
 
 	/**
@@ -73,9 +86,11 @@ class AddFolderRequest extends FolderRequest implements ViewableFormRequestInter
 
 		$form->setTitle(__('Create Folder'));
 		$form->setButtons((new SubmitButtonType(__('Create'), $form->getAction())));
-		$form->addChildren(
+
+		$form->addChildren((new SectionType(__('Folder Name')))->addChildren(
 			RowType::withChildren($form->get('name'))
-		);
+		));
+
 		return $form;
 	}
 }

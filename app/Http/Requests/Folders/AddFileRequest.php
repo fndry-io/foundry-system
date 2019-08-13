@@ -4,16 +4,14 @@ namespace Foundry\System\Http\Requests\Folders;
 
 use Foundry\Core\Inputs\SimpleInputs;
 use Foundry\Core\Inputs\Types\FormType;
+use Foundry\Core\Inputs\Types\SectionType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
-use Foundry\Core\Requests\Contracts\EntityRequestInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Support\InputTypeCollection;
-use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Inputs\Types\File;
-use Foundry\System\Services\FolderService;
 
-class AddFileRequest extends FolderRequest implements ViewableFormRequestInterface, EntityRequestInterface
+class AddFileRequest extends FolderRequest implements ViewableFormRequestInterface
 {
 
 	public static function name(): String {
@@ -37,7 +35,11 @@ class AddFileRequest extends FolderRequest implements ViewableFormRequestInterfa
 	 */
 	public function handle() : Response
 	{
-		return FolderService::service()->browse($this->getEntity(), new SearchFilterInput());
+		/**
+		 * The service in this request only needs to return a success as the FileInputType used in the view is already
+		 * adding the file to the folder
+		 */
+		return Response::success();
 	}
 
 	/**
@@ -61,9 +63,9 @@ class AddFileRequest extends FolderRequest implements ViewableFormRequestInterfa
 		}
 
 		$form->setTitle(__('Add File'));
-		$form->setButtons((new SubmitButtonType(__('Continue'), $form->getAction())));
+		$form->setButtons((new SubmitButtonType(__('Done'), $form->getAction())));
 		$form->addChildren(
-			$file
+			(new SectionType(__('Select Files')))->addChildren($file)
 		);
 		return $form;
 	}

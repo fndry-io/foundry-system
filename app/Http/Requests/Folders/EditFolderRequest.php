@@ -4,6 +4,7 @@ namespace Foundry\System\Http\Requests\Folders;
 
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
+use Foundry\Core\Inputs\Types\SectionType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
 use Foundry\Core\Requests\Contracts\InputInterface;
@@ -61,9 +62,11 @@ class EditFolderRequest extends FolderRequest implements ViewableFormRequestInte
 
 		$form->setTitle(__('Update Folder'));
 		$form->setButtons((new SubmitButtonType(__('Update'), $form->getAction())));
-		$form->addChildren(
+
+		$form->addChildren((new SectionType(__('Folder Name')))->addChildren(
 			RowType::withChildren($form->get('name'))
-		);
+		));
+
 		return $form;
 	}
 

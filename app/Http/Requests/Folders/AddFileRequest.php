@@ -63,6 +63,7 @@ class AddFileRequest extends FolderRequest implements ViewableFormRequestInterfa
 		}
 
 		$file->setParams([
+			'folder' => $this->getEntity()->getId(),
 			'reference_type' => $this->input('reference_type'),
 			'reference_id' => $this->input('reference_id')
 		]);

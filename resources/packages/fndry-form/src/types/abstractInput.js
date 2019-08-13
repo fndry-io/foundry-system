@@ -28,16 +28,9 @@ export default {
             model: this.value
         }
     },
-    methods: {
-        getStep(){
-            if (this.schema.type === 'number') {
-                console.log(this.schema);
-            }
-        }
-    },
     computed: {
         autocomplete: function(){
-            return this.schema.autocomplete;
+            return (this.schema) ? this.schema.autocomplete : undefined;
         }
     }
 }

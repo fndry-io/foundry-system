@@ -20,7 +20,7 @@
                     :key="index"
                     v-if="canDisplayButton(button.type)"
                     :request="button.action"
-                    :params="{_entity: model, ...schema.params}"
+                    :params="getButtonParams(button)"
                     :variant="button.variant ? button.variant : ``"
                     :size="button.size ? button.size : `size`"
                     type="modal"
@@ -35,7 +35,7 @@
 
 <script>
 
-    import {forEach, isObject, isString, isEmpty, findIndex} from 'lodash';
+    import {forEach, isObject, isString, isEmpty, findIndex, merge} from 'lodash';
     import abstractInput from '../abstractInput';
 
     export default {
@@ -126,6 +126,11 @@
                     return item[key];
                 }
             },
+            getButtonParams(button){
+                return merge({}, button.params, {
+                    _entity: this.model
+                })
+            }
         },
         computed: {
             textKey: function(){

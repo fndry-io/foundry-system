@@ -5,7 +5,6 @@
                       :name="name"
                       v-model="model"
                       :disabled="disabled"
-                      :required="schema.required"
                       v-on="$listeners"
         >
     </div>
@@ -17,6 +16,12 @@
 
     export default {
         name: "fndry-field-hidden",
+        props: {
+            schema: {
+                type: Object,
+                required: false
+            },
+        },
         mixins: [
             abstractInput
         ]

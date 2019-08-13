@@ -47,10 +47,12 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 		if ($entity = $this->getEntity()) {
 			$rules['email'] = [
 				'required',
+				'email',
 				Rule::unique('Foundry\System\Entities\User', 'email')->ignore($this->getEntity()->id)
 			];
 			$rules['username'] = [
 				'required',
+				'username',
 				Rule::unique('Foundry\System\Entities\User', 'username')->ignore($this->getEntity()->id)
 			];
 			$rules['display_name'] = [

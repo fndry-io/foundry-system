@@ -103,6 +103,11 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 
 	protected $supervisor;
 
+	/**
+	 * @var array
+	 */
+	protected $settings;
+
 //	/**
 //	 * @ACL\HasRoles()
 //	 * @var \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[]
@@ -304,6 +309,20 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	 */
 	public function setJobDepartment( $job_department ): void {
 		$this->job_department = $job_department;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getSettings(): array {
+		return $this->settings;
+	}
+
+	/**
+	 * @param array $settings
+	 */
+	public function setSettings( array $settings ): void {
+		$this->settings = $settings;
 	}
 
 

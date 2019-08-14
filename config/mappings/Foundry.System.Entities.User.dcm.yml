@@ -58,6 +58,9 @@ Foundry\System\Entities\User:
     api_token_expires_at:
       type: datetime
       nullable: true
+    settings:
+      type: json
+      nullable: true
     created_at:
       type: datetime
       gedmo:

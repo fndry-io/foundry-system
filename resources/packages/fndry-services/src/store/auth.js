@@ -1,4 +1,4 @@
-
+import {merge} from 'lodash';
 
 const auth = {
     namespaced: true,
@@ -24,10 +24,14 @@ const auth = {
             state.token = '';
             state.user = '';
         },
+        auth_settings(state, settings){
+            state.user.settings = settings;
+        },
     },
     getters : {
         isLoggedIn: state => !!state.token,
         authStatus: state => state.status,
+        userSettings: state => state.user.settings,
     },
     actions: {
         login({commit}, data){
@@ -62,7 +66,12 @@ const auth = {
         },
         resetPassword({commit}, data){
             return this._vm.$fndryApiService.handle('/api/auth/reset', {}, data);
-        }
+        },
+        syncUserSettings({commit, state}, settings){
+            let _settings = merge({}, state.settings, settings);
+            commit('auth_settings', settings);
+            return this._vm.$fndryApiService.call('/api/auth/settings', 'POST', {settings: _settings});
+        },
     }
 };
 

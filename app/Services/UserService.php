@@ -128,7 +128,7 @@ class UserService extends BaseService {
 		$user->last_login_at = new Carbon();
 
 		$data = [
-			'user' => $user->only(['id', 'uuid', 'username', 'display_name', 'email', 'is_super_admin'])
+			'user' => $user->only(['id', 'uuid', 'username', 'display_name', 'email', 'is_super_admin', 'settings'])
 		];
 		$data['user']['is_super_admin'] = $user->isSuperAdmin();
 
@@ -318,6 +318,23 @@ class UserService extends BaseService {
 	public function broker()
 	{
 		return Password::broker();
+	}
+
+	/**
+	 * Sync the users settings to the database
+	 *
+	 * @param User $user
+	 * @param $settings
+	 *
+	 * @return Response
+	 */
+	public function syncSettings(User $user, array $settings = [])
+	{
+		$user->setSettings($settings);
+		EntityManager::persist($user);
+		EntityManager::flush();
+
+		return Response::success();
 	}
 
 

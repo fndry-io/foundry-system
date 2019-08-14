@@ -128,7 +128,7 @@
                 }
             },
             getButtonParams(button){
-                return merge({}, button.params, {
+                return merge({}, this.schema.params, button.params, {
                     _entity: this.model
                 })
             }

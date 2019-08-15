@@ -20,6 +20,13 @@ export default {
         }
     },
     created(){
+
+        if (this.folder.parent) {
+            this.folderRoot = this.folder.parent;
+            this.folderTrail.push(this.folderRoot);
+        } else {
+            this.folderRoot = this.folder;
+        }
         this.goToFolder(this.folder);
     },
     methods: {

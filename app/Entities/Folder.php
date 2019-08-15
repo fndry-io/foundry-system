@@ -37,6 +37,7 @@ class Folder extends Entity implements HasIdentity, IsSoftDeletable, IsNestedTre
 		'id',
 		'uuid',
 		'name',
+		'parent'
 	];
 
 	protected $name;

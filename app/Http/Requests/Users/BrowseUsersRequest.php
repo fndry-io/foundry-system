@@ -2,7 +2,6 @@
 
 namespace Foundry\System\Http\Requests\Users;
 
-use Doctrine\ORM\QueryBuilder;
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
@@ -11,13 +10,14 @@ use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
-use Foundry\System\Http\Resources\UserResource;
+use Foundry\Core\Requests\Traits\IsBrowseRequest;
 use Foundry\System\Inputs\User\UsersFilterInput;
 use Foundry\System\Services\UserService;
 
 class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
 	use HasInput;
+	use IsBrowseRequest;
 
 	public static function name(): String {
 		return 'foundry.system.users.browse';
@@ -52,36 +52,15 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
     public function handle() : Response
     {
 	    $inputs = $this->input;
-	    $result = UserService::service()->browse(function(QueryBuilder $qb) use ($inputs) {
 
-	        $qb
-			    ->addSelect('u.id', 'u.uuid', 'u.username', 'u.display_name', 'u.email', 'u.active', 'u.deleted_at', 'u.job_title')
-			    ->orderBy('u.display_name', 'ASC');
+	    $page = $this->input('page', 1);
+	    $limit = $this->input('limit', 20);
 
-		    $where = $qb->expr()->andX();
+	    $paginator = UserService::service()->browse($inputs, $page, $limit );
 
-		    if ($search = $inputs->input('search', null)) {
-			    $where->add($qb->expr()->orX(
-				    $qb->expr()->like('u.username', ':search'),
-				    $qb->expr()->like('u.display_name', ':search'),
-				    $qb->expr()->like('u.email', ':search')
-			    ));
-			    $qb->setParameter(':search', "%" . $search . "%");
-		    }
+	    $result = $this->makeBrowseResource($paginator, $page, $limit);
 
-		    if (!$inputs->input('deleted', false)) {
-			    $where->add($qb->expr()->isNull('u.deleted_at'));
-		    }
-
-		    if ($where->count() > 0) {
-			    $qb->where($where);
-		    }
-
-	        return $qb;
-
-	    }, $this->input('page', 1), $this->input('limit', 20) );
-
-        return Response::success($result);
+	    return Response::success($result);
     }
 
 	/**

@@ -68,8 +68,8 @@ const auth = {
             return this._vm.$fndryApiService.handle('/api/auth/reset', {}, data);
         },
         syncUserSettings({commit, state}, settings){
-            let _settings = merge({}, state.settings, settings);
-            commit('auth_settings', settings);
+            let _settings = merge({}, state.user.settings, settings);
+            commit('auth_settings', _settings);
             return this._vm.$fndryApiService.call('/api/auth/settings', 'POST', {settings: _settings});
         },
     }

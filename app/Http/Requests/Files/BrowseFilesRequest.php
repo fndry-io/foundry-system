@@ -10,6 +10,8 @@ use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
+use Foundry\Core\Requests\Traits\IsBrowseRequest;
+use Foundry\System\Http\Resources\File;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Services\FileService;
 use LaravelDoctrine\ORM\Facades\EntityManager;
@@ -17,6 +19,7 @@ use LaravelDoctrine\ORM\Facades\EntityManager;
 class BrowseFilesRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
 	use HasInput;
+	use IsBrowseRequest;
 
 	public static function name(): String {
 		return 'foundry.system.files.browse';
@@ -55,7 +58,16 @@ class BrowseFilesRequest extends FormRequest implements ViewableFormRequestInter
 		if (!$entity) {
 			return Response::error('Reference not found', 404);
 		}
-		return FileService::service()->browse($entity, $this->getInput());
+
+		$page = $this->input('page', 1);
+		$limit = $this->input('limit', 20);
+
+		$response = FileService::service()->browse($entity, $this->getInput(), $page, $limit);
+		if ($response->isSuccess()) {
+			return Response::success($this->makeBrowseResource($response->getData(), $page, $limit, File::class));
+		}
+
+		return $response;
 	}
 	/**
 	 * @return FormType

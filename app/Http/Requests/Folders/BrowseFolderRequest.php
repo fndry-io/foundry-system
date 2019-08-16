@@ -11,6 +11,7 @@ use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
+use Foundry\Core\Requests\Traits\IsBrowseRequest;
 use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Inputs\Types\File;
@@ -19,6 +20,7 @@ use Foundry\System\Services\FolderService;
 class BrowseFolderRequest extends FolderRequest implements ViewableFormRequestInterface, EntityRequestInterface, InputInterface
 {
 	use HasInput;
+	use IsBrowseRequest;
 
 	public static function name(): String {
 		return 'foundry.system.folders.browse';
@@ -50,7 +52,16 @@ class BrowseFolderRequest extends FolderRequest implements ViewableFormRequestIn
 	 */
 	public function handle() : Response
 	{
-		return FolderService::service()->browse($this->getEntity(), $this->getInput());
+		$page = $this->input('page', 1);
+		$limit = $this->input('limit', 20);
+
+		$response = FolderService::service()->browse($this->getEntity(), $this->getInput(), $page, $limit);
+		if ($response->isSuccess()) {
+			return Response::success($this->makeBrowseResource($response->getData(), $page, $limit));
+		}
+
+		return $response;
+
 	}
 	/**
 	 * @return FormType

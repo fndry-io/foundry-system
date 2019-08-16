@@ -3,6 +3,8 @@
 namespace Foundry\System\Services;
 
 use Carbon\Carbon;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Foundry\Core\Auth\TokenGuard;
 use Foundry\Core\Entities\Contracts\HasApiToken;
 use Foundry\Core\Inputs\Inputs;
@@ -33,6 +35,37 @@ class UserService extends BaseService {
 
 	public function __construct(UserRepository $repository) {
 		$this->setRepository($repository);
+	}
+
+	public function browse( Inputs $inputs, $page = 1, $perPage = 20 ): Paginator {
+		return $this->getRepository()->filter(function(QueryBuilder $qb) use ($inputs) {
+
+			$qb
+				->addSelect('u.id', 'u.uuid', 'u.username', 'u.display_name', 'u.email', 'u.active', 'u.deleted_at', 'u.job_title')
+				->orderBy('u.display_name', 'ASC');
+
+			$where = $qb->expr()->andX();
+
+			if ($search = $inputs->input('search', null)) {
+				$where->add($qb->expr()->orX(
+					$qb->expr()->like('u.username', ':search'),
+					$qb->expr()->like('u.display_name', ':search'),
+					$qb->expr()->like('u.email', ':search')
+				));
+				$qb->setParameter(':search', "%" . $search . "%");
+			}
+
+			if (!$inputs->input('deleted', false)) {
+				$where->add($qb->expr()->isNull('u.deleted_at'));
+			}
+
+			if ($where->count() > 0) {
+				$qb->where($where);
+			}
+
+			return $qb;
+
+		}, $page, $perPage);
 	}
 
 	/**

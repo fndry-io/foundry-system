@@ -8,7 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * Class User
  * @package Foundry\System\Http\Resources
  */
-class UserResource extends JsonResource {
+class User extends JsonResource {
 
 	public function toArray( $request ) {
 		return [

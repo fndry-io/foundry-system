@@ -174,7 +174,7 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	/**
 	 * @return string
 	 */
-	public function getUsername(): string {
+	public function getUsername() {
 		return $this->username;
 	}
 
@@ -188,7 +188,7 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	/**
 	 * @return string
 	 */
-	public function getDisplayName(): string {
+	public function getDisplayName() {
 		return $this->display_name;
 	}
 
@@ -216,28 +216,28 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	/**
 	 * @return bool
 	 */
-	public function isActive(): bool {
+	public function isActive() {
 		return $this->active;
 	}
 
 	/**
 	 * @param bool $active
 	 */
-	public function setActive( bool $active ): void {
+	public function setActive( bool $active ) {
 		$this->active = $active;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function isAdmin(): bool {
+	public function isAdmin() {
 		return false;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function isSuperAdmin(): bool {
+	public function isSuperAdmin() {
 		return $this->super_admin;
 	}
 
@@ -251,7 +251,7 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	/**
 	 * @return string
 	 */
-	public function getTimezone(): string {
+	public function getTimezone() {
 		return $this->timezone;
 	}
 
@@ -314,7 +314,7 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	/**
 	 * @return array
 	 */
-	public function getSettings(): array {
+	public function getSettings() {
 		return $this->settings;
 	}
 

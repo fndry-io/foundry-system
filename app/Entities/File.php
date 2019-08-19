@@ -10,6 +10,7 @@ use Foundry\Core\Entities\Traits\Referencable;
 use Foundry\Core\Entities\Traits\SoftDeleteable;
 use Foundry\Core\Entities\Traits\Timestampable;
 use Foundry\Core\Entities\Traits\Uuidable;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class File
@@ -95,6 +96,11 @@ class File extends Entity implements HasIdentity, IsSoftDeletable, IsReferenceab
 	public function isPublic()
 	{
 		return $this->is_public;
+	}
+
+	public function onAfterRemove()
+	{
+		Storage::delete($this->name);
 	}
 
 }

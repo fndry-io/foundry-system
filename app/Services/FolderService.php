@@ -163,11 +163,6 @@ class FolderService extends BaseService {
 	 */
 	public function delete(Folder $folder) : Response
 	{
-		if ($folder->isDeleted() && $files = $folder->getFiles()) {
-			foreach ($files as $file) {
-				FileService::service()->delete($file, true, false);
-			}
-		}
 		$this->repository->delete($folder);
 		return Response::success();
 	}

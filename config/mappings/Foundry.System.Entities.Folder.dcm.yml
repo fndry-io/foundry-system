@@ -3,6 +3,9 @@ Foundry\System\Entities\Folder:
   type: entity
   repositoryClass: Foundry\System\Repositories\FolderRepository
   table: folders
+  lifecycleCallbacks:
+    preRemove: [ onBeforeRemove ]
+    postRemove: [ onAfterRemove ]
   gedmo:
     tree:
       type: nested
@@ -86,6 +89,7 @@ Foundry\System\Entities\Folder:
       mappedBy: parent
       orderBy:
         name: ASC
+      cascade: [ remove ]
   oneToOne:
     file:
       targetEntity: Foundry\System\Entities\File
@@ -95,4 +99,4 @@ Foundry\System\Entities\Folder:
         name: file_id
         referencedColumnName: id
         onDelete: CASCADE
-      cascade: [ persist ]
+      cascade: [ remove ]

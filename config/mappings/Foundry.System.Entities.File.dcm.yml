@@ -3,6 +3,8 @@ Foundry\System\Entities\File:
   type: entity
   repositoryClass: Foundry\System\Repositories\FileRepository
   table: files
+  lifecycleCallbacks:
+    postRemove: [ onAfterRemove ]
   indexes:
     files_name_index:
       columns: [ name ]

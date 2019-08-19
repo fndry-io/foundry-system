@@ -131,9 +131,6 @@ class FileService extends BaseService {
 	public function delete(File $file, $force = false, $flush = true) : Response
 	{
 		$this->repository->delete($file, false);
-		if ($file instanceof IsSoftDeletable && $file->isDeleted() || $force) {
-			Storage::delete($file->name);
-		}
 		if ($flush) $this->repository->flush();
 		return Response::success();
 	}

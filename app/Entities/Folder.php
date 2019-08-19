@@ -12,6 +12,7 @@ use Foundry\Core\Entities\Traits\Referencable;
 use Foundry\Core\Entities\Traits\SoftDeleteable;
 use Foundry\Core\Entities\Traits\Timestampable;
 use Foundry\Core\Entities\Traits\Uuidable;
+use LaravelDoctrine\ORM\Facades\EntityManager;
 
 /**
  * Class Folder
@@ -88,5 +89,36 @@ class Folder extends Entity implements HasIdentity, IsSoftDeletable, IsNestedTre
 		return !!($this->file);
 	}
 
+	public function getLeft()
+	{
+		return $this->lft;
+	}
+
+	public function getRight()
+	{
+		return $this->rgt;
+	}
+
+	public function onBeforeRemove()
+	{
+		if ($this->isDeleted()) {
+			$this->deleteFiles = [];
+			foreach(EntityManager::getRepository(self::class)->getTreeRepository()->getChildren($this) as $child) {
+				if ($child->isFile()) {
+					$this->deleteFiles[] = $child->file;
+				}
+			}
+		}
+	}
+
+	public function onAfterRemove()
+	{
+		if ($this->deleteFiles) {
+			foreach ($this->deleteFiles as $file) {
+				EntityManager::remove($file);
+				$file->onAfterRemove();
+			}
+		}
+	}
 
 }

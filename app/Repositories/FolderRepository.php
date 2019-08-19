@@ -8,6 +8,7 @@ use Foundry\Core\Repositories\EntityRepository;
 use Foundry\System\Entities\Contracts\HasFolder;
 use Foundry\System\Entities\Folder;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
+use Illuminate\Support\Arr;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
 class FolderRepository extends EntityRepository {

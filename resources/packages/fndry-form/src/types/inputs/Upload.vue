@@ -15,8 +15,10 @@
             </div>
         </div>
 
-        <div v-if="upload.length > 0">
-            <div v-for="file in upload"
+
+
+        <div v-if="uploading.length > 0">
+            <div v-for="file in uploading"
                  v-if="file.uploading || file.failed"
                  class="file-progress"
             >
@@ -39,6 +41,26 @@
                 <div class="invalid-feedback" v-if="file.failed">
                     <span v-if="file.validation" v-for="error in file.validation" style="display: block;">{{error}}</span>
                     <span v-else>{{file.error}}</span>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="upload.length > 0">
+            <div v-for="file in upload" class="file-progress">
+                <div class="d-flex flex-row">
+                    <div class="flex-grow-1">
+                        <div class="file-name">{{file.file.name}}</div>
+                    </div>
+                    <div class="flex-grow-0 text-right">
+                        <b-progress
+                                :value="0"
+                                :max="100"
+                                :animated="false"
+                                :striped="false"
+                                variant="primary"
+                                style="min-width: 100px;"
+                        ></b-progress>
+                    </div>
                 </div>
             </div>
         </div>
@@ -81,6 +103,7 @@
             return{
                 files: (isEmpty(this.value)) ? [] : (isArray(this.value) ? this.value : [this.value]),
                 upload: [],
+                uploading: [],
                 model: null,
                 uploadable: !this.disabled,
                 placeholder: this.schema.placeholder
@@ -95,62 +118,74 @@
                 }
             },
             handleFileUpload(evt){
-
                 forEach(evt.target.files, (file) => {
-                    let length = this.upload.push({
+                    this.upload.push({
                         progress: 0,
                         uploading: true,
                         uploaded: false,
                         file
                     });
-                    let index = length - 1;
-
-                    this.$fndryApiService.upload(this.$fndryApiService.getHandleUrl(this.schema.action, this.schema.params), file,
-                        (progressEvent) => {
-                            this.upload[index].progress = Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total );
-                        })
-                        .then((response) => {
-                            this.upload[index].progress = 100;
-                            this.upload[index].uploading = false;
-                            this.upload[index].uploaded = true;
-                            this.upload[index].failed = false;
-                            this.files.push({
-                                id: response.data.id,
-                                original_name: file.name,
-                                file
-                            });
-                        })
-                        .catch((response) => {
-                            this.upload[index].id = null;
-                            this.upload[index].progress = 0;
-                            this.upload[index].uploading = false;
-                            this.upload[index].failed = true;
-                            this.upload[index].error = (response.error) ? response.error : 'Unable to upload file';
-                            this.upload[index].validation = [];
-                            if (response.code === 422 && response.data) {
-                                forEach(response.data, (errors) => {
-                                    forEach(errors, (error) => {
-                                        this.upload[index].validation.push(error);
-                                    });
-                                });
-                            }
-
-                        })
-                        .finally(() => {
-                            this.onChange();
-                            this.canUpload();
-                            this.placeholder = this.formatNames();
-                        })
-                    ;
                 });
                 this.model = null;
                 this.$refs['file'].reset();
+                this.processUploads();
             },
             removeModelFile(index) {
                 this.files.splice(index, 1);
                 this.onChange();
                 this.canUpload();
                 this.placeholder = this.formatNames();
+            },
+            processUploads(){
+                let upload = this.upload.shift();
+                if (upload !== undefined) {
+                    this.processFileUpload(upload);
+                }
+            },
+            processFileUpload(upload){
+
+                let length = this.uploading.push(upload);
+                let index = length - 1;
+
+                let file = upload.file;
+
+                this.$fndryApiService.upload(this.$fndryApiService.getHandleUrl(this.schema.action, this.schema.params), file,
+                    (progressEvent) => {
+                        this.uploading[index].progress = Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total );
+                    })
+                    .then((response) => {
+                        this.uploading[index].progress = 100;
+                        this.uploading[index].uploading = false;
+                        this.uploading[index].uploaded = true;
+                        this.uploading[index].failed = false;
+                        this.files.push({
+                            id: response.data.id,
+                            original_name: file.name,
+                            file
+                        });
+                    })
+                    .catch((response) => {
+                        this.uploading[index].id = null;
+                        this.uploading[index].progress = 0;
+                        this.uploading[index].uploading = false;
+                        this.uploading[index].failed = true;
+                        this.uploading[index].error = (response.error) ? response.error : 'Unable to upload file';
+                        this.uploading[index].validation = [];
+                        if (response.code === 422 && response.data) {
+                            forEach(response.data, (errors) => {
+                                forEach(errors, (error) => {
+                                    this.uploading[index].validation.push(error);
+                                });
+                            });
+                        }
+
+                    })
+                    .finally(() => {
+                        this.onChange();
+                        this.placeholder = this.formatNames();
+                        this.processUploads();
+                    })
+                ;
             },
             onChange(){
                 this.$emit('input', this.getValue());

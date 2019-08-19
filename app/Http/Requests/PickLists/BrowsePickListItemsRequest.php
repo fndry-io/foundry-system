@@ -10,6 +10,8 @@ use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
+use Foundry\Core\Requests\Traits\IsBrowseRequest;
+use Foundry\System\Http\Resources\PickListItem;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Services\PickListItemService;
 
@@ -17,6 +19,7 @@ class BrowsePickListItemsRequest extends PickListRequest implements ViewableForm
 {
 
     use HasInput;
+    use IsBrowseRequest;
 
 	public static function name(): String {
 		return 'foundry.system.pick-lists.items.browse';
@@ -45,33 +48,15 @@ class BrowsePickListItemsRequest extends PickListRequest implements ViewableForm
 	{
         $inputs = $this->getInput();
 
-        $result = PickListItemService::service()->browse(function(QueryBuilder $qb) use ($inputs) {
+		$page = $this->input('page', 1);
+		$limit = $this->input('limit', 20);
 
-            $qb
-                ->addSelect('picklist_item')
-                ->orderBy('picklist_item.label', 'ASC');
+		$paginator = PickListItemService::service()->browse($this->getEntity(), $inputs, $page, $limit );
 
-	        $where = $qb->expr()->andX();
+		$result = $this->makeBrowseResource($paginator, $page, $limit);
 
-	        if ($search = $inputs->input('search')) {
-		        $where->add($qb->expr()->orX(
-			        $qb->expr()->like('picklist_item.label', ':search')
-		        ));
-		        $qb->setParameter(':search', "%" . $search . "%");
-	        }
-
-	        $where->add($qb->expr()->eq('picklist_item.picklist', ':picklist'));
-	        $qb->setParameter('picklist', $this->getEntity());
-
-	        $qb->where($where);
-
-            return $qb;
-
-        }, $this->input('page', 1), $this->input('limit', 20) );
-
-        return Response::success($result);
+		return Response::success($result);
 	}
-
 
     public function view() : FormType
     {

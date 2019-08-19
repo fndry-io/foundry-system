@@ -11,12 +11,15 @@ use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
+use Foundry\Core\Requests\Traits\IsBrowseRequest;
+use Foundry\System\Http\Resources\PickList;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Services\PickListService;
 
 class BrowsePickListsRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
     use HasInput;
+    use IsBrowseRequest;
 
 	public static function name(): String {
 		return 'foundry.system.pick-lists.browse';
@@ -50,17 +53,14 @@ class BrowsePickListsRequest extends FormRequest implements ViewableFormRequestI
 	{
         $inputs = $this->getInput();
 
-        $result = PickListService::service()->browse(function(QueryBuilder $qb) use ($inputs) {
+		$page = $this->input('page', 1);
+		$limit = $this->input('limit', 20);
 
-            $qb
-                ->addSelect('picklist')
-                ->orderBy('picklist.label', 'ASC');
+		$paginator = PickListService::service()->browse($inputs, $page, $limit );
 
-            return $qb;
+		$result = $this->makeBrowseResource($paginator, $page, $limit, PickList::class);
 
-        }, $this->input('page', 1), $this->input('limit', 20) );
-
-        return Response::success($result);
+		return Response::success($result);
 	}
 
 	/**

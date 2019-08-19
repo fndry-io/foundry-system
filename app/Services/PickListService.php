@@ -2,6 +2,8 @@
 
 namespace Foundry\System\Services;
 
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
@@ -23,6 +25,22 @@ class PickListService extends BaseService {
 
 	public function __construct() {
 		$this->setRepository(EntityManager::getRepository(PickList::class));
+	}
+
+	/**
+	 * @param Inputs $inputs
+	 * @param int $page
+	 * @param int $perPage
+	 *
+	 * @return Paginator
+	 */
+	public function browse( Inputs $inputs, $page = 1, $perPage = 20 ): Paginator {
+		return $this->getRepository()->filter(function(QueryBuilder $qb) use ($inputs) {
+			$qb
+				->addSelect('picklist')
+				->orderBy('picklist.label', 'ASC');
+			return $qb;
+		}, $page, $perPage);
 	}
 
 	/**

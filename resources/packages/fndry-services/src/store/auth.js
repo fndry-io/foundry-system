@@ -31,7 +31,13 @@ const auth = {
     getters : {
         isLoggedIn: state => !!state.token,
         authStatus: state => state.status,
-        userSettings: state => state.user.settings,
+        userSettings: (state) => {
+            if (state.user.settings) {
+                return state.user.settings;
+            } else {
+                return {};
+            }
+        },
     },
     actions: {
         login({commit}, data){

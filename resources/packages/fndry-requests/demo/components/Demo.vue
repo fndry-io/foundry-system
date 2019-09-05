@@ -123,7 +123,7 @@
 
     import VueJsonPretty from 'vue-json-pretty';
     import FndryRequestFormInline from '../../src/components/RequestFormInline';
-    import {merge, uniqueId, forEach, findKey} from 'lodash';
+    import {merge, uniqueId, forEach, findKey, set} from 'lodash';
 
     /**
      * Request Form Tester
@@ -292,7 +292,7 @@
             getParams() {
                 let params = {};
                 forEach(this.params, function(item){
-                    params[item.key] = item.value;
+                    set(params, item.key, item.value);
                 });
                 return params
             },

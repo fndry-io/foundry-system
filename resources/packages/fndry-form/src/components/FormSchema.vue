@@ -34,7 +34,7 @@
                 required: true
             },
             errors: {
-                type: Object,
+                type: [Object, Array],
                 required: false
             },
             data: {

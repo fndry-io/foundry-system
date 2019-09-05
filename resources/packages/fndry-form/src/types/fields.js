@@ -10,6 +10,7 @@ import Date from './inputs/Date';
 import Reference from './inputs/Reference';
 import Hidden from './inputs/Hidden';
 import Upload from './inputs/Upload';
+import Repeat from './inputs/Repeat';
 
 export default {
     'fndry-field-input': Input,
@@ -23,7 +24,8 @@ export default {
     'fndry-field-date': Date,
     'fndry-field-reference': Reference,
     'fndry-field-hidden': Hidden,
-    'fndry-field-upload': Upload
+    'fndry-field-upload': Upload,
+    'fndry-field-repeat': Repeat
     //collection
 };
 

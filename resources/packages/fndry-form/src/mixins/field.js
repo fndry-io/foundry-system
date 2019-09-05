@@ -81,7 +81,7 @@ export default {
             required: false
         },
         errors: {
-            type: Object,
+            type: [Object, Array],
             required: false
         }
     },
@@ -165,6 +165,9 @@ export default {
                 case 'date':
                 case "datetime":
                     type = 'date';
+                    break;
+                case 'repeat':
+                    type = 'repeat';
                     break;
             }
 

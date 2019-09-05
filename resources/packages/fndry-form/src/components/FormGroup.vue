@@ -17,6 +17,7 @@
                            :id="schema.id"
                            :name="name"
                            v-model="value"
+                           :root-model="model"
                            @input="onInput"
                            @change="onChange"
                            :state="valid"
@@ -34,6 +35,7 @@
                 :id="schema.id"
                 :name="name"
                 v-model="value"
+                :root-model="model"
                 @input="onInput"
                 @change="onChange"
         ></fndry-field-hidden>

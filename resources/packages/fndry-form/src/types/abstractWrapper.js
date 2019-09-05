@@ -11,7 +11,7 @@ export default {
             required: false
         },
         errors: {
-            type: Object,
+            type: [Object, Array],
             required: false
         }
     }

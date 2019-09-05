@@ -1,19 +1,41 @@
 <template>
     <div class="input-group">
-        <b-form-select
-                :id="id"
-                :name="name"
-                v-model="model"
-                v-on="$listeners"
-                :multiple="schema.multiple"
-                :state="state"
-        >
-            <option v-if="schema.empty && !schema.multiple" :value="null">{{(schema.empty === true) ? 'Please select an option' : schema.empty}}</option>
-            <option v-if="options" v-for="option in options" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>
-            <optgroup v-if="groups" v-for="(group_options, label) in groups" :label="label" :key="`group-${key}-${label}`">
-                <option v-for="option in group_options" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>
-            </optgroup>
-        </b-form-select>
+        <multiselect v-model="selected"
+                     @select="handleSelect"
+                     @remove="handleRemove"
+                     @tag="handleTag"
+                     :options="options"
+                     :track-by="valueKey"
+                     :label="textKey"
+                     :close-on-select="false"
+                     :show-labels="false"
+                     :multiple="schema.multiple"
+                     :taggable="schema.taggable"
+                     :group-label="(groupKey) ? `label` : undefined"
+                     :group-values="(groupKey) ? values : undefined"
+                     :group-select="(groupKey) ? false : undefined"
+                     :max="schema.max"
+                     :loading="loading"
+                     :hide-selected="true"
+                     @search-change="handleSearch"
+                     :placeholder="(schema.url) ? `Type to search` : undefined"
+        ></multiselect>
+
+        <!--<b-form-select-->
+                <!--:id="id"-->
+                <!--:name="name"-->
+                <!--v-model="model"-->
+                <!--v-on="$listeners"-->
+                <!--:multiple="schema.multiple"-->
+                <!--:state="state"-->
+        <!--&gt;-->
+            <!--<option v-if="schema.empty && !schema.multiple" :value="null">{{(schema.empty === true) ? 'Please select an option' : schema.empty}}</option>-->
+            <!--<option v-if="options" v-for="option in options" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>-->
+            <!--<optgroup v-if="groups" v-for="(group_options, label) in groups" :label="label" :key="`group-${key}-${label}`">-->
+                <!--<option v-for="option in group_options" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>-->
+            <!--</optgroup>-->
+        <!--</b-form-select>-->
+
         <div class="input-group-append" v-if="schema.buttons">
             <fndry-request-button
                     v-for="(button, index) in schema.buttons"
@@ -35,7 +57,8 @@
 
 <script>
 
-    import {forEach, isObject, isString, isEmpty, findIndex, merge} from 'lodash';
+    import {forEach, isObject, isString, isEmpty, findIndex, merge, debounce, find} from 'lodash';
+    import Multiselect from 'vue-multiselect';
     import abstractInput from '../abstractInput';
 
     export default {
@@ -43,32 +66,52 @@
         mixins: [
             abstractInput
         ],
+        components: {
+            Multiselect
+        },
         data() {
             return {
                 key: 0,
                 options: [],
                 groups: {},
-                model: (this.value ? this.value : ((this.schema.multiple) ? [] : null))
+                selected: [],
+                model: [],
+                loading: false
             }
         },
         mounted(){
             this.setOptions();
+            this.model = this.value ? this.value : ((this.schema.multiple) ? [] : null);
+            forEach(this.model, (value) => {
+                let selected = find(this.options, (option) => option.value === value);
+                if (selected) {
+                    this.selected.push(selected);
+                }
+            });
         },
         methods: {
             setOptions(){
                 this.options = [];
-                this.groups = {};
+                let groups = {};
                 forEach(this.schema.options, (option) => {
                     let _option = this.extractItem(option);
                     if (this.groupKey) {
                         if (this.groups[option[this.groupKey]] === undefined) {
-                            this.groups[option[this.groupKey]] = [];
+                            this.groups[option[this.groupKey]] = {
+                                label: option[this.groupKey],
+                                values: []
+                            };
                         }
-                        this.groups[option[this.groupKey]].push(_option);
+                        this.groups[option[this.groupKey]].values.push(_option);
                     } else {
                         this.options.push(_option);
                     }
                 });
+                if (this.groups) {
+                    forEach(groups, (group) => {
+                        this.options.push(group);
+                    })
+                }
                 this.key++;
             },
             canDisplayButton(type) {
@@ -91,14 +134,77 @@
                 this.setOptions();
                 this.setValue(response.data[this.valueKey]);
             },
-            setValue(value) {
+            addValue(value) {
                 if (this.schema.multiple) {
-                    this.model.push(value);
+                    let index = this.model.indexOf(value);
+                    if (index === -1) {
+                        this.model.push(value);
+                    }
                 } else {
                     this.model = value;
                 }
                 this.$emit('change', this.model);
             },
+            removeValue(value) {
+                if (this.schema.multiple) {
+                    let index = this.model.indexOf(value);
+                    if (index >= 0) {
+                        this.model.splice(index, 1);
+                    }
+                } else {
+                    this.model = null;
+                }
+                this.$emit('change', this.model);
+            },
+            handleTag(tag) {
+                let value = {
+                    [this.textKey]: tag,
+                    [this.valueKey]: tag
+                };
+                this.options.push(value);
+                this.selected.push(value);
+                this.addValue(tag);
+            },
+            handleSelect(selectedOption){
+                let value = selectedOption[this.valueKey];
+                this.addValue(value);
+            },
+            handleRemove(removedOption){
+                let value = removedOption[this.valueKey];
+                this.removeValue(value);
+            },
+            handleSearch: debounce(function(query){
+                    if (this.schema.url && query.length > 2) {
+                        this.getResults(query);
+                    }
+                }, 300
+            ),
+            getResults(query) {
+                this.loading = true;
+
+                let params = merge({}, this.schema.params, {
+                    [this.schema.query]: query
+                });
+
+                this.$fndryApiService.call(`${this.schema.url}`, 'GET', params)
+                    .then((res) => {
+                        let results = [];
+                        if (res.data.length > 0) {
+                            forEach(res.data, (item) => {
+                                results.push({
+                                    [this.textKey]: item,
+                                    [this.valueKey]: item
+                                })
+                            });
+                        }
+                        this.options = results;
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    })
+                ;
+            },
+
             /**
              * Extracts the text and value from the given entity/item
              *
@@ -132,6 +238,7 @@
                     _entity: this.model
                 })
             }
+            //todo add Asynchronous select api call https://vue-multiselect.js.org/#sub-asynchronous-select
         },
         computed: {
             textKey: function(){
@@ -146,3 +253,5 @@
         }
     };
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

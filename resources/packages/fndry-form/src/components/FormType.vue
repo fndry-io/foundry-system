@@ -34,7 +34,7 @@
                 required: false
             },
             errors: {
-                type: Object,
+                type: [Object, Array],
                 required: false
             }
         },
@@ -47,7 +47,8 @@
                     'row',
                     'collection',
                     'column',
-                    'tag'
+                    'tag',
+                    'date-range'
                 ];
 
                 if (wrappers.includes(fieldSchema.type)) {

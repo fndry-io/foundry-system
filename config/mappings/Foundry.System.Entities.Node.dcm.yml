@@ -1,0 +1,73 @@
+# Node.dcm.yml
+Foundry\System\Entities\Node:
+  type: entity
+  repositoryClass: Foundry\System\Repositories\NodeRepository
+  table: nodes
+  gedmo:
+    tree:
+      type: nested
+  indexes:
+    nodes_node_type_index:
+      columns: [ entity_type ]
+    nodes_node_entity_index:
+      columns: [ entity_id ]
+    nodes_node_lft_index:
+      columns: [ lft ]
+    nodes_node_rgt_index:
+      columns: [ rgt ]
+    nodes_node_lvl_index:
+      columns: [ lvl ]
+  id:
+    id:
+      type: bigint
+      generator:
+        strategy: AUTO
+  fields:
+    uuid:
+      type: string
+      length: 36
+      unique: true
+    entity_type:
+      type: string
+      length: 255
+      nullable: true
+    entity_id:
+      type: bigint
+      nullable: true
+    lft:
+      type: integer
+      gedmo:
+        - treeLeft
+    rgt:
+      type: integer
+      gedmo:
+        - treeRight
+    lvl:
+      type: integer
+      gedmo:
+        - treeLevel
+  manyToOne:
+    root:
+      targetEntity: Foundry\System\Entities\Node
+      joinColumn:
+        name: tree_root
+        referencedColumnName: id
+        onDelete: CASCADE
+      gedmo:
+        - treeRoot
+    parent:
+      targetEntity: Foundry\System\Entities\Node
+      inversedBy: children
+      joinColumn:
+        name: parent_id
+        referencedColumnName: id
+        onDelete: CASCADE
+      gedmo:
+        - treeParent
+  oneToMany:
+    children:
+      targetEntity: Foundry\System\Entities\Node
+      mappedBy: parent
+      orderBy:
+        name: ASC
+      cascade: [ remove ]

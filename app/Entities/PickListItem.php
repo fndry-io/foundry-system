@@ -21,7 +21,6 @@ class PickListItem extends Entity implements  HasIdentity
 	use Fillable;
 	use Visible;
 
-
 	protected $fillable = [
 		'label',
 		'description',

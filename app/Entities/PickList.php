@@ -24,7 +24,8 @@ class PickList extends Entity implements HasIdentity
 
 	protected $fillable = [
 		'label',
-		'description'
+		'description',
+		'is_tag'
 	];
 
 	protected $visible = [
@@ -32,6 +33,7 @@ class PickList extends Entity implements HasIdentity
         'label',
         'description',
         'identifier',
+		'is_tag',
         'default_item',
 		'created_at',
 		'updated_at'
@@ -66,6 +68,11 @@ class PickList extends Entity implements HasIdentity
 	 * @var boolean If the pick list is system generated
 	 */
 	protected $is_system = false;
+
+	/**
+	 * @var bool If the pick list can be used like a taggable
+	 */
+	protected $is_tag = false;
 
     public function __construct( array $properties = [] ) {
 	    parent::__construct( $properties );

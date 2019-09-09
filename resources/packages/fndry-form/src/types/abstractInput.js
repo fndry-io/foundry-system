@@ -17,7 +17,7 @@ export default {
             required: false
         },
         value: {
-            type: [String,Number,Boolean,Array,InputEvent,Object],
+            type: [String,Number,Boolean,Array,Object],
             required: false
         },
         state: Boolean,

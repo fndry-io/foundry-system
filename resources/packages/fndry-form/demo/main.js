@@ -6,11 +6,30 @@ import BootstrapVue from 'bootstrap-vue'
 
 import FndryServices from '../../fndry-services';
 import FndryRequest from '../../fndry-requests/src';
+import FndryForm from '../src'
 
 import App from './App'
 import router from './router'
+import store from './store';
 
-import FndryForm from '../src'
+/**
+ * Bootstrap the app
+ */
+import {axios} from './bootstrap';
+Vue.use(axios);
+
+router.beforeEach((to, from, next) => {
+    if(to.matched.some(record => record.meta.requiresAuth)) {
+        if (store.getters['auth/isLoggedIn']) {
+            next();
+            return;
+        }
+        next('/login');
+    } else {
+        next();
+    }
+});
+
 
 // const FndryForm = process.env.NODE_ENV === 'development'
 //   ? require('../src/index.js').default
@@ -18,18 +37,17 @@ import FndryForm from '../src'
 
 Vue.config.productionTip = false;
 
-/**
- * Bootstrap the app
- */
-import {axios} from './bootstrap';
 
-Vue.use(axios);
 
 // Using plugin
 Vue.use(BootstrapVue);
 Vue.use(FndryForm);
 Vue.use(FndryServices);
 Vue.use(FndryRequest);
+
+// Import CSS
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 jQuery.extend(true, jQuery.fn.datetimepicker.defaults, {
     icons: {
@@ -47,8 +65,9 @@ jQuery.extend(true, jQuery.fn.datetimepicker.defaults, {
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  template: '<App/>',
-  components: { App }
+    el: '#app',
+    router,
+    store,
+    template: '<App/>',
+    components: { App }
 });

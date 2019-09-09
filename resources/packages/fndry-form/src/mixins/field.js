@@ -129,7 +129,11 @@ export default {
                     type = "auto-complete";
                     break;
                 case "select":
-                    type = "select";
+                    if (field.multiple) {
+                        type = "multi-select";
+                    } else {
+                        type = "select";
+                    }
                     break;
                 case 'file':
                     type = "upload";

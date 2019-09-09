@@ -48,7 +48,6 @@ class AddPickListItemRequest extends FormRequest implements InputInterface, View
 	 * Handle the request
 	 *
 	 * @return Response
-	 * @throws \Doctrine\ORM\ORMException
 	 */
 	public function handle() : Response
 	{

@@ -49,8 +49,11 @@ Route::prefix('system')->middleware('auth:api')->group( function () {
     FormRequestHandler::route('/pick-lists',                 'Foundry\System\Http\Requests\PickLists\BrowsePickListsRequest');
     FormRequestHandler::route('/pick-lists/add',             'Foundry\System\Http\Requests\PickLists\AddPickListRequest');
     FormRequestHandler::route('/pick-lists/{_entity}/edit',  'Foundry\System\Http\Requests\PickLists\EditPickListRequest');
-    FormRequestHandler::route('/pick-lists/{_entity}',       'Foundry\System\Http\Requests\PickLists\ReadPickListRequest');
+	FormRequestHandler::route('/pick-lists/{_entity}/list', 'Foundry\System\Http\Requests\PickLists\ListPickListItemsRequest');
+	FormRequestHandler::route('/pick-lists/{_entity}/items/add', 'Foundry\System\Http\Requests\PickLists\AddPickListItemRequest');
 	FormRequestHandler::route('/pick-lists/{_entity}/items', 'Foundry\System\Http\Requests\PickLists\BrowsePickListItemsRequest');
+    FormRequestHandler::route('/pick-lists/{_entity}',       'Foundry\System\Http\Requests\PickLists\ReadPickListRequest');
+
 
 	//Files
 	FormRequestHandler::route('/files/upload',                 'Foundry\System\Http\Requests\Files\UploadFileRequest');

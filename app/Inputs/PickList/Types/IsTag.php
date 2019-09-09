@@ -7,20 +7,20 @@ use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Types\CheckboxInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 
-class IsSystem extends CheckboxInputType implements Field {
+class IsTag extends CheckboxInputType implements Field {
 
 	/**
 	 * @param Entity|null $entity
 	 *
-	 * @return Inputable|IsSystem
+	 * @return Inputable|IsTag
 	 */
 	static function input( Entity &$entity = null ): Inputable {
 		return ( new static(
-			'is_system',
-			__( 'Is System PickList' ),
+			'is_tag',
+			__( 'Is Tag' ),
 			false
 		) )
-			->setHelp(__('System Pick Lists cannot be modified'))
+			->setHelp(__('Controls if this pick list can be used like a tag list in the UI and users'))
 			->setReadonly(true)
 			->setSortable( true );
 	}

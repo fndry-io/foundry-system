@@ -8,6 +8,7 @@ use Foundry\Core\Requests\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -81,6 +82,7 @@ class FormRequestController extends Controller
 				$uris[$route->uri()] = $route->getName();
 			}
 		}
+		ksort($uris);
 		return Response::success($uris);
 	}
 

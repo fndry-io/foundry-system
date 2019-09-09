@@ -55,7 +55,10 @@ class UserService extends BaseService {
 				$qb->setParameter(':search', "%" . $search . "%");
 			}
 
-			if (!$inputs->input('deleted', false)) {
+			$deleted = $inputs->input('deleted', 'undeleted');
+			if ($deleted == 'deleted') {
+				$where->add($qb->expr()->isNotNull('u.deleted_at'));
+			} else if($deleted == 'undeleted') {
 				$where->add($qb->expr()->isNull('u.deleted_at'));
 			}
 

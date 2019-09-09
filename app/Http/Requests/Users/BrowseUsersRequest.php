@@ -2,16 +2,19 @@
 
 namespace Foundry\System\Http\Requests\Users;
 
+use Foundry\Core\Inputs\SimpleInputs;
+use Foundry\Core\Inputs\Types\ChoiceInputType;
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
+use Foundry\Core\Inputs\Types\TextInputType;
 use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\Core\Requests\Traits\IsBrowseRequest;
-use Foundry\System\Inputs\User\UsersFilterInput;
+use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Services\UserService;
 
 class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
@@ -26,10 +29,14 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
 	/**
 	 * @param $inputs
 	 *
-	 * @return \Foundry\Core\Inputs\Inputs|UsersFilterInput
+	 * @return \Foundry\Core\Inputs\Inputs|SimpleInputs
 	 */
 	public function makeInput($inputs) {
-		return new UsersFilterInput($inputs);
+		return (new SimpleInputs($inputs, InputTypeCollection::fromTypes([
+			(new TextInputType('search', 'Search', false)),
+			(new ChoiceInputType('deleted', 'Deleted', false)),
+			(new ChoiceInputType('archived', 'Archived', false))
+		])));
 	}
 
 	/**

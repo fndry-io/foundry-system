@@ -65,7 +65,8 @@ class AddPickListRequest extends FormRequest implements InputInterface, Viewable
 
         $picklist = (new SectionType(__('Details')))->addChildren(
             RowType::withChildren($form->get('label')),
-            RowType::withChildren($form->get('description'))
+            RowType::withChildren($form->get('description')),
+	        RowType::withChildren($form->get('is_tag'))
         );
 
         $form->addChildren(

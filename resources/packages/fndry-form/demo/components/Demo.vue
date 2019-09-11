@@ -4,7 +4,7 @@
         <div class="container text-left">
             <ValidationObserver ref="observer" v-slot="{ invalid }" :slim="true">
                 <form @submit.prevent="onSubmit">
-                    <fndry-form-schema :schema="schema" :model="model" :errors="errors"></fndry-form-schema>
+                    <fndry-form-schema :schema="schema" :model="model" :errors="errors" @update="onUpdate"></fndry-form-schema>
                     <button type="submit">Submit</button>
                 </form>
             </ValidationObserver>
@@ -17,7 +17,7 @@
 <script>
     import FndryForm from "../../src";
     import extend from "extend";
-    import {set} from "lodash";
+    import {merge, set} from "lodash";
     import { ValidationObserver } from 'vee-validate';
 
     import {getInputValues} from '../../src/utils/schema';
@@ -172,16 +172,103 @@
                                 },
                                 {
                                     type: 'select',
+                                    name: 'select-only-one',
+                                    options: [
+                                        {text: 'Red', value: 'red'},
+                                        {text: 'Blue', value: 'blue'},
+                                        {text: 'Green', value: 'green'}
+                                    ],
+                                    label: 'Select One',
+                                    multiple: false,
+                                    required: true,
+                                    searchable: true
+                                }
+                            ]
+                        },
+                        {
+                            type: 'row',
+                            children: [
+                                {
+                                    type: 'select',
                                     name: 'select-multiple',
                                     options: [
                                         {text: 'Red', value: 'red'},
                                         {text: 'Blue', value: 'blue'},
                                         {text: 'Green', value: 'green'}
                                     ],
-                                    rules:'required',
                                     required: true,
                                     label: 'Select Multiple',
-                                    multiple: true
+                                    multiple: true,
+                                    searchable: true
+                                },
+                                {
+                                    type: 'select',
+                                    name: 'select-multiple-max',
+                                    help: 'Select with required and max selection',
+                                    // value: [
+                                    //     'red', 'blue'
+                                    // ],
+                                    options: [
+                                        {label: 'Red', id: 'red'},
+                                        {label: 'Blue', id: 'blue'},
+                                        {label: 'Green', id: 'green'},
+                                        {label: 'Black', id: 'black'},
+                                        {label: 'White', id: 'white'},
+                                        {label: 'Purple', id: 'purple'},
+                                        {label: 'Orange', id: 'orange'},
+                                        {label: 'Brown', id: 'brown'}
+                                    ],
+                                    rules: 'required',
+                                    required: true,
+                                    label: 'Select Multiple',
+                                    multiple: true,
+                                    searchable: true,
+                                    textKey: 'label',
+                                    valueKey: 'id',
+                                    max: 3,
+                                    url: '/api/system/pick-lists/13/list',
+                                },
+                                {
+                                    type: 'select',
+                                    name: 'select-taggable',
+                                    help: 'Taggable with local search ablity',
+                                    options: [
+                                        {label: 'Red', id: 'red'},
+                                        {label: 'Blue', id: 'blue'},
+                                        {label: 'Green', id: 'green'},
+                                        {label: 'Black', id: 'black'},
+                                        {label: 'White', id: 'white'},
+                                        {label: 'Purple', id: 'purple'},
+                                        {label: 'Orange', id: 'orange'},
+                                        {label: 'Brown', id: 'brown'}
+                                    ],
+                                    rules: 'required',
+                                    required: true,
+                                    label: 'Select Multiple',
+                                    multiple: true,
+                                    taggable: true,
+                                    searchable: true,
+                                    textKey: 'label',
+                                    valueKey: 'id',
+                                    taggableUrl: '/api/system/pick-lists/13/items/add',
+                                    max: 3
+                                },
+                                {
+                                    type: 'select',
+                                    name: 'select-taggable-search',
+                                    help: 'Taggable with ajax search ablity',
+                                    options: [],
+                                    rules: 'required',
+                                    required: true,
+                                    label: 'Select Multiple',
+                                    multiple: true,
+                                    taggable: true,
+                                    searchable: true,
+                                    textKey: 'label',
+                                    valueKey: 'id',
+                                    url: '/api/system/pick-lists/13/list',
+                                    taggableUrl: '/api/system/pick-lists/13/items/add',
+                                    max: 3
                                 }
                             ]
                         },
@@ -250,6 +337,9 @@
             this.model = extend({}, model);
         },
         methods: {
+            onUpdate(model) {
+                this.model = merge({}, model);
+            },
             async onSubmit () {
                 const isValid = await this.$refs.observer.validate();
                 if (!isValid) {
@@ -257,7 +347,6 @@
                 } else {
                     console.log('valid');
                 }
-                // 🐿 ship it
             }
         }
     }

@@ -4,6 +4,7 @@ namespace Foundry\System\Lib;
 
 use Foundry\System\Entities\PickList;
 use Foundry\System\Entities\PickListItem;
+use Foundry\System\Repositories\PickListRepository;
 use Illuminate\Support\Arr;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
@@ -18,9 +19,13 @@ class PickListSeeder {
 			if ($identifier = Arr::get($list, 'identifier', null)) {
 				$picklist->identifier = $identifier;
 			}
+			if ($is_tag = Arr::get($list, 'is_tag', false)) {
+				$picklist->is_tag = $is_tag;
+			}
 
 			if ($exists = EntityManager::getRepository(PickList::class)->findOneBy(['identifier' => $picklist->identifier])) {
 				$picklist = $exists;
+				PickListRepository::get()->clearCachedSelectableList($picklist->identifier);
 			} else {
 				EntityManager::persist($picklist);
 				EntityManager::flush();

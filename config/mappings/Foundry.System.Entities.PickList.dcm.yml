@@ -35,6 +35,10 @@ Foundry\System\Entities\PickList:
     is_system:
       type: boolean
       default: false
+    is_tag:
+      type: boolean
+      default: false
+      nullable: true
     created_at:
       type: datetime
       gedmo:

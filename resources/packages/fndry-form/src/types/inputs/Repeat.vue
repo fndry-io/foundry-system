@@ -1,19 +1,20 @@
 <template>
     <div>
-        <b-input-group class="mb-3">
+        <div class="mb-3">
             <b-form-select :value="config" :options="options" @change="onPresetChosen">
             </b-form-select>
-        </b-input-group>
+            <b-form-text v-if="text">Repeat {{text}}</b-form-text>
+        </div>
 
         <div v-if="config === 'custom'">
             <b-form-group
                     label-cols-sm="3"
                     label="Every"
-                    label-for="frequency"
+                    label-for="interval"
             >
                 <b-input-group>
-                    <input name="frequency" v-model="model.frequency" type="text" class="form-control" size="2" @blur="onBlur">
-                    <b-form-select v-model="model.interval" :options="intervals" @change="onIntervalChange" @blur="onBlur"></b-form-select>
+                    <input name="interval" :value="model.interval" type="text" class="form-control" size="2" @change="onIntervalChange" @blur="onBlur">
+                    <b-form-select v-model="model.freq" :options="frequencies" @change="onFreqChange" @blur="onBlur"></b-form-select>
                 </b-input-group>
             </b-form-group>
 
@@ -25,19 +26,21 @@
                           label-for="repeat"
 
             >
-                <b-form-select v-if="model.interval === 'month'"
-                               v-model="model.intervalMonth"
+                <b-form-select v-if="model.freq === rrule('MONTHLY')"
+                               :value="intervalMonthOption"
                                :options="intervalOptions"
                                name="repeat"
-                               @change="handleChange"
+                               @change="handleIntervalMonthChange"
                                @blur="onBlur"
                 ></b-form-select>
-                <b-form-checkbox-group v-if="model.interval === 'week'"
-                                       v-model="model.intervalWeek"
+                <b-form-checkbox-group v-if="model.freq === rrule('WEEKLY')"
+                                       :checked="intervalWeekOption"
                                        :options="intervalOptions"
                                        name="repeat"
                                        class="day-of-week"
                                        @blur="onBlur"
+                                       @change="handleIntervalWeekChange"
+                                       :required="true"
                 ></b-form-checkbox-group>
             </b-form-group>
 
@@ -48,10 +51,10 @@
                     label-for="end"
             >
                 <b-input-group>
-                    <b-form-select v-model="model.ends" :options="endOptions" @blur="onBlur"></b-form-select>
-                    <date v-if="model.ends === 'on'" id="endsOn" :schema="endsOnDateSchema" :value="model.endsOn" style="width: 50%" @input="handleEndsOn" @change="handleEndsOn" @blur="onBlur"></date>
-                    <b-form-input v-if="model.ends === 'after'" v-model="model.endsAfter" type="number" :disabled="model.ends !== 'after'" min="0" style="width: 33%" @blur="onBlur"></b-form-input>
-                    <b-input-group-append v-if="model.ends === 'after'" is-text><span class="fa fa-redo"></span></b-input-group-append>
+                    <b-form-select :value="ends" :options="endOptions" @blur="onBlur" @change="handleEnds"></b-form-select>
+                    <date v-if="ends === 'on'" id="endsOn" :schema="endsOnDateSchema" :value="endsOn" style="width: 50%" @input="handleEndsOn" @change="handleEndsOn" @blur="onBlur"></date>
+                    <b-form-input v-if="ends === 'after'" :value="endsAfter" type="number" :disabled="ends !== 'after'" min="0" style="width: 33%" @input="handleEndsAfter" @blur="onBlur"></b-form-input>
+                    <b-input-group-append v-if="ends === 'after'" is-text><span class="fa fa-redo"></span></b-input-group-append>
                 </b-input-group>
             </b-form-group>
         </div>
@@ -62,6 +65,8 @@
 <script>
     import {forEach, merge, find, get} from 'lodash';
     import moment from 'moment';
+
+    import { RRule, RRuleSet, rrulestr } from 'rrule';
 
     import abstractInput from '../abstractInput';
     import DatePicker from "vue-bootstrap-datetimepicker/src/component";
@@ -90,37 +95,69 @@
         'December'
     ];
 
-    const intervals = {
+    const frequencies = {
         day: {
-            label: 'Day'
+            value: RRule.DAILY,
+            label: 'Day(s)'
         },
         week: {
-            label: 'Week',
-            options: {
-                1: 'Monday',
-                2: 'Tuesday',
-                3: 'Wednesday',
-                4: 'Thursday',
-                5: 'Friday',
-                6: 'Saturday',
-                7: 'Sunday'
-            }
-        },
-        month: {
-            label: 'Month',
+            value: RRule.WEEKLY,
+            label: 'Week(s)',
             options: [
                 {
-                    text: 'Day of Month',
+                    label: 'Monday',
+                    shortValue: 'MO',
+                    value: 0,
+                },
+                {
+                    label: 'Tuesday',
+                    shortValue: 'TU',
+                    value: 1,
+                },
+                {
+                    label: 'Wednesday',
+                    shortValue: 'WE',
+                    value: 2,
+                },
+                {
+                    label: 'Thursday',
+                    shortValue: 'TH',
+                    value: 3,
+                },
+                {
+                    label: 'Friday',
+                    shortValue: 'FR',
+                    value: 4,
+                },
+                {
+                    label: 'Saturday',
+                    shortValue: 'SA',
+                    value: 5,
+                },
+                {
+                    label: 'Sunday',
+                    shortValue: 'SU',
+                    value: 6,
+                }
+            ]
+        },
+        month: {
+            value: RRule.MONTHLY,
+            label: 'Month(s)',
+            options: [
+                {
+                    label: 'Day of Month',
                     value: 'day'
                 },
                 {
-                    text: 'Day of Week',
+                    label: 'Day of Week',
                     value: 'week'
                 }
             ]
         },
         year: {
-            label: 'Year'
+            value: RRule.YEARLY,
+            label: 'Yearly'
         }
     };
 
@@ -139,15 +176,24 @@
         }
     };
 
-    const daily = {
-        config: 'daily',
-        frequency: 1,
-        interval: 'day',
-        intervalWeek: null,
-        intervalMonth: null,
-        ends: 'never',
-        endsAfter: 1,
-        endsOn: null,
+    const base = {
+        freq: RRule.DAILY,
+        dtstart: null,
+        interval: 2,
+        wkst: null,
+        count: null,
+        until: null,
+        tzid: null,
+        bysetpos: null,
+        bymonth: null,
+        bymonthday: null,
+        byyearday: null,
+        byweekno: null,
+        byweekday: null,
+        byhour: null,
+        byminute: null,
+        bysecond: null,
+        byeaster: null
     };
 
     export default {
@@ -155,7 +201,6 @@
         components: {
             Date,
             DatePicker
-
         },
         mixins: [
             abstractInput
@@ -163,192 +208,316 @@
         data () {
             return {
                 config: 'daily',
+                rule: null,
+                rvalue: null,
+                text: null,
                 date: null,
                 dateInput: null,
                 intervalOptions: [],
-                model: merge({}, {
-                    config: 'daily',
-                    frequency: 1,
-                    interval: 'day',
-                    intervalWeek: null,
-                    intervalMonth: null,
-                    ends: 'never',
-                    endsAfter: 1,
-                    endsOn: null,
-                }, this.value)
+                intervalWeekOption: null,
+                intervalMonthOption: null,
+                ends: 'never',
+                endsAfter: null,
+                endsOn: null,
+                model: merge({}, base)
             }
         },
         created() {
             let date;
             if (this.schema.dateInputName) {
                 this.dateInput = get(this.rootModel, this.schema.dateInputName, null);
-                date = moment.utc(this.dateInput).local();
+                if (this.dateInput) {
+                    date = moment.utc(this.dateInput).local();
+                }
             }
+
             if (!date) {
                 date = moment();
             }
             this.date = date;
+            this.model.dtstart = date.toDate();
 
-            if (this.value === null) {
-                this.onIntervalChange('daily');
-                this.onChange();
+            if (this.value !== null) {
+                this.convertFromRRule(this.value);
             } else {
-                this.config = this.value.config;
-                this.onIntervalChange(this.value.config);
+                this.convertToRRule();
             }
-
         },
         methods: {
             onInput(){
-                this.$emit('input', this.model);
+                let value = RRule.optionsToString(this.model);
+                if (value !== this.value) {
+                    this.$emit('input', value);
+                }
             },
             onChange(){
-                this.$emit('change', this.model);
+                let value = RRule.optionsToString(this.model);
+                if (value !== this.value) {
+                    this.$emit('change', value);
+                }
             },
             onBlur(){
                 this.$emit('blur');
             },
+
             onPresetChosen(value) {
                 this.config = value;
                 let selected = find(this.options, (option) => option.value === value);
-                if (selected && selected.config) {
-                    this.model = merge({}, this.model, selected.config);
+
+                console.log(selected.rule);
+
+                if (selected && selected.rule) {
+                    this.convertFromRRule(selected.rule);
                 }
-                this.onIntervalChange();
+            },
+            handleEnds(value){
+                this.ends = value;
+                if (value === 'never') {
+                    delete this.model.count;
+                    delete this.model.until;
+                    this.model = merge({}, this.model);
+                }
             },
             handleEndsOn(value) {
-                this.model = merge({}, this.model, {endsOn: value});
+                this.model = merge({}, this.model, {count: null, until: moment.utc(value).toDate()});
+                this.endsOn = value;
+            },
+            handleEndsAfter(value){
+                this.model = merge({}, this.model, {count: value, until: null});
+                this.endsAfter = value;
             },
             handleChange() {
                 this.model = merge({}, this.model);
             },
-            onIntervalChange(){
-                if (this.model.interval === 'week') {
+            onIntervalChange(evt){
+                this.model = merge({}, this.model, {interval: evt.target.value});
+            },
+            onFreqChange(){
+                delete this.model.bysetpos;
+                delete this.model.byweekday;
+                delete this.model.bymonthday;
+
+                if (this.model.freq === RRule.WEEKLY) {
                     this.intervalOptions = this.getWeeklyOptions();
-                } else if (this.model.interval === 'month') {
+                } else if (this.model.freq === RRule.MONTHLY) {
                     this.intervalOptions = this.getMonthlyOptions();
                 } else {
                     this.intervalOptions = [];
                 }
+
                 this.handleChange();
             },
-            getWeeklyOptions(){
+            getWeeklyOptions(selected = undefined){
                 let options = [];
-                forEach(intervals.week.options, (text, value) => {
+                forEach(frequencies.week.options, (option) => {
                     options.push({
-                        text: text.substr(0, 2),
-                        value
+                        text: option.label.substr(0, 2).toUpperCase(),
+                        value: option.value
                     })
                 });
+                let day = this.date.isoWeekday() - 1;
+                let weekDay = find(frequencies.week.options, (option) => option.value === day);
+
+                if (selected !== false) {
+                    delete this.model.byweekday;
+                    delete this.model.bymonthday;
+                    if (selected) {
+                        this.intervalWeekOption = selected;
+                    } else {
+                        this.intervalWeekOption = [weekDay.value];
+                    }
+                    this.model = merge({}, this.model, {byweekday: this.intervalWeekOption});
+                }
+
                 return options;
             },
-            getMonthlyOptions(){
+            getMonthlyOptions(selected = undefined){
 
-                let day = this.date.isoWeekday();
-                let dayText = intervals.week.options[day];
+                let day = this.date.isoWeekday() - 1;
+                let weekDay = find(frequencies.week.options, (option) => option.value === day);
+
+                let weekDayText = weekDay.label;
+                let weekDayTextShort = weekDay.shortValue;
+
                 let weekCount = Math.floor(this.date.date() / 7);
                 let dayWeekOfMonth = counts[weekCount];
 
+                let dayOption = {
+                    bymonthday: this.date.date()
+                };
+
+                if (selected !== false) {
+                    delete this.model.byweekday;
+                    delete this.model.bymonthday;
+                    if (selected) {
+                        this.intervalMonthOption = selected;
+                    } else {
+                        this.intervalMonthOption = dayOption;
+                    }
+
+                    this.model = merge({}, this.model, this.intervalMonthOption);
+                }
+
                 return [
                     {
-                        text: `Day ${this.date.date()}`,
-                        value: 'date'
+                        text: `Day ${this.date.date()} of the Month`,
+                        value: dayOption
                     },
                     {
-                        text: `The ${dayWeekOfMonth} ${dayText}`,
-                        value: 'day'
+                        text: `The ${dayWeekOfMonth} ${weekDayText} of the Month`,
+                        value: {
+                            byweekday: [RRule[weekDayTextShort].nth(weekCount + 1)]
+                        }
+                    },
+                    {
+                        text: `The last ${weekDayText} of the Month`,
+                        value: {
+                            byweekday: [RRule[weekDayTextShort].nth(-1)]
+                        }
                     }
                 ];
+            },
+            handleIntervalMonthChange(value) {
+                delete this.model.byweekday;
+                delete this.model.bymonthday;
+                this.intervalMonthOption = value;
+                this.model = merge({}, this.model, value)
+            },
+            handleIntervalWeekChange(value) {
+                delete this.model.byweekday;
+                delete this.model.bymonthday;
+
+                if (value.length > 0) {
+                    this.intervalWeekOption = value;
+                    this.model = merge({}, this.model, {byweekday: value});
+                }
+            },
+            convertToRRule(){
+                this.rule = new RRule(this.model);
+                this.text = this.rule.toText();
+                this.rvalue = this.rule.toString();
+            },
+            convertFromRRule(rfcString){
+
+                let model = RRule.parseString(rfcString);
+
+                if (model.freq === RRule.WEEKLY) {
+
+                    let byweekday = [];
+                    forEach(model.byweekday, (day) => {
+                        byweekday.push(day.weekday);
+                    });
+
+                    this.intervalOptions = this.getWeeklyOptions(byweekday);
+
+                } else if (model.freq === RRule.MONTHLY) {
+
+                    let intervalMonthOption = null;
+
+                    if (model.bymonthday) {
+                        intervalMonthOption = {
+                            bymonthday: model.bymonthday
+                        };
+                    } else if (model.byweekday) {
+                        intervalMonthOption = {
+                            byweekday: model.byweekday
+                        };
+                    }
+
+                    this.intervalOptions = this.getMonthlyOptions(intervalMonthOption);
+
+                } else {
+                    this.intervalOptions = [];
+                }
+
+                if (model.count) {
+                    this.ends = 'after';
+                    this.endsAfter = model.count;
+                } else if (model.until) {
+                    this.ends = 'on';
+                    this.endsOn = moment(model.until).toISOString();
+                } else {
+                    this.ends = 'never';
+                }
+
+                this.convertToRRule();
+                this.model = model;
+            },
+            rrule(CONSTANT){
+                return RRule[CONSTANT];
             }
         },
         watch: {
             model: function(){
+                this.convertToRRule();
                 this.onInput();
+            },
+            value: function(newVal, oldVal){
+                if (newVal !== this.rvalue) {
+                    this.convertFromRRule(newVal);
+                }
             }
         },
         computed: {
             options: function() {
 
-                let day = this.date.isoWeekday();
+                let day = this.date.isoWeekday() - 1;
                 let month = this.date.month();
-                let dayText = intervals.week.options[day];
+                let dayText = frequencies.week.options[day];
                 let monthText = months[month];
+
+                let weekDay = find(frequencies.week.options, (option) => option.value === day);
+
+                let weekDayTextShort = weekDay.shortValue;
+
                 let weekCount = Math.floor(this.date.date() / 7);
                 let dayWeekOfMonth = counts[weekCount];
+
+                let dateString = this.date.utc().format('YYYYMMDDTHHmmss');
+                console.log(dateString);
 
                 return [
                     {
                         value: 'daily',
                         text: 'Daily',
-                        config: {
-                            config: 'daily',
-                            frequency: 1,
-                            interval: 'day',
-                            ends: 'never'
-                        }
+                        rule: `DTSTART:${dateString}\nRRULE:FREQ=DAILY;INTERVAL=1`
                     },
                     {
                         value: 'weekly',
-                        text: `Weekly on ${dayText}`,
-                        config: {
-                            config: 'weekly',
-                            frequency: 1,
-                            interval: 'week',
-                            intervalWeek: [day],
-                            ends: 'never',
-                        }
+                        text: `Weekly on ${dayText.label}`,
+                        rule: `DTSTART:${dateString}\nRRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=${dayText.shortValue}`
                     },
                     {
                         value: 'monthly',
-                        text: `Monthly on the ${dayWeekOfMonth} ${dayText}`,
-                        config: {
-                            config: 'monthly',
-                            frequency: 1,
-                            interval: 'month',
-                            intervalMonth: 'day',
-                            ends: 'never',
-                        }
+                        text: `Monthly on the ${dayWeekOfMonth} ${dayText.label}`,
+                        rule: `DTSTART:${dateString}\nRRULE:FREQ=MONTHLY;INTERVAL=1;BYDAY=${weekCount + 1}${weekDayTextShort}`
                     },
                     {
                         value: 'yearly',
                         text: `Annually on ${this.date.date()} ${monthText}`,
-                        config: {
-                            config: 'yearly',
-                            frequency: 1,
-                            interval: 'year',
-                            intervalMonth: 'date',
-                            ends: 'never',
-                        }
+                        rule: `DTSTART:${dateString}\nRRULE:FREQ=YEARLY;INTERVAL=1`
                     },
                     {
                         value: 'weekday',
                         text: `Every weekday (Monday to Friday)`,
-                        config: {
-                            config: 'weekday',
-                            frequency: 1,
-                            interval: 'week',
-                            intervalWeek: [1,2,3,4,5],
-                            ends: 'never',
-                        }
+                        rule: `DTSTART:${dateString}\nRRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,WE,TH,FR`
                     },
                     {
                         text: `Custom`,
                         value: 'custom',
-                        config: {
-                            config: 'custom'
-                        }
+                        rule: ""
                     }
                 ];
             },
             types: function() {
                 return types;
             },
-            intervals: function() {
+            frequencies: function() {
                 let options = [];
-                forEach(intervals, (interval, value) => {
+                forEach(frequencies, (interval) => {
                     options.push({
                         text: interval.label,
-                        value
+                        value: interval.value
                     })
                 });
                 return options;

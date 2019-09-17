@@ -39,6 +39,7 @@
     "vue-multiselect": "^2.1.6",
     "vue-router": "^3.0.3",
     "vue-template-compiler": "^2.6.10",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "rrule": "^2.6.2"
   }
 }

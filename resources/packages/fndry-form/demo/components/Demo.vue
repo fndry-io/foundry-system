@@ -41,6 +41,18 @@
                             type: 'row',
                             children: [
                                 {
+                                    type: 'repeat',
+                                    name: 'repeat',
+                                    //value: "DTSTART:20190917T120914Z\nRRULE:FREQ=MONTHLY;INTERVAL=5;COUNT=12;BYDAY=+3TU",
+                                    required: false,
+                                    label: 'Repeat'
+                                }
+                            ]
+                        },
+                        {
+                            type: 'row',
+                            children: [
+                                {
                                     type: 'text',
                                     name: 'name.first_name',
                                     value: 'bob',

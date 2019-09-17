@@ -70,6 +70,8 @@ export const determineVisibility = (condition, model) => {
     let expression = condition.operator;
     let value = objGet(model, `${condition.ref}`, null);
 
+
+
     if(expression === 'in'){
         let show = false;
         if(value && isArray(value)){
@@ -83,12 +85,21 @@ export const determineVisibility = (condition, model) => {
         }
         return show;
     } else {
-        //console.log(`${value}${expression}${condition.values}`);
-        return eval(`${value}${expression}${condition.values}`);
+        let values = condition.values[0];
+
+        if (typeof(value) === 'string') {
+            value = `'${value}'`;
+        }
+
+        if (values === "'NULL'") {
+            return eval(`${value}${expression}null`);
+        } else {
+            return eval(`${value}${expression}${values}`);
+        }
+
     }
 
 };
-
 
 export default {
 	methods: {

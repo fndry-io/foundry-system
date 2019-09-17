@@ -31,6 +31,7 @@
     "moment-timezone": "^0.5.26",
     "node-sass": "^4.9.0",
     "numeral": "^2.0.6",
+    "rrule": "^2.6.2",
     "sass-loader": "^7.1.0",
     "vee-validate": "^2.2.10",
     "vue": "^2.6.10",

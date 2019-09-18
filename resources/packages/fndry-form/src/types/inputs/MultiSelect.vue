@@ -2,13 +2,20 @@
     <div :class="{'select-dropdown': true, 'open': open}">
         <div class="input-group">
 
-            <div :class="{'form-control': true, 'is-invalid': !state, 'is-valid': state}" @click="handleClick" tabindex="0">
-                <div v-if="schema.taggable && selected.length > 0 && selected.length < 3" class="badges">
-                    <span class="badge badge-primary" v-for="option in selected">{{option[textKey]}}<button type="button" class="close" aria-label="Remove" @click.stop="() => selectItem(option)" tabindex="0"><span aria-hidden="true">&times;</span></button></span>
+            <div :class="{'form-control': true, 'input-area': true, 'is-invalid': !state, 'is-valid': state}">
+                <div :id="id" class="selected-values" v-if="!open && selected.length > 0" @click.stop="handleClick" tabindex="0" @focus="handleClick">
+                    <div v-if="schema.taggable && selected.length > 0 && selected.length < 3" class="badges">
+                        <span class="badge badge-primary" v-for="option in selected">{{option[textKey]}}<button type="button" class="close" aria-label="Remove" @click.stop="() => selectItem(option)" tabindex="0"><span aria-hidden="true">&times;</span></button></span>
+                    </div>
+                    <div v-else-if="schema.taggable && selected.length >= 3">{{text}}&nbsp;</div>
+                    <div v-else-if="!schema.taggable">{{text}}&nbsp;</div>
                 </div>
-                <div v-if="!schema.taggable || selected.length === 0 || selected.length >= 3">{{text}}&nbsp;</div>
-                <span class="dropdown-toggle"></span>
+                <div :id="id" class="input" v-if="open || selected.length == 0">
+                    <input ref="search" :placeholder="searchPlaceholderText" class="form-control" v-model="search" @input="handleSearch" @keyup.tab="handleSearchEnter" @focus="handleFocus">
+                </div>
+                <span class="dropdown-toggle" @click.stop="handleClick"></span>
             </div>
+
 
             <div class="input-group-append" v-if="schema.buttons">
                 <fndry-request-button
@@ -27,28 +34,31 @@
             </div>
         </div>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <div class="dropdown-item-text dropdown-item-search" v-if="schema.searchable">
-                <b-form-input ref="search" :placeholder="searchPlaceholderText" v-model="search" @input="handleSearch" @keyup.tab="handleSearchEnter"></b-form-input>
-                <button type="button" class="close" aria-label="Close" v-if="search !== '' && !searching" @click.stop="resetSearch">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+            <!--<div class="dropdown-item-text dropdown-item-search" v-if="selected.length > 0">-->
+                <!--<b-form-input ref="search" :placeholder="searchPlaceholderText" v-model="search" @input="handleSearch" @keyup.tab="handleSearchEnter"></b-form-input>-->
+                <!--<button type="button" class="close" aria-label="Close" v-if="search !== '' && !searching" @click.stop="resetSearch">-->
+                    <!--<span aria-hidden="true">&times;</span>-->
+                <!--</button>-->
+            <!--</div>-->
             <div class="dropdown-items">
                 <div v-if="searching">
                     <div class="dropdown-item-text">Searching... <span class="append"><b-spinner small label="Searching..."></b-spinner></span></div>
+                </div>
+                <div v-if="search && !searching && this.search.length < 3">
+                    <div class="dropdown-item-text">{{searchTextStatus}}</div>
                 </div>
                 <div v-else-if="!errorText && (ajaxOptions.length > 0 || optionKeys.length > 0)">
                     <h6 class="dropdown-header">{{selectTitle}}</h6>
                 </div>
 
                 <div v-if="ajaxOptions && ajaxOptions.length > 0">
-                    <a class="dropdown-item" href="#" v-for="(option, index) in ajaxOptions" :key="`${key}-${option[valueKey]}`" @click.prevent="() => selectSearchItem(option, index)" tabindex="0">{{option[textKey]}}</a>
+                    <div class="dropdown-item" v-for="(option, index) in ajaxOptions" :key="`${key}-${option[valueKey]}`" @click.stop="() => selectSearchItem(option, index)" @keyup.enter="(evt) => {evt.preventDefault(); selectSearchItem(option, index);}" tabindex="0">{{option[textKey]}}</div>
                 </div>
 
                 <div v-if="ajaxOptions && ajaxOptions.length > 0 && optionKeys && optionKeys.length > 0" class="dropdown-divider"></div>
 
                 <div v-if="optionKeys && optionKeys.length > 0">
-                    <a class="dropdown-item" href="#" v-for="k in optionKeys" :key="`${key}-${options[k][valueKey]}`" @click.prevent="() => selectItem(options[k])" tabindex="0"><span v-if="options[k].temp" class="append"><b-spinner variant="secondary" small label="Saving..."></b-spinner></span><span v-if="isSelected(options[k]) !== false" class="append icon fa fa-check"></span>{{options[k][textKey]}}</a>
+                    <div class="dropdown-item" v-for="k in optionKeys" :key="`${key}-${options[k][valueKey]}`" @click.stop="() => selectItem(options[k])" @keyup.enter="(evt) => {evt.preventDefault();selectItem(options[k]);}" tabindex="0"><span v-if="options[k].temp" class="append"><b-spinner variant="secondary" small label="Saving..."></b-spinner></span><span v-if="isSelected(options[k]) !== false" class="append icon fa fa-check"></span>{{options[k][textKey]}}</div>
                 </div>
 
                 <div v-if="!searching && (options && optionKeys.length === 0) && (ajaxOptions && ajaxOptions.length === 0)">
@@ -62,11 +72,11 @@
 
                 <!--<div v-if="groups" v-for="(group_options, label) in groups" :key="`group-${key}-${label}`">-->
                 <!--<h6 class="dropdown-header">{{label}}</h6>-->
-                <!--<a class="dropdown-item" v-if="options" v-for="option in group_options" :key="`${key}-${option.value}`" href="#" @click.prevent="() => selectItem(option)">{{option.text}}</a>-->
+                <!--<a class="dropdown-item" v-if="options" v-for="option in group_options" :key="`${key}-${option.value}`" href="#" @click.stop="() => selectItem(option)">{{option.text}}</a>-->
                 <!--</div>-->
                 <div v-if="search && !exactMatchExists && schema.taggable && !errorText">
                     <h6 class="dropdown-header">{{addTagText}}</h6>
-                    <a class="dropdown-item" href="#" v-if="canEnterToAdd && search" @click.prevent="() => addTaggable(search)" tabindex="0"><span class="append badge badge-secondary">Click item to add</span>{{search}}</a>
+                    <a class="dropdown-item" v-if="canEnterToAdd && search" @click.stop="() => addTaggable(search)" @keyup.enter="(evt) => {evt.preventDefault();addTaggable(search);}" tabindex="0"><span class="append badge badge-secondary">Click item to add</span>{{search}}</a>
                 </div>
             </div>
             <div class="dropdown-item-text dropdown-item-footer" v-if="schema.multiple && !searching && options.length > 0">
@@ -111,12 +121,14 @@
         mounted(){
             this.setOptions();
             document.addEventListener('click', this.handleClickOutside);
-            document.addEventListener('focus', this.handleClickOutside);
+            document.addEventListener('focusin', this.handleClickOutside);
+            // document.addEventListener('blur', this.handleClickOutside);
             this.setSelected(this.value);
         },
         destroyed() {
             document.removeEventListener('click', this.handleClickOutside);
-            document.removeEventListener('focus', this.handleClickOutside);
+            document.removeEventListener('focusin', this.handleClickOutside);
+            // document.removeEventListener('blur', this.handleClickOutside);
         },
         created() {
             this.text = this.placeholder;
@@ -195,20 +207,30 @@
             handleClick(){
                 this.open = !this.open;
                 if (this.open && this.schema.searchable) {
-                    this.$nextTick(() => {
-                        this.$refs['search'].focus();
-                        this.search = "";
-                        this.handleSearch();
-                    });
+                    this.handleFocus();
                 }
                 if (this.open) {
                     this.errorText = null;
                 }
             },
+            handleFocus(){
+                this.open = true;
+                this.$nextTick(() => {
+                    this.$refs['search'].focus();
+                    this.search = "";
+                    this.handleSearch();
+                });
+            },
+            handleBlur(){
+                this.open = false;
+                this.search = null;
+                this.$emit('blur');
+            },
             handleClickOutside(evt){
-                if (!this.$el.contains(evt.target)) {
-                    this.open = false;
-                    this.$emit('blur');
+                if (this.$el.contains(evt.target)) {
+                    this.open = true;
+                } else if (!this.$el.contains(evt.target) && this.open) {
+                    this.handleBlur();
                 }
             },
 
@@ -279,7 +301,7 @@
                 this.updateTextAndModel();
             },
             isSelected(option){
-                if (isEmpty(this.selected)) {
+                if (isEmpty(this.selected) || isEmpty(option)) {
                     return false;
                 }
                 if (this.schema.multiple) {
@@ -299,12 +321,19 @@
                 this.optionKeys = keys(this.options);
             },
             handleSearch(){
+                this.open = true;
                 this.localSearch();
                 if (this.schema.url && this.search.length > 2) {
                     this.ajaxOptions = [];
                     this.searching = true;
                     this.ajaxSearch();
                 }
+                if (this.search.length < 3) {
+                    this.updateSearchText(3 - this.search.length);
+                }
+            },
+            updateSearchText(number){
+                this.searchTextStatus = `Enter ${number} more character(s)`;
             },
             localSearch(){
                 this.exactMatchExists = false;
@@ -485,16 +514,6 @@
             cursor: pointer;
             height: auto;
 
-            .dropdown-toggle {
-                position: absolute;
-                right: 1.5em;
-                top: calc(50% - 10px);
-                &::after {
-                    -webkit-transition: all 250ms; /* Safari prior 6.1 */
-                    transition: all 250ms;
-                }
-            }
-
             &:invalid, &.is-invalid,
             &:valid, &.is-valid {
                 background-position: right calc(1.5em + 0.4rem) center;
@@ -515,6 +534,47 @@
             .dropdown-menu {
                 display: block;
             }
+        }
+
+        .input-area {
+            display: block;
+            width: 100%;
+            padding: 0 !important;
+            position: relative;
+
+            .dropdown-toggle {
+                height: 100%;
+                width: 1.9em;
+                position: absolute;
+                text-align: center;
+                top: 0;
+                right: 0 !important;
+                padding-top: 0.5em;
+
+                &::after {
+                    -webkit-transition: all 250ms; /* Safari prior 6.1 */
+                    transition: all 250ms;
+                }
+            }
+        }
+
+        .input {
+            display: block;
+            width: 100%;
+            position: relative;
+            padding-right: calc((1em + 0.75rem) * 3 / 4 + 1.75rem);
+
+            .form-control {
+                border: 0;
+                background: none;
+            }
+
+        }
+
+        .selected-values {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
         }
 
         .dropdown-menu {
@@ -609,7 +669,7 @@
             }
         }
 
-        .form-control {
+        .input-area {
             .badges {
                 line-height: 1;
                 display: block;

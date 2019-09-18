@@ -289,7 +289,7 @@
                                 },
                                 {
                                     type: 'select',
-                                    name: 'select-taggable-search',
+                                    name: 'select-taggable-search-add',
                                     help: 'Taggable with ajax search and add ablity',
                                     options: [],
                                     rules: 'required',

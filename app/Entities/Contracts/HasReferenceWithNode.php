@@ -4,7 +4,7 @@ namespace Foundry\System\Entities\Contracts;
 
 use Foundry\Core\Entities\Contracts\HasReference;
 use Foundry\Core\Entities\Entity;
-use Foundry\System\Entities\Node;
+use Foundry\Core\Entities\Node;
 
 interface HasReferenceWithNode extends HasReference
 {

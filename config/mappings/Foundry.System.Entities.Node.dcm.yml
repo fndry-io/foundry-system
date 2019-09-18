@@ -7,9 +7,9 @@ Foundry\System\Entities\Node:
     tree:
       type: nested
   indexes:
-    nodes_node_type_index:
+    nodes_node_entity_type_index:
       columns: [ entity_type ]
-    nodes_node_entity_index:
+    nodes_node_entity_id_index:
       columns: [ entity_id ]
     nodes_node_lft_index:
       columns: [ lft ]

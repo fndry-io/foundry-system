@@ -263,9 +263,6 @@
             onPresetChosen(value) {
                 this.config = value;
                 let selected = find(this.options, (option) => option.value === value);
-
-                console.log(selected.rule);
-
                 if (selected && selected.rule) {
                     this.convertFromRRule(selected.rule);
                 }
@@ -474,7 +471,6 @@
                 let dayWeekOfMonth = counts[weekCount];
 
                 let dateString = this.date.utc().format('YYYYMMDDTHHmmss');
-                console.log(dateString);
 
                 return [
                     {

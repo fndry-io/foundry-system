@@ -1,40 +1,20 @@
 <template>
     <div class="input-group">
-        <multiselect v-model="selected"
-                     @select="handleSelect"
-                     @remove="handleRemove"
-                     @tag="handleTag"
-                     :options="options"
-                     :track-by="valueKey"
-                     :label="textKey"
-                     :close-on-select="false"
-                     :show-labels="false"
-                     :multiple="schema.multiple"
-                     :taggable="schema.taggable"
-                     :group-label="(groupKey) ? `label` : undefined"
-                     :group-values="(groupKey) ? values : undefined"
-                     :group-select="(groupKey) ? false : undefined"
-                     :max="schema.max"
-                     :loading="loading"
-                     :hide-selected="true"
-                     @search-change="handleSearch"
-                     :placeholder="(schema.url) ? `Type to search` : undefined"
-        ></multiselect>
 
-        <!--<b-form-select-->
-                <!--:id="id"-->
-                <!--:name="name"-->
-                <!--v-model="model"-->
-                <!--v-on="$listeners"-->
-                <!--:multiple="schema.multiple"-->
-                <!--:state="state"-->
-        <!--&gt;-->
-            <!--<option v-if="schema.empty && !schema.multiple" :value="null">{{(schema.empty === true) ? 'Please select an option' : schema.empty}}</option>-->
-            <!--<option v-if="options" v-for="option in options" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>-->
-            <!--<optgroup v-if="groups" v-for="(group_options, label) in groups" :label="label" :key="`group-${key}-${label}`">-->
-                <!--<option v-for="option in group_options" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>-->
-            <!--</optgroup>-->
-        <!--</b-form-select>-->
+        <b-form-select
+                :id="id"
+                :name="name"
+                v-model="model"
+                v-on="$listeners"
+                :multiple="schema.multiple"
+                :state="state"
+        >
+            <option v-if="schema.empty && !schema.multiple" :value="null">{{(schema.empty === true) ? 'Please select an option' : schema.empty}}</option>
+            <option v-if="options" v-for="option in options" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>
+            <optgroup v-if="groups" v-for="(group_options, label) in groups" :label="label" :key="`group-${key}-${label}`">
+                <option v-for="option in group_options" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>
+            </optgroup>
+        </b-form-select>
 
         <div class="input-group-append" v-if="schema.buttons">
             <fndry-request-button
@@ -58,7 +38,6 @@
 <script>
 
     import {forEach, isObject, isString, isEmpty, findIndex, merge, debounce, find} from 'lodash';
-    import Multiselect from 'vue-multiselect';
     import abstractInput from '../abstractInput';
 
     export default {
@@ -66,9 +45,6 @@
         mixins: [
             abstractInput
         ],
-        components: {
-            Multiselect
-        },
         data() {
             return {
                 key: 0,

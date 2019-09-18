@@ -28,7 +28,7 @@
         </div>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <div class="dropdown-item-text dropdown-item-search" v-if="schema.searchable">
-                <b-form-input ref="search" :placeholder="filterPlaceholderText" v-model="search" @input="handleSearch" @keyup.tab="handleSearchEnter"></b-form-input>
+                <b-form-input ref="search" :placeholder="searchPlaceholderText" v-model="search" @input="handleSearch" @keyup.tab="handleSearchEnter"></b-form-input>
                 <button type="button" class="close" aria-label="Close" v-if="search !== '' && !searching" @click.stop="resetSearch">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -64,7 +64,7 @@
                 <!--<h6 class="dropdown-header">{{label}}</h6>-->
                 <!--<a class="dropdown-item" v-if="options" v-for="option in group_options" :key="`${key}-${option.value}`" href="#" @click.prevent="() => selectItem(option)">{{option.text}}</a>-->
                 <!--</div>-->
-                <div v-if="search && !searching && !exactMatchExists && schema.taggable && !errorText">
+                <div v-if="search && !exactMatchExists && schema.taggable && !errorText">
                     <h6 class="dropdown-header">{{addTagText}}</h6>
                     <a class="dropdown-item" href="#" v-if="canEnterToAdd && search" @click.prevent="() => addTaggable(search)" tabindex="0"><span class="append badge badge-secondary">Click item to add</span>{{search}}</a>
                 </div>
@@ -94,7 +94,7 @@
             return {
                 key: 0,
                 text: "",
-                placeholder: "Select an option...",
+                placeholder: (this.schema.placeholder) ?  this.schema.placeholder : "Select an option...",
                 search: '',
                 searching: false,
                 ajaxOptions: [],
@@ -381,38 +381,41 @@
 
                 let option = {
                     [this.textKey]: value,
-                    [this.valueKey]: id,
-                    temp: true
+                    [this.valueKey]: !!(this.schema.taggableUrl) ? id : value,
+                    temp: !!(this.schema.taggableUrl)
                 };
                 this.addSelectedOption(option);
                 this.selectItem(option);
                 this.resetSearch();
 
-                let params = merge({}, this.schema.params, {
-                    [this.textKey]: value
-                });
+                if (this.schema.taggableUrl) {
+                    let params = merge({}, this.schema.params, {
+                        [this.textKey]: value
+                    });
 
-                return this.$fndryApiService.call(`${this.schema.taggableUrl}`, 'POST', params)
-                    .then(({data}) => {
-                        //replace the add item
-                        let oIndex = findIndex(this.options, (_option) => _option[this.valueKey] === id);
-                        let sIndex = findIndex(this.selected, (_option) => _option[this.valueKey] === id);
-                        this.options.splice(oIndex, 1, data);
-                        this.selected.splice(sIndex, 1, data);
-                    }).catch(({error}) => {
-                        //replace the add item
-                        let oIndex = findIndex(this.options, (_option) => _option[this.valueKey] === id);
-                        let sIndex = findIndex(this.selected, (_option) => _option[this.valueKey] === id);
-                        this.options.splice(oIndex, 1);
-                        this.selected.splice(sIndex, 1);
+                    return this.$fndryApiService.call(`${this.schema.taggableUrl}`, 'POST', params)
+                        .then(({data}) => {
+                            //replace the add item
+                            let oIndex = findIndex(this.options, (_option) => _option[this.valueKey] === id);
+                            let sIndex = findIndex(this.selected, (_option) => _option[this.valueKey] === id);
+                            this.options.splice(oIndex, 1, data);
+                            this.selected.splice(sIndex, 1, data);
+                        }).catch(({error}) => {
+                            //replace the add item
+                            let oIndex = findIndex(this.options, (_option) => _option[this.valueKey] === id);
+                            let sIndex = findIndex(this.selected, (_option) => _option[this.valueKey] === id);
+                            this.options.splice(oIndex, 1);
+                            this.selected.splice(sIndex, 1);
 
-                        this.options = [...this.options];
-                        this.optionKeys = keys(this.options);
-                        this.updateTextAndModel();
+                            this.options = [...this.options];
+                            this.optionKeys = keys(this.options);
+                            this.updateTextAndModel();
 
-                        this.errorText = error;
-                    })
-                    ;
+                            this.errorText = error;
+                        })
+                        ;
+                }
+
             },
         },
         computed: {
@@ -425,8 +428,8 @@
             groupKey: function(){
                 return this.schema.valueKey ? this.schema.groupKey : null;
             },
-            filterPlaceholderText(){
-                return "Type to search...";
+            searchPlaceholderText(){
+                return (this.schema.searchText) ? this.schema.searchText : "Type to search...";
             },
             selectTitle: function(){
                 if (this.schema.multiple) {

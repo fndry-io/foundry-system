@@ -239,7 +239,12 @@
                                     valueKey: 'id',
                                     max: 3,
                                     url: '/api/system/pick-lists/13/list',
-                                },
+                                }
+                            ]
+                        },
+                        {
+                            type: 'row',
+                            children: [
                                 {
                                     type: 'select',
                                     name: 'select-taggable',
@@ -268,7 +273,24 @@
                                 {
                                     type: 'select',
                                     name: 'select-taggable-search',
-                                    help: 'Taggable with ajax search ablity',
+                                    help: 'Simple Taggable',
+                                    options: [],
+                                    rules: 'required',
+                                    required: true,
+                                    label: 'Select Multiple',
+                                    multiple: true,
+                                    taggable: true,
+                                    searchable: true,
+                                    textKey: 'label',
+                                    valueKey: 'id',
+                                    max: 3,
+                                    placeholder: 'Select or add new ones',
+                                    searchText: 'Type to search or add...'
+                                },
+                                {
+                                    type: 'select',
+                                    name: 'select-taggable-search',
+                                    help: 'Taggable with ajax search and add ablity',
                                     options: [],
                                     rules: 'required',
                                     required: true,

@@ -2,9 +2,9 @@
 
 namespace Foundry\System\Repositories;
 
+use Foundry\Core\Entities\Contracts\HasFolder;
 use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
-use Foundry\System\Models\Contracts\HasFolder;
 use Foundry\System\Models\Folder;
 
 class FolderRepository extends ModelRepository {

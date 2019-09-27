@@ -2,8 +2,8 @@
 
 namespace Foundry\System\Model\Traits;
 
+use Foundry\Core\Entities\Contracts\HasFolder;
 use Foundry\Core\Entities\Contracts\HasNode;
-use Foundry\System\Models\Contracts\HasFolder;
 use Foundry\System\Models\Folder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

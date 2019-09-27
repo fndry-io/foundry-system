@@ -46,7 +46,7 @@ class FormRequestController extends Controller
 		if ($request->input('_form', false)) {
 
 			if ( $form instanceof ViewableFormRequestInterface ) {
-				return Response::success( $form->view() )->toJsonResponse();
+				return Response::success( $form->view() )->toJsonResponse($request);
 			} else {
 				throw new FormRequestException( sprintf( 'Requested form %s must be an instance of ViewableFormRequestInterface to be viewable', get_class($form) ) );
 			}
@@ -54,7 +54,7 @@ class FormRequestController extends Controller
 		} else {
 			$form->validateInputs();
 
-			return $form->handle( )->toJsonResponse();
+			return $form->handle( )->toJsonResponse($request);
 
 		}
 	}

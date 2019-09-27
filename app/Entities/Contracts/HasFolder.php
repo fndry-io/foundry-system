@@ -2,17 +2,15 @@
 
 namespace Foundry\System\Entities\Contracts;
 
-use Foundry\System\Entities\Folder;
-
 interface HasFolder {
 
 	/**
-	 * @param Folder $folder
+	 * @param IsFolder $folder
 	 */
-	public function setFolder( Folder $folder ): void;
+	public function setFolder( IsFolder $folder ): void;
 
 	/**
-	 * @return Folder|null
+	 * @return IsFolder|null
 	 */
 	public function getFolder();
 }

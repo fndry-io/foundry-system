@@ -3,7 +3,7 @@
 namespace Modules\Agm\Contacts\Inputs\Company\Types;
 
 use Foundry\Core\Inputs\Contracts\Field;
-use Foundry\Core\Entities\Entity;
+
 use Foundry\Core\Inputs\Types\ChoiceInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 use Foundry\Core\Inputs\Types\Traits\HasParams;
@@ -17,11 +17,11 @@ class PickListType extends ChoiceInputType implements Field {
 	use HasQueryOptions;
 
 	/**
-	* @param Entity|null $entity
+	*
 	*
 	* @return Inputable|Profile
 	*/
-	static function input( Entity &$entity = null ): Inputable {
+	static function input( ): Inputable {
 		return ( new static(
 			'tags',
 			__('Tags'),

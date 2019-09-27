@@ -4,18 +4,18 @@ namespace Foundry\System\Inputs\User\Types;
 
 use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Inputs\Contracts\FieldOptions;
-use Foundry\Core\Entities\Entity;
+
 use Foundry\Core\Inputs\Types\ChoiceInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 
 class Timezone extends ChoiceInputType implements Field, FieldOptions {
 
 	/**
-	 * @param Entity|null $entity
+	 *
 	 *
 	 * @return Inputable|Timezone
 	 */
-	static function input( Entity &$entity = null ): Inputable {
+	static function input( ): Inputable {
 		return ( new static(
 			'timezone',
 			__( 'TimeZone' ),

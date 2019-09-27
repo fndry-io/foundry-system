@@ -5,8 +5,8 @@ namespace Foundry\System\Http\Requests\Files;
 use Foundry\Core\Requests\BaseFormRequest;
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
 use Foundry\Core\Requests\Traits\HasEntity;
-use Foundry\System\Entities\File;
-use LaravelDoctrine\ORM\Facades\EntityManager;
+use Foundry\System\Models\File;
+use Foundry\System\Repositories\FileRepository;
 
 class ViewFileRequest extends BaseFormRequest implements EntityRequestInterface {
 
@@ -30,7 +30,6 @@ class ViewFileRequest extends BaseFormRequest implements EntityRequestInterface 
 	 * @return File|null|object
 	 */
 	public function findEntity( $id ) {
-
-		return EntityManager::getRepository(File::class)->find($id);
+		return FileRepository::repository()->find($id);
 	}
 }

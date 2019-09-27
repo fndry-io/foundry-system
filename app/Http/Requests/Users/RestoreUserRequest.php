@@ -3,10 +3,9 @@
 namespace Foundry\System\Http\Requests\Users;
 
 use Foundry\Core\Requests\Response;
-use Foundry\Core\Requests\Traits\HasEntity;
-use Foundry\System\Entities\User;
+use Foundry\System\Models\User;
+use Foundry\System\Repositories\UserRepository;
 use Foundry\System\Services\UserService;
-use LaravelDoctrine\ORM\Facades\EntityManager;
 
 class RestoreUserRequest extends UserRequest
 {
@@ -21,7 +20,7 @@ class RestoreUserRequest extends UserRequest
 	 */
 	public function findEntity($id)
 	{
-		return parent::findEntity($id);
+		return UserRepository::repository()->query()->withTrashed()->find($id);
 	}
 
 	/**
@@ -38,6 +37,7 @@ class RestoreUserRequest extends UserRequest
 	 * Handle the request
 	 *
 	 * @return Response
+	 * @throws \Exception
 	 */
 	public function handle() : Response
 	{

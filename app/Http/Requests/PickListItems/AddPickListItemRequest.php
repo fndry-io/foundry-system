@@ -14,7 +14,6 @@ use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Inputs\PickListItem\PickListItemInput;
 use Foundry\System\Services\PickListItemService;
 
-
 class AddPickListItemRequest extends FormRequest implements InputInterface, ViewableFormRequestInterface
 {
 	use HasInput;

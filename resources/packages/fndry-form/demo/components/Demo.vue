@@ -20,8 +20,6 @@
     import {merge, set} from "lodash";
     import { ValidationObserver } from 'vee-validate';
 
-    import {getInputValues} from '../../src/utils/schema';
-
     export default {
         name: 'demo',
         components: {
@@ -36,6 +34,26 @@
                     type: 'form',
                     action: 'http://www.google.com',
                     method: 'POST',
+                    values: {
+                        name: {
+                            first_name: 'bob',
+                            last_name: 'smith'
+                        },
+                        email: 'bob@domain.com',
+                        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed condimentum ullamcorper facilisis',
+                        file_multiple: [
+                            {
+                                id: 17,
+                                original_name: "Dulux_Pearlglo_WB.pdf"
+                            }
+                        ],
+                        'select-multiple-max': [
+                            'red', 'blue'
+                        ],
+                        date: '2018-09-01',
+                        datetime: '2018-11-21 17:33'
+                        //repeat: "DTSTART:20190917T120914Z\nRRULE:FREQ=MONTHLY;INTERVAL=5;COUNT=12;BYDAY=+3TU"
+                    },
                     children: [
                         {
                             type: 'row',
@@ -43,7 +61,6 @@
                                 {
                                     type: 'repeat',
                                     name: 'repeat',
-                                    //value: "DTSTART:20190917T120914Z\nRRULE:FREQ=MONTHLY;INTERVAL=5;COUNT=12;BYDAY=+3TU",
                                     required: false,
                                     label: 'Repeat'
                                 }
@@ -55,14 +72,12 @@
                                 {
                                     type: 'text',
                                     name: 'name.first_name',
-                                    value: 'bob',
                                     required: true,
                                     label: 'First Name'
                                 },
                                 {
                                     type: 'text',
                                     name: 'name.last_name',
-                                    value: 'smith',
                                     required: true,
                                     label: 'Last Name',
                                     rules: 'required'
@@ -85,12 +100,6 @@
                                     name: 'file_multiple',
                                     action: '/api/system/files/upload',
                                     deleteUrl: '/api/system/files/{_entity}/delete',
-                                    value: [
-                                        {
-                                            id: 17,
-                                            original_name: "Dulux_Pearlglo_WB.pdf"
-                                        }
-                                    ],
                                     required: true,
                                     label: 'File Upload (multiple)',
                                     multiple: true
@@ -103,7 +112,6 @@
                                 {
                                     type: 'email',
                                     name: 'email',
-                                    value: 'bob@domain.com',
                                     required: true,
                                     label: 'Email',
                                     placeholder: 'Your personal email...',
@@ -119,7 +127,6 @@
                                     type: 'text',
                                     multiline: 5,
                                     name: 'textaera',
-                                    value: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed condimentum ullamcorper facilisis',
                                     label: 'Text Area'
                                 }
                             ]
@@ -217,9 +224,6 @@
                                     type: 'select',
                                     name: 'select-multiple-max',
                                     help: 'Select with required and max selection',
-                                    // value: [
-                                    //     'red', 'blue'
-                                    // ],
                                     options: [
                                         {label: 'Red', id: 'red'},
                                         {label: 'Blue', id: 'blue'},
@@ -317,7 +321,6 @@
                                         {
                                             type: 'date',
                                             name: 'date',
-                                            value: '2018-09-01',
                                             required: true,
                                             label: 'Date',
                                             format: 'YYYY-MM-DD',
@@ -325,7 +328,6 @@
                                         {
                                             type: 'datetime',
                                             name: 'datetime',
-                                            value: '2018-11-21 17:33',
                                             required: true,
                                             label: 'Date time',
                                             format: 'YYYY-MM-DD HH:mm a',
@@ -366,8 +368,7 @@
             }
         },
         created(){
-            let model = {};
-            getInputValues(this.schema, model);
+            let model = merge({}, this.schema.values);
             this.model = extend({}, model);
         },
         methods: {

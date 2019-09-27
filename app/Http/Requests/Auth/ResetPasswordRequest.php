@@ -2,23 +2,19 @@
 
 namespace Foundry\System\Http\Requests\Auth;
 
-use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Types\FormType;
-use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
-use Foundry\Core\Inputs\Types\TagType;
 use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
-use Foundry\System\Entities\User;
 use Foundry\System\Inputs\Types\Token;
-use Foundry\System\Inputs\User\ForgotPasswordInput;
 use Foundry\System\Inputs\User\ResetPasswordInput;
 use Foundry\System\Inputs\User\Types\Email;
 use Foundry\System\Inputs\User\Types\Password;
 use Foundry\System\Inputs\User\Types\PasswordConfirmation;
+use Foundry\System\Models\User;
 use Foundry\System\Services\UserService;
 
 class ResetPasswordRequest extends FormRequest implements InputInterface, ViewableFormRequestInterface
@@ -46,7 +42,7 @@ class ResetPasswordRequest extends FormRequest implements InputInterface, Viewab
 	/**
 	 * @param mixed $id
 	 *
-	 * @return Entity|Entity|null|object|User
+	 * @return null|object|User
 	 */
 	public function getEntity($id)
 	{

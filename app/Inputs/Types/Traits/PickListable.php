@@ -28,7 +28,7 @@ trait PickListable {
 	 */
 	protected function setPickList($identifier, $valueKey = 'id', $labelKey = 'label')
 	{
-		$this->picklist = PickListRepository::get()->getCachedSelectableList($identifier);
+		$this->picklist = PickListRepository::repository()->getCachedSelectableList($identifier);
 
 		$this->setOptions($this->picklist['items']);
 		$this->setTextKey($labelKey);
@@ -36,14 +36,24 @@ trait PickListable {
 
 		if ($this->picklist['default_item']) {
 			if ($valueKey === 'id') {
-				$this->setDefault($this->picklist['default_item']);
+				if ($this->isMultiple()) {
+					$this->setDefault([$this->picklist['default_item']]);
+				} else {
+					$this->setDefault($this->picklist['default_item']);
+				}
+
 			}
 			//we need to find the correct default value to be selected
 			elseif ($item = Arr::first($this->picklist['items'], function($item) {
 				return $item['id'] = $this->picklist['default_item'];
 			}))
 			{
-				$this->setDefault($item[$valueKey]);
+				if ($this->isMultiple()) {
+					$this->setDefault([$item[$valueKey]]);
+				} else {
+					$this->setDefault($item[$valueKey]);
+				}
+
 			}
 		}
 

@@ -42,7 +42,7 @@ class ListUsersRequest extends FormRequest implements ViewableFormRequestInterfa
 	    /**
 	     * @var UserRepository $repo
 	     */
-    	$repo = UserService::service()->getRepository();
+    	$repo = UserRepository::repository();
 	    $q = $this->input('q', '');
     	if (strlen($q) < 3) {
     		return Response::error(__('Search query must be greater than 3 characters'), 422);

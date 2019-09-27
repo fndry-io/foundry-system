@@ -22,6 +22,7 @@ class DeleteFolderRequest  extends FolderRequest implements EntityRequestInterfa
 	 * Handle the request
 	 *
 	 * @return Response
+	 * @throws \Exception
 	 */
 	public function handle() : Response
 	{

@@ -5,8 +5,8 @@ namespace Foundry\System\Http\Requests\Roles;
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Traits\HasEntity;
-use Foundry\System\Entities\Role;
-use LaravelDoctrine\ORM\Facades\EntityManager;
+use Foundry\System\Models\Role;
+use Foundry\System\Repositories\RoleRepository;
 
 abstract class RoleRequest extends FormRequest implements EntityRequestInterface
 {
@@ -19,7 +19,7 @@ abstract class RoleRequest extends FormRequest implements EntityRequestInterface
 	 */
 	public function findEntity($id)
 	{
-		return EntityManager::getRepository(Role::class)->find($id);
+		return RoleRepository::repository()->find($id);
 	}
 
 }

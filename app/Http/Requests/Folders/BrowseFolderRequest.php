@@ -2,7 +2,6 @@
 
 namespace Foundry\System\Http\Requests\Folders;
 
-use Foundry\Core\Inputs\SimpleInputs;
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
@@ -11,16 +10,13 @@ use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
-use Foundry\Core\Requests\Traits\IsBrowseRequest;
-use Foundry\Core\Support\InputTypeCollection;
+use Foundry\System\Http\Resources\Folder;
 use Foundry\System\Inputs\SearchFilterInput;
-use Foundry\System\Inputs\Types\File;
 use Foundry\System\Services\FolderService;
 
 class BrowseFolderRequest extends FolderRequest implements ViewableFormRequestInterface, EntityRequestInterface, InputInterface
 {
 	use HasInput;
-	use IsBrowseRequest;
 
 	public static function name(): String {
 		return 'foundry.system.folders.browse';
@@ -57,7 +53,7 @@ class BrowseFolderRequest extends FolderRequest implements ViewableFormRequestIn
 
 		$response = FolderService::service()->browse($this->getEntity(), $this->getInput(), $page, $limit);
 		if ($response->isSuccess()) {
-			return Response::success($this->makeBrowseResource($response->getData(), $page, $limit));
+			return Response::success(Folder::collection($response->getData()));
 		}
 
 		return $response;
@@ -70,7 +66,7 @@ class BrowseFolderRequest extends FolderRequest implements ViewableFormRequestIn
 
 		$form   = new FormType( static::name() );
 		$params = [
-			'_entity' => $this->getEntity()->getId(),
+			'_entity' => $this->getEntity()->getKey(),
 			'reference_type' => $this->input('reference_type'),
 			'reference_id' => $this->input('reference_id'),
 			'parent' => $this->input('parent')

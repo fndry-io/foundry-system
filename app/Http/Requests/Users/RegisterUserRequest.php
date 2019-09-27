@@ -47,16 +47,16 @@ class RegisterUserRequest extends FormRequest implements ViewableFormRequestInte
 		$rules['email'] = [
 			'required',
 			'email',
-			Rule::unique('Foundry\System\Entities\User', 'email')
+			Rule::unique('users', 'email')
 		];
 		$rules['username'] = [
 			'required',
 			'username',
-			Rule::unique('Foundry\System\Entities\User', 'username')
+			Rule::unique('users', 'username')
 		];
 		$rules['display_name'] = [
 			'required',
-			Rule::unique('Foundry\System\Entities\User', 'display_name')
+			Rule::unique('users', 'display_name')
 		];
 		return $rules;
 	}

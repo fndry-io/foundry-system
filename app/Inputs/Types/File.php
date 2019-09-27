@@ -2,7 +2,7 @@
 
 namespace Foundry\System\Inputs\Types;
 
-use Foundry\Core\Entities\Entity;
+
 use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 use Foundry\Core\Inputs\Types\FileInputType;
@@ -10,11 +10,11 @@ use Foundry\Core\Inputs\Types\FileInputType;
 class File extends FileInputType implements Field {
 
 	/**
-	 * @param Entity|null $entity
+	 *
 	 *
 	 * @return Inputable|File
 	 */
-	static function input( Entity &$entity = null ): Inputable {
+	static function input( ): Inputable {
 		return (new static(
 			'file',
 			__('File'),

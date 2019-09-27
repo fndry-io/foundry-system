@@ -237,7 +237,7 @@
             this.date = date;
             this.model.dtstart = date.toDate();
 
-            if (this.value !== null) {
+            if (this.value) {
                 this.convertFromRRule(this.value);
             } else {
                 this.convertToRRule();

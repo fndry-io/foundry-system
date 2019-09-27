@@ -48,16 +48,16 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 			$rules['email'] = [
 				'required',
 				'email',
-				Rule::unique('Foundry\System\Entities\User', 'email')->ignore($this->getEntity()->id)
+				Rule::unique('users', 'email')->ignore($this->getEntity()->id)
 			];
 			$rules['username'] = [
 				'required',
 				'username',
-				Rule::unique('Foundry\System\Entities\User', 'username')->ignore($this->getEntity()->id)
+				Rule::unique('users', 'username')->ignore($this->getEntity()->id)
 			];
 			$rules['display_name'] = [
 				'required',
-				Rule::unique('Foundry\System\Entities\User', 'display_name')->ignore($this->getEntity()->id)
+				Rule::unique('users', 'display_name')->ignore($this->getEntity()->id)
 			];
 		}
 		return $rules;
@@ -91,7 +91,7 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 			)
 		);
 
-		if (Auth::user()->id === $this->entity->getId() || Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {
+		if (Auth::user()->id === $this->entity->getKey() || Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {
 			$form->addChildren(
 				(new SectionType(__('Password'), __('If you need to change the password set the values below or leave them blank to leave the password as is.')))->addChildren(
 					RowType::withChildren($form->get('password')->setValue(null)->setAutocomplete(false), $form->get('password_confirmation')->setValue(null)->setAutocomplete(false))
@@ -106,7 +106,7 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 			)
 		);
 
-		if ($this->entity->getId() !== Auth::user()->getId() && $this->entity->getId() !== 1 && (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())) {
+		if ($this->entity->getKey() !== Auth::user()->getKey() && $this->entity->getKey() !== 1 && (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())) {
 			$children = [];
 			$children[] = $form->get('active');
 			if (Auth::user()->isSuperAdmin()) {

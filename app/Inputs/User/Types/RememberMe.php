@@ -3,7 +3,7 @@
 namespace Foundry\System\Inputs\User\Types;
 
 use Foundry\Core\Inputs\Contracts\Field;
-use Foundry\Core\Entities\Entity;
+
 use Foundry\Core\Inputs\Contracts\FieldOptions;
 use Foundry\Core\Inputs\Types\ChoiceInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
@@ -16,11 +16,11 @@ class RememberMe extends ChoiceInputType implements Field, FieldOptions {
 	protected $cast = 'boolean';
 
 	/**
-	 * @param Entity|null $entity
+	 *
 	 *
 	 * @return Inputable|RememberMe
 	 */
-	static function input( Entity &$entity = null ): Inputable {
+	static function input( ): Inputable {
 		return ( new static(
 			'remember_me',
 			__( 'Remember Me' ),

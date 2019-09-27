@@ -12,7 +12,6 @@ use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Inputs\User\UserInput;
-use Foundry\System\Inputs\User\UserRegisterInput;
 use Foundry\System\Services\UserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -49,16 +48,16 @@ class AddUserRequest extends FormRequest implements ViewableFormRequestInterface
 		$rules['email'] = [
 			'required',
 			'email',
-			Rule::unique('Foundry\System\Entities\User', 'email')
+			Rule::unique('users', 'email')
 		];
 		$rules['username'] = [
 			'required',
 			'username',
-			Rule::unique('Foundry\System\Entities\User', 'username')
+			Rule::unique('users', 'username')
 		];
 		$rules['display_name'] = [
 			'required',
-			Rule::unique('Foundry\System\Entities\User', 'display_name')
+			Rule::unique('users', 'display_name')
 		];
 		return $rules;
 	}

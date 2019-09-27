@@ -4,12 +4,12 @@ namespace Foundry\System\Inputs\Types;
 
 use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
-use Foundry\Core\Entities\Entity;
+
 use Foundry\Core\Inputs\Types\TextInputType;
 
 class MorphType extends TextInputType implements Field {
 
-	static function input( Entity &$entity = null ): Inputable {
+	static function input( ): Inputable {
 		return ( new static(
 			'morph_type',
 			__( 'Morph Type' ),

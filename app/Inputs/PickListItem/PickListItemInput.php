@@ -9,7 +9,6 @@ use Foundry\System\Inputs\PickListItem\Types\DefaultItem;
 use Foundry\System\Inputs\PickListItem\Types\Description;
 use Foundry\System\Inputs\PickListItem\Types\Label;
 use Foundry\System\Inputs\PickListItem\Types\Sequence;
-use Foundry\System\Entities\PickList;
 use Foundry\System\Inputs\PickListItem\Types\Status;
 
 /**
@@ -31,7 +30,7 @@ class PickListItemInput extends Inputs {
 			Status::input(),
             DefaultItem::input(),
             ( new HiddenInputType('picklist'))->setRequired(true)->setRules([
-                'exists:Foundry\System\Entities\PickList,id',
+                'exists:picklists,id',
             ])
 		]);
 	}

@@ -2,83 +2,62 @@
 
 namespace Foundry\System\Services;
 
-use Doctrine\ORM\QueryBuilder;
-use Foundry\Core\Entities\Contracts\HasReference;
-use Foundry\Core\Entities\Contracts\IsReferenceable;
-use Foundry\Core\Entities\Contracts\IsSoftDeletable;
-use Foundry\Core\Entities\Entity;
-use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
-use Foundry\Core\Services\Traits\HasRepository;
-use Foundry\System\Entities\File;
-use Foundry\System\Entities\Folder;
-use Foundry\System\Entities\User;
 use Foundry\System\Inputs\File\FileInput;
-use Foundry\System\Inputs\Folder\FolderInput;
 use Foundry\System\Inputs\SearchFilterInput;
-use Illuminate\Support\Facades\Auth;
+use Foundry\System\Models\File;
+use Foundry\System\Models\Folder;
+use Foundry\System\Repositories\FileRepository;
+use Foundry\System\Repositories\FolderRepository;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use LaravelDoctrine\ORM\Facades\EntityManager;
 
 class FileService extends BaseService {
-
-	use HasRepository;
-
-	public function __construct() {
-		$this->setRepository(EntityManager::getRepository(File::class));
-	}
 
 	/**
 	 * Browse for files associated with an entity
 	 *
-	 * @param HasReference $entity
-	 * @param SearchFilterInput $input
+	 * @param \Illuminate\Database\Eloquent\Model $entity
+	 * @param SearchFilterInput $inputs
 	 * @param int $page
 	 * @param int $perPage
 	 *
 	 * @return Response
 	 */
-	public function browse( HasReference $entity, SearchFilterInput $input, $page = 1, $perPage = 20 ): Response {
+	public function browse( Model $entity, SearchFilterInput $inputs, $page = 1, $perPage = 20 ): Response {
 
-		$result = $this->getRepository()->filter(function(QueryBuilder $qb) use ($entity, $input) {
+		return Response::success(FileRepository::repository()->filter(function(Builder $query) use ($entity, $inputs) {
 
-			$qb
-				->addSelect([
-					'file.type',
-					'file.original_name as name',
-					'file.uuid',
-					'file.id',
-					'file.size',
-					'file.created_at',
-					'file.updated_at',
-					'file.updated_at',
+			$query
+				->select([
+					'files.type',
+					'files.original_name as name',
+					'files.uuid',
+					'files.id',
+					'files.size',
+					'files.created_at',
+					'files.updated_at',
+					'files.updated_at',
 				])
-				->addOrderBy('file.name', 'ASC');
+				->orderBy('files.name', 'ASC');
 
-			$where = $qb->expr()->andX();
+			$query->where('reference_type', get_class($entity));
+			$query->where('reference_id', $entity->getKey());
 
-			$where->add($qb->expr()->eq('file.reference_type', ':reference_type'));
-			$where->add($qb->expr()->eq('file.reference_id', ':reference_id'));
-			$qb->setParameter(':reference_type', get_class($entity));
-			$qb->setParameter(':reference_id', $entity->getId());
-
-			if ($search = $input->input('search')) {
-				$where->add($qb->expr()->orX(
-					$qb->expr()->like('file.original_name', ':search')
-				));
-				$qb->setParameter(':search', "%" . $search . "%");
+			if ($search = $inputs->value('search')) {
+				$query->where('files.original_name', 'like', "%" . $search . "%");
 			}
 
-			$where->add($qb->expr()->isNull('file.deleted_at'));
+			$deleted = $inputs->value('deleted', 'undeleted');
+			if ($deleted == 'deleted') {
+				$query->onlyTrashed();
+			}
 
-			$qb->where($where);
+			return $query;
 
-			return $qb;
-
-		}, $page, $perPage);
-
-		return Response::success($result);
+		}, $page, $perPage));
 	}
 
 	/**
@@ -88,11 +67,11 @@ class FileService extends BaseService {
 	 */
 	public function add(FileInput $input) : Response
 	{
-		$values = $input->inputs();
+		$values = $input->values();
 
 		$visibility = 'private';
 
-		if ($input->input('is_public',  false)) {
+		if ($input->value('is_public',  false)) {
 			$visibility = 'public';
 		}
 
@@ -104,15 +83,14 @@ class FileService extends BaseService {
 
 		$file = new File($values);
 
-		$this->repository->save($file);
+		FileRepository::repository()->save($file);
 
-		if ($parent = $input->input('folder')) {
-			if ($parent = EntityManager::getRepository(Folder::class)->find($parent)) {
+		if ($parent = $input->value('folder')) {
+			if ($parent = FolderRepository::repository()->find($parent)) {
 				$folder = new Folder();
 				$folder->setFile($file);
 				$folder->setParent($parent);
-				EntityManager::persist($folder);
-				EntityManager::flush();
+				$folder->save();
 			}
 		}
 
@@ -123,15 +101,13 @@ class FileService extends BaseService {
 	 * Delete a file
 	 *
 	 * @param File $file
-	 * @param bool $force
-	 * @param bool $flush
 	 *
 	 * @return Response
+	 * @throws \Exception
 	 */
-	public function delete(File $file, $force = false, $flush = true) : Response
+	public function delete(File $file) : Response
 	{
-		$this->repository->delete($file, false);
-		if ($flush) $this->repository->flush();
+		FileRepository::repository()->delete($file);
 		return Response::success();
 	}
 
@@ -145,7 +121,7 @@ class FileService extends BaseService {
 	 */
 	public function restore(File $file) : Response
 	{
-		$this->repository->restore($file);
+		FileRepository::repository()->restore($file);
 		return Response::success();
 	}
 

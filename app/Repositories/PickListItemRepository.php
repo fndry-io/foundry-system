@@ -2,45 +2,32 @@
 
 namespace Foundry\System\Repositories;
 
-use Foundry\Core\Repositories\EntityRepository;
-use Foundry\System\Entities\PickList;
-use Foundry\System\Entities\PickListItem;
-use LaravelDoctrine\ORM\Facades\EntityManager;
+use Foundry\Core\Repositories\ModelRepository;
+use Foundry\System\Models\PickList;
+use Foundry\System\Models\PickListItem;
 
-
-class PickListItemRepository  extends EntityRepository {
-
-	public function getAlias(): string {
-		return 'picklist_item';
-	}
-
-	/**
-	 * @return \Doctrine\Common\Persistence\ObjectRepository|PickListItemRepository
-	 */
-	static function get() {
-		return EntityManager::getRepository(PickListItem::class);
-	}
+class PickListItemRepository extends ModelRepository {
 
     public function getLabelList(PickList $pick_list, $name = null) {
 
         $qb = $this->query();
-        $qb->select('picklist_item.id', 'picklist_item.label');
-        $qb->join('picklist_item.picklist', 'picklist');
-
-	    $where = $qb->expr()->andX();
-
-	    $where->add($qb->expr()->eq('picklist_item.picklist', $pick_list->getId()));
+        $qb->select('id', 'label');
+	    $qb->where('picklist_id', $pick_list->getKey());
 
 	    if ($name) {
-		    $where->add($qb->expr()->like('picklist_item.label', ':name'));
-		    $qb->setParameter('name', "%$name%");
+		    $qb->where('label', 'like', "%$name%");
 	    }
 
-	    if ($where->count() > 0) {
-		    $qb->where($where);
-	    }
-
-        return $qb->getQuery()->getArrayResult();
+        return $qb->get();
     }
 
+	/**
+	 * Returns the class name of the object managed by the repository.
+	 *
+	 * @return string|PickListItem
+	 */
+	public function getClassName()
+	{
+		return PickListItem::class;
+	}
 }

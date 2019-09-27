@@ -17,6 +17,10 @@ Foundry\System\Entities\Node:
       columns: [ rgt ]
     nodes_node_lvl_index:
       columns: [ lvl ]
+  uniqueConstraints:
+    uniqueConstraint:
+      name: node_entity_type_entity_id_unique
+      columns: [ entity_type, entity_id ]
   id:
     id:
       type: bigint

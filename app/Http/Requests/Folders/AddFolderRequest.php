@@ -10,12 +10,14 @@ use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
+use Foundry\Core\Requests\Traits\HasReference;
 use Foundry\System\Inputs\Folder\FolderInput;
 use Foundry\System\Services\FolderService;
 
 class AddFolderRequest extends FolderRequest implements ViewableFormRequestInterface, InputInterface
 {
 	use HasInput;
+	use HasReference;
 
 	public static function name(): String {
 		return 'foundry.system.folders.add.folder';
@@ -27,7 +29,7 @@ class AddFolderRequest extends FolderRequest implements ViewableFormRequestInter
 	 * @return \Foundry\Core\Inputs\Inputs|FolderInput
 	 */
 	public function makeInput($inputs) {
-		$inputs['parent'] = $this->getEntity()->getId();
+		$inputs['parent'] = $this->getEntity()->getKey();
 		return new FolderInput($inputs);
 	}
 
@@ -48,7 +50,12 @@ class AddFolderRequest extends FolderRequest implements ViewableFormRequestInter
 	 */
 	public function handle() : Response
 	{
-		return FolderService::service()->add($this->getInput());
+		try {
+			$reference = $this->getReference();
+		} catch (\Throwable $e) {
+			$reference = null;
+		}
+		return FolderService::service()->add($this->getInput(), $reference);
 	}
 
 	/**
@@ -58,7 +65,7 @@ class AddFolderRequest extends FolderRequest implements ViewableFormRequestInter
 
 		$form   = new FormType( static::name() );
 		$params = [
-			'_entity' => $this->getEntity()->getId(),
+			'_entity' => $this->getEntity()->getKey(),
 			'reference_type' => $this->input('reference_type'),
 			'reference_id' => $this->input('reference_id'),
 			'parent' => $this->input('parent')

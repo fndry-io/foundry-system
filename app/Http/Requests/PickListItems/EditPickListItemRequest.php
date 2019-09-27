@@ -68,7 +68,7 @@ class EditPickListItemRequest extends PickListItemRequest implements ViewableFor
 		$item = (new SectionType(__('Details')))->addChildren(
 			RowType::withChildren($form->get('label')),
 			RowType::withChildren($form->get('description')),
-			RowType::withChildren($form->get('status'), $form->get('default_item')->setValue(($entity->picklist->default_item === $entity->getId()))),
+			RowType::withChildren($form->get('status'), $form->get('default_item')->setValue(($entity->picklist->default_item === $entity->getKey()))),
 			RowType::withChildren($form->get('sequence'))
 		);
 

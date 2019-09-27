@@ -2,89 +2,100 @@
 
 namespace Foundry\System\Repositories;
 
-use Doctrine\ORM\QueryBuilder;
-use Foundry\Core\Repositories\EntityRepository;
-use Foundry\System\Entities\User;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use LaravelDoctrine\ORM\Facades\EntityManager;
+use Foundry\Core\Repositories\ModelRepository;
+use Foundry\System\Models\User;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Builder;
 
-class UserRepository extends EntityRepository {
+class UserRepository extends ModelRepository {
 
 	/**
-	 * @return UserRepository|\Doctrine\Common\Persistence\ObjectRepository
+	 * Returns the class name of the object managed by the repository.
+	 *
+	 * @return string|User
 	 */
-	static function get() {
-		return EntityManager::getRepository(User::class);
-	}
-
-	public function getAlias(): string {
-		return 'u';
-	}
-
-	public function findByEmail(string $email, int $perPage = 20) : LengthAwarePaginator
+	public function getClassName()
 	{
-		return $this->filter(function(QueryBuilder $query) use ($email){
-			$query->where('u.email LIKE :email')
-			      ->setParameter('email', "$email");
+		return User::class;
+	}
+
+	/**
+	 * Find the user by their email address
+	 *
+	 * @param string $email
+	 * @param int $perPage
+	 *
+	 * @return Paginator
+	 */
+	public function findByEmail(string $email, int $perPage = 20) : Paginator
+	{
+		return $this->filter(function(Builder $query) use ($email){
+			$query->where('email', 'like', "%" . $email . "%");
 		}, $perPage);
 	}
 
+	/**
+	 * Get a list of users
+	 *
+	 * @param $name
+	 * @param int $limit
+	 * @param bool $deleted
+	 *
+	 * @return User[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|Builder[]|\Illuminate\Support\Collection
+	 */
 	public function getLabelList($name, $limit = 20, $deleted = false) {
 
-		$qb = $this->query();
-		$qb->select('u.id', 'u.username, u.display_name');
-
-		$where = $qb->expr()->andX();
-
-		if (!$deleted) {
-			$where->add($qb->expr()->isNull('u.deleted_at'));
+		if ($deleted) {
+			$qb = $this->getClassName()::withTrashed();
+		} else {
+			$qb = $this->query();
 		}
 
-		$where->add($qb->expr()->orX(
-			$qb->expr()->like('u.username', ':name'),
-			$qb->expr()->like('u.display_name', ':name'),
-			$qb->expr()->like('u.email', ':name')
-		));
-		$qb->setParameter('name', "%$name%");
+		$qb->select('id', 'username', 'display_name');
 
-		if ($where->count() > 0) {
-			$qb->where($where);
-		}
+		$qb->where(function(Builder $qb) use ($name) {
+			$qb->orWhere('username', 'like', "%" . $name . "%");
+			$qb->orWhere('display_name', 'like', "%" . $name . "%");
+			$qb->orWhere('email', 'like', "%" . $name . "%");
+		});
 
-		$qb->setMaxResults($limit);
+		$qb->limit($limit);
 
-		return $qb->getQuery()->getArrayResult();
+		return $qb->get();
 	}
 
+	/**
+	 * Get a list of user email addresses
+	 *
+	 * @param $name
+	 * @param int $limit
+	 * @param bool $deleted
+	 *
+	 * @return array
+	 */
 	public function getEmailList($name, $limit = 20, $deleted = false) {
 
-		$qb = $this->query();
-		$qb->select('u.display_name', 'u.email');
-
-		$where = $qb->expr()->andX();
-
-		if (!$deleted) {
-			$where->add($qb->expr()->isNull('u.deleted_at'));
+		if ($deleted) {
+			$qb = $this->getClassName()::withTrashed();
+		} else {
+			$qb = $this->query();
 		}
 
-		$where->add($qb->expr()->orX(
-			$qb->expr()->like('u.username', ':name'),
-			$qb->expr()->like('u.display_name', ':name'),
-			$qb->expr()->like('u.email', ':name')
-		));
-		$qb->setParameter('name', "%$name%");
+		$qb->select('email', 'display_name');
 
-		if ($where->count() > 0) {
-			$qb->where($where);
-		}
+		$qb->where(function(Builder $qb) use ($name) {
+			$qb->orWhere('username', 'like', "%" . $name . "%");
+			$qb->orWhere('display_name', 'like', "%" . $name . "%");
+			$qb->orWhere('email', 'like', "%" . $name . "%");
+		});
 
-		$qb->setMaxResults($limit);
+		$qb->limit($limit);
 
-		$list = $qb->getQuery()->getArrayResult();
+		$list = $qb->get();
+
 		return array_map(function($item){
 			return "{$item['display_name']} <{$item['email']}>";
 		}, $list);
 	}
-
 
 }

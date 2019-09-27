@@ -36,7 +36,7 @@ class ListPickListItemsRequest extends PickListRequest implements ViewableFormRe
 	 */
     public function handle() : Response
     {
-    	$repo = PickListItemRepository::get();
+    	$repo = PickListItemRepository::repository();
 	    $q = $this->input('q', '');
     	if (strlen($q) < 3) {
     		return Response::error(__('Search query must be greater than 3 characters'), 422);

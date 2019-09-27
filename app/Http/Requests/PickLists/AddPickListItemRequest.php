@@ -3,15 +3,20 @@
 namespace Foundry\System\Http\Requests\PickLists;
 
 use Foundry\Core\Inputs\SimpleInputs;
+use Foundry\Core\Inputs\Types\FormType;
+use Foundry\Core\Inputs\Types\RowType;
+use Foundry\Core\Inputs\Types\SectionType;
+use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Inputs\Types\TextInputType;
 use Foundry\Core\Requests\Contracts\InputInterface;
+use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Inputs\PickListItem\PickListItemInput;
 use Foundry\System\Services\PickListItemService;
 
-class AddPickListItemRequest extends PickListRequest implements InputInterface
+class AddPickListItemRequest extends PickListRequest implements InputInterface, ViewableFormRequestInterface
 {
 	use HasInput;
 
@@ -53,10 +58,10 @@ class AddPickListItemRequest extends PickListRequest implements InputInterface
     public function handle() : Response
     {
     	$input = new PickListItemInput([
-    		'label' => $this->getInput()->input('label'),
+    		'label' => $this->getInput()->value('label'),
 		    'sequence' => 0,
 		    'status' => true,
-		    'picklist' => $this->getEntity()->getId()
+		    'picklist' => $this->getEntity()->getKey()
 	    ]);
     	$response = $input->validate();
     	if ($response->isSuccess()) {
@@ -65,11 +70,36 @@ class AddPickListItemRequest extends PickListRequest implements InputInterface
     			$item = $response->getData();
     			return Response::success([
     				'label' => $item->label,
-				    'id' => $item->getId()
+				    'id' => $item->getKey()
 			    ]);
 		    }
 	    }
         return $response;
     }
+
+	/**
+	 * Make a viewable DocType for the request
+	 *
+	 * @return FormType
+	 */
+	public function view() : FormType
+	{
+		$form = $this->form();
+
+		$form->setValue('label', '');
+
+		$form->setTitle(__('Add Tag'));
+		$form->setButtons((new SubmitButtonType(__('Add'), $form->getAction())));
+
+		$item = (new SectionType(__('Pick List Tag')))->addChildren(
+			RowType::withChildren($form->get('label')->setValue(''))
+		);
+
+		$form->addChildren(
+			$item
+		);
+
+		return $form;
+	}
 
 }

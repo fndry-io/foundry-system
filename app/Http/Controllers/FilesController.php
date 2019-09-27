@@ -2,8 +2,8 @@
 
 namespace Foundry\System\Http\Controllers;
 
-use Foundry\System\Entities\File;
 use Foundry\System\Http\Requests\Files\ViewFileRequest;
+use Foundry\System\Models\File;
 use Illuminate\Support\Facades\Storage;
 
 class FilesController extends Controller {

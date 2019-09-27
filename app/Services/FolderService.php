@@ -2,86 +2,63 @@
 
 namespace Foundry\System\Services;
 
-use Doctrine\ORM\QueryBuilder;
-use Foundry\Core\Entities\Contracts\HasIdentity;
-use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Inputs;
+use Foundry\Core\Models\Model;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
-use Foundry\Core\Services\Traits\HasRepository;
-use Foundry\System\Entities\Contracts\HasFolder;
-use Foundry\System\Entities\Folder;
 use Foundry\System\Inputs\Folder\FolderEditInput;
 use Foundry\System\Inputs\Folder\FolderInput;
 use Foundry\System\Inputs\SearchFilterInput;
+use Foundry\System\Models\Folder;
 use Foundry\System\Repositories\FolderRepository;
-use LaravelDoctrine\ORM\Facades\EntityManager;
-use phpDocumentor\Reflection\Types\Boolean;
+use Illuminate\Database\Eloquent\Builder;
 
 class FolderService extends BaseService {
-
-	use HasRepository;
-
-	/**
-	 * @var FolderRepository
-	 */
-	protected $repository;
-
-	public function __construct() {
-		$this->setRepository(EntityManager::getRepository(Folder::class));
-	}
 
 	/**
 	 * Browse the contents of a folder
 	 *
 	 * @param Folder $folder
-	 * @param SearchFilterInput $input
+	 * @param SearchFilterInput $inputs
 	 * @param int $page
 	 * @param int $perPage
 	 *
 	 * @return Response
 	 */
-	public function browse( Folder $folder, SearchFilterInput $input, $page = 1, $perPage = 20 ): Response {
+	public function browse( Folder $folder, SearchFilterInput $inputs, $page = 1, $perPage = 20 ): Response {
 
-		$result = $this->getRepository()->filter(function(QueryBuilder $qb) use ($folder, $input) {
+		$result = FolderRepository::repository()->filter(function(Builder $query) use ($folder, $inputs) {
 
-			$qb
-				->addSelect([
-					'folder.id',
-					'folder.name',
-					'folder.created_at',
-					'folder.updated_at',
-					'folder.is_file',
-					'file.type as file_type',
-					'file.original_name as file_name',
-					'file.uuid as file_uuid',
-					'file.id as file_id',
-					'file.size as file_size',
-					'file.created_at as file_created_at',
-					'file.updated_at as file_updated_at',
+			$query
+				->select([
+					'folders.id',
+					'folders.name',
+					'folders.created_at',
+					'folders.updated_at',
+					'folders.is_file',
+					'files.type as file_type',
+					'files.original_name as file_name',
+					'files.uuid as file_uuid',
+					'files.id as file_id',
+					'files.size as file_size',
+					'files.created_at as file_created_at',
+					'files.updated_at as file_updated_at',
 				])
-				->leftJoin('folder.file', 'file')
-				->addOrderBy('folder.is_file', 'ASC')
-				->addOrderBy('folder.name', 'ASC');
+				->leftJoin('files', 'folders.file_id', '=', 'files.id')
+				->orderBy('folders.is_file', 'ASC')
+				->orderBy('folders.name', 'ASC');
 
-			$where = $qb->expr()->andX();
+			$query->where('folders.parent_id', $folder->getKey());
 
-			$where->add($qb->expr()->eq('folder.parent', ':parent'));
-			$qb->setParameter(':parent', $folder->getId());
-
-			if ($search = $input->input('search')) {
-				$where->add($qb->expr()->orX(
-					$qb->expr()->like('folder.name', ':search')
-				));
-				$qb->setParameter(':search', "%" . $search . "%");
+			if ($search = $inputs->value('search')) {
+				$query->where('folder.name', 'like', "%" . $search . "%");
 			}
 
-			$where->add($qb->expr()->isNull('folder.deleted_at'));
-			$where->add($qb->expr()->isNull('file.deleted_at'));
-
-			$qb->where($where);
-
-			return $qb;
+			$deleted = $inputs->value('deleted', 'undeleted');
+			if ($deleted == 'deleted') {
+				$query->onlyTrashed();
+			}
+			return $query;
 
 		}, $page, $perPage);
 
@@ -89,81 +66,66 @@ class FolderService extends BaseService {
 	}
 
 	/**
-	 * Read the contents of a folder
-	 *
-	 * @param $id
-	 *
-	 * @return null|object
-	 */
-	public function read($id){
-		return $this->repository->find($id);
-	}
-
-	/**
 	 * Add a folder
 	 *
-	 * @param FolderInput $input
-	 * @param bool $flush
+	 * @param FolderInput $inputs
+	 * @param Model|null $reference
 	 *
 	 * @return Response
 	 */
-	public function add(FolderInput $input, $flush = true) : Response
+	public function add(FolderInput $inputs, Model $reference = null) : Response
 	{
-		$folder = new Folder($input->inputs());
+		$folder = new Folder($inputs->values());
 
-		if ($parent = $input->input('parent')) {
-			if ($parent = $this->repository->find($parent)) {
-				$folder->setParent($parent);
+		if ($reference) {
+			$folder->setReference($reference);
+		}
+
+		if ($parent = $inputs->value('parent')) {
+			if ($parent = FolderRepository::repository()->find($parent)) {
+				$folder->setParent($parent->getKey());
 			}
 		}
 
-		if (($ref_type = $input->input('reference_type')) && ($ref_id = $input->input('reference_id'))) {
-			/** @var HasIdentity $ref */
-			if ($ref = EntityManager::getRepository($ref_type)->find($ref_id)) {
-				$folder->attachReference($ref);
-			}
+		if (!$parent) {
+			$folder->makeRoot();
 		}
+		$folder->save();
 
-		if ($parent) {
-			$this->repository->persist($folder);
-		} else {
-			$this->repository->getTreeRepository()->persistAsFirstChild($folder);
-		}
-
-		if ($flush) $this->repository->flush($folder);
 		return Response::success($folder);
 	}
 
 	/**
-	 * @param FolderEditInput|Inputs $input
-	 * @param Folder|Entity $folder
+	 * @param FolderEditInput|Inputs $inputs
+	 * @param Folder|Model $folder
 	 *
 	 * @return Response
 	 */
-	public function edit(FolderEditInput $input, Folder $folder) : Response
+	public function edit(FolderEditInput $inputs, Folder $folder) : Response
 	{
-		$folder->fill($input);
+		$folder->fill($inputs->values());
 
-		if ($id = $input->input('parent')) {
-			if ((!$folder->getParent() || $id !== $folder->getParent()->getId()) && $parent = $this->repository->find($id)) {
-				$folder->setParent($parent);
+		if ($id = $inputs->value('parent')) {
+			if ((!$folder->getParent() || $id !== $folder->getParent()->getKey()) && $parent = FolderRepository::repository()->find($id)) {
+				$folder->parent()->associate($parent);
 			}
 		}
 
-		$this->repository->save($folder);
+		FolderRepository::repository()->save($folder);
 		return Response::success($folder);
 	}
 
 	/**
 	 * Delete a folder
 	 *
-	 * @param Folder|Entity $folder
+	 * @param Folder|Model $folder
 	 *
 	 * @return Response
+	 * @throws \Exception
 	 */
 	public function delete(Folder $folder) : Response
 	{
-		$this->repository->delete($folder);
+		FolderRepository::repository()->delete($folder);
 		return Response::success();
 	}
 
@@ -177,7 +139,7 @@ class FolderService extends BaseService {
 	 */
 	public function restore(Folder $folder) : Response
 	{
-		$this->repository->restore($folder);
+		FolderRepository::repository()->restore($folder);
 		return Response::success();
 	}
 

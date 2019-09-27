@@ -8,16 +8,14 @@ use Illuminate\Support\Facades\Auth;
 
 abstract class BaseDeleteFileRequest extends FileRequest {
 
-	/**
-	 * {@inheritdoc}
-	 */
 	public function authorize() {
 		//todo add permission check and is the user the owner of the file
 		return !!(Auth::user());
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @return Response
+	 * @throws \Exception
 	 */
 	public function handle(): Response
 	{

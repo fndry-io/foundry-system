@@ -2,12 +2,17 @@
 
 namespace Foundry\System\Repositories;
 
-use Foundry\Core\Repositories\EntityRepository;
+use Foundry\Core\Models\Model;
+use Foundry\Core\Repositories\ModelRepository;
+use Foundry\System\Models\File;
 
-class FileRepository extends EntityRepository {
+class FileRepository extends ModelRepository {
 
-	public function getAlias(): string {
-		return 'file';
+	/**
+	 * @return string|Model
+	 */
+	public function getClassName()
+	{
+		return File::class;
 	}
-
 }

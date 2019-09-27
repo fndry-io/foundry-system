@@ -19,7 +19,6 @@ class BrowsePickListItemsRequest extends PickListRequest implements ViewableForm
 {
 
     use HasInput;
-    use IsBrowseRequest;
 
 	public static function name(): String {
 		return 'foundry.system.pick-lists.items.browse';
@@ -51,11 +50,9 @@ class BrowsePickListItemsRequest extends PickListRequest implements ViewableForm
 		$page = $this->input('page', 1);
 		$limit = $this->input('limit', 20);
 
-		$paginator = PickListItemService::service()->browse($this->getEntity(), $inputs, $page, $limit );
+		$results = PickListItemService::service()->browse($this->getEntity(), $inputs, $page, $limit );
 
-		$result = $this->makeBrowseResource($paginator, $page, $limit);
-
-		return Response::success($result);
+		return Response::success(PickListItem::collection($results));
 	}
 
     public function view() : FormType

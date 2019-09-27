@@ -5,10 +5,11 @@ namespace Foundry\System\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Class User
+ * Class Role
+ *
  * @package Foundry\System\Http\Resources
  */
-class RoleResource extends JsonResource {
+class Role extends JsonResource {
 
 	public function toArray( $request ) {
 		return [

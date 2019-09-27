@@ -19,7 +19,6 @@ use Foundry\System\Services\PickListService;
 class BrowsePickListsRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
     use HasInput;
-    use IsBrowseRequest;
 
 	public static function name(): String {
 		return 'foundry.system.pick-lists.browse';
@@ -56,11 +55,9 @@ class BrowsePickListsRequest extends FormRequest implements ViewableFormRequestI
 		$page = $this->input('page', 1);
 		$limit = $this->input('limit', 20);
 
-		$paginator = PickListService::service()->browse($inputs, $page, $limit );
+		$results = PickListService::service()->browse($inputs, $page, $limit );
 
-		$result = $this->makeBrowseResource($paginator, $page, $limit, PickList::class);
-
-		return Response::success($result);
+		return Response::success(PickList::collection($results));
 	}
 
 	/**

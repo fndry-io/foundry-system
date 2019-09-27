@@ -2,12 +2,18 @@
 
 namespace Foundry\System\Repositories;
 
-use Foundry\Core\Repositories\EntityRepository;
+use Foundry\Core\Repositories\ModelRepository;
+use Foundry\System\Models\Role;
 
-class RoleRepository extends EntityRepository {
+class RoleRepository extends ModelRepository {
 
-	public function getAlias(): string {
-		return 'r';
+	/**
+	 * Returns the class name of the object managed by the repository.
+	 *
+	 * @return string|Role
+	 */
+	public function getClassName()
+	{
+		return Role::class;
 	}
-
 }

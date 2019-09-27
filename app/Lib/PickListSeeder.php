@@ -2,11 +2,11 @@
 
 namespace Foundry\System\Lib;
 
-use Foundry\System\Entities\PickList;
-use Foundry\System\Entities\PickListItem;
+use Foundry\System\Models\PickList;
+use Foundry\System\Models\PickListItem;
+use Foundry\System\Repositories\PickListItemRepository;
 use Foundry\System\Repositories\PickListRepository;
 use Illuminate\Support\Arr;
-use LaravelDoctrine\ORM\Facades\EntityManager;
 
 class PickListSeeder {
 
@@ -23,12 +23,11 @@ class PickListSeeder {
 				$picklist->is_tag = $is_tag;
 			}
 
-			if ($exists = EntityManager::getRepository(PickList::class)->findOneBy(['identifier' => $picklist->identifier])) {
+			if ($exists = PickListRepository::repository()->findOneBy(['identifier' => $picklist->identifier])) {
 				$picklist = $exists;
-				PickListRepository::get()->clearCachedSelectableList($picklist->identifier);
+				PickListRepository::repository()->clearCachedSelectableList($picklist->identifier);
 			} else {
-				EntityManager::persist($picklist);
-				EntityManager::flush();
+				PickListRepository::repository()->save($picklist);
 			}
 
 			foreach ($list['items'] as $key => $item) {
@@ -50,17 +49,15 @@ class PickListSeeder {
 				$picklistItem->status = Arr::get($item, 'status', true);
 				$picklistItem->is_system = Arr::get($item, 'is_system', false);
 
-				if (!EntityManager::getRepository(PickListItem::class)->findOneBy(['identifier' => $picklistItem->identifier, 'picklist' => $picklist])) {
-					EntityManager::persist($picklistItem);
+				if (!PickListItemRepository::repository()->findOneBy(['identifier' => $picklistItem->identifier, 'picklist' => $picklist])) {
+					PickListItemRepository::repository()->save($picklistItem);
 
 					if (Arr::get($item, 'is_default')) {
-						$picklist->default_item = $picklistItem->getId();
-						EntityManager::persist($picklist);
+						$picklist->default_item = $picklistItem->getKey();
+						PickListRepository::repository()->save($picklist);
 					}
 				}
 			}
-
-			EntityManager::flush();
 		}
 	}
 	

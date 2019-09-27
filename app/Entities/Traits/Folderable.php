@@ -22,7 +22,7 @@ trait Folderable {
 	 * @throws \ReflectionException
 	 */
 	public function getFolderName() : string {
-		return (new \ReflectionClass($this))->getShortName() . ' - ' . $this->getId();
+		return (new \ReflectionClass($this))->getShortName() . ' - ' . $this->getKey();
 	}
 
 	/**

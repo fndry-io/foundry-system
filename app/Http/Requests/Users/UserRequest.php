@@ -5,8 +5,8 @@ namespace Foundry\System\Http\Requests\Users;
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Traits\HasEntity;
-use Foundry\System\Entities\User;
-use LaravelDoctrine\ORM\Facades\EntityManager;
+use Foundry\System\Models\User;
+use Foundry\System\Repositories\UserRepository;
 
 abstract class UserRequest extends FormRequest implements EntityRequestInterface
 {
@@ -19,7 +19,7 @@ abstract class UserRequest extends FormRequest implements EntityRequestInterface
 	 */
 	public function findEntity($id)
 	{
-		return EntityManager::getRepository(User::class)->find($id);
+		return UserRepository::repository()->find($id);
 	}
 
 }

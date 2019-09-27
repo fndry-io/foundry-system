@@ -2,7 +2,6 @@
 
 namespace Foundry\System\Http\Requests\Auth;
 
-use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;

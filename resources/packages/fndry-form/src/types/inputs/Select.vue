@@ -11,8 +11,8 @@
         >
             <option v-if="schema.empty && !schema.multiple" :value="null">{{(schema.empty === true) ? 'Please select an option' : schema.empty}}</option>
             <option v-if="options" v-for="option in options" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>
-            <optgroup v-if="groups" v-for="(group_options, label) in groups" :label="label" :key="`group-${key}-${label}`">
-                <option v-for="option in group_options" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>
+            <optgroup v-if="groups" v-for="(group) in groups" :label="group.label" :key="`group-${key}-${group.label}`">
+                <option v-for="option in group.values" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>
             </optgroup>
         </b-form-select>
 
@@ -31,6 +31,7 @@
                     @success="onRequestButtonSuccess"
             ></fndry-request-button>
         </div>
+
     </div>
 
 </template>

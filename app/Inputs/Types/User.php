@@ -2,7 +2,7 @@
 
 namespace Foundry\System\Inputs\Types;
 
-use Foundry\Core\Entities\Entity;
+
 use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Inputs\Types\AddButtonType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Auth;
 class User extends ReferenceInputType implements Field {
 
 	/**
-	 * @param Entity|null $entity
+	 *
 	 *
 	 * @return User|ReferenceInputType|Inputable
 	 */
-	static function input( Entity &$entity = null ) : Inputable {
+	static function input( ) : Inputable {
 		$input = (new static(
 			'user',
 			__('User'),

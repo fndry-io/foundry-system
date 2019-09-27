@@ -2,62 +2,46 @@
 
 namespace Foundry\System\Services;
 
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
-use Foundry\Core\Services\Traits\HasRepository;
-use Foundry\System\Entities\PickList;
-use Foundry\System\Entities\PickListItem;
+use Foundry\System\Models\PickList;
+use Foundry\System\Models\PickListItem;
 use Foundry\System\Inputs\PickListItem\PickListEditItemInput;
 use Foundry\System\Inputs\PickListItem\PickListItemInput;
-use LaravelDoctrine\ORM\Facades\EntityManager;
+use Foundry\System\Repositories\PickListItemRepository;
+use Foundry\System\Repositories\PickListRepository;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Builder;
 
 class PickListItemService extends BaseService {
 
-	use HasRepository;
-
-	public function __construct() {
-		$this->setRepository(EntityManager::getRepository(PickListItem::class));
-	}
-
-	public function browse( PickList $pick_list, Inputs $inputs, $page = 1, $perPage = 20 ): Paginator {
-		return $this->getRepository()->filter(function(QueryBuilder $qb) use ($inputs, $pick_list) {
+	public function browse( PickList $picklist, Inputs $inputs, $page = 1, $perPage = 20 ): Paginator {
+		return PickListItemRepository::repository()->filter(function(Builder $qb) use ($inputs, $picklist) {
 
 			$qb
-				->addSelect(
-					'picklist_item.id',
-					'picklist_item.label',
-					'picklist_item.identifier',
-					'picklist_item.description',
-					'picklist_item.sequence',
-					'picklist_item.status',
-					'picklist.default_item as default_id'
+				->select(
+					'picklist_items.id',
+					'picklist_items.label',
+					'picklist_items.identifier',
+					'picklist_items.description',
+					'picklist_items.sequence',
+					'picklist_items.status',
+					'picklists.default_item as default_id'
 				)
-				->join('picklist_item.picklist', 'picklist')
-				->orderBy('picklist_item.label', 'ASC');
+				->join('picklists', 'picklists.id', '=', 'picklist_items.picklist_id')
+				->orderBy('label', 'ASC')
+			;
 
-			$where = $qb->expr()->andX();
-
-			if ($search = $inputs->input('search')) {
-				$where->add($qb->expr()->orX(
-					$qb->expr()->like('picklist_item.label', ':search')
-				));
-				$qb->setParameter(':search', "%" . $search . "%");
+			if ($search = $inputs->value('search')) {
+				$qb->where('picklist_items.label', 'like', "%" . $search . "%");
 			}
 
-			$where->add($qb->expr()->eq('picklist_item.picklist', ':picklist'));
-			$qb->setParameter('picklist', $pick_list);
-
-			$qb->where($where);
+			$qb->where('picklist_items.picklist_id', $picklist->getKey());
 
 			return $qb;
 
 		}, $page, $perPage);
-
-
 	}
 
 	/**
@@ -67,30 +51,26 @@ class PickListItemService extends BaseService {
 	 */
 	public function add(PickListItemInput $input) : Response
 	{
-        $pickListItem = new PickListItem($input->inputs());
-        if ($id = $input->input('picklist')) {
-            if ($picklist = EntityManager::getRepository(PickList::class)->find($id)) {
-                $pickListItem->picklist = $picklist;
-            }
+        $pickListItem = new PickListItem($input->values());
+        if ($id = $input->value('picklist')) {
+	        $pickListItem->picklist = $id;
         }
 
-		$this->repository->save($pickListItem);
+		PickListItemRepository::repository()->save($pickListItem);
 
-		if ($input->input('default_item') && $pickListItem->picklist) {
-			$pickListItem->picklist->default_item = $pickListItem->getId();
-			EntityManager::persist($pickListItem->picklist);
+		if ($input->value('default_item') && $pickListItem->picklist) {
+			$pickListItem->picklist->default_item = $pickListItem->getKey();
+			PickListRepository::repository()->save($pickListItem->picklist);
 		}
 
-		EntityManager::getRepository(PickList::class)->clearCachedSelectableList($pickListItem->picklist->identifier);
-
-        $this->repository->flush();
+		PickListRepository::repository()->clearCachedSelectableList($pickListItem->picklist->identifier);
 
         return Response::success($pickListItem);
 	}
 
 	/**
 	 * @param PickListEditItemInput|Inputs $input
-	 * @param PickListItem|Entity $pickListItem
+	 * @param PickListItem $pickListItem
 	 *
 	 * @return Response
 	 */
@@ -98,23 +78,22 @@ class PickListItemService extends BaseService {
 	{
 		$default_item = $pickListItem->picklist->default_item;
 
-		$pickListItem->fill($input);
-		$this->repository->save($pickListItem);
+		$pickListItem->fill($input->values());
+		PickListItemRepository::repository()->save($pickListItem);
 
 		if ($pickListItem->picklist) {
-			$should = $input->input('default_item');
-			if (!$should && ($default_item === $pickListItem->getId())) {
+			$should = $input->value('default_item');
+			if (!$should && ($default_item === $pickListItem->getKey())) {
 				$pickListItem->picklist->default_item = null;
 			} elseif ($should) {
-				$pickListItem->picklist->default_item = $pickListItem->getId();
+				if ($pickListItem->status == true) {
+					$pickListItem->picklist->default_item = $pickListItem->getKey();
+				}
 			}
-			EntityManager::persist($pickListItem->picklist);
+			PickListRepository::repository()->save($pickListItem->picklist);
 		}
 
-		EntityManager::getRepository(PickList::class)->clearCachedSelectableList($pickListItem->picklist->identifier);
-
-		$this->repository->flush();
-
+		PickListRepository::repository()->clearCachedSelectableList($pickListItem->picklist->identifier);
 		$pickListItem->makeVisible('picklist');
 
 		return Response::success($pickListItem);

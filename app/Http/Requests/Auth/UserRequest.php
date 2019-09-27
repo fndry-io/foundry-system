@@ -6,7 +6,7 @@ use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Traits\HasEntity;
-use Foundry\System\Entities\User;
+use Foundry\System\Models\User;
 
 abstract class UserRequest extends FormRequest implements EntityRequestInterface
 {

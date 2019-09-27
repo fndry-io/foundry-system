@@ -15,7 +15,7 @@
 <script>
     import {set, extend} from 'lodash';
 
-    import {getChildInputValues} from '../utils/schema';
+    //import {getChildInputValues} from '../utils/schema';
     import schema, {process} from "../mixins/schema";
 
     /**
@@ -49,8 +49,7 @@
             };
         },
         created(){
-            let model = this.data ? extend({}, this.data) : {};
-            getChildInputValues(this.schema, model);
+            let model = extend({}, this.schema.values, this.data);
             process(this.type, model);
             this.model = model;
         },

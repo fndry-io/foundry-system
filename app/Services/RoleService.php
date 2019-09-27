@@ -2,21 +2,34 @@
 
 namespace Foundry\System\Services;
 
-use Foundry\Core\Entities\Entity;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
-use Foundry\Core\Services\Traits\HasRepository;
-use Foundry\System\Entities\Role;
+use Foundry\System\Models\Role;
 use Foundry\System\Inputs\Role\RoleInput;
 use Foundry\System\Repositories\RoleRepository;
+use Illuminate\Database\Eloquent\Builder;
 
 class RoleService extends BaseService {
 
-	use HasRepository;
+	/**
+	 * Browse Users
+	 *
+	 * @param Inputs $inputs
+	 * @param int $page
+	 * @param int $perPage
+	 *
+	 * @return Response
+	 */
+	public function browse( Inputs $inputs, $page = 1, $perPage = 20 ): Response {
+		return Response::success(RoleRepository::repository()->filter(function(Builder $qb) use ($inputs) {
 
-	public function __construct(RoleRepository $repository) {
-		$this->setRepository($repository);
+			$qb->select('id', 'name')
+				->orderBy('name', 'ASC');
+
+			return $qb;
+
+		}, $page, $perPage));
 	}
 
 	/**
@@ -26,34 +39,35 @@ class RoleService extends BaseService {
 	 */
 	public function add(RoleInput $input) : Response
 	{
-		$role = new Role($input->inputs());
-		$this->repository->save($role);
+		$role = new Role($input->values());
+		RoleRepository::repository()->save($role);
 		return Response::success($role);
 	}
 
 	/**
 	 * @param RoleInput|Inputs $input
-	 * @param Role|Entity $role
+	 * @param Role $role
 	 *
 	 * @return Response
 	 */
 	public function edit(RoleInput $input, Role $role) : Response
 	{
-		$role->fill($input);
-		$this->repository->save($role);
+		$role->fill($input->values());
+		RoleRepository::repository()->save($role);
 		return Response::success($role);
 	}
 
 	/**
 	 * Delete a user
 	 *
-	 * @param Role|Entity $role
+	 * @param Role $role
 	 *
 	 * @return Response
+	 * @throws \Exception
 	 */
 	public function delete(Role $role) : Response
 	{
-		$this->repository->delete($role);
+		RoleRepository::repository()->delete($role);
 		return Response::success();
 	}
 

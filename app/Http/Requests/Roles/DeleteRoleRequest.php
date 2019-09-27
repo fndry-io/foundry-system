@@ -22,6 +22,7 @@ class DeleteRoleRequest  extends RoleRequest implements EntityRequestInterface
 	 * Handle the request
 	 *
 	 * @return Response
+	 * @throws \Exception
 	 */
 	public function handle() : Response
 	{

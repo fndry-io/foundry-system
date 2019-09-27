@@ -5,8 +5,8 @@ namespace Foundry\System\Http\Requests\Folders;
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Traits\HasEntity;
-use Foundry\System\Entities\Folder;
-use LaravelDoctrine\ORM\Facades\EntityManager;
+use Foundry\System\Models\Folder;
+use Foundry\System\Repositories\FolderRepository;
 
 abstract class FolderRequest extends FormRequest implements EntityRequestInterface
 {
@@ -19,7 +19,7 @@ abstract class FolderRequest extends FormRequest implements EntityRequestInterfa
 	 */
 	public function findEntity($id)
 	{
-		return EntityManager::getRepository(Folder::class)->findOneBy(['id' => $id, 'is_file' => false]);
+		return FolderRepository::repository()->findOneBy(['id' => $id, 'is_file' => false]);
 	}
 
 }

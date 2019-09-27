@@ -5,8 +5,8 @@ namespace Foundry\System\Http\Requests\PickLists;
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Traits\HasEntity;
-use Foundry\System\Entities\PickList;
-use LaravelDoctrine\ORM\Facades\EntityManager;
+use Foundry\System\Models\PickList;
+use Foundry\System\Repositories\PickListRepository;
 
 abstract class PickListRequest extends FormRequest implements EntityRequestInterface
 {
@@ -19,7 +19,7 @@ abstract class PickListRequest extends FormRequest implements EntityRequestInter
 	 */
 	public function findEntity($id)
 	{
-		return EntityManager::getRepository(PickList::class)->find($id);
+		return PickListRepository::repository()->find($id);
 	}
 
 }

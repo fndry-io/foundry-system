@@ -2,7 +2,6 @@
 
 namespace Foundry\System\Http\Requests\Roles;
 
-use Doctrine\ORM\QueryBuilder;
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
@@ -11,10 +10,9 @@ use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
-use Foundry\System\Http\Resources\RoleResource;
+use Foundry\System\Http\Resources\Role;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Services\RoleService;
-use Illuminate\Support\Collection;
 
 class BrowseRolesRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
@@ -47,20 +45,19 @@ class BrowseRolesRequest extends FormRequest implements ViewableFormRequestInter
 	/**
 	 * Handle the request
 	 *
-	 * @see RoleResource
+	 * @see Role
 	 * @return Response
 	 */
     public function handle() : Response
     {
-	    $result = RoleService::service()->browse(function(QueryBuilder $qb) {
+	    $inputs = $this->input;
 
-		    return $qb
-			    ->addSelect('r.id', 'r.name')
-			    ->orderBy('r.name', 'ASC');
+	    $page = $this->input('page', 1);
+	    $limit = $this->input('limit', 20);
 
-	    }, $this->input('page', 1), $this->input('limit', 20) );
+	    $result = RoleService::service()->browse($inputs, $page, $limit );
 
-	    return Response::success($result);
+	    return Response::success(Role::collection($result->getData()));
     }
 
 	/**

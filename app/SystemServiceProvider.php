@@ -1,15 +1,13 @@
 <?php
 
-namespace Foundry\System\Providers;
+namespace Foundry\System;
 
 use Foundry\Core\Requests\FormRequestHandler;
 use Foundry\Core\Support\ServiceProvider;
-use Foundry\System\Entities\Role;
-use Foundry\System\Entities\User;
-use Foundry\System\Repositories\RoleRepository;
-use Foundry\System\Repositories\UserRepository;
-use Foundry\System\Services\RoleService;
-use Foundry\System\Services\UserService;
+use Foundry\System\Models\User;
+use Foundry\System\Providers\AuthServiceProvider;
+use Foundry\System\Providers\EventServiceProvider;
+use Foundry\System\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
@@ -25,7 +23,6 @@ class SystemServiceProvider extends ServiceProvider
 	 */
 	protected $defer = false;
 
-
     /**
      * Register any application services.
      *
@@ -37,38 +34,11 @@ class SystemServiceProvider extends ServiceProvider
 	    $this->app->register(EventServiceProvider::class);
 	    $this->app->register(AuthServiceProvider::class);
 	    //$this->app->register(BroadcastServiceProvider::class);
-	    $this->registerRepositories();
 	    $this->registerServices();
-    }
-
-    public function registerRepositories()
-    {
-	    $this->app->bind(UserRepository::class, function($app) {
-		    return new UserRepository(
-			    $app['em'],
-			    $app['em']->getClassMetaData(User::class)
-		    );
-	    });
-	    $this->app->bind(RoleRepository::class, function($app) {
-		    return new RoleRepository(
-			    $app['em'],
-			    $app['em']->getClassMetaData(Role::class)
-		    );
-	    });
     }
 
 	public function registerServices()
 	{
-		$this->app->bind(UserService::class, function($app) {
-			return new UserService(
-				resolve(UserRepository::class)
-			);
-		});
-		$this->app->bind(RoleService::class, function($app) {
-			return new RoleService(
-				resolve(RoleRepository::class)
-			);
-		});
 		$this->app->singleton( 'Foundry\Core\Contracts\FormRequestHandler', function () {
 			return new FormRequestHandler();
 		} );
@@ -87,7 +57,7 @@ class SystemServiceProvider extends ServiceProvider
 		$this->registerFactories();
 		$this->registerCommands();
 		$this->loadMigrationsFrom(base_path('foundry/system/database/migrations'));
-		$this->mergeDoctrinePaths(base_path('foundry/system/config/mappings'));
+		//$this->mergeDoctrinePaths(base_path('foundry/system/config/mappings'));
 		$this->registerGates();
 
 		Validator::extend('username', function ($attribute, $value, $parameters, $validator) {
@@ -109,7 +79,6 @@ class SystemServiceProvider extends ServiceProvider
 //		$this->publishes([
 //			base_path('foundry/system/config/config.php') => config_path('foundry_system.php'),
 //		], 'config');
-
 	}
 
 	/**

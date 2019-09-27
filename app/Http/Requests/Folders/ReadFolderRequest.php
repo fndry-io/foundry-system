@@ -3,7 +3,6 @@
 namespace Foundry\System\Http\Requests\Folders;
 
 use Foundry\Core\Requests\Response;
-use Foundry\System\Services\FolderService;
 
 class ReadFolderRequest extends FolderRequest
 {

@@ -2,43 +2,25 @@
 
 namespace Foundry\System\Repositories;
 
-use Doctrine\ORM\Mapping;
-use Foundry\Core\Entities\Contracts\HasIdentity;
-use Foundry\Core\Repositories\EntityRepository;
-use Foundry\System\Entities\Contracts\HasFolder;
-use Foundry\System\Entities\Folder;
-use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
-use Illuminate\Support\Arr;
-use LaravelDoctrine\ORM\Facades\EntityManager;
+use Foundry\Core\Models\Model;
+use Foundry\Core\Repositories\ModelRepository;
+use Foundry\System\Models\Contracts\HasFolder;
+use Foundry\System\Models\Folder;
 
-class FolderRepository extends EntityRepository {
+class FolderRepository extends ModelRepository {
 
 	/**
-	 * @var NestedTreeRepository
+	 * @return string|Model
 	 */
-	protected $tree;
-
-	public function __construct( $em, Mapping\ClassMetadata $class ) {
-		parent::__construct( $em, $class );
-		$this->tree = new NestedTreeRepository( $em, $class );
-	}
-
-	public function getAlias(): string {
-		return 'folder';
-	}
-
-	/**
-	 * @return NestedTreeRepository
-	 */
-	public function getTreeRepository()
+	public function getClassName()
 	{
-		return $this->tree;
+		return Folder::class;
 	}
 
 	/**
 	 *
 	 *
-	 * @param HasIdentity $entity
+	 * @param HasFolder $entity
 	 * @param string|null $name
 	 * @param Folder|null $parent
 	 * @param bool|null $create
@@ -46,28 +28,23 @@ class FolderRepository extends EntityRepository {
 	 * @return bool|Folder|null|object
 	 * @throws \ReflectionException
 	 */
-	public function getRootFolderByEntity(HasIdentity $entity, string $name = null, Folder $parent = null, bool $create = null)
+	public function getRootFolderByEntity(HasFolder $entity, string $name = null, Folder $parent = null, bool $create = null)
 	{
-		if ($entity instanceof \Doctrine\ORM\Proxy\Proxy) {
-			$class = get_parent_class($entity);
-		} else {
-			$class = get_class($entity);
-		}
+		$class = get_class($entity);
 
-		$folder = $this->findOneBy(['reference_type' => $class, 'reference_id' => $entity->getId()]);
+		$folder = $this->findOneBy(['reference_type' => $class, 'reference_id' => $entity->getKey()]);
 		if (!$folder && $create) {
 			$folder = new Folder();
 			if (empty($name)){
-				$name = (new \ReflectionClass($entity))->getShortName() . ' - ' . $entity->getId();
+				$name = $entity->getFolderName();
 			}
 			$folder->name = $name;
-			$folder->reference_type = $class;
-			$folder->reference_id = $entity->getId();
+			$folder->reference()->associate($entity);
 			if ($parent) {
-				$folder->setParent($parent);
+				$folder->parent = $parent;
 			}
-			EntityManager::persist($folder);
-			EntityManager::flush();
+
+			$folder->save();
 
 			if ($entity instanceof HasFolder) {
 				$entity->setFolder($folder);
@@ -75,5 +52,6 @@ class FolderRepository extends EntityRepository {
 		}
 		return $folder;
 	}
+
 
 }

@@ -51,16 +51,16 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 			$rules['email'] = [
 				'required',
 				'email',
-				Rule::unique('Foundry\System\Entities\User', 'email')->ignore($this->getEntity()->id)
+				Rule::unique('users', 'email')->ignore($entity->getKey())
 			];
 			$rules['username'] = [
 				'required',
 				'username',
-				Rule::unique('Foundry\System\Entities\User', 'username')->ignore($this->getEntity()->id)
+				Rule::unique('users', 'username')->ignore($entity->getKey())
 			];
 			$rules['display_name'] = [
 				'required',
-				Rule::unique('Foundry\System\Entities\User', 'display_name')->ignore($this->getEntity()->id)
+				Rule::unique('users', 'display_name')->ignore($entity->getKey())
 			];
 		}
 		return $rules;
@@ -85,17 +85,21 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 	{
 		$form = $this->form();
 
+		//$form->setValues(['password' => null, 'password_confirmation' => null]);
+
 		$form->setTitle(__('Edit User'));
 		$form->setButtons((new SubmitButtonType(__('Save'), $form->getAction())));
 		$form->addChildren((new SectionType(__('Details')))->addChildren(
 			RowType::withChildren($form->get('username')->setAutocomplete(false), $form->get('display_name')->setAutocomplete(false)),
 			RowType::withChildren($form->get('email')->setAutocomplete(false))
 		));
+
 		$form->addChildren(
 			(new SectionType(__('Password'), __('If you need to change the password set the values below or leave them blank to leave the password as is.')))->addChildren(
-				RowType::withChildren($form->get('password')->setValue(null)->setAutocomplete(false), $form->get('password_confirmation')->setValue(null)->setAutocomplete(false))
+				RowType::withChildren($form->get('password')->setAutocomplete(false), $form->get('password_confirmation')->setAutocomplete(false))
 			)
 		);
+
 		return $form;
 	}
 }

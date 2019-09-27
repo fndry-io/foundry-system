@@ -2,33 +2,28 @@
 
 namespace Foundry\System\Repositories;
 
-use Doctrine\ORM\QueryBuilder;
-use Foundry\Core\Repositories\EntityRepository;
-use Foundry\System\Entities\PickList;
-use Foundry\System\Entities\PickListItem;
+use Foundry\Core\Repositories\ModelRepository;
+use Foundry\System\Models\PickList;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Cache;
-use LaravelDoctrine\ORM\Facades\EntityManager;
 
-
-class PickListRepository  extends EntityRepository {
-
-	public function getAlias(): string {
-		return 'picklist';
-	}
+class PickListRepository extends ModelRepository {
 
 	/**
-	 * @return \Doctrine\Common\Persistence\ObjectRepository|PickListRepository
+	 * Returns the class name of the object managed by the repository.
+	 *
+	 * @return string
 	 */
-	static function get()
+	public function getClassName()
 	{
-		return EntityManager::getRepository(PickList::class);
+		return PickList::class;
 	}
 
     public function getLabelList() {
 
         $qb = $this->query();
-        $qb->select('picklist.id', 'picklist.label');
-        return $qb->getQuery()->getArrayResult();
+        $qb->select('id', 'label');
+        return $qb->get();
     }
 
 	/**
@@ -59,25 +54,18 @@ class PickListRepository  extends EntityRepository {
 	    }
 
 	    /**
-	     * @var QueryBuilder $qb
+	     * @var Builder $qb
 	     */
-	    $qb = EntityManager::getRepository(PickListItem::class)->query();
-	    $qb->select('picklist_item.id', 'picklist_item.identifier', 'picklist_item.label');
-	    $qb->orderBy('picklist_item.sequence', 'ASC');
-	    $qb->orderBy('picklist_item.label', 'ASC');
+	    $qb = PickListItemRepository::repository()->query();
+	    $qb->select('id', 'identifier', 'label');
+	    $qb->orderBy('sequence', 'ASC');
+	    $qb->orderBy('label', 'ASC');
 
-	    $where = $qb->expr()->andX();
-
-	    $where->add($qb->expr()->eq('picklist_item.picklist', ':picklist'));
-	    $qb->setParameter('picklist', $picklist);
-
-	    $where->add($qb->expr()->eq('picklist_item.status', ':status'));
-	    $qb->setParameter('status', true);
-
-	    $qb->where($where);
+	    $qb->where('picklist_id', $picklist);
+	    $qb->where('status', true);
 
 	    $picklist = $picklist->toArray();
-	    $picklist['items'] = $qb->getQuery()->getArrayResult();
+	    $picklist['items'] = $qb->get()->toArray();
 
 	    return $picklist;
     }
@@ -89,5 +77,6 @@ class PickListRepository  extends EntityRepository {
     {
 	    Cache::forget('picklist::' . $identifier);
     }
+
 
 }

@@ -9,6 +9,7 @@ use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Inputs\File\FileInput;
 use Foundry\System\Services\FileService;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 abstract class BaseUploadFileRequest extends FormRequest implements InputInterface {
 
@@ -72,6 +73,9 @@ abstract class BaseUploadFileRequest extends FormRequest implements InputInterfa
 	 * @return \Foundry\Core\Inputs\Inputs|FileInput
 	 */
 	public function makeInput( $inputs ) {
+		if (empty($this->file)) {
+			throw new BadRequestHttpException('No file supplied');
+		}
 		$input = FileInput::fromUploadedFile($this->file, $inputs, $this->isPublic());
 		return $input;
 	}

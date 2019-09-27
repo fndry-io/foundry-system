@@ -24,35 +24,35 @@ export const getMultipleFields = schema => {
 	return res;
 };
 
-export const getInputValues = (schema, model) => {
-    //console.log(schema);
-	if (schema.hasOwnProperty('name')) {
-		if (get(model, schema.name, undefined) === undefined) {
-            if (schema.hasOwnProperty('type') && (schema.type === 'switch' || schema.type === 'checkbox')) {
-            	if (schema.value === schema.checkedValue) {
-                    set(model, schema.name, schema.value);
-				} else {
-                    set(model, schema.name, schema.uncheckedValue);
-				}
-            } else if (schema.hasOwnProperty('value')) {
-                set(model, schema.name, schema.value);
-            } else if(schema.multiple === true) {
-                set(model, schema.name, []);
-            } else {
-                set(model, schema.name, null);
-            }
-		}
-	}
-	if (schema.hasOwnProperty('children')) {
-		getChildInputValues(schema, model);
-	}
-};
+// export const getInputValues = (schema, model) => {
+//     //console.log(schema);
+// 	if (schema.hasOwnProperty('name')) {
+// 		if (get(model, schema.name, undefined) === undefined) {
+//             if (schema.hasOwnProperty('type') && (schema.type === 'switch' || schema.type === 'checkbox')) {
+//             	if (schema.value === schema.checkedValue) {
+//                     set(model, schema.name, schema.value);
+// 				} else {
+//                     set(model, schema.name, schema.uncheckedValue);
+// 				}
+//             } else if (schema.hasOwnProperty('value')) {
+//                 set(model, schema.name, schema.value);
+//             } else if(schema.multiple === true) {
+//                 set(model, schema.name, []);
+//             } else {
+//                 set(model, schema.name, null);
+//             }
+// 		}
+// 	}
+// 	if (schema.hasOwnProperty('children')) {
+// 		getChildInputValues(schema, model);
+// 	}
+// };
 
-export const getChildInputValues = (schema, model) => {
-    each(schema.children, (child) => {
-        getInputValues(child, model);
-    });
-}
+// export const getChildInputValues = (schema, model) => {
+//     each(schema.children, (child) => {
+//         getInputValues(child, model);
+//     });
+// }
 
 // Merge many models to one 'work model' by schema
 export const mergeMultiObjectFields = (schema, objs) => {

@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @method IsRole|Model|boolean insert(array $data)
  * @method IsRole|Model|boolean update(IsRole | Model | int $model, array $data)
  * @method static IsRole|Model make($values)
- * @method IsRole|Model findOrAbort(Model $id)
+ * @method IsRole|Model getModel(Model $id)
  *
  * @package Modules\Agm\Contacts\Repositories
  */

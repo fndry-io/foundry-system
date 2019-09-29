@@ -16,7 +16,7 @@ use Illuminate\Support\Arr;
  *
  * @method boolean delete(IsFolder|Model|int $model)
  * @method boolean restore(IsFolder|Model|int $model)
- * @method IsFolder|Model findOrAbort(Model $id)
+ * @method IsFolder|Model getModel(Model $id)
  *
  * @package Foundry\System\Repositories
  */
@@ -120,7 +120,7 @@ class FolderRepository extends ModelRepository {
 	 */
 	public function update($id, $data)
 	{
-		$folder = $this->findOrAbort($id);
+		$folder = $this->getModel($id);
 
 		$folder->fill($data);
 

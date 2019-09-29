@@ -15,7 +15,7 @@ use Illuminate\Support\Arr;
  * Class CompanyRepository
  *
  * @method boolean delete(IsPickListItem | Model | int $model)
- * @method IsPickListItem|Model findOrAbort(Model $id)
+ * @method IsPickListItem|Model getModel(Model $id)
  *
  * @package Modules\Agm\Contacts\Repositories
  */
@@ -124,7 +124,7 @@ class PickListItemRepository extends ModelRepository
 	 */
 	public function update($id, $data)
 	{
-		$pickListItem = $this->findOrAbort($id);
+		$pickListItem = $this->getModel($id);
 
 		$default_item = $pickListItem->picklist->default_item;
 

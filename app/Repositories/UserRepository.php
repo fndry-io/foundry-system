@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
  * @method IsUser|Model|boolean save(IsUser | Model | int $model)
  * @method boolean delete(IsUser | Model | int $model)
  * @method boolean restore(IsUser | Model | int $model)
- * @method IsUser|Model findOrAbort(Model $id)
+ * @method IsUser|Model getModel(int|Model $id)
  *
  * @package Modules\Agm\Contacts\Repositories
  */
@@ -72,15 +72,17 @@ class UserRepository extends ModelRepository
 	 * Find the user by their email address
 	 *
 	 * @param string $email
+	 * @param int $page
 	 * @param int $perPage
 	 *
 	 * @return Paginator
 	 */
-	public function findByEmail(string $email, int $perPage = 20): Paginator
+	public function findByEmail(string $email, $page = 1, $perPage = 20): Paginator
 	{
 		return $this->filter(function (Builder $query) use ($email) {
-			$query->where('email', 'like', "%" . $email . "%");
-		}, $perPage);
+			$query->select('*')->where('email', 'like', "%" . $email . "%");
+			return $query;
+		}, $page, $perPage);
 	}
 
 	/**
@@ -146,7 +148,7 @@ class UserRepository extends ModelRepository
 
 		return array_map(function ($item) {
 			return "{$item['display_name']} <{$item['email']}>";
-		}, $list);
+		}, $list->toArray());
 	}
 
 	/**
@@ -174,7 +176,7 @@ class UserRepository extends ModelRepository
 	 */
 	public function resetPassword($id, $password)
 	{
-		$user = $this->findOrAbort($id);
+		$user = $this->getModel($id);
 
 		$user->password = $password;
 
@@ -200,7 +202,7 @@ class UserRepository extends ModelRepository
 			$user->password = $password;
 		}
 
-		if (auth_user()->isSuperAdmin()) {
+		if (Auth::user() && Auth::user()->isSuperAdmin()) {
 
 			//todo change to control this in the form
 			$user->active = true;
@@ -233,7 +235,7 @@ class UserRepository extends ModelRepository
 	 */
 	public function update($id, $data)
 	{
-		$user = $this->findOrAbort($id);
+		$user = $this->getModel($id);
 
 		$user->fill($data);
 
@@ -272,7 +274,7 @@ class UserRepository extends ModelRepository
 	 */
 	public function syncSettings($id, array $settings)
 	{
-		$user = $this->findOrAbort($id);
+		$user = $this->getModel($id);
 		$user->settings = $settings;
 
 		if ($user->save()) {

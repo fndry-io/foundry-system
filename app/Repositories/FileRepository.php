@@ -15,7 +15,7 @@ use Illuminate\Support\Arr;
  *
  * @method boolean delete(IsFile|Model|int $model)
  * @method boolean restore(IsFile|Model|int $model)
- * @method IsFile|Model findOrAbort(Model $id)
+ * @method IsFile|Model getModel(Model $id)
  *
  * @package Foundry\System\Repositories
  */

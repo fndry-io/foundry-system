@@ -4,14 +4,15 @@ namespace Foundry\System\Models;
 
 use Foundry\Core\Models\Model;
 use Foundry\Core\Models\Traits\Referencable;
+use Foundry\Core\Models\Traits\SoftDeleteable;
 use Foundry\Core\Models\Traits\Uuidable;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Foundry\Core\Entities\Contracts\IsFile;
 use Illuminate\Support\Facades\Storage;
 
-class File extends Model
+class File extends Model implements IsFile
 {
 	use Uuidable;
-	use SoftDeletes;
+	use SoftDeleteable;
 	use Referencable;
 
 	protected $table = 'files';

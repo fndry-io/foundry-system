@@ -14,6 +14,7 @@ use Foundry\System\Inputs\Types\ReferenceId;
 use Foundry\System\Inputs\Types\ReferenceType;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * Class AddressInput
@@ -26,7 +27,7 @@ class FileInput extends Inputs {
 	use HasMultiple;
 
 	/**
-	 * @var UploadedFile
+	 * @var UploadedFile|File
 	 */
 	protected $file;
 

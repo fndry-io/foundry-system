@@ -2,12 +2,28 @@
 
 namespace Foundry\System\Repositories;
 
+use Foundry\Core\Entities\Contracts\IsUser;
+use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
 use Foundry\System\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
-class UserRepository extends ModelRepository {
+/**
+ * Class CompanyRepository
+ *
+ * @method IsUser|Model|boolean save(IsUser | Model | int $model)
+ * @method boolean delete(IsUser | Model | int $model)
+ * @method boolean restore(IsUser | Model | int $model)
+ * @method IsUser|Model findOrAbort(Model $id)
+ *
+ * @package Modules\Agm\Contacts\Repositories
+ */
+class UserRepository extends ModelRepository
+{
 
 	/**
 	 * Returns the class name of the object managed by the repository.
@@ -20,6 +36,39 @@ class UserRepository extends ModelRepository {
 	}
 
 	/**
+	 * @param array $inputs
+	 * @param int $page
+	 * @param int $perPage
+	 *
+	 * @return \Illuminate\Contracts\Pagination\Paginator
+	 */
+	public function browse(array $inputs, $page = 1, $perPage = 20): Paginator
+	{
+		return $this->filter(function (Builder $query) use ($inputs) {
+
+			$query
+				->select('*')
+				->orderBy('display_name', 'ASC');
+
+			if ($search = Arr::get($inputs, 'search', null)) {
+				$query->where(function (Builder $query) use ($search) {
+					$query->where('username', 'like', "%" . $search . "%");
+					$query->where('display_name', 'like', "%" . $search . "%");
+					$query->where('email', 'like', "%" . $search . "%");
+				});
+			}
+
+			$deleted = Arr::get($inputs, 'deleted', 'undeleted');
+			if ($deleted == 'deleted') {
+				$query->onlyTrashed();
+			}
+
+			return $query;
+
+		}, $page, $perPage);
+	}
+
+	/**
 	 * Find the user by their email address
 	 *
 	 * @param string $email
@@ -27,9 +76,9 @@ class UserRepository extends ModelRepository {
 	 *
 	 * @return Paginator
 	 */
-	public function findByEmail(string $email, int $perPage = 20) : Paginator
+	public function findByEmail(string $email, int $perPage = 20): Paginator
 	{
-		return $this->filter(function(Builder $query) use ($email){
+		return $this->filter(function (Builder $query) use ($email) {
 			$query->where('email', 'like', "%" . $email . "%");
 		}, $perPage);
 	}
@@ -43,25 +92,26 @@ class UserRepository extends ModelRepository {
 	 *
 	 * @return User[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|Builder[]|\Illuminate\Support\Collection
 	 */
-	public function getLabelList($name, $limit = 20, $deleted = false) {
+	public function getLabelList($name, $limit = 20, $deleted = false)
+	{
 
 		if ($deleted) {
-			$qb = $this->getClassName()::withTrashed();
+			$query = $this->getClassName()::withTrashed();
 		} else {
-			$qb = $this->query();
+			$query = $this->query();
 		}
 
-		$qb->select('id', 'username', 'display_name');
+		$query->select('id', 'username', 'display_name');
 
-		$qb->where(function(Builder $qb) use ($name) {
-			$qb->orWhere('username', 'like', "%" . $name . "%");
-			$qb->orWhere('display_name', 'like', "%" . $name . "%");
-			$qb->orWhere('email', 'like', "%" . $name . "%");
+		$query->where(function (Builder $query) use ($name) {
+			$query->orWhere('username', 'like', "%" . $name . "%");
+			$query->orWhere('display_name', 'like', "%" . $name . "%");
+			$query->orWhere('email', 'like', "%" . $name . "%");
 		});
 
-		$qb->limit($limit);
+		$query->limit($limit);
 
-		return $qb->get();
+		return $query->get();
 	}
 
 	/**
@@ -73,29 +123,163 @@ class UserRepository extends ModelRepository {
 	 *
 	 * @return array
 	 */
-	public function getEmailList($name, $limit = 20, $deleted = false) {
+	public function getEmailList($name, $limit = 20, $deleted = false)
+	{
 
 		if ($deleted) {
-			$qb = $this->getClassName()::withTrashed();
+			$query = $this->getClassName()::withTrashed();
 		} else {
-			$qb = $this->query();
+			$query = $this->query();
 		}
 
-		$qb->select('email', 'display_name');
+		$query->select('email', 'display_name');
 
-		$qb->where(function(Builder $qb) use ($name) {
-			$qb->orWhere('username', 'like', "%" . $name . "%");
-			$qb->orWhere('display_name', 'like', "%" . $name . "%");
-			$qb->orWhere('email', 'like', "%" . $name . "%");
+		$query->where(function (Builder $query) use ($name) {
+			$query->orWhere('username', 'like', "%" . $name . "%");
+			$query->orWhere('display_name', 'like', "%" . $name . "%");
+			$query->orWhere('email', 'like', "%" . $name . "%");
 		});
 
-		$qb->limit($limit);
+		$query->limit($limit);
 
-		$list = $qb->get();
+		$list = $query->get();
 
-		return array_map(function($item){
+		return array_map(function ($item) {
 			return "{$item['display_name']} <{$item['email']}>";
 		}, $list);
+	}
+
+	/**
+	 * @param $data
+	 *
+	 * @return bool|\Foundry\Core\Models\Model|IsUser
+	 */
+	public function register($data)
+	{
+		$user           = UserRepository::make($data);
+		$user->active   = true;
+		$user->password = $data['password'];
+		if ($user->save()) {
+			return $user;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @param $id
+	 * @param $password
+	 *
+	 * @return bool|Model|IsUser
+	 */
+	public function resetPassword($id, $password)
+	{
+		$user = $this->findOrAbort($id);
+
+		$user->password = $password;
+
+		if ($user->save()) {
+			event(new PasswordReset($user));
+
+			return $user;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @param array $data
+	 *
+	 * @return bool|Model|IsUser
+	 */
+	public function insert($data)
+	{
+		$user = self::make($data);
+
+		if ($password = Arr::get($data, 'password')) {
+			$user->password = $password;
+		}
+
+		if (auth_user()->isSuperAdmin()) {
+
+			//todo change to control this in the form
+			$user->active = true;
+
+			if (Arr::get($data, 'super_admin', false) === true) {
+				$user->super_admin = true;
+			} else {
+				$user->super_admin = false;
+			}
+		}
+
+		if ($supervisor = Arr::get($data, 'supervisor', null)) {
+			if ($supervisor = $this->find($supervisor)) {
+				$user->supervisor = $supervisor;
+			}
+		}
+
+		if ($this->save($user)) {
+			return $user;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @param IsUser|Model|int $id
+	 * @param array $data
+	 *
+	 * @return bool|Model|IsUser
+	 */
+	public function update($id, $data)
+	{
+		$user = $this->findOrAbort($id);
+
+		$user->fill($data);
+
+		if ($password = Arr::get($data, 'password')) {
+			$user->password = $password;
+		}
+
+		if (Auth::user()->isSuperAdmin() && $user->getKey() !== Auth::user()->getKey()) {
+			$user->super_admin = Arr::get($data, 'super_admin', false);
+		}
+
+		if (Arr::exists($data, 'active') && $user->getKey() !== Auth::user()->getKey()) {
+			$user->active = Arr::get($data, 'active', false);
+		}
+
+		if ($supervisor = Arr::get($data, 'supervisor')) {
+			if ($supervisor = $this->find($supervisor)) {
+				if ($supervisor->getKey() !== $user->getKey()) {
+					$user->supervisor = $supervisor;
+				}
+			}
+		}
+
+		if ($user->save()) {
+			return $user;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @param $id
+	 * @param array $settings
+	 *
+	 * @return bool|IsUser|Model
+	 */
+	public function syncSettings($id, array $settings)
+	{
+		$user = $this->findOrAbort($id);
+		$user->settings = $settings;
+
+		if ($user->save()) {
+			return $user;
+		} else {
+			return false;
+		}
 	}
 
 }

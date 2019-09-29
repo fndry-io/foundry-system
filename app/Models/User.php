@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Foundry\Core\Entities\Contracts\HasApiToken;
 use Foundry\Core\Entities\Contracts\HasIdentity;
 use Foundry\Core\Entities\Contracts\HasVisibility;
+use Foundry\Core\Entities\Contracts\IsUser;
 use Foundry\Core\Models\Traits\Uuidable;
 use Foundry\Core\Models\Traits\Visible;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -37,7 +38,7 @@ use Illuminate\Support\Facades\Hash;
  * @property array settings
  * @package Foundry\System\Models
  */
-class User extends \Illuminate\Foundation\Auth\User implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword, HasApiToken, HasIdentity, HasVisibility
+class User extends \Illuminate\Foundation\Auth\User implements IsUser
 {
 	use SoftDeletes;
 	use Uuidable;

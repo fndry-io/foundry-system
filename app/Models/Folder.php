@@ -2,15 +2,20 @@
 
 namespace Foundry\System\Models;
 
+use Foundry\Core\Entities\Contracts\IsFolder;
 use Foundry\Core\Models\NodeReferenceModel;
 use Foundry\Core\Models\Traits\Referencable;
+use Foundry\Core\Models\Traits\SoftDeleteable;
 use Foundry\Core\Models\Traits\Uuidable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Kalnoy\Nestedset\NodeTrait;
 
-class Folder extends NodeReferenceModel
+/**
+ * Class Folder
+ * @package Foundry\System\Models
+ */
+class Folder extends NodeReferenceModel implements IsFolder
 {
-	use SoftDeletes;
+	use SoftDeleteable;
 	use Uuidable;
 	use Referencable;
 	use NodeTrait;

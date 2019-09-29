@@ -2,8 +2,11 @@
 
 namespace Foundry\System\Repositories;
 
+use Foundry\Core\Entities\Contracts\IsPickList;
+use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
 use Foundry\System\Models\PickList;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Cache;
 
@@ -19,11 +22,69 @@ class PickListRepository extends ModelRepository {
 		return PickList::class;
 	}
 
+	/**
+	 * @param array $inputs
+	 * @param int $page
+	 * @param int $perPage
+	 *
+	 * @return \Illuminate\Contracts\Pagination\Paginator
+	 */
+	public function browse(array $inputs, $page = 1, $perPage = 20): Paginator
+	{
+		return $this->filter(function (Builder $query) use ($inputs) {
+			$query
+				->select('*')
+				->orderBy('label', 'ASC');
+			return $query;
+		}, $page, $perPage);
+	}
+
+	/**
+	 * @param array $data
+	 *
+	 * @return bool|Model|IsPickList
+	 */
+	public function insert($data)
+	{
+		$pickList = self::make($data);
+		$result = $pickList->save();
+		if ($result) {
+			return $pickList;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @param IsPickList|Model|int $id
+	 * @param array $data
+	 *
+	 * @return IsPickList|Model|boolean
+	 */
+	public function update($id, $data)
+	{
+		$pickList = $this->findOrAbort($id);
+		$pickList->fill($data);
+
+		$result = $pickList->save();
+
+		$this->clearCachedSelectableList($pickList->identifier);
+
+		if ($result) {
+			return $pickList;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+	 */
     public function getLabelList() {
 
-        $qb = $this->query();
-        $qb->select('id', 'label');
-        return $qb->get();
+        $query = $this->query();
+        $query->select('id', 'label');
+        return $query->get();
     }
 
 	/**
@@ -54,18 +115,18 @@ class PickListRepository extends ModelRepository {
 	    }
 
 	    /**
-	     * @var Builder $qb
+	     * @var Builder $query
 	     */
-	    $qb = PickListItemRepository::repository()->query();
-	    $qb->select('id', 'identifier', 'label');
-	    $qb->orderBy('sequence', 'ASC');
-	    $qb->orderBy('label', 'ASC');
+	    $query = PickListItemRepository::repository()->query();
+	    $query->select('id', 'identifier', 'label');
+	    $query->orderBy('sequence', 'ASC');
+	    $query->orderBy('label', 'ASC');
 
-	    $qb->where('picklist_id', $picklist);
-	    $qb->where('status', true);
+	    $query->where('picklist_id', $picklist);
+	    $query->where('status', true);
 
 	    $picklist = $picklist->toArray();
-	    $picklist['items'] = $qb->get()->toArray();
+	    $picklist['items'] = $query->get()->toArray();
 
 	    return $picklist;
     }

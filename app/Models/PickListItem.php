@@ -2,10 +2,11 @@
 
 namespace Foundry\System\Models;
 
+use Foundry\Core\Entities\Contracts\IsPickListItem;
 use Foundry\Core\Models\Model;
 use Foundry\Core\Models\Traits\Sluggable;
 
-class PickListItem extends Model
+class PickListItem extends Model implements IsPickListItem
 {
 	use Sluggable;
 

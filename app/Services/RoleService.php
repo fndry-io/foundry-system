@@ -2,34 +2,27 @@
 
 namespace Foundry\System\Services;
 
+use Foundry\Core\Entities\Contracts\IsRole;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
-use Foundry\System\Models\Role;
 use Foundry\System\Inputs\Role\RoleInput;
 use Foundry\System\Repositories\RoleRepository;
-use Illuminate\Database\Eloquent\Builder;
 
-class RoleService extends BaseService {
+class RoleService extends BaseService
+{
 
 	/**
-	 * Browse Users
-	 *
 	 * @param Inputs $inputs
 	 * @param int $page
 	 * @param int $perPage
 	 *
-	 * @return Response
+	 * @return Response The data key will contain an instance of Paginator
+	 * @see Paginator
 	 */
-	public function browse( Inputs $inputs, $page = 1, $perPage = 20 ): Response {
-		return Response::success(RoleRepository::repository()->filter(function(Builder $qb) use ($inputs) {
-
-			$qb->select('id', 'name')
-				->orderBy('name', 'ASC');
-
-			return $qb;
-
-		}, $page, $perPage));
+	public function browse(Inputs $inputs, $page = 1, $perPage = 20): Response
+	{
+		return Response::success(RoleRepository::repository()->browse($inputs->values(), $page, $perPage));
 	}
 
 	/**
@@ -37,38 +30,47 @@ class RoleService extends BaseService {
 	 *
 	 * @return Response
 	 */
-	public function add(RoleInput $input) : Response
+	public function add(RoleInput $input): Response
 	{
-		$role = new Role($input->values());
-		RoleRepository::repository()->save($role);
-		return Response::success($role);
+		$role = RoleRepository::repository()->insert($input->values());
+		if ($role) {
+			return Response::success($role);
+		} else {
+			return Response::error(__('Unable to add role'), 500);
+		}
 	}
 
 	/**
 	 * @param RoleInput|Inputs $input
-	 * @param Role $role
+	 * @param IsRole $role
 	 *
 	 * @return Response
 	 */
-	public function edit(RoleInput $input, Role $role) : Response
+	public function edit(RoleInput $input, IsRole $role): Response
 	{
-		$role->fill($input->values());
-		RoleRepository::repository()->save($role);
-		return Response::success($role);
+		$role = RoleRepository::repository()->update($role, $input->values());
+		if ($role) {
+			return Response::success($role);
+		} else {
+			return Response::error(__('Unable to edit role'), 500);
+		}
 	}
 
 	/**
-	 * Delete a user
+	 * Delete a role
 	 *
-	 * @param Role $role
+	 * @param IsRole $role
 	 *
 	 * @return Response
-	 * @throws \Exception
 	 */
-	public function delete(Role $role) : Response
+	public function delete(IsRole $role): Response
 	{
-		RoleRepository::repository()->delete($role);
-		return Response::success();
+		if (RoleRepository::repository()->delete($role)) {
+			return Response::success();
+		} else {
+			return Response::error(__('Unable to delete role'), 500);
+		}
 	}
+
 
 }

@@ -2,15 +2,12 @@
 
 namespace Foundry\System\Services;
 
+use Foundry\Core\Entities\Contracts\IsPickList;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
-use Foundry\System\Models\PickList;
 use Foundry\System\Inputs\PickList\PickListInput;
 use Foundry\System\Repositories\PickListRepository;
-use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class PickListService extends BaseService {
 
@@ -19,15 +16,11 @@ class PickListService extends BaseService {
 	 * @param int $page
 	 * @param int $perPage
 	 *
-	 * @return Paginator
+	 * @return Response
 	 */
-	public function browse( Inputs $inputs, $page = 1, $perPage = 20 ): Paginator {
-		return PickListRepository::repository()->filter(function(Builder $qb) use ($inputs) {
-			$qb
-				->select('*')
-				->orderBy('label', 'ASC');
-			return $qb;
-		}, $page, $perPage);
+	public function browse(Inputs $inputs, $page = 1, $perPage = 20): Response
+	{
+		return Response::success(PickListRepository::repository()->browse($inputs->values(), $page, $perPage));
 	}
 
 	/**
@@ -37,23 +30,28 @@ class PickListService extends BaseService {
 	 */
 	public function add(PickListInput $input) : Response
 	{
-		$pickList = new PickList($input->values());
-		PickListRepository::repository()->save($pickList);
-		return Response::success($pickList);
+		$pickListItem = PickListRepository::repository()->insert($input->values());
+		if ($pickListItem) {
+			return Response::success($pickListItem);
+		} else {
+			return Response::error(__('Unable to add pick list item'), 500);
+		}
 	}
 
 	/**
 	 * @param PickListInput|Inputs $input
-	 * @param PickList|Model $pickList
+	 * @param IsPickList $pickListItem
 	 *
 	 * @return Response
 	 */
-	public function edit(PickListInput $input, PickList $pickList) : Response
+	public function edit(PickListInput $input, IsPickList $pickListItem) : Response
 	{
-		$pickList->fill($input->values());
-		PickListRepository::repository()->save($pickList);
-		PickListRepository::repository()->clearCachedSelectableList($pickList->identifier);
-		return Response::success($pickList);
+		$pickListItem = PickListRepository::repository()->update($pickListItem, $input->values());
+		if ($pickListItem) {
+			return Response::success($pickListItem);
+		} else {
+			return Response::error(__('Unable to edit pick list item'), 500);
+		}
 	}
 
 }

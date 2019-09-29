@@ -5,6 +5,7 @@ namespace Foundry\System\Services;
 use Carbon\Carbon;
 use Foundry\Core\Auth\TokenGuard;
 use Foundry\Core\Entities\Contracts\HasApiToken;
+use Foundry\Core\Entities\Contracts\IsUser;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
@@ -16,11 +17,9 @@ use Foundry\System\Inputs\User\UserLoginInput;
 use Foundry\System\Inputs\User\UserRegisterInput;
 use Foundry\System\Models\User;
 use Foundry\System\Repositories\UserRepository;
-use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Auth\UserProvider;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Session;
@@ -37,28 +36,7 @@ class UserService extends BaseService {
 	 * @return Response
 	 */
 	public function browse( Inputs $inputs, $page = 1, $perPage = 20 ): Response {
-		return Response::success(UserRepository::repository()->filter(function(Builder $qb) use ($inputs) {
-
-			$qb
-				->select('*')
-				->orderBy('display_name', 'ASC');
-
-			if ($search = $inputs->value('search', null)) {
-				$qb->where(function(Builder $qb) use ($search) {
-					$qb->where('username', 'like', "%".$search."%");
-					$qb->where('display_name', 'like', "%".$search."%");
-					$qb->where('email', 'like', "%".$search."%");
-				});
-			}
-
-			$deleted = $inputs->value('deleted', 'undeleted');
-			if ($deleted == 'deleted') {
-				$qb->onlyTrashed();
-			}
-
-			return $qb;
-
-		}, $page, $perPage));
+		return Response::success(UserRepository::repository()->browse($inputs->values(), $page, $perPage));
 	}
 
 	/**
@@ -147,7 +125,7 @@ class UserService extends BaseService {
 	public function returnGuardUser(Guard $guard = null, $setToken = true) : Response
 	{
 		/**
-		 * @var $user User
+		 * @var $user IsUser
 		 */
 		$user = $guard->user();
 		$user->logged_in = true;
@@ -180,11 +158,12 @@ class UserService extends BaseService {
 	 */
 	public function register(UserRegisterInput $input) : Response
 	{
-		$user = new User($input->values());
-		$user->active = true;
-		$user->password = $input->password;
-		UserRepository::repository()->save($user);
-		return Response::success($user);
+		$user = UserRepository::repository()->register($input->values());
+		if ($user) {
+			return Response::success($user);
+		} else {
+			return Response::error(__("Unable to register user"), 500);
+		}
 	}
 
 	/**
@@ -204,7 +183,8 @@ class UserService extends BaseService {
 		}
 		else{
 			$user = UserRepository::repository()->findOneBy(['email' => $input->email]);
-			return $user? Response::error(__("Requested resource was not found"), 400)
+			return $user
+				? Response::error(__("Requested resource was not found"), 400)
 				: Response::error(__("Account with provided E-mail address not found!"), 404);
 		}
 	}
@@ -218,12 +198,7 @@ class UserService extends BaseService {
 	public function resetPassword(ResetPasswordInput $input)
 	{
 		$response = $this->broker()->reset( $input->toArray(), function ($user, $password) {
-			/**
-			 * @var $user User
-			 */
-			$user->password = $password;
-			UserRepository::repository()->save($user);
-			event(new PasswordReset($user));
+			return UserRepository::repository()->resetPassword($user, $password);
 		} );
 
 		if($response === Password::PASSWORD_RESET){
@@ -241,75 +216,38 @@ class UserService extends BaseService {
 	 */
 	public function add(UserInput $input) : Response
 	{
-		$user = new User();
-		$user->fill($input->values());
-
-		if ($input->password) {
-			$user->password = $input->password;
+		$user = UserRepository::repository()->insert($input->values());
+		if ($user) {
+			return Response::success($user);
+		} else {
+			return Response::error(__('Unable to add user'), 500);
 		}
-
-		if (auth_user()->isSuperAdmin()) {
-
-			//todo change to control this in the form
-			$user->active = true;
-
-			if ($input->super_admin === true) {
-				$user->super_admin = true;
-			} else {
-				$user->super_admin = false;
-			}
-		}
-
-		if ($input->supervisor) {
-			if ($supervisor = UserRepository::repository()->find($input->supervisor)) {
-				$user->supervisor = $supervisor;
-			}
-		}
-
-		UserRepository::repository()->save($user);
-		return Response::success($user);
 	}
 
 	/**
 	 * @param UserEditInput|Inputs $input
-	 * @param User $user
+	 * @param IsUser $user
 	 *
 	 * @return Response
 	 */
-	public function edit(UserEditInput $input, User $user) : Response
+	public function edit(UserEditInput $input, IsUser $user) : Response
 	{
-		$user->fill($input->values());
-		if ($input->password) {
-			$user->password = $input->password;
+		$user = UserRepository::repository()->update($user, $input->values());
+		if ($user) {
+			return Response::success($user);
+		} else {
+			return Response::error(__('Unable to update user'), 500);
 		}
-		if (Auth::user()->isSuperAdmin() && $user->getKey() !== Auth::user()->getKey()) {
-			$user->super_admin = $input->value('super_admin', false);
-		}
-
-		if ($input->offsetExists('active') && $user->getKey() !== Auth::user()->getKey()) {
-			$user->active = $input->value('active', false);
-		}
-
-		if ($input->value('supervisor')) {
-			if ($supervisor = User::query()->find($input->value('supervisor'))) {
-				if ($supervisor->getKey() !== $user->getKey()) {
-					$user->supervisor = $supervisor;
-				}
-			}
-		}
-
-		$user->save();
-		return Response::success($user, __('User Updated'));
 	}
 
 	/**
 	 * Delete a user
 	 *
-	 * @param User $user
+	 * @param IsUser $user
 	 *
 	 * @return Response
 	 */
-	public function delete(User $user) : Response
+	public function delete(IsUser $user) : Response
 	{
 		if ($user->isSuperAdmin()) {
 			return Response::error(__('You cannot delete a Super User'), 408);
@@ -325,15 +263,20 @@ class UserService extends BaseService {
 	/**
 	 * Delete a user
 	 *
-	 * @param User $user
+	 * @param IsUser $user
 	 *
 	 * @return Response
 	 * @throws \Exception
 	 */
-	public function restore(User $user) : Response
+	public function restore(IsUser $user) : Response
 	{
-		UserRepository::repository()->restore($user);
-		return Response::success();
+		$user = UserRepository::repository()->restore($user);
+		if($user) {
+			return Response::success();
+		} else {
+			return Response::error(__('Unable to restore user'), 500);
+		}
+
 	}
 
 
@@ -350,16 +293,19 @@ class UserService extends BaseService {
 	/**
 	 * Sync the users settings to the database
 	 *
-	 * @param User $user
+	 * @param IsUser $user
 	 * @param $settings
 	 *
 	 * @return Response
 	 */
-	public function syncSettings(User $user, array $settings = [])
+	public function syncSettings(IsUser $user, array $settings = [])
 	{
-		$user->settings = $settings;
-		UserRepository::repository()->save($user);
-		return Response::success();
+		$user = UserRepository::repository()->syncSettings($user, $settings);
+		if($user) {
+			return Response::success();
+		} else {
+			return Response::error(__('Unable to sync user settings'), 500);
+		}
 	}
 
 

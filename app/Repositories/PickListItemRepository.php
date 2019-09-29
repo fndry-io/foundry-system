@@ -2,24 +2,25 @@
 
 namespace Foundry\System\Repositories;
 
+use Foundry\Core\Entities\Contracts\IsPickList;
+use Foundry\Core\Entities\Contracts\IsPickListItem;
+use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
-use Foundry\System\Models\PickList;
 use Foundry\System\Models\PickListItem;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 
-class PickListItemRepository extends ModelRepository {
-
-    public function getLabelList(PickList $pick_list, $name = null) {
-
-        $qb = $this->query();
-        $qb->select('id', 'label');
-	    $qb->where('picklist_id', $pick_list->getKey());
-
-	    if ($name) {
-		    $qb->where('label', 'like', "%$name%");
-	    }
-
-        return $qb->get();
-    }
+/**
+ * Class CompanyRepository
+ *
+ * @method boolean delete(IsPickListItem | Model | int $model)
+ * @method IsPickListItem|Model findOrAbort(Model $id)
+ *
+ * @package Modules\Agm\Contacts\Repositories
+ */
+class PickListItemRepository extends ModelRepository
+{
 
 	/**
 	 * Returns the class name of the object managed by the repository.
@@ -30,4 +31,129 @@ class PickListItemRepository extends ModelRepository {
 	{
 		return PickListItem::class;
 	}
+
+	/**
+	 * @param IsPickList $pick_list
+	 * @param array $inputs
+	 * @param int $page
+	 * @param int $perPage
+	 *
+	 * @return \Illuminate\Contracts\Pagination\Paginator
+	 */
+	public function browse(IsPickList $pick_list, array $inputs, $page = 1, $perPage = 20): Paginator
+	{
+		return $this->filter(function (Builder $query) use ($pick_list, $inputs) {
+
+			$query
+				->select(
+					'picklist_items.id',
+					'picklist_items.label',
+					'picklist_items.identifier',
+					'picklist_items.description',
+					'picklist_items.sequence',
+					'picklist_items.status',
+					'picklists.default_item as default_id'
+				)
+				->join('picklists', 'picklists.id', '=', 'picklist_items.picklist_id')
+				->orderBy('label', 'ASC');
+
+			if ($search = $inputs->value('search')) {
+				$query->where('picklist_items.label', 'like', "%" . $search . "%");
+			}
+
+			$query->where('picklist_items.picklist_id', $pick_list->getKey());
+
+			return $query;
+
+		}, $page, $perPage);
+	}
+
+	/**
+	 * @param IsPickList $pick_list
+	 * @param null $name
+	 *
+	 * @return Builder[]|\Illuminate\Database\Eloquent\Collection
+	 */
+	public function getLabelList(IsPickList $pick_list, $name = null)
+	{
+
+		$query = $this->query();
+		$query->select('id', 'label');
+		$query->where('picklist_id', $pick_list->getKey());
+
+		if ($name) {
+			$query->where('label', 'like', "%$name%");
+		}
+
+		return $query->get();
+	}
+
+	/**
+	 * @param array $data
+	 *
+	 * @return bool|IsPickListItem|Model|mixed
+	 */
+	public function insert($data)
+	{
+		$pickListItem = self::make($data);
+		if ($id = Arr::get($data, 'picklist')) {
+			$pickListItem->picklist = $id;
+		}
+
+		$result = $pickListItem->save();
+
+		if (Arr::get($data, 'default_item') && $pickListItem->picklist) {
+			$pickListItem->picklist->default_item = $pickListItem->getKey();
+			$pickListItem->picklist->save();
+		}
+
+		PickListRepository::repository()->clearCachedSelectableList($pickListItem->picklist->identifier);
+
+		if ($result) {
+			return $pickListItem;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @param IsPickListItem|Model|int $id
+	 * @param array $data
+	 *
+	 * @return IsPickListItem|Model|boolean
+	 */
+	public function update($id, $data)
+	{
+		$pickListItem = $this->findOrAbort($id);
+
+		$default_item = $pickListItem->picklist->default_item;
+
+		$pickListItem->fill($data);
+
+		$result = $pickListItem->save();
+
+		if ($pickListItem->picklist) {
+			$should = Arr::get($data, 'default_item');
+			if ( ! $should && ($default_item === $pickListItem->getKey())) {
+				$pickListItem->picklist->default_item = null;
+			} elseif ($should) {
+				if ($pickListItem->status == true) {
+					$pickListItem->picklist->default_item = $pickListItem->getKey();
+				}
+			}
+			$pickListItem->picklist->save();
+		}
+
+		PickListRepository::repository()->clearCachedSelectableList($pickListItem->picklist->identifier);
+
+		$pickListItem->makeVisible('picklist');
+
+		if ($result) {
+			return $pickListItem;
+		} else {
+			return false;
+		}
+	}
+
+
 }

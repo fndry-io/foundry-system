@@ -6,8 +6,6 @@ use Foundry\Core\Entities\Contracts\HasIdentity;
 use Foundry\Core\Entities\Entity;
 use Foundry\Core\Entities\Traits\Identifiable;
 use Foundry\Core\Entities\Traits\Timestampable;
-use LaravelDoctrine\ACL\Contracts\Role as RoleContract;
-use LaravelDoctrine\ACL\Permissions\HasPermissions;
 
 /**
  * Class Role Entity
@@ -17,7 +15,6 @@ use LaravelDoctrine\ACL\Permissions\HasPermissions;
  */
 class Role extends Entity implements HasIdentity {
 
-	use HasPermissions;
 	use Timestampable;
 	use Identifiable;
 

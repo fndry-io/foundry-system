@@ -2,6 +2,8 @@
 
 namespace Foundry\System\Entities\Traits;
 
+use Foundry\Core\Entities\Contracts\HasFolder;
+use Foundry\Core\Entities\Contracts\IsFolder;
 use Foundry\System\Entities\Folder;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
@@ -28,21 +30,21 @@ trait Folderable {
 	/**
 	 * @return null|Folder
 	 */
-	public function getFolderParent() {
+	public function getFolderParent(): ?IsFolder {
 		return null;
 	}
 
 	/**
 	 * @return $this
 	 */
-	public function getFolderableEntity() {
+	public function getFolderableEntity(): ?HasFolder {
 		return $this;
 	}
 
 	/**
-	 * @param Folder $folder
+	 * @param IsFolder $folder
 	 */
-	public function setFolder( Folder $folder ): void {
+	public function setFolder( IsFolder $folder ): void {
 		$this->folder = $folder;
 	}
 
@@ -50,7 +52,7 @@ trait Folderable {
 	 * @return Folder|null
 	 * @throws \ReflectionException
 	 */
-	public function getFolder() {
+	public function getFolder(): ?IsFolder {
 		if (!$this->folder && $folderable = $this->getFolderableEntity()) {
 			$this->folder = EntityManager::getRepository(Folder::class)->getRootFolderByEntity($folderable, $this->getFolderName(), $this->getFolderParent(), $this->auto_create_folder);
 		}

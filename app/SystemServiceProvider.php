@@ -57,7 +57,7 @@ class SystemServiceProvider extends ServiceProvider
 		$this->registerFactories();
 		$this->registerCommands();
 		$this->loadMigrationsFrom(base_path('foundry/system/database/migrations'));
-		//$this->mergeDoctrinePaths(base_path('foundry/system/config/mappings'));
+		$this->mergeDoctrinePaths(base_path('foundry/system/config/mappings'));
 		$this->registerGates();
 
 		Validator::extend('username', function ($attribute, $value, $parameters, $validator) {

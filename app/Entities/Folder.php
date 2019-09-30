@@ -121,4 +121,13 @@ class Folder extends Entity implements HasIdentity, IsSoftDeletable, IsNestedTre
 		}
 	}
 
+	public function getEntity()
+	{
+		// TODO: Implement getEntity() method.
+	}
+
+	public function setEntity($entity)
+	{
+		// TODO: Implement setEntity() method.
+	}
 }

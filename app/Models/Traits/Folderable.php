@@ -4,6 +4,8 @@ namespace Foundry\System\Model\Traits;
 
 use Foundry\Core\Entities\Contracts\HasFolder;
 use Foundry\Core\Entities\Contracts\HasNode;
+use Foundry\Core\Entities\Contracts\IsFolder;
+use Foundry\Core\Entities\Contracts\IsSoftDeletable;
 use Foundry\System\Models\Folder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -13,9 +15,20 @@ trait Folderable
 	protected static function bootFolderable()
 	{
 		static::created(function (HasFolder $model) {
-			/**@var $model HasFolder */
+			/**@var Folderable $model */
 			if ( ! $model->getFolder()) {
 				$model->makeFolder();
+			}
+		});
+		static::deleted(function (HasFolder $model) {
+			/**@var Folder $folder*/
+			$folder = $model->getFolder();
+			if ($folder) {
+				if ($model instanceof IsSoftDeletable && $model->isForceDeleting()) {
+					$folder->forceDelete();
+				} else {
+					$folder->delete();
+				}
 			}
 		});
 	}
@@ -38,9 +51,9 @@ trait Folderable
 	}
 
 	/**
-	 * @return null|Folder
+	 * @return null|IsFolder
 	 */
-	public function getFolderParent(): ?Folder
+	public function getFolderParent(): ?IsFolder
 	{
 		return null;
 	}
@@ -54,17 +67,17 @@ trait Folderable
 	}
 
 	/**
-	 * @param Folder $folder
+	 * @param IsFolder $folder
 	 */
-	public function setFolder(Folder $folder): void
+	public function setFolder(IsFolder $folder): void
 	{
 		$this->folder()->associate($folder);
 	}
 
 	/**
-	 * @return Folder|null
+	 * @return IsFolder|null
 	 */
-	public function getFolder(): ?Folder
+	public function getFolder(): ?IsFolder
 	{
 		return $this->folder;
 	}
@@ -72,20 +85,16 @@ trait Folderable
 	/**
 	 * Make the folder for the model
 	 *
-	 * @return Folder
+	 * @return IsFolder
 	 */
-	public function makeFolder(): Folder
+	public function makeFolder(): IsFolder
 	{
 		if ( ! $this->getFolder()) {
-			$folder = new Folder();
+			$folder = new Folder(['name' => $this->getFolderName()]);
 			$folder->reference()->associate($this);
 			//get the parent
 			if ($parent = $this->getFolderParent()) {
 				$folder->setParentId($parent->getKey());
-			}
-			//if the model has a node, linked it too
-			if ($this instanceof HasNode) {
-				$folder->node()->associate($this->getNode());
 			}
 			$folder->save();
 			$this->folder()->associate($folder);

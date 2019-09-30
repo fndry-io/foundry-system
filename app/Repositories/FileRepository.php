@@ -6,6 +6,7 @@ use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
 use Foundry\Core\Entities\Contracts\IsEntity;
 use Foundry\Core\Entities\Contracts\IsFile;
+use Foundry\Core\Repositories\Traits\SoftDeleteable;
 use Foundry\System\Models\File;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
@@ -13,13 +14,16 @@ use Illuminate\Support\Arr;
 /**
  * Class FileRepository
  *
- * @method boolean delete(IsFile|Model|int $model)
- * @method boolean restore(IsFile|Model|int $model)
+ * @method boolean delete(IsFile | Model | int $model)
+ * @method boolean restore(IsFile | Model | int $model)
  * @method IsFile|Model getModel(Model $id)
  *
  * @package Foundry\System\Repositories
  */
-class FileRepository extends ModelRepository {
+class FileRepository extends ModelRepository
+{
+
+	use SoftDeleteable;
 
 	/**
 	 * @return string|Model
@@ -39,7 +43,7 @@ class FileRepository extends ModelRepository {
 	 */
 	public function browse(IsEntity $entity, array $inputs, $page = 1, $perPage = 20)
 	{
-		return $this->filter(function(Builder $query) use ($entity, $inputs) {
+		return $this->filter(function (Builder $query) use ($entity, $inputs) {
 
 			$query
 				->select([
@@ -57,11 +61,11 @@ class FileRepository extends ModelRepository {
 			$query->where('reference_type', get_class($entity));
 			$query->where('reference_id', $entity->getKey());
 
-			if ($search = $inputs->value('search')) {
+			if ($search = Arr::get($inputs, 'search')) {
 				$query->where('files.original_name', 'like', "%" . $search . "%");
 			}
 
-			$deleted = $inputs->value('deleted', 'undeleted');
+			$deleted = Arr::get($inputs, 'deleted', 'undeleted');
 			if ($deleted == 'deleted') {
 				$query->onlyTrashed();
 			}
@@ -83,9 +87,9 @@ class FileRepository extends ModelRepository {
 
 		if ($parent = Arr::get($data, 'folder')) {
 			if ($parent = FolderRepository::repository()->find($parent)) {
-				$folder = FolderRepository::repository()->make([]);
+				$folder = FolderRepository::repository()->make(['name' => Arr::get($data, 'name')]);
 				$folder->setFile($file);
-				$folder->setParent($parent);
+				$folder->parent = $parent;
 				$folder->save();
 			}
 		}

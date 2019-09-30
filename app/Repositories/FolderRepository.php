@@ -7,7 +7,9 @@ use Foundry\Core\Entities\Contracts\IsFolder;
 use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
 use Foundry\Core\Entities\Contracts\IsEntity;
+use Foundry\Core\Repositories\Traits\SoftDeleteable;
 use Foundry\System\Models\Folder;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
@@ -21,6 +23,8 @@ use Illuminate\Support\Arr;
  * @package Foundry\System\Repositories
  */
 class FolderRepository extends ModelRepository {
+
+	use SoftDeleteable;
 
 	/**
 	 * @return string|Model
@@ -38,7 +42,7 @@ class FolderRepository extends ModelRepository {
 	 *
 	 * @return \Illuminate\Contracts\Pagination\Paginator
 	 */
-	public function browse(IsEntity $folder, array $inputs, $page = 1, $perPage = 20)
+	public function browse(IsEntity $folder, array $inputs, $page = 1, $perPage = 20) : Paginator
 	{
 		return $this->filter(function(Builder $query) use ($folder, $inputs) {
 
@@ -63,11 +67,11 @@ class FolderRepository extends ModelRepository {
 
 			$query->where('folders.parent_id', $folder->getKey());
 
-			if ($search = $inputs->value('search')) {
+			if ($search = Arr::get($inputs,'search')) {
 				$query->where('folder.name', 'like', "%" . $search . "%");
 			}
 
-			$deleted = $inputs->value('deleted', 'undeleted');
+			$deleted = Arr::get($inputs,'deleted', 'undeleted');
 			if ($deleted == 'deleted') {
 				$query->onlyTrashed();
 			}
@@ -110,6 +114,39 @@ class FolderRepository extends ModelRepository {
 			}
 		}
 		return $folder;
+	}
+
+	/**
+	 * Insert a folder
+	 *
+	 * @param array $data
+	 * @param IsEntity $reference
+	 *
+	 * @return bool|IsFolder|Model
+	 */
+	public function insert($data, IsEntity $reference = null)
+	{
+		$folder = self::make($data);
+
+		if ($parent = Arr::get($data, 'parent')) {
+			if ($parent = FolderRepository::repository()->find($parent)) {
+				$folder->setParent($parent->getKey());
+			}
+		}
+
+		if ($reference) {
+			$folder->setReference($reference);
+		}
+
+		if (!$parent) {
+			$folder->makeRoot();
+		}
+
+		if ($folder->save()) {
+			return $folder;
+		} else {
+			return false;
+		}
 	}
 
 	/**

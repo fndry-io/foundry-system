@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Foundry\Core\Entities\Contracts\IsUser;
 use Foundry\Core\Inputs\SimpleInputs;
 use Foundry\Core\Support\InputTypeCollection;
+use Foundry\Core\Tests\Feature\Traits\WithAdmin;
 use Foundry\System\Inputs\User\UserLoginInput;
 use Foundry\System\Repositories\UserRepository;
 use Foundry\System\Services\UserService;
@@ -20,8 +21,6 @@ use Tests\TestCase;
 class UsersTest extends TestCase
 {
 	use RefreshDatabase;
-
-	protected $admin;
 
 	public function setUp(): void
 	{

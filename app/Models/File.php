@@ -48,8 +48,16 @@ class File extends Model implements IsFile
 	{
 		parent::boot();
 		File::deleted(function($file){
+			$folder = Folder::query()->withTrashed()->where('file_id', $file->getKey())->first();
 			if ($file->forceDeleting) {
 				Storage::delete($file->name);
+				if ($folder){
+					$folder->forceDelete();
+				}
+			} else {
+				if ($folder && !$folder->isDeleted()){
+					$folder->delete();
+				}
 			}
 		});
 	}

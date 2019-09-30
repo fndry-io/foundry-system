@@ -15,7 +15,7 @@ class CreateFoldersTable extends Migration {
 		Schema::create('folders', function(Blueprint $table)
 		{
 			$table->integer('id', true);
-			$table->integer('tree_root')->nullable()->index('IDX_FE37D30FA977936C');
+			//$table->integer('tree_root')->nullable()->index('IDX_FE37D30FA977936C');
 			$table->integer('parent_id')->nullable()->index('IDX_FE37D30F727ACA70');
 			$table->string('uuid', 36)->unique('UNIQ_FE37D30FD17F50A6');
 			$table->string('name')->index();
@@ -23,11 +23,11 @@ class CreateFoldersTable extends Migration {
 			$table->bigInteger('reference_id')->nullable()->index();
 			$table->integer('lft');
 			$table->integer('rgt');
-			$table->integer('lvl');
+			//$table->integer('lvl');
 			$table->timestamps();
 			$table->softDeletes();
 			$table->integer('file_id')->nullable()->unique('UNIQ_FE37D30F93CB796C');
-			$table->boolean('is_file');
+			$table->boolean('is_file')->default(0);
 		});
 	}
 

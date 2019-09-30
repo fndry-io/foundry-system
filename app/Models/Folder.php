@@ -2,11 +2,13 @@
 
 namespace Foundry\System\Models;
 
+use Foundry\Core\Entities\Contracts\IsFile;
 use Foundry\Core\Entities\Contracts\IsFolder;
 use Foundry\Core\Models\NodeReferenceModel;
 use Foundry\Core\Models\Traits\Referencable;
 use Foundry\Core\Models\Traits\SoftDeleteable;
 use Foundry\Core\Models\Traits\Uuidable;
+use Illuminate\Database\Eloquent\Model;
 use Kalnoy\Nestedset\NodeTrait;
 
 /**
@@ -43,7 +45,7 @@ class Folder extends NodeReferenceModel implements IsFolder
 				$folder->setDeleteableFiles($folder->descendants()->get('file_id')->pluck('file_id'));
 			}
 		});
-		File::deleted(function(Folder $folder){
+		Folder::deleted(function(Folder $folder){
 			if ($folder->forceDeleting) {
 				$files = File::query()->whereIn('id', $folder->getDeleteableFiles())->get();
 				foreach($files as $file) {
@@ -76,7 +78,7 @@ class Folder extends NodeReferenceModel implements IsFolder
 		return $this->belongsTo(File::class);
 	}
 
-	public function setFile(File $file)
+	public function setFile(IsFile $file)
 	{
 		$this->is_file = true;
 		$this->file()->associate($file);
@@ -111,19 +113,24 @@ class Folder extends NodeReferenceModel implements IsFolder
 	}
 
 	/**
-	 * @param $value
+	 * @param Folder|int $folder
 	 *
 	 * @throws \Exception
 	 */
-	public function setParentAttribute($value)
+	public function setParentAttribute($folder)
 	{
-		$this->setParentIdAttribute($value);
+		if ($folder instanceof Model) {
+			$folder = $folder->getKey();
+		}
+		$this->setParentIdAttribute($folder);
 	}
 
 	public function getParent(): ?Folder
 	{
 		return $this->parent;
 	}
+
+
 
 
 }

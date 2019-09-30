@@ -2,6 +2,7 @@
 
 namespace Foundry\System\Services;
 
+use Foundry\Core\Entities\Contracts\IsEntity;
 use Foundry\Core\Entities\Contracts\IsFolder;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Models\Model;
@@ -34,30 +35,17 @@ class FolderService extends BaseService {
 	 * Add a folder
 	 *
 	 * @param FolderInput $inputs
-	 * @param Model|null $reference
+	 * @param IsEntity|null $reference
 	 *
 	 * @return Response
 	 */
-	public function add(FolderInput $inputs, Model $reference = null) : Response
+	public function add(FolderInput $inputs, IsEntity $reference = null) : Response
 	{
-		$folder = new Folder($inputs->values());
-
-		if ($reference) {
-			$folder->setReference($reference);
+		if ($folder = FolderRepository::repository()->insert($inputs->values(), $reference)) {
+			return Response::success($folder);
+		} else {
+			return Response::error(__('Unable to add folder'), 500);
 		}
-
-		if ($parent = $inputs->value('parent')) {
-			if ($parent = FolderRepository::repository()->find($parent)) {
-				$folder->setParent($parent->getKey());
-			}
-		}
-
-		if (!$parent) {
-			$folder->makeRoot();
-		}
-		$folder->save();
-
-		return Response::success($folder);
 	}
 
 	/**

@@ -16,7 +16,7 @@ class AddForeignKeysToFoldersTable extends Migration {
 		{
 			$table->foreign('parent_id', 'FK_FE37D30F727ACA70')->references('id')->on('folders')->onUpdate('RESTRICT')->onDelete('CASCADE');
 			$table->foreign('file_id', 'FK_FE37D30F93CB796C')->references('id')->on('files')->onUpdate('RESTRICT')->onDelete('CASCADE');
-			$table->foreign('tree_root', 'FK_FE37D30FA977936C')->references('id')->on('folders')->onUpdate('RESTRICT')->onDelete('CASCADE');
+			//$table->foreign('tree_root', 'FK_FE37D30FA977936C')->references('id')->on('folders')->onUpdate('RESTRICT')->onDelete('CASCADE');
 		});
 	}
 
@@ -32,7 +32,7 @@ class AddForeignKeysToFoldersTable extends Migration {
 		{
 			$table->dropForeign('FK_FE37D30F727ACA70');
 			$table->dropForeign('FK_FE37D30F93CB796C');
-			$table->dropForeign('FK_FE37D30FA977936C');
+			//$table->dropForeign('FK_FE37D30FA977936C');
 		});
 	}
 

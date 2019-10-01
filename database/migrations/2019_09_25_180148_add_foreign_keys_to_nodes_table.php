@@ -15,7 +15,7 @@ class AddForeignKeysToNodesTable extends Migration {
 		Schema::table('nodes', function(Blueprint $table)
 		{
 			$table->foreign('parent_id', 'FK_1D3D05FC727ACA70')->references('id')->on('nodes')->onUpdate('RESTRICT')->onDelete('CASCADE');
-			$table->foreign('tree_root', 'FK_1D3D05FCA977936C')->references('id')->on('nodes')->onUpdate('RESTRICT')->onDelete('CASCADE');
+			//$table->foreign('tree_root', 'FK_1D3D05FCA977936C')->references('id')->on('nodes')->onUpdate('RESTRICT')->onDelete('CASCADE');
 		});
 	}
 
@@ -30,7 +30,7 @@ class AddForeignKeysToNodesTable extends Migration {
 		Schema::table('nodes', function(Blueprint $table)
 		{
 			$table->dropForeign('FK_1D3D05FC727ACA70');
-			$table->dropForeign('FK_1D3D05FCA977936C');
+			//$table->dropForeign('FK_1D3D05FCA977936C');
 		});
 	}
 

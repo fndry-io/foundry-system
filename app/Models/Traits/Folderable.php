@@ -38,7 +38,7 @@ trait Folderable
 	 */
 	public function folder(): BelongsTo
 	{
-		$this->belongsTo(Folder::class);
+		return $this->belongsTo(Folder::class);
 	}
 
 	/**
@@ -94,7 +94,7 @@ trait Folderable
 			$folder->reference()->associate($this);
 			//get the parent
 			if ($parent = $this->getFolderParent()) {
-				$folder->setParentId($parent->getKey());
+				$folder->parent()->associate($parent->getKey());
 			}
 			$folder->save();
 			$this->folder()->associate($folder);

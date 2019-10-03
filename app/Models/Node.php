@@ -12,46 +12,6 @@ use Kalnoy\Nestedset\NodeTrait;
  *
  * @package Foundry\System\Models
  */
-class Node extends Model {
-
-	use Uuidable;
-	use NodeTrait;
-
-	protected $fillable = [];
-
-	protected $visible = [
-		'id',
-		'uuid'
-	];
-
-	public function getLftName()
-	{
-		return 'lft';
-	}
-
-	public function getRgtName()
-	{
-		return 'rgt';
-	}
-
-	public function getParentIdName()
-	{
-		return 'parent_id';
-	}
-
-	/**
-	 * @param $value
-	 *
-	 * @throws \Exception
-	 */
-	public function setParentAttribute($value)
-	{
-		$this->setParentIdAttribute($value);
-	}
-
-	public function entity()
-	{
-		return $this->morphTo();
-	}
+class Node extends \Foundry\Core\Models\Node {
 
 }

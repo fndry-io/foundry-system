@@ -49,7 +49,7 @@ class PickListSeeder {
 				$picklistItem->status = Arr::get($item, 'status', true);
 				$picklistItem->is_system = Arr::get($item, 'is_system', false);
 
-				if (!PickListItemRepository::repository()->findOneBy(['identifier' => $picklistItem->identifier, 'picklist' => $picklist])) {
+				if (!PickListItemRepository::repository()->findOneBy(['identifier' => $picklistItem->identifier, 'picklist_id' => $picklist->getKey()])) {
 					PickListItemRepository::repository()->save($picklistItem);
 
 					if (Arr::get($item, 'is_default')) {
@@ -60,5 +60,5 @@ class PickListSeeder {
 			}
 		}
 	}
-	
+
 }

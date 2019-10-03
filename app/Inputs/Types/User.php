@@ -25,7 +25,7 @@ class User extends ReferenceInputType implements Field {
 			route('foundry.system.users.list', [], false)
 		))
 			->setRules([
-				'exists:Foundry\System\Entities\User,id',
+				'exists:users,id',
 			])
 			->setSortable(false)
 			->setOptions([])

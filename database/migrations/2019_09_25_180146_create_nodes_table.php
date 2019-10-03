@@ -24,6 +24,7 @@ class CreateNodesTable extends Migration {
 			$table->integer('rgt')->index('nodes_node_rgt_index');
 			//$table->integer('lvl')->index('nodes_node_lvl_index');
 			$table->unique(['entity_type','entity_id'], 'node_entity_type_entity_id_unique');
+			$table->timestamps();
 		});
 	}
 

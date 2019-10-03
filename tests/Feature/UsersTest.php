@@ -9,14 +9,14 @@ use Foundry\System\Inputs\User\UserLoginInput;
 use Foundry\System\Repositories\UserRepository;
 use Foundry\System\Services\UserService;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class UsersTest extends TestCase
 {
-	use RefreshDatabase;
+	use DatabaseMigrations;
 
 	public function testRepo()
 	{

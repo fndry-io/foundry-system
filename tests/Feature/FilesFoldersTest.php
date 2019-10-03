@@ -10,7 +10,7 @@ use Foundry\System\Models\User;
 use Foundry\System\Repositories\UserRepository;
 use Foundry\System\Services\FileService;
 use Foundry\System\Services\FolderService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +18,7 @@ use Tests\TestCase;
 
 class FilesFoldersTest extends TestCase
 {
-	use RefreshDatabase;
+	use DatabaseMigrations;
 
 	public function testFolders()
 	{

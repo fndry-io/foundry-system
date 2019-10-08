@@ -5,6 +5,7 @@ namespace Foundry\System\Repositories;
 use Foundry\Core\Entities\Contracts\IsUser;
 use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
+use Foundry\Core\Repositories\Traits\SoftDeleteable;
 use Foundry\System\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Pagination\Paginator;
@@ -17,13 +18,13 @@ use Illuminate\Support\Facades\Auth;
  *
  * @method IsUser|Model|boolean save(IsUser | Model | int $model)
  * @method boolean delete(IsUser | Model | int $model)
- * @method boolean restore(IsUser | Model | int $model)
  * @method IsUser|Model getModel(int|Model $id)
  *
  * @package Modules\Agm\Contacts\Repositories
  */
 class UserRepository extends ModelRepository
 {
+    use SoftDeleteable;
 
 	/**
 	 * Returns the class name of the object managed by the repository.

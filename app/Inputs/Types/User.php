@@ -13,7 +13,6 @@ class User extends ReferenceInputType implements Field {
 
 	/**
 	 *
-	 *
 	 * @return User|ReferenceInputType|Inputable
 	 */
 	static function input( ) : Inputable {
@@ -21,7 +20,7 @@ class User extends ReferenceInputType implements Field {
 			'user',
 			__('User'),
 			false,
-			'user',
+			null,
 			route('foundry.system.users.list', [], false)
 		))
 			->setRules([

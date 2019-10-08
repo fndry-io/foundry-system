@@ -27,7 +27,7 @@ class PickListRepository extends ModelRepository {
 	 * @param int $page
 	 * @param int $perPage
 	 *
-	 * @return \Illuminate\Contracts\Pagination\Paginator
+	 * @return Paginator
 	 */
 	public function browse(array $inputs, $page = 1, $perPage = 20): Paginator
 	{
@@ -117,12 +117,11 @@ class PickListRepository extends ModelRepository {
 	    /**
 	     * @var Builder $query
 	     */
-	    $query = PickListItemRepository::repository()->query();
+	    $query = $picklist->items();
 	    $query->select('id', 'identifier', 'label');
 	    $query->orderBy('sequence', 'ASC');
 	    $query->orderBy('label', 'ASC');
 
-	    $query->where('picklist_id', $picklist);
 	    $query->where('status', true);
 
 	    $picklist = $picklist->toArray();

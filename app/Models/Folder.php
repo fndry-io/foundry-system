@@ -26,6 +26,10 @@ class Folder extends NodeReferenceModel implements IsFolder
 
 	protected $deleteableFiles;
 
+	protected $attributes = [
+	    'is_file' => 0
+    ];
+
 	protected $fillable = [
 		'name'
 	];

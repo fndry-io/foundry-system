@@ -87,7 +87,7 @@
         data() {
             return {
                 open: false,
-                results: (this.schema.options) ? [...this.schema.options]: [],
+                results: (this.schema.options) ? [...this.schema.options]: false,
                 search: '',
                 reference: {},
                 model: null,
@@ -97,12 +97,17 @@
             };
         },
         mounted() {
-            if (isObject(this.value)) {
-                this.setResult(this.value);
+            if (isObject(this.schema.reference) && this.value) {
+                this.results = null;
+                this.reference = this.schema.reference;
+                let item = this.extractItem(this.reference);
+                this.search = item.text;
+                this.label = item.text;
+                this.model = item.value;
             }
             //If we have a value already set, we need to update the UI to reflect the correct item
-            else if (this.results && this.value) {
-                let result = this.extractResult(this.value);
+            else if (this.schema.options && this.value) {
+                let result = this.extractResult(this.value, this.schema.options);
                 let item = this.extractItem(result);
                 this.search = item.text;
                 this.label = item.text;
@@ -158,8 +163,8 @@
 
             },
 
-            extractResult(value){
-                return find(this.results, (result) => result[this.valueKey] === value);
+            extractResult(value, results){
+                return find(results, (result) => result[this.valueKey] === value);
             },
 
             /**
@@ -206,9 +211,7 @@
                     this.model = null;
                 } else {
                     this.reference = extend({},  entity);
-
                     let item = this.extractItem(this.reference);
-
                     this.search = item.text;
                     this.label = item.text;
                     this.model = item.value;

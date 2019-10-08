@@ -111,51 +111,14 @@
                 this.setOptions();
                 this.setValue(response.data[this.valueKey]);
             },
-            addValue(value) {
-                if (this.schema.multiple) {
-                    let index = this.model.indexOf(value);
-                    if (index === -1) {
-                        this.model.push(value);
-                    }
-                } else {
-                    this.model = value;
-                }
+            setValue(value) {
+                this.model = value;
                 this.$emit('change', this.model);
             },
             removeValue(value) {
-                if (this.schema.multiple) {
-                    let index = this.model.indexOf(value);
-                    if (index >= 0) {
-                        this.model.splice(index, 1);
-                    }
-                } else {
-                    this.model = null;
-                }
+                this.model = null;
                 this.$emit('change', this.model);
             },
-            handleTag(tag) {
-                let value = {
-                    [this.textKey]: tag,
-                    [this.valueKey]: tag
-                };
-                this.options.push(value);
-                this.selected.push(value);
-                this.addValue(tag);
-            },
-            handleSelect(selectedOption){
-                let value = selectedOption[this.valueKey];
-                this.addValue(value);
-            },
-            handleRemove(removedOption){
-                let value = removedOption[this.valueKey];
-                this.removeValue(value);
-            },
-            handleSearch: debounce(function(query){
-                    if (this.schema.url && query.length > 2) {
-                        this.getResults(query);
-                    }
-                }, 300
-            ),
             getResults(query) {
                 this.loading = true;
 
@@ -215,7 +178,6 @@
                     _entity: this.model
                 })
             }
-            //todo add Asynchronous select api call https://vue-multiselect.js.org/#sub-asynchronous-select
         },
         computed: {
             textKey: function(){
@@ -230,5 +192,3 @@
         }
     };
 </script>
-
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

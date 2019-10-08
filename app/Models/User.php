@@ -3,13 +3,11 @@
 namespace Foundry\System\Models;
 
 use Carbon\Carbon;
-use Foundry\Core\Entities\Contracts\HasApiToken;
-use Foundry\Core\Entities\Contracts\HasIdentity;
-use Foundry\Core\Entities\Contracts\HasVisibility;
+use Foundry\Core\Entities\Contracts\IsSoftDeletable;
 use Foundry\Core\Entities\Contracts\IsUser;
+use Foundry\Core\Models\Traits\SoftDeleteable;
 use Foundry\Core\Models\Traits\Uuidable;
 use Foundry\Core\Models\Traits\Visible;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 
@@ -38,9 +36,9 @@ use Illuminate\Support\Facades\Hash;
  * @property array settings
  * @package Foundry\System\Models
  */
-class User extends \Illuminate\Foundation\Auth\User implements IsUser
+class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDeletable
 {
-	use SoftDeletes;
+	use SoftDeleteable;
 	use Uuidable;
 	use Notifiable;
 	use Visible;

@@ -7,7 +7,7 @@ use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
 use Foundry\System\Models\PickList;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
 
 class PickListRepository extends ModelRepository {
@@ -60,10 +60,11 @@ class PickListRepository extends ModelRepository {
 	 * @param array $data
 	 *
 	 * @return IsPickList|Model|boolean
-	 */
+     * @throws \Exception
+     */
 	public function update($id, $data)
 	{
-		$pickList = $this->findOrAbort($id);
+		$pickList = $this->getModel($id);
 		$pickList->fill($data);
 
 		$result = $pickList->save();

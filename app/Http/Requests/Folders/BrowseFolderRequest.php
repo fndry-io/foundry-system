@@ -51,12 +51,7 @@ class BrowseFolderRequest extends FolderRequest implements ViewableFormRequestIn
 		$page = $this->input('page', 1);
 		$limit = $this->input('limit', 20);
 
-		$response = FolderService::service()->browse($this->getEntity(), $this->getInput(), $page, $limit);
-		if ($response->isSuccess()) {
-			return Response::success(Folder::collection($response->getData()));
-		}
-
-		return $response;
+		return FolderService::service()->browse($this->getEntity(), $this->getInput(), $page, $limit)->asResource(Folder::class, true);
 
 	}
 	/**

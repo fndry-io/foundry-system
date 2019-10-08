@@ -57,11 +57,7 @@ class BrowseFilesRequest extends FormRequest implements ViewableFormRequestInter
 		$page = $this->input('page', 1);
 		$limit = $this->input('limit', 20);
 
-		$response = FileService::service()->browse($entity, $this->getInput(), $page, $limit);
-		if ($response->isSuccess()) {
-			return Response::success(File::collection($response->getData()));
-		}
-		return $response;
+		return FileService::service()->browse($entity, $this->getInput(), $page, $limit)->asResource(File::class, true);
 	}
 	/**
 	 * @return FormType

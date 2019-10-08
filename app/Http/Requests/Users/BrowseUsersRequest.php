@@ -65,9 +65,7 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
 	    $page = $this->input('page', 1);
 	    $limit = $this->input('limit', 20);
 
-	    $result = UserService::service()->browse($inputs, $page, $limit );
-
-	    return Response::resource(User::collection($result->getData()));
+	    return UserService::service()->browse($inputs, $page, $limit )->asResource(User::class, true);
     }
 
 	/**

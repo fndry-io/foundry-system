@@ -55,9 +55,7 @@ class BrowsePickListsRequest extends FormRequest implements ViewableFormRequestI
 		$page = $this->input('page', 1);
 		$limit = $this->input('limit', 20);
 
-		$results = PickListService::service()->browse($inputs, $page, $limit );
-
-		return Response::success(PickList::collection($results));
+		return PickListService::service()->browse($inputs, $page, $limit)->asResource(PickList::class, true);
 	}
 
 	/**

@@ -51,13 +51,13 @@ class PickListItemRepository extends ModelRepository
 					'picklist_items.identifier',
 					'picklist_items.description',
 					'picklist_items.sequence',
-					'picklist_items.status',
-					'picklists.default_item as default_id'
+					'picklist_items.status'
 				)
+                ->selectRaw('IF(picklists.default_item = picklist_items.id, true, false) as is_default')
 				->join('picklists', 'picklists.id', '=', 'picklist_items.picklist_id')
 				->orderBy('label', 'ASC');
 
-			if ($search = $inputs->value('search')) {
+			if ($search = Arr::get($inputs, 'search')) {
 				$query->where('picklist_items.label', 'like', "%" . $search . "%");
 			}
 

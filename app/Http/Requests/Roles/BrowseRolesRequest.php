@@ -55,9 +55,7 @@ class BrowseRolesRequest extends FormRequest implements ViewableFormRequestInter
 	    $page = $this->input('page', 1);
 	    $limit = $this->input('limit', 20);
 
-	    $result = RoleService::service()->browse($inputs, $page, $limit );
-
-	    return Response::success(Role::collection($result->getData()));
+	    return RoleService::service()->browse($inputs, $page, $limit )->asResource(Role::class, true);
     }
 
 	/**

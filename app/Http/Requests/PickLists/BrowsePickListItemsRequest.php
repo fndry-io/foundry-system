@@ -50,9 +50,7 @@ class BrowsePickListItemsRequest extends PickListRequest implements ViewableForm
 		$page = $this->input('page', 1);
 		$limit = $this->input('limit', 20);
 
-		$results = PickListItemService::service()->browse($this->getEntity(), $inputs, $page, $limit );
-
-		return Response::success(PickListItem::collection($results));
+		return PickListItemService::service()->browse($this->getEntity(), $inputs, $page, $limit )->asResource(PickListItem::class, true);
 	}
 
     public function view() : FormType

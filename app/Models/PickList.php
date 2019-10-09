@@ -43,6 +43,6 @@ class PickList extends Model implements IsPickList
 
 	public function items()
 	{
-		return $this->hasMany(PickListItem::class, 'picklist_id');
+		return $this->hasMany(PickListItem::class, 'picklist_id')->withoutGlobalScopes();
 	}
 }

@@ -8,6 +8,7 @@ use Foundry\Core\Entities\Contracts\IsFolder;
 use Foundry\Core\Entities\Contracts\IsSoftDeletable;
 use Foundry\System\Models\Folder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 trait Folderable
 {
@@ -34,11 +35,11 @@ trait Folderable
 	}
 
 	/**
-	 * @return BelongsTo
+	 * @return MorphOne
 	 */
-	public function folder(): BelongsTo
+	public function folder()
 	{
-		return $this->belongsTo(Folder::class);
+		return $this->morphOne(Folder::class, 'reference')->withoutGlobalScopes();
 	}
 
 	/**

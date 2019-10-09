@@ -45,7 +45,7 @@ class PickListItem extends Model implements IsPickListItem
 
 	public function picklist()
 	{
-		return $this->belongsTo(PickList::class);
+		return $this->belongsTo(PickList::class)->withoutGlobalScopes();
 	}
 
 	/**

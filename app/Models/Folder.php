@@ -37,8 +37,7 @@ class Folder extends NodeReferenceModel implements IsFolder
 	protected $visible = [
 		'id',
 		'uuid',
-		'name',
-		'parent'
+		'name'
 	];
 
 	public static function boot()
@@ -79,7 +78,7 @@ class Folder extends NodeReferenceModel implements IsFolder
 
 	public function file()
 	{
-		return $this->belongsTo(File::class);
+		return $this->belongsTo(File::class)->withoutGlobalScopes();
 	}
 
 	public function setFile(IsFile $file)

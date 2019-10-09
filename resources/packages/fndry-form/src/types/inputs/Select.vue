@@ -72,7 +72,7 @@
                 let groups = {};
                 forEach(this.schema.options, (option) => {
                     let _option = this.extractItem(option);
-                    if (this.groupKey) {
+                    if (this.groupKey && option.hasOwnProperty(this.groupKey)) {
                         if (this.groups[option[this.groupKey]] === undefined) {
                             this.groups[option[this.groupKey]] = {
                                 label: option[this.groupKey],

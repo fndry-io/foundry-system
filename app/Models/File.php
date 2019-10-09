@@ -72,7 +72,7 @@ class File extends Model implements IsFile
 
 	public function folder()
 	{
-		return $this->belongsTo(Folder::class);
+		return $this->belongsTo(Folder::class)->withoutGlobalScopes();
 	}
 
 	/**

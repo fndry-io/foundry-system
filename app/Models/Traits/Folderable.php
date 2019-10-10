@@ -9,6 +9,7 @@ use Foundry\Core\Entities\Contracts\IsSoftDeletable;
 use Foundry\System\Models\Folder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 trait Folderable
 {
@@ -87,7 +88,8 @@ trait Folderable
 	 * Make the folder for the model
 	 *
 	 * @return IsFolder
-	 */
+     * @throws \ReflectionException
+     */
 	public function makeFolder(): IsFolder
 	{
 		if ( ! $this->getFolder()) {
@@ -98,8 +100,7 @@ trait Folderable
 				$folder->parent()->associate($parent->getKey());
 			}
 			$folder->save();
-			$this->folder()->associate($folder);
-			$this->save();
+            $this->load('folder');
 		}
 
 		return $this->getFolder();

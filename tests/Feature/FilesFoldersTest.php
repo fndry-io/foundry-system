@@ -31,7 +31,7 @@ class FilesFoldersTest extends TestCase
 			'folder' => null
 		];
 
-		$result = FolderService::service()->add(new FolderInput($data));
+		$result = FolderService::service()->add(new FolderInput($data), null);
 		$this->assertTrue($result->isSuccess());
 
 		$folder = $result->getData();

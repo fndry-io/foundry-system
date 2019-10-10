@@ -9,7 +9,7 @@ export const HasFilter = {
             default() {
                 return {
                     search: null,
-                    deleted: false
+                    deleted: 'deleted'
                 };
             }
         }

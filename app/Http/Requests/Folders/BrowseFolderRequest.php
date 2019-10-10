@@ -57,7 +57,7 @@ class BrowseFolderRequest extends FolderRequest implements ViewableFormRequestIn
 	/**
 	 * @return FormType
 	 */
-	public function form(): FormType {
+	function form($params = []): FormType {
 
 		$form   = new FormType( static::name() );
 		$params = [

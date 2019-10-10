@@ -50,18 +50,14 @@ class AddFolderRequest extends FolderRequest implements ViewableFormRequestInter
 	 */
 	public function handle() : Response
 	{
-		try {
-			$reference = $this->getReference();
-		} catch (\Throwable $e) {
-			$reference = null;
-		}
-		return FolderService::service()->add($this->getInput(), $reference);
+        $reference = $this->findReference($this->input('reference_type'), $this->input('reference_id'));
+		return FolderService::service()->add($this->getInput(), $this->getEntity(), $reference);
 	}
 
 	/**
 	 * @return FormType
 	 */
-	public function form(): FormType {
+	function form($params = []): FormType {
 
 		$form   = new FormType( static::name() );
 		$params = [

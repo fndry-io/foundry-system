@@ -3,13 +3,10 @@
 namespace Foundry\System\Model\Traits;
 
 use Foundry\Core\Entities\Contracts\HasFolder;
-use Foundry\Core\Entities\Contracts\HasNode;
 use Foundry\Core\Entities\Contracts\IsFolder;
 use Foundry\Core\Entities\Contracts\IsSoftDeletable;
 use Foundry\System\Models\Folder;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 trait Folderable
 {
@@ -24,8 +21,7 @@ trait Folderable
 		});
 		static::deleted(function (HasFolder $model) {
 			/**@var Folder $folder*/
-			$folder = $model->getFolder();
-			if ($folder) {
+			if ($folder = $model->getFolder()) {
 				if ($model instanceof IsSoftDeletable && $model->isForceDeleting()) {
 					$folder->forceDelete();
 				} else {
@@ -66,14 +62,6 @@ trait Folderable
 	public function getFolderableEntity(): ?HasFolder
 	{
 		return $this;
-	}
-
-	/**
-	 * @param IsFolder $folder
-	 */
-	public function setFolder(IsFolder $folder): void
-	{
-		$this->folder()->associate($folder);
 	}
 
 	/**

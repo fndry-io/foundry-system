@@ -34,14 +34,15 @@ class FolderService extends BaseService {
 	/**
 	 * Add a folder
 	 *
-	 * @param FolderInput $inputs
-	 * @param IsEntity|null $reference
-	 *
-	 * @return Response
-	 */
-	public function add(FolderInput $inputs, IsEntity $reference = null) : Response
+     * @param FolderInput $inputs
+     * @param IsFolder $parent
+     * @param IsEntity|null $reference
+     *
+     * @return Response
+     */
+	public function add(FolderInput $inputs, IsFolder $parent = null, IsEntity $reference = null) : Response
 	{
-		if ($folder = FolderRepository::repository()->insert($inputs->values(), $reference)) {
+		if ($folder = FolderRepository::repository()->insert($inputs->values(), $parent, $reference)) {
 			return Response::success($folder);
 		} else {
 			return Response::error(__('Unable to add folder'), 500);

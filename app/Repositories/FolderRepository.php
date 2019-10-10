@@ -40,27 +40,15 @@ class FolderRepository extends ModelRepository {
 	 * @param int $page
 	 * @param int $perPage
 	 *
-	 * @return \Illuminate\Contracts\Pagination\Paginator
+	 * @return Paginator
 	 */
 	public function browse(IsEntity $folder, array $inputs, $page = 1, $perPage = 20) : Paginator
 	{
 		return $this->filter(function(Builder $query) use ($folder, $inputs) {
 
 			$query
-				->select([
-					'folders.id',
-					'folders.name',
-					'folders.created_at',
-					'folders.updated_at',
-					'folders.is_file',
-					'files.type as file_type',
-					'files.original_name as file_name',
-					'files.uuid as file_uuid',
-					'files.id as file_id',
-					'files.size as file_size',
-					'files.created_at as file_created_at',
-					'files.updated_at as file_updated_at',
-				])
+				->select('folders.*')
+                ->with(['file'])
 				->leftJoin('files', 'folders.file_id', '=', 'files.id')
 				->orderBy('folders.is_file', 'ASC')
 				->orderBy('folders.name', 'ASC');
@@ -119,19 +107,18 @@ class FolderRepository extends ModelRepository {
 	/**
 	 * Insert a folder
 	 *
-	 * @param array $data
-	 * @param IsEntity $reference
-	 *
-	 * @return bool|IsFolder|Model
-	 */
-	public function insert($data, IsEntity $reference = null)
+     * @param array $data
+     * @param IsFolder|null $parent
+     * @param IsEntity|null $reference
+     *
+     * @return bool|IsFolder|Model|mixed
+     */
+	public function insert($data, IsFolder $parent = null, IsEntity $reference = null)
 	{
 		$folder = self::make($data);
 
-		if ($parent = Arr::get($data, 'parent')) {
-			if ($parent = FolderRepository::repository()->find($parent)) {
-				$folder->setParent($parent->getKey());
-			}
+		if ($parent) {
+            $folder->parent = $parent;
 		}
 
 		if ($reference) {

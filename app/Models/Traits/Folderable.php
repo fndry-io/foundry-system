@@ -101,6 +101,7 @@ trait Folderable
 			}
 			$folder->save();
             $this->load('folder');
+            return $folder;
 		}
 
 		return $this->getFolder();

@@ -51,7 +51,7 @@
                 return value.replace(/[^0-9\.]/gi, '');
             },
             formatNumber(value){
-                if (value > 0) {
+                if (value !== null) {
                     return numeral(value).format(this.format);
                 } else {
                     return value;

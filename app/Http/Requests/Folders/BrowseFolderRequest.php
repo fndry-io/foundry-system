@@ -59,23 +59,12 @@ class BrowseFolderRequest extends FolderRequest implements ViewableFormRequestIn
 	 */
 	function form($params = []): FormType {
 
-		$form   = new FormType( static::name() );
-		$params = [
-			'_entity' => $this->getEntity()->getKey(),
-			'reference_type' => $this->input('reference_type'),
-			'reference_id' => $this->input('reference_id'),
-			'parent' => $this->input('parent')
-		];
-
-		if ( $this instanceof InputInterface) {
-			$form->attachInputCollection( $this->getInput()->getTypes() );
-			$form->setValues( $this->getInput()->getTypes()->values() );
-		}
-
-		$form->setAction( route( $this::name(), $params, false) );
-		$form->setRequest( $this );
-
-		return $form;
+		return parent::form([
+            '_entity' => $this->getEntity()->getKey(),
+            'reference_type' => $this->input('reference_type'),
+            'reference_id' => $this->input('reference_id'),
+            'parent' => $this->input('parent')
+        ]);
 	}
 
 	/**

@@ -59,26 +59,15 @@ class BrowseFilesRequest extends FormRequest implements ViewableFormRequestInter
 
 		return FileService::service()->browse($entity, $this->getInput(), $page, $limit)->asResource(File::class, true);
 	}
+
 	/**
 	 * @return FormType
 	 */
 	function form($params = []): FormType {
-
-		$form   = new FormType( static::name() );
-		$params = [
-			'reference_type' => $this->input('reference_type'),
-			'reference_id' => $this->input('reference_id')
-		];
-
-		if ( $this instanceof InputInterface) {
-			$form->attachInputCollection( $this->getInput()->getTypes() );
-			$form->setValues( $this->getInput()->getTypes()->values() );
-		}
-
-		$form->setAction( route( $this::name(), $params, false) );
-		$form->setRequest( $this );
-
-		return $form;
+	    return parent::form([
+            'reference_type' => $this->input('reference_type'),
+            'reference_id' => $this->input('reference_id')
+        ]);
 	}
 
 	/**

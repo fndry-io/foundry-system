@@ -6,6 +6,7 @@ use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SectionType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
+use Foundry\Core\Requests\Contracts\EntityRequestInterface;
 use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
@@ -60,6 +61,7 @@ class AddFolderRequest extends FolderRequest implements ViewableFormRequestInter
 	function form($params = []): FormType {
 
 		$form   = new FormType( static::name() );
+
 		$params = [
 			'_entity' => $this->getEntity()->getKey(),
 			'reference_type' => $this->input('reference_type'),
@@ -67,15 +69,18 @@ class AddFolderRequest extends FolderRequest implements ViewableFormRequestInter
 			'parent' => $this->input('parent')
 		];
 
-		if ( $this instanceof InputInterface) {
-			$form->attachInputCollection( $this->getInput()->getTypes() );
-			$form->setValues( $this->getInput()->getTypes()->values() );
-		}
+        if ( $this instanceof InputInterface) {
+            $form->attachInputCollection( $this->getInput()->getTypes() );
+            $inputs = $this->only($this->getInput()->keys());
+            $this->getInput()->cast($inputs);
+            $form->setValues( $inputs );
+        }
 
-		$form->setAction( route( $this::name(), $params, false) );
-		$form->setRequest( $this );
+        $form->setAction( resourceUri( $this::name()) );
+        $form->setParams($params);
+        $form->setRequest( $this );
 
-		return $form;
+        return $form;
 	}
 
 	/**

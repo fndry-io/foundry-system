@@ -29,8 +29,13 @@
         ],
         data() {
             return {
-                model: this.formatNumber(this.value),
+                model: null,
                 format: `${(this.schema.symbol) ? this.schema.symbol : '$'} 0,0[.]0[0]`
+            }
+        },
+        created() {
+            if (this.value !== null) {
+                this.model = this.formatNumber(this.value);
             }
         },
         methods: {

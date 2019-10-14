@@ -77,8 +77,9 @@ export default {
                     this.errors = null;
 
                     if (action === undefined) {
-                        action = this.$fndryApiService.getHandleUrl(this.request, this.params);
+                        action = this.$fndryApiService.getHandleUrl(this.request, merge({}, this.schema.params, this.params));
                     }
+
                     if (method === undefined) {
                         method = 'POST';
                     }
@@ -131,9 +132,18 @@ export default {
             this.activeButton = key;
             switch (button.type) {
                 case 'submit':
-                    let action = this.schema.action || '';
+                    let action = this.schema.action || undefined;
+
                     if (button.hasOwnProperty('action')) {
                         action = button.action;
+                    }
+
+                    if (button.hasOwnProperty('params')) {
+                        action = this.$fndryApiService.getHandleUrl(action, button.params);
+                    }
+
+                    if (action && this.schema.params) {
+                        action = this.$fndryApiService.getHandleUrl(action, merge({}, this.schema.params, this.params));
                     }
 
                     let method = this.schema.method || 'POST';

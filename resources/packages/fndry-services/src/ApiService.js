@@ -1,5 +1,6 @@
 import jQuery from 'jquery'
 import __ from './TranslateService'
+import {merge} from 'lodash';
 
 const viewRequestUri = '/system/request/view';
 const handleRequestUri = '/system/request/handle';
@@ -117,20 +118,21 @@ function updateUrlPlaceholders(url, params, remove)
     if (remove === undefined) {
         remove = false;
     }
+    let _params = merge({}, params);
     let regex = new RegExp('{.*}', 'g');
     if (regex.test(url)) {
-        jQuery.each(params, function(placeholder, value){
+        jQuery.each(_params, function(placeholder, value){
             if (url.search('\{' + placeholder + '\}') > -1) {
                 url = url.replace('\{' + placeholder + '\}', value);
                 if (remove) {
-                    delete params[placeholder];
+                    delete _params[placeholder];
                 }
             }
         });
     }
     return {
         url: url,
-        data: params
+        data: _params
     };
 }
 

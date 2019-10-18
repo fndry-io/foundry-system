@@ -9,6 +9,8 @@ use Foundry\Core\Entities\Contracts\IsUser;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
+use Foundry\System\Events\UserLoggedIn;
+use Foundry\System\Events\UserLoggedOut;
 use Foundry\System\Inputs\User\ForgotPasswordInput;
 use Foundry\System\Inputs\User\ResetPasswordInput;
 use Foundry\System\Inputs\User\UserEditInput;
@@ -72,6 +74,7 @@ class UserService extends BaseService {
 			if ($provider->validateCredentials($user, $inputs)) {
 				//detect if the user is longer active
 				if ($user->isActive()) {
+				    event(new UserLoggedIn($user));
 					$guard->setUser($user);
 					return $this->returnGuardUser($guard);
 				} else {
@@ -96,12 +99,13 @@ class UserService extends BaseService {
 		$guard = Auth::guard($guard);
 		if ($guard->check()) {
 
-			//if the guard is an api guard, remove the token
+            /**
+             * @var User $user
+             */
+            $user = $guard->user();
+
+            //if the guard is an api guard, remove the token
 			if ($guard instanceof TokenGuard) {
-				/**
-				 * @var User $user
-				 */
-				$user = $guard->user();
 				$guard->clearToken($user);
 				UserRepository::repository()->save($user);
 			}
@@ -112,6 +116,7 @@ class UserService extends BaseService {
 				Session::invalidate();
 			}
 
+            event(new UserLoggedOut($user));
 		}
 		return Response::success();
 	}

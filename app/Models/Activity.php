@@ -3,6 +3,7 @@
 namespace Foundry\System\Models;
 
 use Foundry\Core\Entities\Contracts\HasNode;
+use Foundry\Core\Entities\Contracts\HasReference;
 use Foundry\Core\Models\Model;
 use Foundry\Core\Models\Traits\Blameable;
 use Foundry\Core\Models\Traits\NodeReferenceable;
@@ -52,6 +53,8 @@ class Activity extends Model implements IsActivity, HasNode {
             if ($model->activitable) {
                 if ($model->activitable instanceof HasNode) {
                     $model->node()->associate($model->activitable->getNode());
+                } elseif ($model->activitable instanceof HasReference && $model->activitable->reference && $model->activitable->reference instanceof HasNode) {
+                    $model->node()->associate($model->activitable->reference->getNode());
                 }
             }
         });

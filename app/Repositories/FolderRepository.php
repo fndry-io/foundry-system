@@ -8,6 +8,10 @@ use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
 use Foundry\Core\Entities\Contracts\IsEntity;
 use Foundry\Core\Repositories\Traits\SoftDeleteable;
+use Foundry\System\Events\FolderCreated;
+use Foundry\System\Events\FolderDeleted;
+use Foundry\System\Events\FolderRestored;
+use Foundry\System\Events\FolderUpdated;
 use Foundry\System\Models\Folder;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,6 +29,13 @@ use Illuminate\Support\Arr;
 class FolderRepository extends ModelRepository {
 
 	use SoftDeleteable;
+
+	protected $dispatchesEvents = [
+	    'inserted' => FolderCreated::class,
+        'updated' => FolderUpdated::class,
+        'deleted' => FolderDeleted::class,
+        'restored' => FolderRestored::class
+    ];
 
 	/**
 	 * @return string|Model
@@ -130,6 +141,7 @@ class FolderRepository extends ModelRepository {
 		}
 
 		if ($folder->save()) {
+            $this->dispatch('inserted', $folder);
 			return $folder;
 		} else {
 			return false;
@@ -155,6 +167,7 @@ class FolderRepository extends ModelRepository {
 		}
 
 		if ($folder->save()) {
+		    $this->dispatch('updated', $folder);
 			return $folder;
 		} else {
 			return false;

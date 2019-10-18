@@ -6,6 +6,7 @@ use Foundry\Core\Entities\Contracts\IsUser;
 use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
 use Foundry\Core\Repositories\Traits\SoftDeleteable;
+use Foundry\System\Events\UserRegistered;
 use Foundry\System\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Pagination\Paginator;
@@ -163,6 +164,7 @@ class UserRepository extends ModelRepository
 		$user->active   = true;
 		$user->password = $data['password'];
 		if ($user->save()) {
+		    event(new UserRegistered($user));
 			return $user;
 		} else {
 			return false;

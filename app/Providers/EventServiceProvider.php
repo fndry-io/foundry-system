@@ -2,6 +2,7 @@
 
 namespace Foundry\System\Providers;
 
+use Foundry\System\Listeners\FolderActivitySubscriber;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -12,6 +13,15 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [];
+
+    /**
+     * The event subscribers
+     *
+     * @var array
+     */
+    protected $subscribe = [
+        FolderActivitySubscriber::class
+    ];
 
     /**
      * Register any events for your application.

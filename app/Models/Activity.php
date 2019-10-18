@@ -49,12 +49,7 @@ class Activity extends Model implements IsActivity, HasNode {
     {
         parent::boot();
         static::creating(function(IsActivity $model){
-            /**
-             * Ensure the Comment is associated with a reference if the Node is set and no reference was given
-             *
-             * We must always ensure the comment reference is set
-             */
-            if ($model->activitable && !$model->reference) {
+            if ($model->activitable) {
                 if ($model->activitable instanceof HasNode) {
                     $model->node()->associate($model->activitable->getNode());
                 }

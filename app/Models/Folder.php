@@ -133,7 +133,4 @@ class Folder extends NodeReferenceModel implements IsFolder
 		return $this->parent;
 	}
 
-
-
-
 }

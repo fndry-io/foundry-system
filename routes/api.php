@@ -73,7 +73,7 @@ Route::prefix('system')->middleware('auth:api')->group( function () {
 	FormRequestHandler::route('/folders/{_entity}/add-file','Foundry\System\Http\Requests\Folders\AddFileRequest');
 	FormRequestHandler::route('/folders/{_entity}/add-folder','Foundry\System\Http\Requests\Folders\AddFolderRequest');
 
-
+    FormRequestHandler::route('/activities',        'Foundry\System\Http\Requests\Activities\BrowseActivityRequest');
 
 });
 

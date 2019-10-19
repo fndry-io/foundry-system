@@ -7,6 +7,7 @@ use Foundry\Core\Repositories\ModelRepository;
 use Foundry\Core\Entities\Contracts\IsEntity;
 use Foundry\Core\Entities\Contracts\IsFile;
 use Foundry\Core\Repositories\Traits\SoftDeleteable;
+use Foundry\System\Events\FolderCreated;
 use Foundry\System\Models\File;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
@@ -90,7 +91,9 @@ class FileRepository extends ModelRepository
 				$folder = FolderRepository::repository()->make(['name' => Arr::get($data, 'name')]);
 				$folder->setFile($file);
 				$folder->parent = $parent;
-				$folder->save();
+				if ($folder->save()) {
+				    event(new FolderCreated($folder));
+                }
 			}
 		}
 

@@ -8,6 +8,13 @@ use Foundry\System\Events\FolderRestored;
 use Foundry\System\Events\FolderUpdated;
 use Foundry\System\Lib\ActivitySubscriber;
 
+/**
+ * Class FolderActivitySubscriber
+ *
+ *
+ *
+ * @package Foundry\System\Listeners
+ */
 class FolderActivitySubscriber extends ActivitySubscriber
 {
 
@@ -21,9 +28,9 @@ class FolderActivitySubscriber extends ActivitySubscriber
     public function handleFolderCreated($event)
     {
         if ($event->folder->isFile()) {
-            $this->logActivity($event->folder, __('added the file ***:name***', ['name' => $event->folder->name]));
+            $this->logActivity($event->folder, __('added file ***:name***', ['name' => $event->folder->file->original_name]));
         } else {
-            $this->logActivity($event->folder, __('added the folder ***:name***', ['name' => $event->folder->name]));
+            $this->logActivity($event->folder, __('added folder ***:name***', ['name' => $event->folder->name]));
         }
 
     }
@@ -31,27 +38,27 @@ class FolderActivitySubscriber extends ActivitySubscriber
     public function handleFolderUpdated($event)
     {
         if ($event->folder->isFile()) {
-            $this->logActivity($event->folder, __('updated the file ***:name***', ['name' => $event->folder->name]));
+            $this->logActivity($event->folder, __('updated file ***:name***', ['name' => $event->folder->file->original_name]));
         } else {
-            $this->logActivity($event->folder, __('updated the folder ***:name***', ['name' => $event->folder->name]));
+            $this->logActivity($event->folder, __('updated folder ***:name***', ['name' => $event->folder->name]));
         }
     }
 
     public function handleFolderDeleted($event)
     {
         if ($event->folder->isFile()) {
-            $this->logActivity($event->folder, __('deleted the file ***:name***', ['name' => $event->folder->name]));
+            $this->logActivity($event->folder, __('deleted file ***:name***', ['name' => $event->folder->file->original_name]));
         } else {
-            $this->logActivity($event->folder, __('deleted the folder ***:name***', ['name' => $event->folder->name]));
+            $this->logActivity($event->folder, __('deleted folder ***:name***', ['name' => $event->folder->name]));
         }
     }
 
     public function handleFolderRestored($event)
     {
         if ($event->folder->isFile()) {
-            $this->logActivity($event->folder, __('restored the file ***:name***', ['name' => $event->folder->name]));
+            $this->logActivity($event->folder, __('restored file ***:name***', ['name' => $event->folder->file->original_name]));
         } else {
-            $this->logActivity($event->folder, __('restored the folder ***:name***', ['name' => $event->folder->name]));
+            $this->logActivity($event->folder, __('restored folder ***:name***', ['name' => $event->folder->name]));
         }
     }
 

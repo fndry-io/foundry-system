@@ -51,31 +51,17 @@ class Activity extends Model implements IsActivity, HasNode {
         parent::boot();
         static::creating(function(IsActivity $model){
             if ($model->activitable) {
+
+
                 if ($model->activitable instanceof HasNode) {
                     $model->node()->associate($model->activitable->getNode());
-                } elseif ($model->activitable instanceof HasReference && $model->activitable->reference && $model->activitable->reference instanceof HasNode) {
-                    $model->node()->associate($model->activitable->reference->getNode());
+                }
+
+                if (!$model->node && $model->activitable instanceof HasReference && $model->activitable->reference && $model->activitable->reference instanceof HasNode && $node = $model->activitable->reference->getNode()) {
+                    $model->node()->associate($node);
                 }
             }
         });
-    }
-
-    /**
-     * @param Model|IsActivitable $model
-     * @param $event
-     * @param $eventText
-     * @return bool|Activity
-     */
-    static public function fromActivitable(IsActivitable $model, $event, $eventText)
-    {
-        $replacements = $model->getActivityReplacements([]);
-        $activity = new Activity(['title' => $model->getActivityTitle($event, $replacements, $eventText), 'description' => $model->getActivityDetail($replacements)]);
-        $activity->activitable()->associate($model);
-        if ($activity->save()) {
-            return $activity;
-        } else {
-            return false;
-        }
     }
 
     /**

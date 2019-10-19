@@ -134,7 +134,9 @@ class FolderRepository extends ModelRepository {
 
 		if ($reference) {
 			$folder->setReference($reference);
-		}
+		} elseif ($parent && $parent->reference) {
+		    $folder->setReference($parent->reference);
+        }
 
 		if (!$parent) {
 			$folder->makeRoot();

@@ -8,11 +8,13 @@ use Foundry\Core\Inputs\Types\SectionType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
+use Foundry\Core\Requests\Traits\HasReference;
 use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Inputs\Types\File;
 
 class AddFileRequest extends FolderRequest implements ViewableFormRequestInterface
 {
+    use HasReference;
 
 	public static function name(): String {
 		return 'foundry.system.folders.add.file';
@@ -62,10 +64,17 @@ class AddFileRequest extends FolderRequest implements ViewableFormRequestInterfa
 			$file->setFolder($this->getEntity());
 		}
 
+		$reference_type = $this->input('reference_type');
+        $reference_id = $this->input('reference_id');
+		if (!$reference_type) {
+            $reference_type = $this->getEntity()->reference_type;
+            $reference_id = $this->getEntity()->reference_id;
+        }
+
 		$file->setParams([
 			'folder' => $this->getEntity()->getKey(),
-			'reference_type' => $this->input('reference_type'),
-			'reference_id' => $this->input('reference_id')
+			'reference_type' => $reference_type,
+			'reference_id' =>$reference_id
 		]);
 
 		$form->setTitle(__('Add File'));

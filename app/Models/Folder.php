@@ -2,20 +2,20 @@
 
 namespace Foundry\System\Models;
 
+use Foundry\Core\Entities\Contracts\HasReference;
 use Foundry\Core\Entities\Contracts\IsFile;
 use Foundry\Core\Entities\Contracts\IsFolder;
-use Foundry\Core\Models\NodeReferenceModel;
+use Foundry\Core\Models\Model;
 use Foundry\Core\Models\Traits\Referencable;
 use Foundry\Core\Models\Traits\SoftDeleteable;
 use Foundry\Core\Models\Traits\Uuidable;
-use Illuminate\Database\Eloquent\Model;
 use Kalnoy\Nestedset\NodeTrait;
 
 /**
  * Class Folder
  * @package Foundry\System\Models
  */
-class Folder extends NodeReferenceModel implements IsFolder
+class Folder extends Model implements IsFolder, HasReference
 {
 	use SoftDeleteable;
 	use Uuidable;
@@ -44,17 +44,31 @@ class Folder extends NodeReferenceModel implements IsFolder
 	{
 		parent::boot();
 		Folder::deleting(function(Folder $folder){
-			if ($folder->forceDeleting) {
-				$folder->setDeleteableFiles($folder->descendants()->get('file_id')->pluck('file_id'));
-			}
+		    if (!$folder->isFile()) {
+                $folder->setDeleteableFiles($folder->descendants()->get('file_id')->pluck('file_id'));
+            }
 		});
 		Folder::deleted(function(Folder $folder){
-			if ($folder->forceDeleting) {
-				$files = File::query()->whereIn('id', $folder->getDeleteableFiles())->get();
-				foreach($files as $file) {
-					$file->forceDelete();
-				}
-			}
+		    if (!$folder->isFile()) {
+                $files = File::query()->whereIn('id', $folder->getDeleteableFiles())->get();
+                if ($folder->isForceDeleting()) {
+                    foreach($files as $file) {
+                        $file->forceDelete();
+                    }
+                } else {
+                    foreach($files as $file) {
+                        $file->delete();
+                    }
+                }
+            }
+			if ($folder->file) {
+			    if ($folder->isForceDeleting()) {
+                    $folder->file->forceDelete();
+                } else {
+                    $folder->file->delete();
+                }
+
+            }
 		});
 	}
 
@@ -85,6 +99,9 @@ class Folder extends NodeReferenceModel implements IsFolder
 	{
 		$this->is_file = true;
 		$this->file()->associate($file);
+		if ($file->reference) {
+		    $this->reference()->associate($file->reference);
+        }
 	}
 
 	public function setDeleteableFiles($files)

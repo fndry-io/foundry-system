@@ -63,7 +63,10 @@ class BrowseActivityRequest extends FormRequest implements ViewableFormRequestIn
             throw new NotFoundHttpException(__('Associated entity not found'));
         }
 
-	    return ActivityService::service()->browse($entity, $this->getInput())->asResource(Activity::class, true);
+        $page = $this->input('page', 1);
+        $limit = $this->input('limit', 20);
+
+        return ActivityService::service()->browse($entity, $this->getInput(), $page, $limit)->asResource(Activity::class, true);
     }
 
 	/**

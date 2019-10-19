@@ -28,9 +28,9 @@ class FolderActivitySubscriber extends ActivitySubscriber
     public function handleFolderCreated($event)
     {
         if ($event->folder->isFile()) {
-            $this->logActivity($event->folder, __('added file ***:name***', ['name' => $event->folder->file->original_name]));
+            $this->logActivity($event->folder, __('added file **:name**', ['name' => $event->folder->file->original_name]));
         } else {
-            $this->logActivity($event->folder, __('added folder ***:name***', ['name' => $event->folder->name]));
+            $this->logActivity($event->folder, __('added folder **:name**', ['name' => $event->folder->name]));
         }
 
     }
@@ -38,27 +38,27 @@ class FolderActivitySubscriber extends ActivitySubscriber
     public function handleFolderUpdated($event)
     {
         if ($event->folder->isFile()) {
-            $this->logActivity($event->folder, __('updated file ***:name***', ['name' => $event->folder->file->original_name]));
+            $this->logActivity($event->folder, __('updated file **:name**', ['name' => $event->folder->file->original_name]));
         } else {
-            $this->logActivity($event->folder, __('updated folder ***:name***', ['name' => $event->folder->name]));
+            $this->logActivity($event->folder, __('updated folder **:name**', ['name' => $event->folder->name]));
         }
     }
 
     public function handleFolderDeleted($event)
     {
         if ($event->folder->isFile()) {
-            $this->logActivity($event->folder, __('deleted file ***:name***', ['name' => $event->folder->file->original_name]));
+            $this->logActivity($event->folder, __('deleted file **:name**', ['name' => $event->folder->file->original_name]));
         } else {
-            $this->logActivity($event->folder, __('deleted folder ***:name***', ['name' => $event->folder->name]));
+            $this->logActivity($event->folder, __('deleted folder **:name**', ['name' => $event->folder->name]));
         }
     }
 
     public function handleFolderRestored($event)
     {
         if ($event->folder->isFile()) {
-            $this->logActivity($event->folder, __('restored file ***:name***', ['name' => $event->folder->file->original_name]));
+            $this->logActivity($event->folder, __('restored file **:name**', ['name' => $event->folder->file->original_name]));
         } else {
-            $this->logActivity($event->folder, __('restored folder ***:name***', ['name' => $event->folder->name]));
+            $this->logActivity($event->folder, __('restored folder **:name**', ['name' => $event->folder->name]));
         }
     }
 

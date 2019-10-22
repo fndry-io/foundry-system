@@ -7,6 +7,7 @@ use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
 use Foundry\Core\Repositories\Traits\SoftDeleteable;
 use Foundry\System\Events\UserRegistered;
+use Foundry\System\Models\File;
 use Foundry\System\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Pagination\Paginator;
@@ -245,6 +246,12 @@ class UserRepository extends ModelRepository
 		if ($password = Arr::get($data, 'password')) {
 			$user->password = $password;
 		}
+
+		if ($profile_image = Arr::get($data, 'profile_image')) {
+		    if ($file = File::query()->find($profile_image)) {
+                $user->profile_image()->associate($file);
+            }
+        }
 
 		if (Auth::user()->isSuperAdmin() && $user->getKey() !== Auth::user()->getKey()) {
 			$user->super_admin = Arr::get($data, 'super_admin', false);

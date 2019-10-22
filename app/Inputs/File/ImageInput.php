@@ -2,50 +2,27 @@
 
 namespace Foundry\System\Inputs\File;
 
-use Foundry\Core\Inputs\Inputs;
-use Foundry\Core\Inputs\Types\Contracts\IsFileInput;
-use Foundry\Core\Inputs\Types\Traits\HasMultiple;
 use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Inputs\File\Types\Ext;
+use Foundry\System\Inputs\File\Types\Height;
+use Foundry\System\Inputs\File\Types\Resize;
 use Foundry\System\Inputs\File\Types\Size;
 use Foundry\System\Inputs\File\Types\Type;
 use Foundry\System\Inputs\File\Types\IsPublic;
+use Foundry\System\Inputs\File\Types\Width;
 use Foundry\System\Inputs\Types\Folder;
 use Foundry\System\Inputs\Types\ReferenceId;
 use Foundry\System\Inputs\Types\ReferenceType;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
-use Symfony\Component\HttpFoundation\File\File;
 
 /**
- * Class AddressInput
+ * Class ImageInput
  *
  * @package Foundry\System\Inputs
  *
  */
-class FileInput extends Inputs implements IsFileInput
-{
-
-	use HasMultiple;
-
-	/**
-	 * @var UploadedFile|File
-	 */
-	protected $file;
-
-	/**
-	 * @return mixed
-	 */
-	public function getFile() {
-		return $this->file;
-	}
-
-	/**
-	 * @param mixed $file
-	 */
-	public function setFile( $file ): void {
-		$this->file = $file;
-	}
+class ImageInput extends FileInput {
 
 	public function types() : InputTypeCollection
 	{
@@ -56,7 +33,10 @@ class FileInput extends Inputs implements IsFileInput
 			Type::input(),
 			Ext::input(),
 			Size::input(),
-			IsPublic::input()
+			IsPublic::input(),
+            Width::input(),
+            Height::input(),
+            Resize::input()
 		]);
 	}
 
@@ -64,10 +44,13 @@ class FileInput extends Inputs implements IsFileInput
 	 * @param UploadedFile $file The uploaded file
 	 * @param array $inputs The inputs from the request
 	 * @param boolean $is_public If the file is public
+     * @param int $width
+     * @param int $height
+     * @param string $resize
 	 *
-	 * @return FileInput
+	 * @return self
 	 */
-	static function fromUploadedFile(UploadedFile $file, array $inputs = [], $is_public = false){
+	static function fromUploadedFile(UploadedFile $file, array $inputs = [], $is_public = false, $width = null, $height = null, $resize = null){
 		$input = new static([
 			'folder' => Arr::get($inputs, 'folder'),
 			'reference_type' => Arr::get($inputs, 'reference_type'),
@@ -75,7 +58,10 @@ class FileInput extends Inputs implements IsFileInput
 			'type' => $file->getMimeType(),
 			'ext'  => $file->getClientOriginalExtension(),
 			'size' => round($file->getSize() / 1000, 2),
-			'is_public' => $is_public
+			'is_public' => $is_public,
+            'width' => $width,
+            'height' => $height,
+            'resize' => $resize,
 		]);
 
 		$input->setFile($file);

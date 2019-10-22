@@ -12,6 +12,7 @@ use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Inputs\User\UserEditInput;
 use Foundry\System\Services\UserService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class EditUserRequest extends UserRequest implements ViewableFormRequestInterface, InputInterface
@@ -99,6 +100,12 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 				RowType::withChildren($form->get('password')->setAutocomplete(false), $form->get('password_confirmation')->setAutocomplete(false))
 			)
 		);
+
+        $form->addChildren(
+            (new SectionType(__('Profile')))->addChildren(
+                RowType::withChildren($form->get('profile_image'))
+            )
+        );
 
 		return $form;
 	}

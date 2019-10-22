@@ -2,6 +2,8 @@
 
 namespace Foundry\System\Services;
 
+use Foundry\Core\Inputs\Inputs;
+use Foundry\Core\Inputs\Types\Contracts\IsFileInput;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
 use Foundry\Core\Entities\Contracts\IsEntity;
@@ -31,11 +33,11 @@ class FileService extends BaseService
 	}
 
 	/**
-	 * @param FileInput $input
+	 * @param FileInput|Inputs $input
 	 *
 	 * @return Response
 	 */
-	public function add(FileInput $input): Response
+	public function add(Inputs $input): Response
 	{
 		$values = $input->values();
 

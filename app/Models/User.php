@@ -8,8 +8,10 @@ use Foundry\Core\Entities\Contracts\IsUser;
 use Foundry\Core\Models\Traits\SoftDeleteable;
 use Foundry\Core\Models\Traits\Uuidable;
 use Foundry\Core\Models\Traits\Visible;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class User
@@ -180,5 +182,23 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 	{
 		$this->attributes['password'] = Hash::make($password);
 	}
+
+    /**
+     * @return BelongsTo
+     */
+    public function profile_image()
+    {
+        return $this->belongsTo(File::class)->withoutGlobalScopes();
+    }
+
+    public function getProfileUrlAttribute()
+    {
+        if ($this->profile_image) {
+            return Storage::url($this->profile_image->name);
+        } else {
+            //todo replace with a generic image url
+            return url('/app/img/avatars/6.png');
+        }
+    }
 
 }

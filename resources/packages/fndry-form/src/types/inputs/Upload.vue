@@ -1,87 +1,117 @@
 <template>
     <div class="file-uploader">
 
-        <div v-if="files.length > 0"
-             v-for="(file, index) in files"
-             class="file-attached"
-        >
-            <div class="row">
-                <div class="col flex-grow-1">
-                    <div class="file-name">{{file.original_name}}</div>
-                </div>
-                <div class="col flex-grow-0 text-right">
-                    <fndry-request-button v-if="schema.deleteUrl" size="sm"  variant="danger" :request="schema.deleteUrl" :params="{_entity: file.id}" type="confirm" :confirm-options="{message: 'Are you sure you want to remove this file?'}" @success="(response) => removeModelFile(index)"><span class="fa fa-trash"></span></fndry-request-button>
+        <div :class="filesClasses">
+            <div v-if="files.length > 0" class="file-outer" v-for="(file, index) in files">
+                <div class="file uploaded">
+                    <div class="file-thumbnail" v-if="schema.type === 'image'">
+                        <img v-if="schema.type === 'image'" class="responsive" :src="file.url" :alt="file.original_name" />
+                    </div>
+                    <div class="file-detail">
+                        <div class="row">
+                            <div class="col flex-grow-1">
+                                <div class="file-name">
+                                    {{file.original_name}}
+                                </div>
+                                <div class="file-info">
+                                    <span v-if="file.type"><span class="badge badge-info">{{file.type}}</span>&nbsp;</span>
+                                    <span v-if="file.size"><span class="badge badge-info">{{file.size}}kb</span></span>
+                                </div>
+                            </div>
+                            <div class="col flex-grow-0 text-right">
+                                <fndry-request-button v-if="schema.deleteUrl" size="sm"  variant="danger" :request="schema.deleteUrl" :params="{_entity: file.id}" type="confirm" :confirm-options="{message: 'Are you sure you want to remove this file?'}" @success="(response) => removeModelFile(index)"><span class="fa fa-trash"></span></fndry-request-button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="file-progress">
+                        <b-progress
+                            :value="100"
+                            :max="100"
+                            :animated="false"
+                            :striped="false"
+                            variant="primary"
+                            style="min-width: 100px;"
+                            height="2px"
+                        ></b-progress>
+                    </div>
                 </div>
             </div>
-        </div>
 
-
-
-        <div v-if="uploading.length > 0">
-            <div v-for="file in uploading"
-                 v-if="file.uploading || file.failed"
-                 class="file-progress"
+            <div v-if="uploading.length > 0 && (file.uploading || file.failed)"
+                 class="file-outer"
+                 v-for="file in uploading"
             >
-                <div class="d-flex flex-row">
-                    <div class="flex-grow-1">
-                        <div class="file-name">{{file.file.name}}</div>
+                <div class="file uploading">
+                    <div class="file-thumbnail" v-if="schema.type === 'image' && file.file.url">
+                        <img class="responsive" :src="file.file.url" :alt="file.file.name" />
                     </div>
-                    <div class="flex-grow-0 text-right">
+                    <div class="file-detail">
+                        <div class="file-name">{{file.file.name}}</div>
+                        <div class="invalid-feedback" v-if="file.failed">
+                            <span v-if="file.validation" v-for="error in file.validation" style="display: block;">{{error}}</span>
+                            <span v-else>{{file.error}}</span>
+                        </div>
+                    </div>
+                    <div class="file-progress">
                         <b-progress
-                                v-if="file.uploading"
-                                :value="file.progress"
-                                :max="100"
-                                :animated="file.uploading"
-                                :striped="file.uploading"
-                                :variant="(file.failed) ? 'danger' : ((file.uploaded) ? 'success' : 'primary')"
-                                style="min-width: 100px;"
+                            v-if="file.uploading"
+                            :value="file.progress"
+                            :max="100"
+                            :animated="file.uploading"
+                            :striped="file.uploading"
+                            :variant="(file.failed) ? 'danger' : ((file.uploaded) ? 'success' : 'primary')"
+                            height="2px"
                         ></b-progress>
                     </div>
                 </div>
-                <div class="invalid-feedback" v-if="file.failed">
-                    <span v-if="file.validation" v-for="error in file.validation" style="display: block;">{{error}}</span>
-                    <span v-else>{{file.error}}</span>
+            </div>
+
+
+            <div v-if="upload.length > 0"
+                 class="file-outer upload"
+                 v-for="file in upload"
+            >
+                <div class="file upload">
+                    <div class="file-thumbnail" v-if="schema.type === 'image' && file.file.url">
+                        <img class="responsive" :src="file.file.url" :alt="file.file.name" />
+                    </div>
+                    <div class="file-detail">
+                        <div class="file-name">{{file.file.name}}</div>
+                    </div>
+                    <div class="file-progress">
+                        <b-progress
+                            :value="0"
+                            :max="100"
+                            :animated="false"
+                            :striped="false"
+                            variant="primary"
+                            height="2px"
+                        ></b-progress>
+                    </div>
                 </div>
             </div>
+
         </div>
 
-        <div v-if="upload.length > 0">
-            <div v-for="file in upload" class="file-progress">
-                <div class="d-flex flex-row">
-                    <div class="flex-grow-1">
-                        <div class="file-name">{{file.file.name}}</div>
-                    </div>
-                    <div class="flex-grow-0 text-right">
-                        <b-progress
-                                :value="0"
-                                :max="100"
-                                :animated="false"
-                                :striped="false"
-                                variant="primary"
-                                style="min-width: 100px;"
-                        ></b-progress>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <b-form-file
-                :id="id"
-                :name="name"
-                :state="state"
-                placeholder="Choose a file..."
-                drop-placeholder="Drop file here..."
-                :accept="getAcceptAttributes()"
-                :multiple="schema.multiple"
-                :placeholder="placeholder"
-                :disabled="!uploadable"
-                :readonly="schema.readonly"
-                :required="schema.required"
-                :value="model"
-                ref="file"
-                @change="handleFileUpload"
-                :file-name-formatter="formatNames"
-                no-drop
+            :id="id"
+            :name="name"
+            :state="state"
+            v-if="showInput()"
+            placeholder="Choose a image..."
+            drop-placeholder="Drop image here..."
+            :accept="getAcceptAttributes()"
+            :multiple="schema.multiple"
+            :placeholder="placeholder"
+            :disabled="!uploadable"
+            :readonly="schema.readonly"
+            :required="schema.required"
+            :value="model"
+            ref="file"
+            @change="handleFileUpload"
+            :file-name-formatter="formatNames"
+            no-drop
         ></b-form-file>
     </div>
 </template>
@@ -91,160 +121,16 @@
 
     import {forEach, map, isArray, isEmpty, find} from 'lodash';
 
-
     import abstractInput from '../abstractInput';
+    import {uploadInput} from '../../mixins/field';
 
     export default {
-        name: "fndry-field-upload",
+        name: "fndry-field-image",
         mixins: [
-            abstractInput
+            abstractInput,
+            uploadInput
         ],
-        data(){
-            return{
-                files: (isEmpty(this.value)) ? [] : (isArray(this.value) ? this.value : [this.value]),
-                upload: [],
-                uploading: [],
-                model: null,
-                uploadable: !this.disabled,
-                placeholder: this.schema.placeholder
-            }
-        },
-        methods: {
-            formatNames() {
-                if (this.files.length) {
-                    return `${this.files.length} files uploaded`
-                } else {
-                    return this.schema.placeholder
-                }
-            },
-            handleFileUpload(evt){
-                forEach(evt.target.files, (file) => {
-                    this.upload.push({
-                        progress: 0,
-                        uploading: true,
-                        uploaded: false,
-                        file
-                    });
-                });
-                this.model = null;
-                this.$refs['file'].reset();
-                this.processUploads();
-            },
-            removeModelFile(index) {
-                this.files.splice(index, 1);
-                this.onChange();
-                this.canUpload();
-                this.placeholder = this.formatNames();
-            },
-            processUploads(){
-                let upload = this.upload.shift();
-                if (upload !== undefined) {
-                    this.processFileUpload(upload);
-                }
-            },
-            processFileUpload(upload){
 
-                let length = this.uploading.push(upload);
-                let index = length - 1;
-
-                let file = upload.file;
-
-                this.$fndryApiService.upload(this.$fndryApiService.getHandleUrl(this.schema.action, this.schema.params), file,
-                    (progressEvent) => {
-                        this.uploading[index].progress = Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total );
-                    })
-                    .then((response) => {
-                        this.uploading[index].progress = 100;
-                        this.uploading[index].uploading = false;
-                        this.uploading[index].uploaded = true;
-                        this.uploading[index].failed = false;
-                        this.files.push({
-                            id: response.data.id,
-                            original_name: file.name,
-                            file
-                        });
-                    })
-                    .catch((response) => {
-                        this.uploading[index].id = null;
-                        this.uploading[index].progress = 0;
-                        this.uploading[index].uploading = false;
-                        this.uploading[index].failed = true;
-                        this.uploading[index].error = (response.error) ? response.error : 'Unable to upload file';
-                        this.uploading[index].validation = [];
-                        if (response.code === 422 && response.data) {
-                            forEach(response.data, (errors) => {
-                                forEach(errors, (error) => {
-                                    this.uploading[index].validation.push(error);
-                                });
-                            });
-                        }
-
-                    })
-                    .finally(() => {
-                        this.onChange();
-                        this.placeholder = this.formatNames();
-                        this.processUploads();
-                    })
-                ;
-            },
-            onChange(){
-                this.$emit('input', this.getValue());
-            },
-            getValue(){
-                let value = null;
-                if (this.schema.multiple && this.files.length > 0) {
-                    value = [];
-                    forEach(this.files, (file) => {
-                        if (file.id) {
-                            value.push(file.id);
-                        }
-                    });
-                } else if (this.files[0]) {
-                    value = this.files[0].id;
-                }
-                return value;
-            },
-            getAcceptAttributes(){
-
-                let rules = this.schema.rules? this.schema.rules.split('|'): [];
-                let mime = null;
-
-                for(let key in rules){
-                    if(rules.hasOwnProperty(key)){
-                        if(rules[key].indexOf('mimes:') > -1){
-                            if(mime){
-                                mime = rules[key].split(':');
-                            }
-                        }
-                    }
-                }
-
-                if(mime){
-                    return mime[1];
-                }else{
-                    return '';
-                }
-
-            },
-            canUpload(){
-                if (this.disabled) {
-                    this.uploadable = false;
-                    return;
-                }
-                if (this.schema.multiple) {
-                    if (this.schema.max && this.files.length >= this.schema.max) {
-                        this.uploadable = false;
-                        return;
-                    }
-                } else {
-                    if (this.files.length >= 1) {
-                        this.uploadable = false;
-                        return;
-                    }
-                }
-                this.uploadable = true;
-            }
-        }
     };
 </script>
 
@@ -276,11 +162,120 @@
         }
     }
 
-    .file-uploader .file-progress,
-    .file-uploader .file-attached {
-        margin: 10px 0;
-    }
     .file-uploader .file-progress .invalid-feedback {
         display: block;
     }
+
+
+    .file-layout {
+
+        .file-progress {
+            position: absolute;
+            bottom: -1px;
+            left: -1px;
+            right: -1px;
+        }
+
+        .file-outer {
+            padding: 0 0 15px;
+        }
+
+        .file-name {
+            padding: 0.3rem 0;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .file {
+            position: relative;
+            border: 1px solid #efefef;
+
+            .file-thumbnail {
+                img {
+                    width: 100%;
+                    height: auto;
+                }
+            }
+
+            .file-detail {
+                padding: 10px;
+                background-color: rgba(255,255,255,0.5);
+                box-sizing: border-box;
+            }
+
+            .file-progress {
+                margin-bottom: 0;
+            }
+        }
+
+        &.file-layout-thumbnails {
+            margin: 0 -5px;
+            .file-outer {
+                display: inline-block;
+                width: calc( 100% / 3 );
+                padding: 0 5px 10px;
+
+                &:nth-child(3n) {
+                    &::after {
+                        content: " ";
+                        display: block;
+                        clear: left;
+                    }
+                }
+            }
+            .file.uploaded {
+                position: relative;
+                .file-detail {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    display: none;
+                }
+                &:hover {
+                    .file-detail {
+                        display: block;
+                    }
+                }
+            }
+        }
+
+        &.file-layout-details {
+
+            .file-outer {
+                padding: 0 0 10px;
+            }
+
+            .file {
+                position: relative;
+                display: block;
+                width: auto;
+
+                &::after {
+                    display: block;
+                    content: " ";
+                    clear: both;
+                }
+
+                .file-thumbnail {
+                    width: 75px;
+                    float: left;
+                }
+
+                .file-thumbnail + .file-detail {
+                    margin-left: 115px;
+                    width: calc(100% - 115px);
+                }
+
+                .file-detail {
+                    position: relative;
+                }
+
+                .file-info {
+                    display: none;
+                }
+            }
+        }
+    }
+
 </style>

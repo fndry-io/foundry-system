@@ -35,7 +35,7 @@ abstract class BaseUploadFileRequest extends FormRequest implements InputInterfa
 			$rules[] = 'max:' . $size;
 		}
 		return [
-			'file' => implode('|', $rules)
+            'file' => $rules
 		];
 	}
 

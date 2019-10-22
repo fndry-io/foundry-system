@@ -137,7 +137,7 @@ class UserService extends BaseService {
 		$user->last_login_at = new Carbon();
 
 		$data = [
-			'user' => $user->only(['id', 'uuid', 'username', 'display_name', 'email', 'is_super_admin', 'settings'])
+			'user' => $user->only(['id', 'uuid', 'username', 'display_name', 'email', 'is_super_admin', 'settings', 'profile_url'])
 		];
 		$data['user']['is_super_admin'] = $user->isSuperAdmin();
 

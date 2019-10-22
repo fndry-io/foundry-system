@@ -1,5 +1,5 @@
 import { slugifyFormID } from "../utils/schema";
-import { get as objGet, forEach, isNil, isArray, isString, isFunction } from "lodash";
+import { get as objGet, forEach, isNil, isArray, isString, isFunction, map, isEmpty, find, merge } from "lodash";
 
 // import FormView from '../components/FormView';
 
@@ -70,6 +70,175 @@ import { get as objGet, forEach, isNil, isArray, isString, isFunction } from "lo
 // 	}
 // };
 
+export const uploadInput = {
+    data(){
+        return {
+            files: (isEmpty(this.value)) ? [] : (isArray(this.value) ? this.value : [this.value]),
+            upload: [],
+            uploading: [],
+            model: null,
+            uploadable: !this.schema.disabled,
+            placeholder: this.schema.placeholder
+        }
+    },
+    methods: {
+        showInput() {
+            if (this.schema.multiple) {
+                return true;
+            }
+            if (this.files.length === 0) {
+                return true;
+            }
+            // if (!this.schema.deleteUrl) {
+            //     return true;
+            // }
+            return false;
+        },
+        formatNames() {
+            if (this.files.length) {
+                return `${this.files.length} files uploaded`
+            } else {
+                return this.schema.placeholder
+            }
+        },
+        handleFileUpload(evt){
+            forEach(evt.target.files, (file) => {
+                this.upload.push({
+                    progress: 0,
+                    uploading: true,
+                    uploaded: false,
+                    file
+                });
+            });
+            this.model = null;
+            this.$refs['file'].reset();
+            this.processUploads();
+        },
+        removeModelFile(index) {
+            this.files.splice(index, 1);
+            this.onChange();
+            this.canUpload();
+            this.placeholder = this.formatNames();
+        },
+        processUploads(){
+            let upload = this.upload.shift();
+            if (upload !== undefined) {
+                this.processFileUpload(upload);
+            }
+        },
+        processFileUpload(upload){
+
+            let length = this.uploading.push(upload);
+            let index = length - 1;
+
+            let file = upload.file;
+
+            this.$fndryApiService.upload(this.$fndryApiService.getHandleUrl(this.schema.action, this.schema.params), file,
+                (progressEvent) => {
+                    this.uploading[index].progress = Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total );
+                })
+                .then((response) => {
+                    this.uploading[index].progress = 100;
+                    this.uploading[index].uploading = false;
+                    this.uploading[index].uploaded = true;
+                    this.uploading[index].failed = false;
+                    this.files.push(merge({}, response.data, {file}));
+                })
+                .catch((response) => {
+                    this.uploading[index].id = null;
+                    this.uploading[index].progress = 0;
+                    this.uploading[index].uploading = false;
+                    this.uploading[index].failed = true;
+                    this.uploading[index].error = (response.error) ? response.error : 'Unable to upload file';
+                    this.uploading[index].validation = [];
+                    if (response.code === 422 && response.data) {
+                        forEach(response.data, (errors) => {
+                            forEach(errors, (error) => {
+                                this.uploading[index].validation.push(error);
+                            });
+                        });
+                    }
+
+                })
+                .finally(() => {
+                    this.onChange();
+                    this.placeholder = this.formatNames();
+                    this.processUploads();
+                })
+            ;
+        },
+        onChange(){
+            this.$emit('input', this.getValue());
+        },
+        getValue(){
+            let value = null;
+            if (this.schema.multiple && this.files.length > 0) {
+                value = [];
+                forEach(this.files, (file) => {
+                    if (file.id) {
+                        value.push(file.id);
+                    }
+                });
+            } else if (this.files[0]) {
+                value = this.files[0].id;
+            }
+            return value;
+        },
+        getAcceptAttributes(){
+
+            let rules = this.schema.rules? this.schema.rules.split('|'): [];
+            let mime = null;
+
+            for(let key in rules){
+                if(rules.hasOwnProperty(key)){
+                    if(rules[key].indexOf('mimes:') > -1){
+                        if(mime){
+                            mime = rules[key].split(':');
+                        }
+                    }
+                }
+            }
+
+            if(mime){
+                return mime[1];
+            }else{
+                return '';
+            }
+
+        },
+        canUpload(){
+            if (this.schema.disabled) {
+                this.uploadable = false;
+                return;
+            }
+            if (this.schema.multiple) {
+                if (this.schema.max && this.files.length >= this.schema.max) {
+                    this.uploadable = false;
+                    return;
+                }
+            } else {
+                if (this.files.length >= 1) {
+                    this.uploadable = false;
+                    return;
+                }
+            }
+            this.uploadable = true;
+        }
+    },
+    computed: {
+        filesClasses() {
+            let cls = [
+                `file-attached file-layout`
+            ];
+            if (this.schema.layout) {
+                cls.push(`file-layout-${this.schema.layout}`);
+            }
+            return cls;
+        }
+    }
+};
+
+
 export default {
     props: {
         schema: {
@@ -136,6 +305,7 @@ export default {
                     }
                     break;
                 case 'file':
+                case 'image':
                     type = "upload";
                     break;
                 case 'submit':
@@ -249,3 +419,5 @@ export default {
         },
 	}
 };
+
+

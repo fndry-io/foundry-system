@@ -41,6 +41,54 @@
                         },
                         email: 'bob@domain.com',
                         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed condimentum ullamcorper facilisis',
+
+                        image: [
+                            {
+                                id: 488,
+                                created_at: "2019-10-22 14:47:47",
+                                is_public: true,
+                                original_name: "600x600.jpg",
+                                size: 15.18,
+                                type: "image/jpeg",
+                                updated_at: "2019-10-22 14:47:47",
+                                url: "http://localhost/storage/5mcofenK9baHm0F6e7dJuxFAZYj0qTWvyRQUkDdx.jpeg",
+                                uuid: "a7955dcd-1e2e-48c7-8f4b-dd639d5e4947"
+                            },
+                            {
+                                id: 488,
+                                created_at: "2019-10-22 14:47:47",
+                                is_public: true,
+                                original_name: "600x600.jpg",
+                                size: 15.18,
+                                type: "image/jpeg",
+                                updated_at: "2019-10-22 14:47:47",
+                                url: "http://localhost/storage/5mcofenK9baHm0F6e7dJuxFAZYj0qTWvyRQUkDdx.jpeg",
+                                uuid: "a7955dcd-1e2e-48c7-8f4b-dd639d5e4947"
+                            },
+                            {
+                                id: 488,
+                                created_at: "2019-10-22 14:47:47",
+                                is_public: true,
+                                original_name: "600x600.jpg",
+                                size: 15.18,
+                                type: "image/jpeg",
+                                updated_at: "2019-10-22 14:47:47",
+                                url: "http://localhost/storage/5mcofenK9baHm0F6e7dJuxFAZYj0qTWvyRQUkDdx.jpeg",
+                                uuid: "a7955dcd-1e2e-48c7-8f4b-dd639d5e4947"
+                            },
+                            {
+                                id: 488,
+                                created_at: "2019-10-22 14:47:47",
+                                is_public: true,
+                                original_name: "600x600.jpg",
+                                size: 15.18,
+                                type: "image/jpeg",
+                                updated_at: "2019-10-22 14:47:47",
+                                url: "http://localhost/storage/5mcofenK9baHm0F6e7dJuxFAZYj0qTWvyRQUkDdx.jpeg",
+                                uuid: "a7955dcd-1e2e-48c7-8f4b-dd639d5e4947"
+                            }
+                        ],
+
                         file_multiple: [
                             {
                                 id: 17,
@@ -55,6 +103,30 @@
                         //repeat: "DTSTART:20190917T120914Z\nRRULE:FREQ=MONTHLY;INTERVAL=5;COUNT=12;BYDAY=+3TU"
                     },
                     children: [
+                        {
+                            type: 'row',
+                            children: [
+                                {
+                                    type: 'image',
+                                    name: 'image',
+                                    action: '/api/system/files/upload/image',
+                                    required: true,
+                                    label: 'Image Upload',
+                                    multiple: true,
+                                    layout: 'thumbnails',
+                                    deleteUrl: '/api/system/files/{_entity}/delete',
+                                },
+                                // {
+                                //     type: 'image',
+                                //     name: 'image_multiple',
+                                //     action: '/api/system/files/upload/image',
+                                //     deleteUrl: '/api/system/files/{_entity}/delete',
+                                //     required: true,
+                                //     label: 'Image Upload (multiple)',
+                                //     multiple: true
+                                // }
+                            ]
+                        },
                         {
                             type: 'row',
                             children: [

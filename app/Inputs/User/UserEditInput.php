@@ -9,6 +9,7 @@ use Foundry\System\Inputs\User\Types\Active;
 use Foundry\System\Inputs\User\Types\Email;
 use Foundry\System\Inputs\User\Types\JobDepartment;
 use Foundry\System\Inputs\User\Types\JobTitle;
+use Foundry\System\Inputs\User\Types\ProfileImage;
 use Foundry\System\Inputs\User\Types\SuperAdmin;
 use Foundry\System\Inputs\User\Types\Username;
 use Foundry\System\Inputs\User\Types\DisplayName;
@@ -40,7 +41,8 @@ class UserEditInput extends Inputs {
 			PasswordConfirmation::input()->setRequired(false),
 			JobTitle::input(),
 			JobDepartment::input(),
-			User::input()->setLabel(__('Supervisor'))->setName('supervisor')
+			User::input()->setLabel(__('Supervisor'))->setName('supervisor'),
+            ProfileImage::input()
 		];
 
 		if (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {

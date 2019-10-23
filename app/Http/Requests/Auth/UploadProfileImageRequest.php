@@ -21,7 +21,7 @@ class UploadProfileImageRequest extends UploadImageFileRequest
     public function rules()
     {
         $rules = parent::rules();
-        array_push($rules, 'dimensions:min_width=600,min_width=600,ratio=1/1');
+        array_push($rules, 'dimensions:min_width=600,min_height=600,ratio=1/1');
         return $rules;
     }
 }

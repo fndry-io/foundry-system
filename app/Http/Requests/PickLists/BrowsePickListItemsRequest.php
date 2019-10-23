@@ -10,7 +10,6 @@ use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
-use Foundry\Core\Requests\Traits\IsBrowseRequest;
 use Foundry\System\Http\Resources\PickListItem;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Services\PickListItemService;

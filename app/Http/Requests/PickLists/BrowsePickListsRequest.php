@@ -11,7 +11,6 @@ use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
-use Foundry\Core\Requests\Traits\IsBrowseRequest;
 use Foundry\System\Http\Resources\PickList;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Services\PickListService;

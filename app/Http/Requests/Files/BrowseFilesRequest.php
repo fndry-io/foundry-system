@@ -11,11 +11,9 @@ use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\Core\Requests\Traits\HasReference;
-use Foundry\Core\Requests\Traits\IsBrowseRequest;
 use Foundry\System\Http\Resources\File;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Services\FileService;
-use LaravelDoctrine\ORM\Facades\EntityManager;
 
 class BrowseFilesRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {

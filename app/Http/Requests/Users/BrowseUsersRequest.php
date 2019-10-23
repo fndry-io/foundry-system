@@ -13,7 +13,6 @@ use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
-use Foundry\Core\Requests\Traits\IsBrowseRequest;
 use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Http\Resources\User;
 use Foundry\System\Http\Resources\UserCollection;
@@ -22,7 +21,6 @@ use Foundry\System\Services\UserService;
 class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
 	use HasInput;
-	use IsBrowseRequest;
 
 	public static function name(): String {
 		return 'foundry.system.users.browse';

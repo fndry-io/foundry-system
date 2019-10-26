@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Traits\HasRoles as Roleable;
 
 /**
  * Class User
@@ -44,6 +46,7 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 	use Uuidable;
 	use Notifiable;
 	use Visible;
+    use Roleable;
 
 	protected $table = 'users';
 
@@ -162,7 +165,7 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 	 * @return bool
 	 */
 	public function isAdmin() {
-		return false;
+        return $this->isSuperAdmin() || $this->hasRole(config('permission.admin.role'));
 	}
 
 	/**
@@ -170,12 +173,6 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 	 */
 	public function isSuperAdmin() {
 		return $this->super_admin;
-	}
-
-	public function can($ability, $arguments = [])
-	{
-		//todo correct this to the permissions
-		return true;
 	}
 
 	public function setPasswordAttribute(string $password)

@@ -19,7 +19,7 @@ abstract class BaseUploadFileRequest extends FormRequest implements InputInterfa
 	 * {@inheritdoc}
 	 */
 	public function authorize() {
-		return !!(Auth::user());
+        return ($this->user() && $this->user()->can('upload files'));
 	}
 
 	/**

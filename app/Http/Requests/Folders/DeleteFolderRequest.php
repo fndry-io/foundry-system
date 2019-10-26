@@ -17,7 +17,7 @@ class DeleteFolderRequest  extends FolderRequest implements EntityRequestInterfa
 
 	public function authorize()
 	{
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('delete folders'));
 	}
 
     /**

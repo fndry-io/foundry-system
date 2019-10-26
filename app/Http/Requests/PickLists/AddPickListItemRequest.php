@@ -46,7 +46,7 @@ class AddPickListItemRequest extends PickListRequest implements InputInterface, 
     public function authorize()
     {
     	//todo update to use the permissions
-        return !!($this->user()) && $this->getEntity()->is_tag;
+        return ($this->user() && $this->user()->can('create pick list items')) && $this->getEntity()->is_tag;
     }
 
 	/**

@@ -39,7 +39,8 @@ class RegisterUserRequest extends FormRequest implements ViewableFormRequestInte
 	 */
 	public function authorize()
 	{
-		return true;
+	    //todo connect this to a setting for allowing public registrations
+        return ($this->user() && $this->user()->can('create users'));
 	}
 
 	public function rules() {
@@ -68,7 +69,7 @@ class RegisterUserRequest extends FormRequest implements ViewableFormRequestInte
 	 */
 	public function handle() : Response
 	{
-		return UserService::service()->register($this->input);
+		return UserService::service()->register($this->getInput());
 	}
 
 	/**

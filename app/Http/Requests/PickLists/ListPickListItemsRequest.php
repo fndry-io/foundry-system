@@ -24,7 +24,6 @@ class ListPickListItemsRequest extends PickListRequest implements ViewableFormRe
      */
     public function authorize()
     {
-    	//todo update to use the permissions
         return !!($this->user());
     }
 

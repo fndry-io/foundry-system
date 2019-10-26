@@ -41,7 +41,7 @@ class AddFolderRequest extends FolderRequest implements ViewableFormRequestInter
 	 */
 	public function authorize()
 	{
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('create folders'));
 	}
 
 	/**

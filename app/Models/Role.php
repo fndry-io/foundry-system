@@ -2,22 +2,42 @@
 
 namespace Foundry\System\Models;
 
-use Foundry\Core\Models\Model;
+use Foundry\Core\Models\Traits\Sluggable;
 
-class Role extends Model
-{
-	protected $table = 'roles';
+class Role extends \Spatie\Permission\Models\Role {
 
-	/**
-	 * @var array The fillable values
-	 */
-	protected $fillable = [
-		'name'
+    use Sluggable;
+
+    protected $table = 'roles';
+
+    protected $sluggable = 'name';
+
+    /**
+     * @var array The fillable values
+     */
+    protected $fillable = [
+        'name',
+        'guard_name'
+    ];
+
+    protected $visible = [
+        'id',
+        'name',
+        'guard_name',
+        'slug'
+    ];
+
+    protected $hidden = [
+		'created_at',
+		'updated_at',
+		'model_type',
+		'model_id',
+		'pivot'
 	];
 
-	protected $visible = [
-		'id',
-		'name'
-	];
+	public function isAdminRole()
+	{
+		return ($this->name === config('permissions.admin.role'));
+	}
 
 }

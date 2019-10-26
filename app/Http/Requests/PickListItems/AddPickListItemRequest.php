@@ -39,8 +39,7 @@ class AddPickListItemRequest extends FormRequest implements InputInterface, View
 	 */
 	public function authorize(): bool
 	{
-		//todo add in the authorisation
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('create pick list items'));
 	}
 
 	/**
@@ -50,7 +49,7 @@ class AddPickListItemRequest extends FormRequest implements InputInterface, View
 	 */
 	public function handle() : Response
 	{
-		return PickListItemService::service()->add($this->input);
+		return PickListItemService::service()->add($this->getInput());
 	}
 
 	/**

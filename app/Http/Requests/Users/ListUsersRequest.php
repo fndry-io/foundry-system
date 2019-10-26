@@ -27,7 +27,6 @@ class ListUsersRequest extends FormRequest implements ViewableFormRequestInterfa
      */
     public function authorize()
     {
-    	//todo update to use the permissions
         return !!($this->user());
     }
 

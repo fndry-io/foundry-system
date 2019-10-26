@@ -50,7 +50,7 @@ class BulkAddUserRequest extends FormRequest implements ViewableFormRequestInter
 	 */
 	public function authorize()
 	{
-		return (!!($this->user()) && $this->user()->isSuperAdmin());
+		return ($this->user() && $this->user()->isSuperAdmin());
 	}
 
 	/**

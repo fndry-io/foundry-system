@@ -29,7 +29,7 @@ class BrowseFolderRequest extends FolderRequest implements ViewableFormRequestIn
 	 */
 	public function authorize()
 	{
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('browse folders'));
 	}
 
 	/**

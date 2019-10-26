@@ -39,7 +39,7 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 	 */
 	public function authorize()
 	{
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('edit users'));
 	}
 
 	public function rules() {
@@ -113,9 +113,10 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 				$children[] = $form->get('super_admin');
 			}
 			$form->addChildren(
-				(new SectionType(__('Access'), __('Controls the access this user has to the system.')))->addChildren(RowType::withChildren(
-					RowType::withChildren(...$children)
-				))
+				(new SectionType(__('Access'), __('Controls the access this user has to the system.')))->addChildren(
+				    RowType::withChildren(...$children),
+                    RowType::withChildren($form->get('roles')->setValue($this->entity->roles->pluck('id')->toArray()))
+                )
 			);
 		}
 

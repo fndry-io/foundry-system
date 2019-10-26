@@ -27,7 +27,7 @@ class AddFileRequest extends FolderRequest implements ViewableFormRequestInterfa
 	 */
 	public function authorize()
 	{
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('create files'));
 	}
 
 	/**

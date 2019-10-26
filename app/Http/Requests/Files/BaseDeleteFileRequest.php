@@ -10,7 +10,7 @@ abstract class BaseDeleteFileRequest extends FileRequest {
 
 	public function authorize() {
 		//todo add permission check and is the user the owner of the file
-		return !!(Auth::user());
+        return ($this->user() && $this->user()->can('delete files'));
 	}
 
 	/**

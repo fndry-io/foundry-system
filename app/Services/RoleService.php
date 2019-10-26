@@ -62,7 +62,8 @@ class RoleService extends BaseService
 	 * @param IsRole $role
 	 *
 	 * @return Response
-	 */
+     * @throws \Exception
+     */
 	public function delete(IsRole $role): Response
 	{
 		if (RoleRepository::repository()->delete($role)) {
@@ -72,5 +73,60 @@ class RoleService extends BaseService
 		}
 	}
 
+    /**
+     * Get a role's list of permissions
+     *
+     * @param IsRole $role
+     * @param int $page
+     * @param int $perPage
+     * @return Response
+     * @throws \Exception
+     */
+    public function permissions(IsRole $role, $page = 1, $perPage = 20): Response
+    {
+        return Response::success(RoleRepository::repository()->permissions($role, $page, $perPage));
+    }
 
+    /**
+     * Gets the roles with permissions and what roles have which permissions
+     *
+     * @param $guard
+     * @param IsRole|null $role
+     * @return Response
+     * @throws \Exception
+     */
+    public function permissionsWithRolesForGuard($guard, IsRole $role = null)
+    {
+        return Response::success(RoleRepository::repository()->permissionsWithRolesForGuard($guard, $role));
+    }
+
+
+    /**
+     * @param IsRole|int $role
+     * @param array $permissionIds Array of permission ids to sync
+     * @return Response
+     * @throws \Exception
+     */
+    public function syncRolePermissions(IsRole $role, $permissionIds)
+    {
+        if (RoleRepository::repository()->syncRolePermissions($role, $permissionIds)) {
+            return Response::success([], __('Permissions saved'));
+        } else {
+            return Response::error(__('Unable to sync role permissions'), 500);
+        }
+    }
+
+    /**
+     * @param array $rolesWithPermissions Array of roles as key and each value an array of permission ids to sync
+     * @return Response
+     * @throws \Exception
+     */
+    public function syncPermissions($rolesWithPermissions)
+    {
+        if (RoleRepository::repository()->syncPermissions($rolesWithPermissions)) {
+            return Response::success([], __('Permissions saved'));
+        } else {
+            return Response::error(__('Unable to sync role permissions'), 500);
+        }
+    }
 }

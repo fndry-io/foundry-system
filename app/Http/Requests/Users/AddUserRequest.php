@@ -40,7 +40,7 @@ class AddUserRequest extends FormRequest implements ViewableFormRequestInterface
 	 */
 	public function authorize()
 	{
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('create users'));
 	}
 
 	public function rules() {
@@ -112,11 +112,12 @@ class AddUserRequest extends FormRequest implements ViewableFormRequestInterface
 				$children[] = $form->get('super_admin');
 			}
 
-			$form->addChildren(
-				(new SectionType(__('Access'), __('Controls the access this user has to the system.')))->addChildren(
-					RowType::withChildren(...$children)
-				)
-			);
+            $form->addChildren(
+                (new SectionType(__('Access'), __('Controls the access this user has to the system.')))->addChildren(
+                    RowType::withChildren(...$children),
+                    RowType::withChildren($form->get('roles'))
+                )
+            );
 		}
 
 		return $form;

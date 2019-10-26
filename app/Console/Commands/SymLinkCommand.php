@@ -11,7 +11,7 @@ class SymLinkCommand extends Command
 	 *
 	 * @var string
 	 */
-	protected $signature = 'foundry:system:symlink {public : The public directory/uri} {target : The folder to link to}';
+	protected $signature = 'foundry-system:symlink {public : The public directory/uri} {target : The folder to link to}';
 
 	/**
 	 * The console command description.

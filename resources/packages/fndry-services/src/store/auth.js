@@ -1,4 +1,4 @@
-import {merge} from 'lodash';
+import {merge, findIndex} from 'lodash';
 
 const auth = {
     namespaced: true,
@@ -26,7 +26,7 @@ const auth = {
         },
         auth_settings(state, settings){
             state.user.settings = settings;
-        },
+        }
     },
     getters : {
         isLoggedIn: state => !!state.token,
@@ -38,6 +38,16 @@ const auth = {
                 return {};
             }
         },
+        isAdmin (state) {
+            return state.user.is_admin || state.user.is_super_admin;
+        },
+        abilities: (state) => {
+            if (state.user && state.user.abilities) {
+                return state.user.abilities;
+            } else {
+                return [];
+            }
+        }
     },
     actions: {
         login({commit}, data){
@@ -78,6 +88,15 @@ const auth = {
             commit('auth_settings', _settings);
             return this._vm.$fndryApiService.call('/api/auth/settings', 'POST', {settings: _settings});
         },
+        hasAbility({state, getters}, ability){
+            return new Promise((resolve, reject) => {
+                if (getters.isLoggedIn(state) && (getters.isAdmin(state) || (state.user.abilities && findIndex(state.user.abilities, ability) !== -1))) {
+                    resolve();
+                } else {
+                    reject();
+                }
+            })
+        }
     }
 };
 

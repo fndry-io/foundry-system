@@ -21,6 +21,9 @@ class SyncPermissions
 
         $permissions = [
             'system' => [
+                'system' => [
+                    'manage system'
+                ],
                 'users' => [
                     'browse users',
                     'create users',

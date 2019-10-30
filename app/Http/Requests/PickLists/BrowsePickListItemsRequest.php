@@ -9,15 +9,19 @@ use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
+use Foundry\Core\Requests\Traits\BrowseableRequest;
 use Foundry\Core\Requests\Traits\HasInput;
+use Foundry\System\Http\Resources\PickList;
 use Foundry\System\Http\Resources\PickListItem;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Services\PickListItemService;
+use Foundry\System\Services\PickListService;
 
 class BrowsePickListItemsRequest extends PickListRequest implements ViewableFormRequestInterface, InputInterface
 {
 
     use HasInput;
+    use BrowseableRequest;
 
 	public static function name(): String {
 		return 'foundry.system.pick-lists.items.browse';
@@ -48,8 +52,8 @@ class BrowsePickListItemsRequest extends PickListRequest implements ViewableForm
 
 		$page = $this->input('page', 1);
 		$limit = $this->input('limit', 20);
-
-		return PickListItemService::service()->browse($this->getEntity(), $inputs, $page, $limit )->asResource(PickListItem::class, true);
+        list($page, $limit, $sortBy, $sortDesc) = $this->getBrowseMeta(1, 20, 'picklist_items.label', false);
+        return PickListItemService::service()->browse($this->getEntity(), $inputs, $page, $limit, $sortBy, $sortDesc )->asResource(PickListItem::class, true);
 	}
 
     public function view() : FormType

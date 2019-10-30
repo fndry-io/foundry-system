@@ -29,12 +29,22 @@ class PickListRepository extends ModelRepository {
 	 *
 	 * @return Paginator
 	 */
-	public function browse(array $inputs, $page = 1, $perPage = 20): Paginator
+	public function browse(array $inputs, $page = 1, $perPage = 20,$sortBy = 'picklists.label', $sortDesc = false): Paginator
 	{
-		return $this->filter(function (Builder $query) use ($inputs) {
+		return $this->filter(function (Builder $query) use ($inputs,$sortBy,$sortDesc) {
 			$query
-				->select('*')
-				->orderBy('label', 'ASC');
+				->select('picklists.*');
+			//	->orderBy('label', 'ASC');
+
+            if ($sortBy) {
+                $sortDesc = ($sortDesc === true) ? 'DESC' : 'ASC';
+                if ($sortBy === 'label') {
+                    $query->orderBy('picklists.label', $sortDesc);
+                }
+            }
+            else{
+                $query->orderBy('picklists.label', 'ASC');
+            }
 			return $query;
 		}, $page, $perPage);
 	}

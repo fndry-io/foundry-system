@@ -40,9 +40,9 @@ class PickListItemRepository extends ModelRepository
 	 *
 	 * @return \Illuminate\Contracts\Pagination\Paginator
 	 */
-	public function browse(IsPickList $pick_list, array $inputs, $page = 1, $perPage = 20): Paginator
+	public function browse(IsPickList $pick_list, array $inputs, $page = 1, $perPage = 20,$sortBy = 'picklists.label', $sortDesc = false): Paginator
 	{
-		return $this->filter(function (Builder $query) use ($pick_list, $inputs) {
+		return $this->filter(function (Builder $query) use ($pick_list, $inputs,$sortBy,$sortDesc) {
 
 			$query
 				->select(
@@ -54,14 +54,24 @@ class PickListItemRepository extends ModelRepository
 					'picklist_items.status'
 				)
                 ->selectRaw('IF(picklists.default_item = picklist_items.id, true, false) as is_default')
-				->join('picklists', 'picklists.id', '=', 'picklist_items.picklist_id')
-				->orderBy('label', 'ASC');
+				->join('picklists', 'picklists.id', '=', 'picklist_items.picklist_id');
+			//	->orderBy('label', 'ASC');
 
 			if ($search = Arr::get($inputs, 'search')) {
 				$query->where('picklist_items.label', 'like', "%" . $search . "%");
 			}
 
 			$query->where('picklist_items.picklist_id', $pick_list->getKey());
+
+            if ($sortBy) {
+                $sortDesc = ($sortDesc === true) ? 'DESC' : 'ASC';
+                if ($sortBy === 'label') {
+                    $query->orderBy('picklist_items.label', $sortDesc);
+                }
+            }
+            else{
+                $query->orderBy('picklist_items.label', 'ASC');
+            }
 
 			return $query;
 

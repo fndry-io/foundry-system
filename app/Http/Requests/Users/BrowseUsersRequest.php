@@ -12,15 +12,19 @@ use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
+use Foundry\Core\Requests\Traits\BrowseableRequest;
 use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Http\Resources\User;
 use Foundry\System\Http\Resources\UserCollection;
 use Foundry\System\Services\UserService;
+use Modules\Agm\Jobs\Http\Resources\Deal;
+use Modules\Agm\Jobs\Services\DealService;
 
 class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
 	use HasInput;
+    use BrowseableRequest;
 
 	public static function name(): String {
 		return 'foundry.system.users.browse';
@@ -62,8 +66,10 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
 
 	    $page = $this->input('page', 1);
 	    $limit = $this->input('limit', 20);
+        list($page, $limit, $sortBy, $sortDesc) = $this->getBrowseMeta(1, 20, 'users.display_name', false);
+	    return UserService::service()->browse($inputs, $page, $limit , $sortBy, $sortDesc)->asResource(User::class, true);
 
-	    return UserService::service()->browse($inputs, $page, $limit )->asResource(User::class, true);
+  //      return DealService::service()->browse($inputs, $page, $limit, $sortBy, $sortDesc)->asResource(Deal::class, true);
     }
 
 	/**

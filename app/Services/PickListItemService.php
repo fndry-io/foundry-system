@@ -25,9 +25,9 @@ class PickListItemService extends BaseService {
 	 * @return Response The data key will contain an instance of Paginator
 	 * @see Paginator
 	 */
-	public function browse(IsPickList $pick_list, Inputs $inputs, $page = 1, $perPage = 20): Response
+	public function browse(IsPickList $pick_list, Inputs $inputs, $page = 1, $perPage = 20, $sortBy = null, $sortDesc = null): Response
 	{
-		return Response::success(PickListItemRepository::repository()->browse($pick_list, $inputs->values(), $page, $perPage));
+		return Response::success(PickListItemRepository::repository()->browse($pick_list, $inputs->values(), $page, $perPage, $sortBy, $sortDesc));
 	}
 
 	/**

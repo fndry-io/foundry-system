@@ -66,10 +66,9 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
 
 	    $page = $this->input('page', 1);
 	    $limit = $this->input('limit', 20);
-        list($page, $limit, $sortBy, $sortDesc) = $this->getBrowseMeta(1, 20, 'users.display_name', false);
+        list($page, $limit, $sortBy, $sortDesc) = $this->getBrowseMeta($page, $limit, 'users.display_name', false);
 	    return UserService::service()->browse($inputs, $page, $limit , $sortBy, $sortDesc)->asResource(User::class, true);
 
-  //      return DealService::service()->browse($inputs, $page, $limit, $sortBy, $sortDesc)->asResource(Deal::class, true);
     }
 
 	/**

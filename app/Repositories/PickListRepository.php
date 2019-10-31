@@ -34,7 +34,6 @@ class PickListRepository extends ModelRepository {
 		return $this->filter(function (Builder $query) use ($inputs,$sortBy,$sortDesc) {
 			$query
 				->select('picklists.*');
-			//	->orderBy('label', 'ASC');
 
             if ($sortBy) {
                 $sortDesc = ($sortDesc === true) ? 'DESC' : 'ASC';

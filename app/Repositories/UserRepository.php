@@ -51,7 +51,6 @@ class UserRepository extends ModelRepository
 
 			$query
 				->select('users.*');
-				//->orderBy('display_name', 'ASC');
 
 			if ($search = Arr::get($inputs, 'search', null)) {
 				$query->where(function (Builder $query) use ($search) {
@@ -77,9 +76,7 @@ class UserRepository extends ModelRepository
                 }
 
             }
-            else{
-                $query->orderBy('users.display_name', 'ASC');
-            }
+
 
 			return $query;
 

@@ -55,7 +55,6 @@ class PickListItemRepository extends ModelRepository
 				)
                 ->selectRaw('IF(picklists.default_item = picklist_items.id, true, false) as is_default')
 				->join('picklists', 'picklists.id', '=', 'picklist_items.picklist_id');
-			//	->orderBy('label', 'ASC');
 
 			if ($search = Arr::get($inputs, 'search')) {
 				$query->where('picklist_items.label', 'like', "%" . $search . "%");

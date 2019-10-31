@@ -66,10 +66,9 @@ class PickListItemRepository extends ModelRepository
                 $sortDesc = ($sortDesc === true) ? 'DESC' : 'ASC';
                 if ($sortBy === 'label') {
                     $query->orderBy('picklist_items.label', $sortDesc);
+                }else {
+                    $query->orderBy($sortBy, $sortDesc);
                 }
-            }
-            else{
-                $query->orderBy('picklist_items.label', 'ASC');
             }
 
 			return $query;

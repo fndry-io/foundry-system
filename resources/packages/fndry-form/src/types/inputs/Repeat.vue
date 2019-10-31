@@ -367,6 +367,12 @@
                         }
                     },
                     {
+                        text: `The first monday of the Month`,
+                        value: {
+                            byweekday: [RRule['MO']]
+                        }
+                    },
+                    {
                         text: `The last ${weekDayText} of the Month`,
                         value: {
                             byweekday: [RRule[weekDayTextShort].nth(-1)]
@@ -472,38 +478,56 @@
 
                 let dateString = this.date.utc().format('YYYYMMDDTHHmmss');
 
-                return [
-                    {
-                        value: 'daily',
-                        text: 'Daily',
-                        rule: `DTSTART:${dateString}\nRRULE:FREQ=DAILY;INTERVAL=1`
-                    },
-                    {
-                        value: 'weekly',
-                        text: `Weekly on ${dayText.label}`,
-                        rule: `DTSTART:${dateString}\nRRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=${dayText.shortValue}`
-                    },
-                    {
-                        value: 'monthly',
-                        text: `Monthly on the ${dayWeekOfMonth} ${dayText.label}`,
-                        rule: `DTSTART:${dateString}\nRRULE:FREQ=MONTHLY;INTERVAL=1;BYDAY=${weekCount + 1}${weekDayTextShort}`
-                    },
-                    {
-                        value: 'yearly',
-                        text: `Annually on ${this.date.date()} ${monthText}`,
-                        rule: `DTSTART:${dateString}\nRRULE:FREQ=YEARLY;INTERVAL=1`
-                    },
-                    {
-                        value: 'weekday',
-                        text: `Every weekday (Monday to Friday)`,
-                        rule: `DTSTART:${dateString}\nRRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,WE,TH,FR`
-                    },
-                    {
-                        text: `Custom`,
-                        value: 'custom',
-                        rule: ""
-                    }
-                ];
+                let options = [];
+
+                options.push({
+                    value: 'daily',
+                    text: 'Daily',
+                    rule: `DTSTART:${dateString}\nRRULE:FREQ=DAILY;INTERVAL=1`
+                });
+                options.push({
+                    value: 'weekly',
+                    text: `Weekly on ${dayText.label}`,
+                    rule: `DTSTART:${dateString}\nRRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=${dayText.shortValue}`
+                });
+                if (dayText.shortValue !== 'MO') {
+                    options.push({
+                        value: 'weekly-monday',
+                        text: `Weekly on Monday`,
+                        rule: `DTSTART:${dateString}\nRRULE:FREQ=WEEKLY;INTERVAL=1;BYWEEKDAY=MO`
+                    });
+                }
+
+                options.push({
+                    value: 'monthly',
+                    text: `Monthly on the ${dayWeekOfMonth} ${dayText.label}`,
+                    rule: `DTSTART:${dateString}\nRRULE:FREQ=MONTHLY;INTERVAL=1;BYDAY=${weekCount + 1}${weekDayTextShort}`
+                });
+                if (dayText.shortValue !== 'MO') {
+                    options.push({
+                        value: 'monthly-monday',
+                        text: `Monthly on the first Monday`,
+                        rule: `DTSTART:${dateString}\nRRULE:FREQ=MONTHLY;INTERVAL=1;BYWEEKDAY=MO`
+                    });
+                }
+
+                options.push({
+                    value: 'yearly',
+                    text: `Annually on ${this.date.date()} ${monthText}`,
+                    rule: `DTSTART:${dateString}\nRRULE:FREQ=YEARLY;INTERVAL=1`
+                });
+                options.push({
+                    value: 'weekday',
+                    text: `Every weekday (Monday to Friday)`,
+                    rule: `DTSTART:${dateString}\nRRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,WE,TH,FR`
+                });
+                options.push({
+                    text: `Custom`,
+                    value: 'custom',
+                    rule: ""
+                });
+
+                return options;
             },
             types: function() {
                 return types;

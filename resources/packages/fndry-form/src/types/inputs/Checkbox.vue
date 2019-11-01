@@ -7,6 +7,7 @@
             :switch="schema.switch"
             :value="schema.checkedValue"
             :unchecked-value="schema.uncheckedValue"
+            :disabled="disabled"
     >
         {{schema.label}}
     </b-form-checkbox>

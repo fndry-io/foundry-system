@@ -6,6 +6,7 @@
             v-on="$listeners"
             :options="schema.options"
             :stacked="!schema.inline"
+            :disabled="disabled"
     ></b-form-checkbox-group>
 
 </template>

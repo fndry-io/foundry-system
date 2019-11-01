@@ -37,10 +37,6 @@ class Guard extends ChoiceInputType implements Field, FieldOptions {
 		    [
 		        'text' => __('System Management'),
                 'value' => 'system'
-            ],
-            [
-                'text' => __('Test Guard'),
-                'value' => 'test'
             ]
 		];
 	}

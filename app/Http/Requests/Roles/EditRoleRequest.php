@@ -4,6 +4,7 @@ namespace Foundry\System\Http\Requests\Roles;
 
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
+use Foundry\Core\Inputs\Types\SectionType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
 use Foundry\Core\Requests\Contracts\InputInterface;
@@ -37,7 +38,7 @@ class EditRoleRequest extends RoleRequest implements ViewableFormRequestInterfac
 	 */
 	public function authorize()
 	{
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('edit roles'));
 	}
 
 	/**
@@ -61,9 +62,14 @@ class EditRoleRequest extends RoleRequest implements ViewableFormRequestInterfac
 
 		$form->setTitle(__('Update Role'));
 		$form->setButtons((new SubmitButtonType(__('Update'), $form->getAction())));
-		$form->addChildren(
-			RowType::withChildren($form->get('name'))
-		);
+
+        $form->addChildren(
+            (new SectionType(__('Role')))->addChildren(
+                RowType::withChildren($form->get('name')),
+                RowType::withChildren($form->get('guard_name'))
+            )
+        );
+
 		return $form;
 	}
 

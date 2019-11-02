@@ -39,7 +39,7 @@ class EditPickListRequest extends PickListRequest implements ViewableFormRequest
 	 */
 	public function authorize()
 	{
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('edit pick lists'));
 	}
 
 	/**

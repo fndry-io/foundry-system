@@ -25,7 +25,7 @@ class BrowseRolesRequest extends FormRequest implements ViewableFormRequestInter
 	/**
 	 * @param $inputs
 	 *
-	 * @return \Foundry\Core\Inputs\Inputs|SearchFilterInput
+	 * @return SearchFilterInput
 	 */
 	public function makeInput($inputs) {
 		return new SearchFilterInput($inputs);
@@ -38,8 +38,7 @@ class BrowseRolesRequest extends FormRequest implements ViewableFormRequestInter
      */
     public function authorize()
     {
-    	//todo update to use the permissions
-	    return !!($this->user());
+        return ($this->user() && $this->user()->can('browse roles'));
     }
 
 	/**

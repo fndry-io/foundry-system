@@ -70,8 +70,6 @@ export const determineVisibility = (condition, model) => {
     let expression = condition.operator;
     let value = objGet(model, `${condition.ref}`, null);
 
-
-
     if(expression === 'in'){
         let show = false;
         if(value && isArray(value)){

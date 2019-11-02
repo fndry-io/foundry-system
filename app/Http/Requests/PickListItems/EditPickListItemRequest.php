@@ -38,7 +38,7 @@ class EditPickListItemRequest extends PickListItemRequest implements ViewableFor
 	 */
 	public function authorize()
 	{
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('edit pick list items'));
 	}
 
 	/**

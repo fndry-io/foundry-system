@@ -17,8 +17,7 @@ class ReadFolderRequest extends FolderRequest
      */
     public function authorize()
     {
-    	//todo update to use the permissions
-	    return !!($this->user());
+        return ($this->user() && $this->user()->can('view folders'));
     }
 
 	/**

@@ -62,6 +62,13 @@ Validator.extend('date', {
         return true;
     }
 });
+Validator.extend('date_format', {
+    getMessage: field => 'The ' + field + ' value must be a valid date.',
+    validate: (value, args) => {
+        //todo write this!!!
+        return true;
+    }
+});
 
 
 

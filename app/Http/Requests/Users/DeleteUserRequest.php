@@ -51,7 +51,7 @@ class DeleteUserRequest extends UserRequest implements InputInterface
 	 */
 	public function authorize()
 	{
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('delete users'));
 	}
 
 	/**

@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Auth;
 /**
  * Class CompanyRepository
  *
- * @method IsUser|Model|boolean save(IsUser | Model | int $model)
+ * @method IsUser|User|boolean save(IsUser | Model | int $model)
  * @method boolean delete(IsUser | Model | int $model)
- * @method IsUser|Model getModel(int|Model $id)
+ * @method User|Model getModel(int|Model $id)
  *
  * @package Modules\Agm\Contacts\Repositories
  */
@@ -236,6 +236,11 @@ class UserRepository extends ModelRepository
 			}
 		}
 
+        if ((Auth::user()->isSuperAdmin() || Auth::user()->isAdmin()) && Arr::exists($data, 'roles')) {
+            $roleIds = Arr::exists($data, 'roles');
+            $user->syncRoles($roleIds);
+        }
+
 		if ($this->save($user)) {
 			return $user;
 		} else {
@@ -244,7 +249,7 @@ class UserRepository extends ModelRepository
 	}
 
 	/**
-	 * @param IsUser|Model|int $id
+	 * @param IsUser|User|int $id
 	 * @param array $data
 	 *
 	 * @return bool|Model|IsUser
@@ -269,7 +274,12 @@ class UserRepository extends ModelRepository
 			$user->super_admin = Arr::get($data, 'super_admin', false);
 		}
 
-		if (Arr::exists($data, 'active') && $user->getKey() !== Auth::user()->getKey()) {
+        if ((Auth::user()->isSuperAdmin() || Auth::user()->isAdmin()) && Arr::exists($data, 'roles')) {
+            $roleIds = Arr::get($data, 'roles');
+            $user->syncRoles($roleIds);
+        }
+
+        if (Arr::exists($data, 'active') && $user->getKey() !== Auth::user()->getKey()) {
 			$user->active = Arr::get($data, 'active', false);
 		}
 
@@ -292,7 +302,7 @@ class UserRepository extends ModelRepository
 	 * @param $id
 	 * @param array $settings
 	 *
-	 * @return bool|IsUser|Model
+	 * @return bool|IsUser|User
 	 */
 	public function syncSettings($id, array $settings)
 	{

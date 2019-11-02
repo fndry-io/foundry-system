@@ -122,13 +122,18 @@
 
                 if (this.schema.dateFormat) {
                     date = moment(this.date, this.dateOptions.format);
-                    date.hours(now.hours());
-                    date.minutes(now.minutes());
+                    date.hours(0);
+                    date.minutes(0);
                     date.seconds(0);
                     format.push(this.dateOptions.format);
                 }
                 if (this.schema.timeFormat && this.time) {
                     time = moment(this.time, this.timeOptions.format);
+                    if (date) {
+                        date.hours(now.hours());
+                        date.minutes(now.minutes());
+                        date.seconds(0);
+                    }
                     format.push(this.timeOptions.format);
                 }
 
@@ -139,7 +144,12 @@
                 } else if (time) {
                     date = time;
                 }
-                this.$emit('input', date.toISOString());
+                if (date && time) {
+                    this.$emit('input', date.toISOString());
+                } else {
+                    this.$emit('input', date.format(this.dateOptions.format));
+                }
+
             }
         },
         watch: {

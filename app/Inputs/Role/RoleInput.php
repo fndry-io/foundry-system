@@ -4,10 +4,11 @@ namespace Foundry\System\Inputs\Role;
 
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Support\InputTypeCollection;
+use Foundry\System\Inputs\Role\Types\Guard;
 use Foundry\System\Inputs\Role\Types\Name;
 
 /**
- * Class RoleAddInput
+ * Class RoleInput
  *
  * @package Foundry\System\Inputs
  *
@@ -15,14 +16,11 @@ use Foundry\System\Inputs\Role\Types\Name;
  */
 class RoleInput extends Inputs {
 
-	protected $fillable = [
-		'name'
-	];
-
 	public function types() : InputTypeCollection
 	{
 		return InputTypeCollection::fromTypes([
-			Name::input()
+			Name::input(),
+            Guard::input()
 		]);
 	}
 

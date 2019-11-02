@@ -4,6 +4,7 @@ namespace Foundry\System\Http\Requests\Roles;
 
 use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\RowType;
+use Foundry\Core\Inputs\Types\SectionType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
@@ -24,7 +25,7 @@ class AddRoleRequest extends FormRequest implements ViewableFormRequestInterface
 	/**
 	 * @param $inputs
 	 *
-	 * @return \Foundry\Core\Inputs\Inputs|RoleInput
+	 * @return RoleInput
 	 */
 	public function makeInput($inputs) {
 		return new RoleInput($inputs);
@@ -37,7 +38,7 @@ class AddRoleRequest extends FormRequest implements ViewableFormRequestInterface
 	 */
 	public function authorize()
 	{
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('create roles'));
 	}
 
 	/**
@@ -61,9 +62,14 @@ class AddRoleRequest extends FormRequest implements ViewableFormRequestInterface
 
 		$form->setTitle(__('Create Role'));
 		$form->setButtons((new SubmitButtonType(__('Create'), $form->getAction())));
-		$form->addChildren(
-			RowType::withChildren($form->get('name'))
-		);
+
+        $form->addChildren(
+            (new SectionType(__('Role')))->addChildren(
+                RowType::withChildren($form->get('name')),
+                RowType::withChildren($form->get('guard_name'))
+            )
+        );
+
 		return $form;
 	}
 }

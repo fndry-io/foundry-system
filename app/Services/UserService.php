@@ -139,7 +139,9 @@ class UserService extends BaseService {
 		$data = [
 			'user' => $user->only(['id', 'uuid', 'username', 'display_name', 'email', 'is_super_admin', 'settings', 'profile_url'])
 		];
+        $data['user']['is_admin'] = $user->isAdmin();
 		$data['user']['is_super_admin'] = $user->isSuperAdmin();
+        $data['user']['abilities'] = $user->getAllPermissions()->pluck('name');
 
 		if ($guard instanceof TokenGuard && $user instanceof HasApiToken) {
 

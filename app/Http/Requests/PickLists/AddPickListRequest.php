@@ -36,8 +36,7 @@ class AddPickListRequest extends FormRequest implements InputInterface, Viewable
 	 */
 	public function authorize(): bool
 	{
-		//todo add in the authorisation
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('create pick lists'));
 	}
 
 	/**

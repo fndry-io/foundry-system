@@ -51,7 +51,7 @@ class BrowseUsersRequest extends FormRequest implements ViewableFormRequestInter
     public function authorize()
     {
     	//todo update to use the permissions
-        return !!($this->user());
+        return ($this->user() && $this->user()->can('browse users'));
     }
 
 	/**

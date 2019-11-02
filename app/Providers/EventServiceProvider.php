@@ -2,7 +2,9 @@
 
 namespace Foundry\System\Providers;
 
+use Foundry\System\Events\SyncPermissions as SyncPermissionsEvent;
 use Foundry\System\Listeners\FolderActivitySubscriber;
+use Foundry\System\Listeners\SyncPermissions as SyncPermissionsListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -12,7 +14,11 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $listen = [];
+    protected $listen = [
+        SyncPermissionsEvent::class => [
+            SyncPermissionsListener::class
+        ]
+    ];
 
     /**
      * The event subscribers

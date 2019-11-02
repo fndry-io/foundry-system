@@ -38,7 +38,7 @@ class EditFolderRequest extends FolderRequest implements ViewableFormRequestInte
 	 */
 	public function authorize()
 	{
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('edit folders'));
 	}
 
 	/**

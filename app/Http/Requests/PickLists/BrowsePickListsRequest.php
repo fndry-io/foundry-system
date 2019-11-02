@@ -43,7 +43,7 @@ class BrowsePickListsRequest extends FormRequest implements ViewableFormRequestI
 	 */
 	public function authorize()
 	{
-		return !!($this->user());
+        return ($this->user() && $this->user()->can('browse pick lists'));
 	}
 
 	/**

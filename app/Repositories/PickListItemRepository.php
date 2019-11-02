@@ -40,7 +40,7 @@ class PickListItemRepository extends ModelRepository
 	 *
 	 * @return \Illuminate\Contracts\Pagination\Paginator
 	 */
-	public function browse(IsPickList $pick_list, array $inputs, $page = 1, $perPage = 20,$sortBy = 'picklists.label', $sortDesc = false): Paginator
+	public function browse(IsPickList $pick_list, array $inputs, $page = 1, $perPage = 20, $sortBy = null, $sortDesc = false): Paginator
 	{
 		return $this->filter(function (Builder $query) use ($pick_list, $inputs,$sortBy,$sortDesc) {
 
@@ -62,13 +62,11 @@ class PickListItemRepository extends ModelRepository
 
 			$query->where('picklist_items.picklist_id', $pick_list->getKey());
 
-            if ($sortBy) {
-                $sortDesc = ($sortDesc === true) ? 'DESC' : 'ASC';
-                if ($sortBy === 'label') {
-                    $query->orderBy('picklist_items.label', $sortDesc);
-                }else {
-                    $query->orderBy($sortBy, $sortDesc);
-                }
+            $sortDesc = ($sortDesc === true) ? 'DESC' : 'ASC';
+            if ($sortBy === 'label') {
+                $query->orderBy('picklist_items.label', $sortDesc);
+            } else {
+                $query->orderBy('picklist_items.label', $sortDesc);
             }
 
 			return $query;

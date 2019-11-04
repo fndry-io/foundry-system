@@ -275,6 +275,8 @@
             'value': function(newValue, oldValue){
                 if (isObject(newValue)) {
                     this.setResult(newValue);
+                } else if (newValue !== oldValue && newValue === null) {
+                    this.setResult(newValue);
                 }
             }
         }

@@ -72,7 +72,14 @@
             }
         },
         watch: {
-            errors(newValue, oldValue){
+            model: function(newValue, oldValue){
+                let _newVal = objGet(newValue, `${this.schema.name}`);
+                let _oldVal = objGet(oldValue, `${this.schema.name}`);
+                if (_newVal !== _oldVal) {
+                    this.value = _newVal;
+                }
+            },
+            errors: function(newValue, oldValue){
                 this.applyErrors(newValue);
             }
         },

@@ -95,7 +95,7 @@ const FndryForm = {};
 FndryForm.install = function (Vue, options) {
     Vue.component('fndry-form-schema', FndryFormSchema);
     Vue.component('fndry-form-type', FndryFormType);
-    //Vue.component('fndry-form-group', FndryFormGroup);
+    Vue.component('fndry-form-group', FndryFormGroup);
 
     Vue.use(VeeValidate, {
         // This is the default

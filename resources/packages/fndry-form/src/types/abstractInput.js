@@ -36,5 +36,12 @@ export default {
         autocomplete: function(){
             return (this.schema) ? this.schema.autocomplete : undefined;
         }
+    },
+    watch: {
+        value: function(newVal, oldVal){
+            if (newVal !== oldVal) {
+                this.model = newVal;
+            }
+        }
     }
 }

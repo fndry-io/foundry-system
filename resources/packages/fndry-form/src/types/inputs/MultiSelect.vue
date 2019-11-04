@@ -497,9 +497,9 @@
         },
         watch: {
             value: function(newVal, oldVal){
-                // if (isEqual(newVal, oldVal)) {
-                //     this.onValueChange(newVal);
-                // }
+                if (newVal !== oldVal && newVal === null) {
+                    this.selected = [];
+                }
             }
         }
     };

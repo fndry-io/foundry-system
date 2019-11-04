@@ -2,11 +2,15 @@
 
 namespace Foundry\System\Models;
 
+use Foundry\Core\Entities\Contracts\IsRole;
 use Foundry\Core\Models\Traits\Sluggable;
+use Foundry\Core\Models\Traits\Visible;
 
-class Role extends \Spatie\Permission\Models\Role {
+class Role extends \Spatie\Permission\Models\Role implements IsRole
+{
 
     use Sluggable;
+    use Visible;
 
     protected $table = 'roles';
 

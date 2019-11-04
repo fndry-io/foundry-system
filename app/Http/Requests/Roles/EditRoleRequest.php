@@ -48,7 +48,7 @@ class EditRoleRequest extends RoleRequest implements ViewableFormRequestInterfac
 	 */
 	public function handle() : Response
 	{
-		return RoleService::service()->edit($this->input, $this->getEntity());
+		return RoleService::service()->edit($this->getInput(), $this->getEntity());
 	}
 
 	/**

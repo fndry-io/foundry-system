@@ -233,7 +233,7 @@ class UserRepository extends ModelRepository
 		}
 
         if ((Auth::user()->isSuperAdmin() || Auth::user()->isAdmin()) && Arr::exists($data, 'roles')) {
-            $roleIds = Arr::exists($data, 'roles');
+            $roleIds = Arr::get($data, 'roles');
             $user->syncRoles($roleIds);
         }
 

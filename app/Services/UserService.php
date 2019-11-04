@@ -241,7 +241,7 @@ class UserService extends BaseService {
 	{
 		$user = UserRepository::repository()->update($user, $input->values());
 		if ($user) {
-			return Response::success($user);
+			return Response::success($user->load('profile_image'));
 		} else {
 			return Response::error(__('Unable to update user'), 500);
 		}

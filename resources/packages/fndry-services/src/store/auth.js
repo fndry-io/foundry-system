@@ -26,6 +26,9 @@ const auth = {
         },
         auth_settings(state, settings){
             state.user.settings = settings;
+        },
+        update_user(state, {user}){
+            state.user = merge({}, user);
         }
     },
     getters : {

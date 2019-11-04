@@ -15,7 +15,7 @@ class AddProfileImageToUsersTable extends Migration {
 		Schema::table('users', function(Blueprint $table)
 		{
             $table->integer('profile_image_id')->nullable();
-            $table->foreign('profile_image_id')->references('id')->on('files')->onUpdate('RESTRICT')->onDelete('CASCADE');
+            $table->foreign('profile_image_id')->references('id')->on('files')->onUpdate('RESTRICT')->onDelete('SET NULL');
 		});
 	}
 

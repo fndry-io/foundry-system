@@ -9,8 +9,6 @@ use Foundry\Core\Inputs\Types\FileInputType;
 class Image extends FileInputType implements Field {
 
 	/**
-	 *
-	 *
 	 * @return Inputable|File
 	 */
 	static function input( ): Inputable {
@@ -26,5 +24,6 @@ class Image extends FileInputType implements Field {
 			->setDeleteUrl(resourceUri('foundry.system.files.delete'))
 			;
 	}
+
 
 }

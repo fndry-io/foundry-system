@@ -88,4 +88,31 @@ class File extends Model implements IsFile
 		}
 	}
 
+    /**
+     * Get the URL to the file
+     *
+     * @return string
+     */
+	public function getUrlAttribute()
+    {
+
+        if (config('filesystems.default') === 's3') {
+            if (!$this->isPublic()) {
+                /**
+                 * Create a temp url with an expiry period
+                 */
+                return Storage::temporaryUrl( $this->name, now()->addMinutes(20) );
+            } else {
+                return Storage::url($this->name);
+            }
+        }
+
+        if ($this->isPublic()) {
+            return Storage::url($this->name);
+        } else {
+            return route('files.read', ['_entity' => $this->id], true);
+        }
+
+    }
+
 }

@@ -16,7 +16,7 @@ class UploadProfileImageRequest extends UploadImageFileRequest
 
     protected $height = 600;
 
-    protected $resize = 'resize';
+    protected $resize = 'fit';
 
     public function rules()
     {

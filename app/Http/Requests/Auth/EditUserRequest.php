@@ -10,6 +10,7 @@ use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
+use Foundry\System\Http\Resources\AuthUser;
 use Foundry\System\Inputs\User\UserEditInput;
 use Foundry\System\Services\UserService;
 use Illuminate\Support\Facades\Auth;
@@ -74,7 +75,7 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 	 */
 	public function handle() : Response
 	{
-		return UserService::service()->edit($this->input, $this->getEntity());
+		return UserService::service()->edit($this->input, $this->getEntity())->asResource(AuthUser::class);
 	}
 
 	/**
@@ -87,12 +88,19 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 		$form = $this->form();
 
 		//$form->setValues(['password' => null, 'password_confirmation' => null]);
+        $entity = $this->getEntity();
+
+        $image = $form->get('profile_image');
+        if ($entity->profile_image) {
+            $image->setFiles([$entity->profile_image->only('id', 'url', 'original_name', 'type', 'size')]);
+        }
 
 		$form->setTitle(__('Edit User'));
 		$form->setButtons((new SubmitButtonType(__('Save'), $form->getAction())));
 		$form->addChildren((new SectionType(__('Details')))->addChildren(
 			RowType::withChildren($form->get('username')->setAutocomplete(false), $form->get('display_name')->setAutocomplete(false)),
-			RowType::withChildren($form->get('email')->setAutocomplete(false))
+			RowType::withChildren($form->get('email')->setAutocomplete(false)),
+            RowType::withChildren($image)
 		));
 
 		$form->addChildren(
@@ -100,12 +108,6 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 				RowType::withChildren($form->get('password')->setAutocomplete(false), $form->get('password_confirmation')->setAutocomplete(false))
 			)
 		);
-
-        $form->addChildren(
-            (new SectionType(__('Profile')))->addChildren(
-                RowType::withChildren($form->get('profile_image'))
-            )
-        );
 
 		return $form;
 	}

@@ -2,7 +2,7 @@
     <div class="file-uploader">
 
         <div :class="filesClasses">
-            <div v-if="files.length > 0" class="file-outer" v-for="(file, index) in files">
+            <div v-if="files && files.length > 0" class="file-outer" v-for="(file, index) in files">
                 <div class="file uploaded">
                     <div class="file-thumbnail" v-if="schema.type === 'image'">
                         <img v-if="schema.type === 'image'" class="responsive" :src="file.url" :alt="file.original_name" />
@@ -19,7 +19,7 @@
                                 </div>
                             </div>
                             <div class="col flex-grow-0 text-right">
-                                <fndry-request-button v-if="schema.deleteUrl" size="sm"  variant="danger" :request="schema.deleteUrl" :params="{_entity: file.id}" type="confirm" :confirm-options="{message: 'Are you sure you want to remove this file?'}" @success="(response) => removeModelFile(index)"><span class="fa fa-trash"></span></fndry-request-button>
+                                <fndry-request-button v-if="schema.deleteUrl" size="sm"  variant="danger" :request="schema.deleteUrl" :params="{_entity: file.id, force: true}" type="confirm" :confirm-options="{message: 'Are you sure you want to remove this file?'}" @success="(response) => removeModelFile(index)"><span class="fa fa-trash"></span></fndry-request-button>
                             </div>
                         </div>
                     </div>

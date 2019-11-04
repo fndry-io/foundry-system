@@ -81,7 +81,8 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 		'username',
 		'job_title',
 		'job_department',
-		'supervisor'
+		'supervisor',
+        'profile_url'
 	];
 
 	/**
@@ -190,10 +191,9 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 
     public function getProfileUrlAttribute()
     {
-        if ($this->profile_image) {
+        if ($this->relationLoaded('profile_image') && $this->profile_image) {
             return Storage::url($this->profile_image->name);
         } else {
-            //todo replace with a generic image url
             return url('/app/img/avatars/6.png');
         }
     }

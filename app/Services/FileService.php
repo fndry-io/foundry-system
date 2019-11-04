@@ -68,9 +68,9 @@ class FileService extends BaseService
 	 *
 	 * @return Response
 	 */
-	public function delete(IsFile $file): Response
+	public function delete(IsFile $file, bool $force = false): Response
 	{
-		if (FileRepository::repository()->delete($file)) {
+		if (FileRepository::repository()->delete($file, $force)) {
 			return Response::success();
 		} else {
 			return Response::error(__('Unable to delete file'), 500);

@@ -18,6 +18,7 @@ class ProfileImage extends Image implements Field {
             ->setLabel('Profile Image')
             ->setHelp(__('Select an image that is at least 600px X 600px and with a ratio of 1:1.'))
             ->setAction(resourceUri('foundry.system.auth.profile.upload'))
+            ->setParams(['force' => true])
             ;
 	}
 

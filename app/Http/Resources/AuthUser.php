@@ -23,13 +23,11 @@ class AuthUser extends JsonResource {
 			'active' => $this->active,
 			'super_admin' => $this->super_admin,
 			'timezone' => $this->timezone,
-			'last_login_at' => $this->last_login_at,
-			'logged_in' => $this->logged_in,
-			'created_at' => $this->created_at,
-			'updated_at' => $this->updated_at,
-			'deleted_at' => $this->deleted_at,
+            'is_super_admin' => $this->isSuperAdmin(),
+            'is_admin' => $this->isAdmin(),
 			'settings' => $this->settings,
-			//todo add permissions scopes
+            'profile_url' => $this->profile_url,
+            'abilities' => $this->getAllPermissions()->pluck('name')
 		];
 	}
 }

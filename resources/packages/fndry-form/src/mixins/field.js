@@ -73,7 +73,7 @@ import { get as objGet, forEach, isNil, isArray, isString, isFunction, map, isEm
 export const uploadInput = {
     data(){
         return {
-            files: (isEmpty(this.value)) ? [] : (isArray(this.value) ? this.value : [this.value]),
+            files: (this.schema.files) ? this.schema.files : [],
             upload: [],
             uploading: [],
             model: null,

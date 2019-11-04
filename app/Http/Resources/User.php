@@ -29,7 +29,8 @@ class User extends JsonResource {
 			$this->mergeWhen($request->user() && ($request->user()->isAdmin() || $request->user()->id === $this->id), [
 				'last_login_at' => $this->last_login_at,
 				'logged_in' => $this->logged_in
-			])
+			]),
+            'profile_url' => $this->profile_url
 		];
 	}
 }

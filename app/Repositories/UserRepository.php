@@ -45,13 +45,12 @@ class UserRepository extends ModelRepository
 	 *
 	 * @return Paginator
 	 */
-	public function browse(array $inputs, $page = 1, $perPage = 20): Paginator
+	public function browse(array $inputs, $page = 1, $perPage = 20, $sortBy = null, $sortDesc = false): Paginator
 	{
-		return $this->filter(function (Builder $query) use ($inputs) {
+		return $this->filter(function (Builder $query) use ($inputs,$sortBy,$sortDesc) {
 
 			$query
-				->select('*')
-				->orderBy('display_name', 'ASC');
+				->select('users.*');
 
 			if ($search = Arr::get($inputs, 'search', null)) {
 				$query->where(function (Builder $query) use ($search) {
@@ -65,6 +64,15 @@ class UserRepository extends ModelRepository
 			if ($deleted == 'deleted') {
 				$query->onlyTrashed();
 			}
+
+            $sortDesc = ($sortDesc === true) ? 'DESC' : 'ASC';
+            if ($sortBy === 'username') {
+                $query->orderBy('users.username', $sortDesc);
+            } else if($sortBy ==='job_title') {
+                $query->orderBy('users.job_title', $sortDesc);
+            } else {
+                $query->orderBy('users.display_name', $sortDesc);
+            }
 
 			return $query;
 

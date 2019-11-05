@@ -23,6 +23,7 @@
                            :state="valid"
                            :validation="{validate}"
                            :required="fieldRequired(schema)"
+                           :disabled="schema.disabled"
                 ></component>
             </div>
             <b-form-invalid-feedback :state="valid">

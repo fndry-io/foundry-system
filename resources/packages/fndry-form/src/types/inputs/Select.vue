@@ -8,6 +8,7 @@
                 v-on="$listeners"
                 :multiple="schema.multiple"
                 :state="state"
+                :disabled="disabled"
         >
             <option v-if="schema.empty && !schema.multiple" :value="null">{{(schema.empty === true) ? 'Please select an option' : schema.empty}}</option>
             <option v-if="options" v-for="option in options" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>

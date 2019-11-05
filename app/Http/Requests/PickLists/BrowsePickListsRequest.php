@@ -10,14 +10,18 @@ use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\Response;
+use Foundry\Core\Requests\Traits\BrowseableRequest;
 use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Http\Resources\PickList;
+use Foundry\System\Http\Resources\User;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Services\PickListService;
+use Foundry\System\Services\UserService;
 
 class BrowsePickListsRequest extends FormRequest implements ViewableFormRequestInterface, InputInterface
 {
     use HasInput;
+    use BrowseableRequest;
 
 	public static function name(): String {
 		return 'foundry.system.pick-lists.browse';
@@ -54,7 +58,8 @@ class BrowsePickListsRequest extends FormRequest implements ViewableFormRequestI
 		$page = $this->input('page', 1);
 		$limit = $this->input('limit', 20);
 
-		return PickListService::service()->browse($inputs, $page, $limit)->asResource(PickList::class, true);
+        list($page, $limit, $sortBy, $sortDesc) = $this->getBrowseMeta(1, 20, 'picklists.label', false);
+		return PickListService::service()->browse($inputs, $page, $limit, $sortBy, $sortDesc)->asResource(PickList::class, true);
 	}
 
 	/**

@@ -18,9 +18,9 @@ class PickListService extends BaseService {
 	 *
 	 * @return Response
 	 */
-	public function browse(Inputs $inputs, $page = 1, $perPage = 20) : Response
+	public function browse(Inputs $inputs, $page = 1, $perPage = 20, $sortBy = null, $sortDesc = null) : Response
 	{
-		return Response::success(PickListRepository::repository()->browse($inputs->values(), $page, $perPage));
+		return Response::success(PickListRepository::repository()->browse($inputs->values(), $page, $perPage, $sortBy, $sortDesc));
 	}
 
 	/**

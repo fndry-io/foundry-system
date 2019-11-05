@@ -37,8 +37,8 @@ class UserService extends BaseService {
 	 *
 	 * @return Response
 	 */
-	public function browse( Inputs $inputs, $page = 1, $perPage = 20 ): Response {
-		return Response::success(UserRepository::repository()->browse($inputs->values(), $page, $perPage));
+	public function browse( Inputs $inputs, $page = 1, $perPage = 20, $sortBy = null, $sortDesc = null ): Response {
+		return Response::success(UserRepository::repository()->browse($inputs->values(), $page, $perPage, $sortBy, $sortDesc));
 	}
 
 	/**

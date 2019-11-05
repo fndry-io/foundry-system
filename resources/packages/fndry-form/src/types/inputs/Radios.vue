@@ -8,6 +8,7 @@
             :stacked="!schema.inline"
             :value-field="schema.valueKey"
             :text-field="schema.textKey"
+            :disabled="disabled"
     ></b-form-radio-group>
 
 </template>

@@ -26,11 +26,11 @@ class SyncPermissions
                 ],
                 'users' => [
                     'browse users',
-                    'create users',
+                    'add users',
                     'edit users',
                     'delete users',
                     'archive users',
-                    'view users'
+                    'read users'
                 ],
                 'activities' => [
                     'browse activities'
@@ -40,19 +40,19 @@ class SyncPermissions
                     'upload files',
                     'edit files',
                     'delete files',
-                    'view files',
+                    'read files',
                     'download files'
                 ],
                 'folders' => [
                     'browse folders',
-                    'create folders',
+                    'add folders',
                     'edit folders',
                     'delete folders',
-                    'view folders'
+                    'read folders'
                 ],
                 'roles' => [
                     'browse roles',
-                    'create roles',
+                    'add roles',
                     'edit roles',
                     'delete roles',
                     'assign roles'
@@ -63,13 +63,13 @@ class SyncPermissions
                 ],
                 'pick lists' => [
                     'browse pick lists',
-                    'create pick lists',
+                    'add pick lists',
                     'edit pick lists',
                     'disable pick lists'
                 ],
                 'pick lists items' => [
                     'browse pick list items',
-                    'create pick list items',
+                    'add pick list items',
                     'edit pick list items',
                     'disable pick list items'
                 ]

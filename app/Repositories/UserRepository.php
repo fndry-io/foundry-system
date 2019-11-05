@@ -122,7 +122,9 @@ class UserRepository extends ModelRepository
 			$query->orWhere('email', 'like', "%" . $name . "%");
 		});
 
-		$query->limit($limit);
+		if ($limit) {
+            $query->limit($limit);
+        }
 
 		return $query->get();
 	}

@@ -27,7 +27,7 @@ class DeleteFolderRequest  extends FolderRequest implements EntityRequestInterfa
      */
     public function findEntity($id)
     {
-        return FolderRepository::repository()->findOneBy(['id' => $id]);
+        return FolderRepository::repository()->query()->withTrashed()->find($id);
     }
 
 	/**

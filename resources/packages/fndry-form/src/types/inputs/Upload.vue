@@ -97,21 +97,20 @@
         <b-form-file
             :id="id"
             :name="name"
-            :state="state"
+            :state="Boolean(files)"
             v-if="showInput()"
-            placeholder="Choose a image..."
-            drop-placeholder="Drop image here..."
+            placeholder="Choose a file or drop it here..."
+            drop-placeholder="Drop file here..."
             :accept="getAcceptAttributes()"
             :multiple="schema.multiple"
             :placeholder="placeholder"
             :disabled="!uploadable"
             :readonly="schema.readonly"
             :required="schema.required"
-            :value="model"
+            :value="fileModel"
             ref="file"
-            @change="handleFileUpload"
+            @input="handleFileInput"
             :file-name-formatter="formatNames"
-            no-drop
         ></b-form-file>
     </div>
 </template>
@@ -119,13 +118,11 @@
 
 <script>
 
-    import {forEach, map, isArray, isEmpty, find} from 'lodash';
-
     import abstractInput from '../abstractInput';
     import {uploadInput} from '../../mixins/field';
 
     export default {
-        name: "fndry-field-image",
+        name: "fndry-field-upload",
         mixins: [
             abstractInput,
             uploadInput
@@ -136,31 +133,31 @@
 
 <style lang="scss">
 
-    .custom-file {
-        display: block;
-        height: auto !important;
+    /*.custom-file {*/
+    /*    display: block;*/
+    /*    height: auto !important;*/
 
-        .custom-file-input {
-            position: absolute;
-            top: 0;
-            right: 0;
-            left: 0;
-            bottom: 0;
-            height: auto;
-        }
-        .custom-file-label {
-            position: relative;
-            bottom: 0;
-            height: auto;
-            padding: 20px;
-            text-align: center;
-            background: #efefef;
-            width: 100%;
-        }
-        .custom-file-label::after {
-            visibility: hidden;
-        }
-    }
+    /*    .custom-file-input {*/
+    /*        position: absolute;*/
+    /*        top: 0;*/
+    /*        right: 0;*/
+    /*        left: 0;*/
+    /*        bottom: 0;*/
+    /*        height: auto;*/
+    /*    }*/
+    /*    .custom-file-label {*/
+    /*        position: relative;*/
+    /*        bottom: 0;*/
+    /*        height: auto;*/
+    /*        padding: 20px;*/
+    /*        text-align: center;*/
+    /*        background: #efefef;*/
+    /*        width: 100%;*/
+    /*    }*/
+    /*    .custom-file-label::after {*/
+    /*        visibility: hidden;*/
+    /*    }*/
+    /*}*/
 
     .file-uploader .file-progress .invalid-feedback {
         display: block;

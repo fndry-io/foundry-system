@@ -20,7 +20,7 @@ class File extends FileInputType implements Field {
 			__('File'),
 			true
 		))
-			->setPlaceholder(__('Click to browse for a file'))
+			->setPlaceholder(__('Drag and Drop here or click to browse'))
 			->addRule('file')
 			->setAction(resourceUri('foundry.system.files.upload'))
 			->setDeleteUrl(resourceUri('foundry.system.files.delete'))

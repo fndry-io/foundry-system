@@ -76,7 +76,7 @@ export const uploadInput = {
             files: (this.schema.files) ? this.schema.files : [],
             upload: [],
             uploading: [],
-            model: null,
+            fileModel: null,
             uploadable: !this.schema.disabled,
             placeholder: this.schema.placeholder
         }
@@ -101,7 +101,29 @@ export const uploadInput = {
                 return this.schema.placeholder
             }
         },
-        handleFileUpload(evt){
+        handleFileInput(files){
+            if (!isEmpty(files)) {
+                let setFile = (file) => {
+                    this.upload.push({
+                        progress: 0,
+                        uploading: true,
+                        uploaded: false,
+                        file: file
+                    });
+                };
+
+                if (isArray(files)) {
+                    forEach(files, setFile);
+                } else {
+                    setFile(files);
+                }
+
+                this.fileModel = null;
+                this.$refs['file'].reset();
+                this.processUploads();
+            }
+        },
+        handleFileChange(evt){
             forEach(evt.target.files, (file) => {
                 this.upload.push({
                     progress: 0,
@@ -110,7 +132,7 @@ export const uploadInput = {
                     file
                 });
             });
-            this.model = null;
+            this.fileModel = null;
             this.$refs['file'].reset();
             this.processUploads();
         },
@@ -251,6 +273,10 @@ export default {
         },
         errors: {
             type: [Object, Array],
+            required: false
+        },
+        noLabel: {
+            type: Boolean,
             required: false
         }
     },

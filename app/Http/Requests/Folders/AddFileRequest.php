@@ -37,11 +37,32 @@ class AddFileRequest extends FolderRequest implements ViewableFormRequestInterfa
 	 */
 	public function handle() : Response
 	{
+        $folder = $this->getEntity();
+
+        $file = File::input()->setMultiple(true);
+        $file->setFolder($folder);
+
+        $reference_type = $this->input('reference_type');
+        $reference_id = $this->input('reference_id');
+
+        if (!$reference_type) {
+            $reference_type = $this->getEntity()->reference_type;
+            $reference_id = $this->getEntity()->reference_id;
+        }
+
+        $file->setParams([
+            'folder' => $folder->getKey(),
+            'reference_type' => $reference_type,
+            'reference_id' =>$reference_id
+        ]);
+
 		/**
 		 * The service in this request only needs to return a success as the FileInputType used in the view is already
 		 * adding the file to the folder
 		 */
-		return Response::success();
+        return Response::success(InputTypeCollection::fromTypes([
+            $file
+        ]));
 	}
 
 	/**

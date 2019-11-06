@@ -3,7 +3,7 @@
         <b-form-group
                 :id="`fieldset-${schema.name}`"
                 :description="schema.help"
-                :label="schema.label"
+                :label="(!noLabel) ? schema.label : null"
                 :label-for="schema.id"
                 :state="valid"
                 :required="fieldRequired(schema)"

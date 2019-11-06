@@ -68,12 +68,10 @@
 <script>
 
     import { ValidationProvider, ValidationObserver } from 'vee-validate';
-    import {FndryRequestFormInline} from "../../src/index";
 
     export default {
         name: 'Login',
         components: {
-            FndryRequestFormInline,
             ValidationProvider,
             ValidationObserver
         },

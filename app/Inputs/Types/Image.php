@@ -18,7 +18,7 @@ class Image extends FileInputType implements Field {
 			true
 		))
             ->setType('image')
-			->setPlaceholder(__('Click to browse for a image'))
+			->setPlaceholder(__('Drag and Drop here or click to browse'))
 			->addRule('exists:files,id')
 			->setAction(resourceUri('foundry.system.files.upload.image'))
 			->setDeleteUrl(resourceUri('foundry.system.files.delete'))

@@ -2,6 +2,7 @@
 
 namespace Foundry\System\Repositories;
 
+use Foundry\Core\Entities\Contracts\IsSoftDeletable;
 use Foundry\Core\Entities\Contracts\IsUser;
 use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
@@ -19,7 +20,6 @@ use Illuminate\Support\Facades\Auth;
  * Class CompanyRepository
  *
  * @method IsUser|User|boolean save(IsUser | Model | int $model)
- * @method boolean delete(IsUser | Model | int $model)
  * @method User|Model getModel(int|Model $id)
  *
  * @package Modules\Agm\Contacts\Repositories
@@ -314,5 +314,33 @@ class UserRepository extends ModelRepository
 			return false;
 		}
 	}
+
+    /**
+     * Delete an record in the database
+     *
+     * @param User|IsUser|Model|int $id
+     *
+     * @return bool|null
+     * @throws \Exception
+     */
+    public function delete($id, bool $force = false)
+    {
+        $user = $this->getModel($id);
+
+        if ($user->isSuperAdmin()) {
+            return false;
+        }
+
+        if ($user instanceof IsSoftDeletable && ($user->isDeleted() || $force)) {
+            $result = $user->forceDelete();
+        } else {
+            $result = $user->delete();
+        }
+
+        if ($result) {
+            $this->dispatch('deleted', $user);
+        }
+        return $result;
+    }
 
 }

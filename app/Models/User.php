@@ -102,7 +102,20 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 		'logged_in' => 'boolean',
 	];
 
-	/**
+	protected static function boot()
+    {
+        parent::boot();
+        static::deleting(function(User $model){
+            if ($model->isSuperAdmin()) {
+                throw new \Exception('You cannot delete a Super User');
+            }
+            if ($model->getKey() === 1) {
+                throw new \Exception('You cannot delete the master user account');
+            }
+        });
+    }
+
+    /**
 	 * Get the token
 	 *
 	 * @return string|null

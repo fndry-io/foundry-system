@@ -3,8 +3,8 @@ import {merge, findIndex} from 'lodash';
 const auth = {
     namespaced: true,
     state: {
-        status: '',
-        token: localStorage.getItem('token') || '',
+        status: null,
+        token: localStorage.getItem('token') || null,
         user: {},
     },
     mutations: {
@@ -20,9 +20,9 @@ const auth = {
             state.status = 'error';
         },
         auth_reset(state){
-            state.status = '';
-            state.token = '';
-            state.user = '';
+            state.status = null;
+            state.token = null;
+            state.user = null;
         },
         auth_settings(state, settings){
             state.user.settings = settings;

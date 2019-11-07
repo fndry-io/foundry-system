@@ -40,7 +40,7 @@ class RegisterUserRequest extends FormRequest implements ViewableFormRequestInte
 	public function authorize()
 	{
 	    //todo connect this to a setting for allowing public registrations
-        return ($this->user() && $this->user()->can('create users'));
+        return ($this->user() && $this->user()->can('add users'));
 	}
 
 	public function rules() {

@@ -40,7 +40,7 @@ class AddUserRequest extends FormRequest implements ViewableFormRequestInterface
 	 */
 	public function authorize()
 	{
-        return ($this->user() && $this->user()->can('create users'));
+        return ($this->user() && $this->user()->can('add users'));
 	}
 
 	public function rules() {

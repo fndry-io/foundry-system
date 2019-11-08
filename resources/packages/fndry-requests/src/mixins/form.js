@@ -84,16 +84,22 @@ export default {
                         method = 'POST';
                     }
 
+                    let that = this;
+
                     this.$fndryApiService.call(action, method, this.model)
-                        .then((response) => {
-                            this.response = response;
-                            this.onSuccess(response);
+                        .then(function(response) {
+                            that.response = response;
+                            that.onSuccess(response);
+                            //console.log('call success');
                         }, (response) => {
-                            this.response = response;
-                            this.onFail(response);
+                            that.response = response;
+                            that.submitting = false;
+                            that.onFail(response);
+                            //console.log('call fail');
                         })
                         .finally(() => {
-                            this.submitting = false;
+                            that.submitting = false;
+                            that.activeButton = null;
                         })
                     ;
                 } else {

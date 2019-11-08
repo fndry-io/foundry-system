@@ -98,6 +98,7 @@ export const modalForm = (request, {data, params, size, position}) => {
     vNode = modal.$mount();
 
     const remove = () => {
+        console.log('remove');
         vNode.$el.remove();
         modal.$destroy();
     };
@@ -108,9 +109,10 @@ export const modalForm = (request, {data, params, size, position}) => {
             remove();
             accept({response, model});
         });
-        modal.$on('fail', (response, model) => {
-            reject('fail', {response, model});
-        });
+        //todo fix this as it is causing any future success call to not emit up
+        // modal.$on('fail', (response, model) => {
+        //     reject('fail', {response, model});
+        // });
         modal.$on('cancel', () => {
             remove();
             reject('cancel');

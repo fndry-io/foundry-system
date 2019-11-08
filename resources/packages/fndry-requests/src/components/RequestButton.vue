@@ -141,14 +141,8 @@
                 $request
                     .then((response) => {
                         this.onSuccess(response);
-                        this.submitting = false;
                     }, (response) => {
                         this.onFail(response);
-                        this.submitting = false;
-                    })
-                    .catch((response) => {
-                        //alert accordingly
-                        this.submitting = false;
                     })
                     .finally((response) => {
                         this.submitting = false;

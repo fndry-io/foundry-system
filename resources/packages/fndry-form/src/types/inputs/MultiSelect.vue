@@ -1,24 +1,20 @@
 <template>
     <div :class="{'select-dropdown': true, 'open': open}">
-        <div class="input-group">
+        <div ref="input-group" class="input-group-wrapper">
+            <div class="input-group">
 
-            <div :class="{'form-control': true, 'input-area': true, 'is-invalid': !state, 'is-valid': state}">
-                <div :id="id" class="selected-values" v-if="!open && selected.length > 0" @click.stop="handleClick" tabindex="0" @focus="handleClick">
-                    <div v-if="schema.taggable && selected.length > 0 && selected.length < 3" class="badges">
-                        <span class="badge badge-primary" v-for="option in selected">{{option[textKey]}}<button type="button" class="close" aria-label="Remove" @click.stop="() => selectItem(option)" tabindex="0"><span aria-hidden="true">&times;</span></button></span>
+                <div :class="{'form-control': true, 'input-area': true, 'is-invalid': state === false, 'is-valid': state === true}">
+                    <div :id="id" class="selected-values" v-if="!open && selected.length > 0" @click.stop="handleClick" tabindex="0" @focus="handleClick">
+                        <div>{{text}}&nbsp;</div>
                     </div>
-                    <div v-else-if="schema.taggable && selected.length >= 3">{{text}}&nbsp;</div>
-                    <div v-else-if="!schema.taggable">{{text}}&nbsp;</div>
+                    <div :id="id" class="input" v-if="open || selected.length == 0">
+                        <input ref="search" :placeholder="searchPlaceholderText" class="form-control" v-model="search" @input="handleSearch" @keyup.tab="handleSearchEnter" @focus="handleFocus">
+                    </div>
+                    <span class="dropdown-toggle" @click.stop="handleClick"></span>
                 </div>
-                <div :id="id" class="input" v-if="open || selected.length == 0">
-                    <input ref="search" :placeholder="searchPlaceholderText" class="form-control" v-model="search" @input="handleSearch" @keyup.tab="handleSearchEnter" @focus="handleFocus">
-                </div>
-                <span class="dropdown-toggle" @click.stop="handleClick"></span>
-            </div>
 
-
-            <div class="input-group-append" v-if="schema.buttons">
-                <fndry-request-button
+                <div class="input-group-append" v-if="schema.buttons">
+                    <fndry-request-button
                         v-for="(button, index) in schema.buttons"
                         :key="index"
                         v-if="canDisplayButton(button.type)"
@@ -30,61 +26,66 @@
                         :button-icon="button.icon"
                         :button-text="button.label"
                         @success="onRequestButtonSuccess"
-                ></fndry-request-button>
+                    ></fndry-request-button>
+                </div>
             </div>
-        </div>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <!--<div class="dropdown-item-text dropdown-item-search" v-if="selected.length > 0">-->
+
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <!--<div class="dropdown-item-text dropdown-item-search" v-if="selected.length > 0">-->
                 <!--<b-form-input ref="search" :placeholder="searchPlaceholderText" v-model="search" @input="handleSearch" @keyup.tab="handleSearchEnter"></b-form-input>-->
                 <!--<button type="button" class="close" aria-label="Close" v-if="search !== '' && !searching" @click.stop="resetSearch">-->
-                    <!--<span aria-hidden="true">&times;</span>-->
+                <!--<span aria-hidden="true">&times;</span>-->
                 <!--</button>-->
-            <!--</div>-->
-            <div class="dropdown-items">
-                <div v-if="searching">
-                    <div class="dropdown-item-text">Searching... <span class="append"><b-spinner small label="Searching..."></b-spinner></span></div>
-                </div>
-                <div v-if="search && !searching && this.search.length < 3">
-                    <div class="dropdown-item-text">{{searchTextStatus}}</div>
-                </div>
-                <div v-else-if="!errorText && (ajaxOptions.length > 0 || optionKeys.length > 0)">
-                    <h6 class="dropdown-header">{{selectTitle}}</h6>
-                </div>
-
-                <div v-if="ajaxOptions && ajaxOptions.length > 0">
-                    <div class="dropdown-item" v-for="(option, index) in ajaxOptions" :key="`${key}-${option[valueKey]}`" @click.stop="() => selectSearchItem(option, index)" @keyup.enter="(evt) => {evt.preventDefault(); selectSearchItem(option, index);}" tabindex="0">{{option[textKey]}}</div>
-                </div>
-
-                <div v-if="ajaxOptions && ajaxOptions.length > 0 && optionKeys && optionKeys.length > 0" class="dropdown-divider"></div>
-
-                <div v-if="optionKeys && optionKeys.length > 0">
-                    <div class="dropdown-item" v-for="k in optionKeys" :key="`${key}-${options[k][valueKey]}`" @click.stop="() => selectItem(options[k])" @keyup.enter="(evt) => {evt.preventDefault();selectItem(options[k]);}" tabindex="0"><span v-if="options[k].temp" class="append"><b-spinner variant="secondary" small label="Saving..."></b-spinner></span><span v-if="isSelected(options[k]) !== false" class="append icon fa fa-check"></span>{{options[k][textKey]}}</div>
-                </div>
-
-                <div v-if="!searching && (options && optionKeys.length === 0) && (ajaxOptions && ajaxOptions.length === 0)">
-                    <div class="dropdown-item-text">{{noOptionsText}}</div>
-                </div>
-
-                <div v-if="errorText">
-                    <h6 class="dropdown-header">{{errorTitleText}}</h6>
-                    <div class="dropdown-item-text">{{errorText}}</div>
-                </div>
-
-                <!--<div v-if="groups" v-for="(group_options, label) in groups" :key="`group-${key}-${label}`">-->
-                <!--<h6 class="dropdown-header">{{label}}</h6>-->
-                <!--<a class="dropdown-item" v-if="options" v-for="option in group_options" :key="`${key}-${option.value}`" href="#" @click.stop="() => selectItem(option)">{{option.text}}</a>-->
                 <!--</div>-->
-                <div v-if="search && !exactMatchExists && schema.taggable && !errorText">
-                    <h6 class="dropdown-header">{{addTagText}}</h6>
-                    <a class="dropdown-item" v-if="canEnterToAdd && search" @click.stop="() => addTaggable(search)" @keyup.enter="(evt) => {evt.preventDefault();addTaggable(search);}" tabindex="0"><span class="append badge badge-secondary">Click item to add</span>{{search}}</a>
+                <div class="dropdown-items">
+                    <div v-if="searching">
+                        <div class="dropdown-item-text">Searching... <span class="append"><b-spinner small label="Searching..."></b-spinner></span></div>
+                    </div>
+                    <div v-if="search && !searching && this.search.length < 3">
+                        <div class="dropdown-item-text">{{searchTextStatus}}</div>
+                    </div>
+                    <div v-else-if="!errorText && (ajaxOptions.length > 0 || optionKeys.length > 0)">
+                        <h6 class="dropdown-header">{{selectTitle}}</h6>
+                    </div>
+
+                    <div v-if="ajaxOptions && ajaxOptions.length > 0">
+                        <div class="dropdown-item" v-for="(option, index) in ajaxOptions" :key="`${key}-${option[valueKey]}`" @click.stop="() => selectSearchItem(option, index)" @keyup.enter="(evt) => {evt.preventDefault(); selectSearchItem(option, index);}" tabindex="0">{{option[textKey]}}</div>
+                    </div>
+
+                    <div v-if="ajaxOptions && ajaxOptions.length > 0 && optionKeys && optionKeys.length > 0" class="dropdown-divider"></div>
+
+                    <div v-if="optionKeys && optionKeys.length > 0">
+                        <div class="dropdown-item" v-for="k in optionKeys" :key="`${key}-${options[k][valueKey]}`" @click.stop="() => selectItem(options[k])" @keyup.enter="(evt) => {evt.preventDefault();selectItem(options[k]);}" tabindex="0"><span v-if="options[k].temp" class="append"><b-spinner variant="secondary" small label="Saving..."></b-spinner></span><span v-if="isSelected(options[k]) !== false" class="append icon fa fa-check"></span>{{options[k][textKey]}}</div>
+                    </div>
+
+                    <div v-if="!searching && (options && optionKeys.length === 0) && (ajaxOptions && ajaxOptions.length === 0)">
+                        <div class="dropdown-item-text">{{noOptionsText}}</div>
+                    </div>
+
+                    <div v-if="errorText">
+                        <h6 class="dropdown-header">{{errorTitleText}}</h6>
+                        <div class="dropdown-item-text">{{errorText}}</div>
+                    </div>
+
+                    <!--<div v-if="groups" v-for="(group_options, label) in groups" :key="`group-${key}-${label}`">-->
+                    <!--<h6 class="dropdown-header">{{label}}</h6>-->
+                    <!--<a class="dropdown-item" v-if="options" v-for="option in group_options" :key="`${key}-${option.value}`" href="#" @click.stop="() => selectItem(option)">{{option.text}}</a>-->
+                    <!--</div>-->
+                    <div v-if="search && !exactMatchExists && schema.taggable && !errorText">
+                        <h6 class="dropdown-header">{{addTagText}}</h6>
+                        <a class="dropdown-item" v-if="canEnterToAdd && search" @click.stop="() => addTaggable(search)" @keyup.enter="(evt) => {evt.preventDefault();addTaggable(search);}" tabindex="0"><span class="append badge badge-secondary">Click item to add</span>{{search}}</a>
+                    </div>
+                </div>
+                <div class="dropdown-item-text dropdown-item-footer" v-if="schema.multiple && !searching && options.length > 0">
+                    <ul>
+                        <li v-if="!schema.max"><a href="#" @click.prevent="selectAll">Select All</a></li>
+                        <li><a href="#" @click.prevent="selectNone">Select None</a></li>
+                    </ul>
                 </div>
             </div>
-            <div class="dropdown-item-text dropdown-item-footer" v-if="schema.multiple && !searching && options.length > 0">
-                <ul>
-                    <li v-if="!schema.max"><a href="#" @click.prevent="selectAll">Select All</a></li>
-                    <li><a href="#" @click.prevent="selectNone">Select None</a></li>
-                </ul>
-            </div>
+        </div>
+        <div class="badges" v-if="schema.taggable && selected.length > 0">
+            <span class="badge badge-primary" v-for="option in selected">{{option[textKey]}}<button type="button" class="close" aria-label="Remove" @click.stop="() => selectItem(option)" tabindex="0"><span aria-hidden="true">&times;</span></button></span>
         </div>
     </div>
 
@@ -227,9 +228,9 @@
                 this.$emit('blur');
             },
             handleClickOutside(evt){
-                if (this.$el.contains(evt.target)) {
+                if (this.$refs['input-group'].contains(evt.target)) {
                     this.open = true;
-                } else if (!this.$el.contains(evt.target) && this.open) {
+                } else if (!this.$refs['input-group'].contains(evt.target) && this.open) {
                     this.handleBlur();
                 }
             },
@@ -245,9 +246,7 @@
                 let index = this.isSelected(option);
                 if (this.schema.multiple) {
                     if (index !== false) {
-                        if (!this.schema.required || (this.schema.required && this.selected.length > 1)) {
-                            this.selected.splice(index, 1);
-                        }
+                        this.selected.splice(index, 1);
                     } else {
                         if (!this.schema.max || this.selected.length < this.schema.max) {
                             this.selected.push(option);
@@ -256,9 +255,7 @@
                     this.selected = [...this.selected];
                 } else {
                     if (index !== false) {
-                        if (!this.schema.required) {
-                            this.selected = null;
-                        }
+                        this.selected = null;
                     } else {
                         this.selected = option;
                     }
@@ -493,12 +490,16 @@
             },
             errorTitleText: function(){
                 return 'Oops, looks like there was an error';
+            },
+            showTags: function(){
+                return this.schema.showTags;
             }
         },
         watch: {
             value: function(newVal, oldVal){
                 if (newVal !== oldVal && newVal === null) {
                     this.selected = [];
+                    this.model = [];
                 }
             }
         }
@@ -558,6 +559,10 @@
             }
         }
 
+        .input-group-wrapper {
+            position: relative;
+        }
+
         .input {
             display: block;
             width: 100%;
@@ -571,11 +576,6 @@
 
         }
 
-        .selected-values {
-            display: block;
-            width: 100%;
-            padding: 0.375rem 0.75rem;
-        }
 
         .dropdown-menu {
             display: none;
@@ -669,30 +669,35 @@
             }
         }
 
-        .input-area {
-            .badges {
-                line-height: 1;
-                display: block;
-                min-height: 1.5rem;
-            }
-            .badge {
-                position: relative;
-                display: inline-block;
-                padding-right: 20px;
-                margin: 3px 3px 0 0;
-                overflow: hidden;
+        .selected-values {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+        }
 
-                .close {
-                    position: absolute;
-                    right: 0;
-                    top: 0;
-                    bottom: 0;
-                    width: 18px;
-                    font-size: 0.8rem;
+        .badges {
+            line-height: 1;
+            display: block;
+            margin: 0.5rem 0 0;
+        }
 
-                    &:hover {
-                        background: rgba(0,0,0,0.25);
-                    }
+        .badge {
+            position: relative;
+            display: inline-block;
+            padding-right: 20px;
+            /*margin: 3px 3px 0 0;*/
+            overflow: hidden;
+
+            .close {
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 18px;
+                font-size: 0.8rem;
+
+                &:hover {
+                    background: rgba(0,0,0,0.25);
                 }
             }
         }

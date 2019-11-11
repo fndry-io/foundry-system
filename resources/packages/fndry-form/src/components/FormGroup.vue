@@ -9,6 +9,7 @@
                 :required="fieldRequired(schema)"
                 :class="{'required': fieldRequired(schema)}"
                 v-if="schema.type !== 'hidden'"
+                :label-cols="(schema.inline) ? 2: null"
         >
             <div class="field-wrap">
                 <component ref="name"
@@ -76,6 +77,9 @@
                 let _newVal = objGet(newValue, `${this.schema.name}`);
                 let _oldVal = objGet(oldValue, `${this.schema.name}`);
                 if (_newVal !== _oldVal) {
+                    if (_newVal === null) {
+                        this.$refs['provider'].reset();
+                    }
                     this.value = _newVal;
                 }
             },

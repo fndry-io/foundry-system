@@ -18,6 +18,13 @@ class UploadProfileImageRequest extends UploadImageFileRequest
 
     protected $resize = 'fit';
 
+    /**
+     * {@inheritdoc}
+     */
+    public function authorize() {
+        return !!($this->user());
+    }
+
     public function rules()
     {
         $rules = parent::rules();

@@ -150,13 +150,9 @@
                     this.$emit('input', date.format(this.dateOptions.format));
                 }
 
-            }
-        },
-        watch: {
-            value: function(newValue, oldValue){
-                if (newValue !== oldValue) {
-                    this.setDateTime(newValue);
-                }
+            },
+            setValue(value){
+                this.setDateTime(value);
             }
         }
 

@@ -41,7 +41,7 @@
         methods: {
             onInput(value){
                 let val = this.cleanNumber(value);
-                this.model = this.formatNumber(val);
+                this.setValue(val);
                 this.$emit('input', val);
             },
             onChange(){
@@ -57,6 +57,9 @@
                     return value;
                 }
 
+            },
+            setValue(value){
+                this.model = this.formatNumber(value);
             }
         },
         computed: {

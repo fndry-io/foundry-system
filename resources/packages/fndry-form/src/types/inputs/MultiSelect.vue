@@ -3,7 +3,7 @@
         <div ref="input-group" class="input-group-wrapper">
             <div class="input-group">
 
-                <div :class="{'form-control': true, 'input-area': true, 'is-invalid': state === false, 'is-valid': state === true}">
+                <div :class="{'form-control': true, 'input-area': true, 'is-invalid': state === false, 'is-valid': state === true, 'disabled': schema.disabled}">
                     <div :id="id" class="selected-values" v-if="!open && selected.length > 0" @click.stop="handleClick" tabindex="0" @focus="handleClick">
                         <div>{{text}}&nbsp;</div>
                     </div>
@@ -30,7 +30,7 @@
                 </div>
             </div>
 
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" v-if="!schema.disabled">
                 <!--<div class="dropdown-item-text dropdown-item-search" v-if="selected.length > 0">-->
                 <!--<b-form-input ref="search" :placeholder="searchPlaceholderText" v-model="search" @input="handleSearch" @keyup.tab="handleSearchEnter"></b-form-input>-->
                 <!--<button type="button" class="close" aria-label="Close" v-if="search !== '' && !searching" @click.stop="resetSearch">-->

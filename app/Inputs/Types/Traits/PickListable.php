@@ -45,7 +45,7 @@ trait PickListable {
 			}
 			//we need to find the correct default value to be selected
 			elseif ($item = Arr::first($this->picklist['items'], function($item) {
-				return $item['id'] = $this->picklist['default_item'];
+				return $item['id'] == $this->picklist['default_item'];
 			}))
 			{
 				if ($this->isMultiple()) {

@@ -38,7 +38,7 @@
                 if (value && value[0] !== '+') {
                     value = '+' + this.schema.country + value;
                 }
-                this.model = this.formatNumber(value);
+                this.setValue(value);
                 this.$emit('input', this.cleanNumber(this.model));
             },
             onChange(){
@@ -49,6 +49,9 @@
             },
             formatNumber(value){
                 return new AsYouType().input(value);
+            },
+            setValue(value){
+                this.model = this.formatNumber(value);
             }
         }
 

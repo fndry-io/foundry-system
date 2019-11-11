@@ -102,7 +102,7 @@ export const uploadInput = {
             }
         },
         handleFileInput(files){
-            if (!isEmpty(files)) {
+            if (files !== null) {
                 let setFile = (file) => {
                     this.upload.push({
                         progress: 0,

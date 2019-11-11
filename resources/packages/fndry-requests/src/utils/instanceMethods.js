@@ -98,7 +98,6 @@ export const modalForm = (request, {data, params, size, position}) => {
     vNode = modal.$mount();
 
     const remove = () => {
-        console.log('remove');
         vNode.$el.remove();
         modal.$destroy();
     };

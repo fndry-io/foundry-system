@@ -38,6 +38,7 @@ export default {
                 this.folderTrail = [...this.folderTrail.slice(0, index + 1)];
             }
             this.folderIndex = this.folderTrail.length - 1;
+            this.hideUpload();
         }
     }
 }

@@ -29,6 +29,12 @@ trait Folderable
 				}
 			}
 		});
+        static::restored(function (HasFolder $model) {
+            /**@var Folder $folder*/
+            if ($folder = $model->getFolder()) {
+                $folder->restore();
+            }
+        });
 	}
 
 	/**

@@ -32,6 +32,11 @@ export default {
             model: this.value
         }
     },
+    methods: {
+        setValue(value){
+            this.model = value;
+        }
+    },
     computed: {
         autocomplete: function(){
             return (this.schema) ? this.schema.autocomplete : undefined;
@@ -40,7 +45,7 @@ export default {
     watch: {
         value: function(newVal, oldVal){
             if (newVal !== oldVal) {
-                this.model = newVal;
+                this.setValue(newVal);
             }
         }
     }

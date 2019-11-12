@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 abstract class BaseDeleteFileRequest extends FileRequest {
 
 	public function authorize() {
-		//todo add permission check and is the user the owner of the file
         return ($this->user() && $this->user()->can('delete files'));
 	}
 

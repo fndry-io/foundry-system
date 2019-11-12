@@ -20,6 +20,7 @@ Route::middleware('auth:api')->group( function () {
 	//auth user
 	FormRequestHandler::route( '/auth/edit',    'Foundry\System\Http\Requests\Auth\EditUserRequest' );
     FormRequestHandler::route( '/auth/profile', 'Foundry\System\Http\Requests\Auth\UploadProfileImageRequest' );
+    FormRequestHandler::route( '/auth/profile/delete', 'Foundry\System\Http\Requests\Auth\DeleteProfileImageRequest' );
 	FormRequestHandler::route( '/auth/user',    'Foundry\System\Http\Requests\Auth\ReadUserRequest' );
 	FormRequestHandler::route( '/auth/settings','Foundry\System\Http\Requests\Auth\SyncUserSettingsRequest' );
 });

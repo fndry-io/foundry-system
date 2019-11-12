@@ -178,22 +178,8 @@ const handleCall = function (options, that) {
         ;
     })
         .then((response) => {
-            if (response.message) {
-                if (that.vm.$toasted) {
-                    that.vm.$toasted.show(response.message, {
-                        icon: 'check'
-                    });
-                }
-            }
             return response;
         }, (response) => {
-            if (response.code !== 401) {
-                if (that.vm.$toasted) {
-                    that.vm.$toasted.show(response.error, {
-                        icon: 'exclamation-circle'
-                    });
-                }
-            }
             return Promise.reject(response);
         })
         ;

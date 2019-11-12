@@ -40,8 +40,6 @@ class SyncPermissions
                     'add folders',
                     'edit folders',
                     'delete folders',
-                    'read folders',
-                    'browse files',
                     'upload files',
                     'edit files',
                     'delete files',

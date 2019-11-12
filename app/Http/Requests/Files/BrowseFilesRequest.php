@@ -31,7 +31,7 @@ class BrowseFilesRequest extends FormRequest implements ViewableFormRequestInter
 	 */
 	public function authorize()
 	{
-        return ($this->user() && $this->user()->can('browse files'));
+        return ($this->user() && $this->user()->can('browse folders'));
 	}
 
 	/**

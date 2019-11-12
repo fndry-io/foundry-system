@@ -126,7 +126,12 @@ class RoleRepository extends ModelRepository
         }
         $roles = $query->get();
 
-        $permissions = Permission::query()->where('guard_name', $guard)->orderBy('name', 'ASC')->get();
+        $permissions = Permission::query()
+            ->where('guard_name', $guard)
+            ->orderBy('module', 'ASC')
+            ->orderBy('group', 'ASC')
+            ->orderBy('name', 'ASC')
+            ->get();
 
         $assigned = [];
         foreach ($roles as $role) {

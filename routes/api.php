@@ -44,6 +44,8 @@ Route::prefix('system')->middleware('auth:api')->group( function () {
 	FormRequestHandler::route('/roles/{_entity}/edit',          'Foundry\System\Http\Requests\Roles\EditRoleRequest');
 	FormRequestHandler::route('/roles/{_entity}/delete',        'Foundry\System\Http\Requests\Roles\DeleteRoleRequest');
 
+    FormRequestHandler::route('/permissions/sync',              'Foundry\System\Http\Requests\Permissions\SyncPermissionsRequest');
+
 	//PickList Items
 	FormRequestHandler::route('/pick-list-items/add',             'Foundry\System\Http\Requests\PickListItems\AddPickListItemRequest');
 	FormRequestHandler::route('/pick-list-items/{_entity}/edit',  'Foundry\System\Http\Requests\PickListItems\EditPickListItemRequest');

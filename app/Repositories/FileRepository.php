@@ -11,6 +11,8 @@ use Foundry\System\Events\FolderCreated;
 use Foundry\System\Models\File;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 /**
  * Class FileRepository
@@ -84,6 +86,12 @@ class FileRepository extends ModelRepository
 	public function insert($data)
 	{
 		$file = self::make($data);
+		$file->token = Str::random(32);
+
+		if ($user = Auth::user()) {
+            $file->user()->associate($user);
+        }
+
 		$file->save();
 
 		if ($parent = Arr::get($data, 'folder')) {

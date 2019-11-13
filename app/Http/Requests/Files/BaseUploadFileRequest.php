@@ -8,7 +8,6 @@ use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
 use Foundry\System\Inputs\File\FileInput;
 use Foundry\System\Services\FileService;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 abstract class BaseUploadFileRequest extends FormRequest implements InputInterface {
@@ -44,7 +43,7 @@ abstract class BaseUploadFileRequest extends FormRequest implements InputInterfa
 	 *
 	 * @return int
 	 */
-	public function fileSize()
+	static function fileSize()
 	{
 		return 15000;
 	}
@@ -52,7 +51,7 @@ abstract class BaseUploadFileRequest extends FormRequest implements InputInterfa
 	/**
 	 * The list of file types to support
 	 */
-	public function fileTypes()
+	static function fileTypes()
 	{
 		return [];
 	}

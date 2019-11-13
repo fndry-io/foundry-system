@@ -12,6 +12,8 @@ use Foundry\System\Inputs\File\FileInput;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Repositories\FileRepository;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use function GuzzleHttp\Psr7\str;
 
 class FileService extends BaseService
 {
@@ -55,7 +57,9 @@ class FileService extends BaseService
 
 		$file = FileRepository::repository()->insert($values);
 		if ($file) {
-			return Response::success($file);
+		    $data = $file->toArray();
+		    $data['token'] = $file->token;
+			return Response::success($data);
 		} else {
 			return Response::error(__('Unable to add file'), 500);
 		}

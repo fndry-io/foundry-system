@@ -92,7 +92,7 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 
         $image = $form->get('profile_image');
         if ($entity->profile_image) {
-            $image->setFiles([$entity->profile_image->only('id', 'url', 'original_name', 'type', 'size')]);
+            $image->setFiles([$entity->profile_image->only('id', 'url', 'original_name', 'type', 'size', 'token')]);
         }
 
 		$form->setTitle(__('Edit User'));

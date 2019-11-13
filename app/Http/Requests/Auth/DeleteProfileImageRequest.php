@@ -12,11 +12,4 @@ class DeleteProfileImageRequest extends DeleteFileRequest
         return 'foundry.system.auth.profile.delete';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function authorize() {
-        return ($this->user() && $this->user()->profile_image->id === $this->getEntity()->id);
-    }
-
 }

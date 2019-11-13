@@ -7,6 +7,7 @@ use Foundry\Core\Models\Traits\Referencable;
 use Foundry\Core\Models\Traits\SoftDeleteable;
 use Foundry\Core\Models\Traits\Uuidable;
 use Foundry\Core\Entities\Contracts\IsFile;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
 class File extends Model implements IsFile
@@ -113,6 +114,14 @@ class File extends Model implements IsFile
             return route('files.read', ['_entity' => $this->id], true);
         }
 
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
 }

@@ -25,7 +25,7 @@ class CreateActivitiesActivitiesTable extends Migration {
             $table->integer('created_by_user_id')->nullable();
             $table->bigInteger('node_id')->nullable();
 
-            $table->foreign('node_id')->references('id')->on('nodes')->onUpdate('RESTRICT')->onDelete('CASCADE');
+            $table->foreign('node_id')->references('id')->on('nodes')->onUpdate('NO ACTION')->onDelete('CASCADE');
             $table->foreign('created_by_user_id')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('SET NULL');
 		});
 	}

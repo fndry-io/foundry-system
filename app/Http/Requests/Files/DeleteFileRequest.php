@@ -11,4 +11,6 @@ class DeleteFileRequest extends BaseDeleteFileRequest {
 		return 'foundry.system.files.delete';
 	}
 
+
+
 }

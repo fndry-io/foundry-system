@@ -11,17 +11,50 @@ class UploadFileRequest extends BaseUploadFileRequest {
 		return 'foundry.system.files.upload';
 	}
 
-	public function fileTypes() {
+	static function fileTypes() {
 		return [
+		    //images
 			'jpeg',
+            'jpg',
 			'gif',
 			'png',
+
+            //documents
 			'doc',
 			'docx',
+            'odt',
+            'ods',
+            'ppt',
+            'pptx',
 			'pdf',
 			'txt',
 			'xls',
-			'xlsx'
+			'xlsx',
+            'rtf',
+
+            //audio/video
+//            'mp3',
+//            'wav',
+//            'mpa',
+//            'mpeg',
+//            'ogg',
+//            'mpg',
+//            'mpe',
+//            'mov',
+
+            //compressed
+            'zip',
+            'rar',
+            'tar',
+
+            //data
+            'csv',
+
+            //fonts
+//            'ttf',
+//            'otf',
+//            'fon',
+//            'fnt',
 		];
 	}
 

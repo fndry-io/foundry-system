@@ -40,7 +40,7 @@ class UploadImageFileRequest extends BaseUploadFileRequest {
 		return 'foundry.system.files.upload.image';
 	}
 
-	public function fileTypes() {
+	static function fileTypes() {
 		return [
 			'jpeg',
 			'gif',

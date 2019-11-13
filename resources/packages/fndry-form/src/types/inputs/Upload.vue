@@ -1,6 +1,25 @@
 <template>
     <div class="file-uploader">
 
+        <b-form-file
+            :id="id"
+            :name="name"
+            :state="Boolean(files)"
+            v-if="showInput()"
+            placeholder="Choose a file or drop it here..."
+            drop-placeholder="Drop file here..."
+            :accept="getAcceptAttributes()"
+            :multiple="schema.multiple"
+            :placeholder="placeholder"
+            :disabled="!uploadable"
+            :readonly="schema.readonly"
+            :required="schema.required"
+            :value="fileModel"
+            ref="file"
+            @input="handleFileInput"
+            :file-name-formatter="formatNames"
+        ></b-form-file>
+
         <div :class="filesClasses">
             <div v-if="files && files.length > 0" class="file-outer" v-for="(file, index) in files">
                 <div class="file uploaded">
@@ -19,7 +38,7 @@
                                 </div>
                             </div>
                             <div class="col flex-grow-0 text-right">
-                                <fndry-request-button v-if="schema.deleteUrl" size="sm"  variant="danger" :request="schema.deleteUrl" :params="{_entity: file.id, force: true}" type="confirm" :confirm-options="{message: 'Are you sure you want to remove this file?'}" @success="(response) => removeModelFile(index)"><span class="fa fa-trash"></span></fndry-request-button>
+                                <fndry-request-button v-if="schema.deleteUrl" size="sm"  variant="danger" :request="schema.deleteUrl" :params="{_entity: file.id, force: true, token: file.token}" type="confirm" :confirm-options="{message: 'Are you sure you want to remove this file?'}" @success="(response) => removeModelFile(index)"><span class="fa fa-trash"></span></fndry-request-button>
                             </div>
                         </div>
                     </div>
@@ -39,17 +58,25 @@
 
             <div v-if="uploading.length > 0 && (file.uploading || file.failed)"
                  class="file-outer"
-                 v-for="file in uploading"
+                 v-for="(file, index) in uploading"
+                 :key="`${index}-${file.file.name}`"
             >
                 <div class="file uploading">
                     <div class="file-thumbnail" v-if="schema.type === 'image' && file.file.url">
                         <img class="responsive" :src="file.file.url" :alt="file.file.name" />
                     </div>
                     <div class="file-detail">
-                        <div class="file-name">{{file.file.name}}</div>
-                        <div class="invalid-feedback" v-if="file.failed">
-                            <span v-if="file.validation" v-for="error in file.validation" style="display: block;">{{error}}</span>
-                            <span v-else>{{file.error}}</span>
+                        <div class="row">
+                            <div class="col flex-grow-1">
+                                <div class="file-name">{{file.file.name}}</div>
+                                <div class="invalid-feedback" v-if="file.failed" style="display: block;">
+                                    <span v-if="file.validation.length > 0" v-for="error in file.validation" style="display: block;">{{error}}</span>
+                                    <span v-else>{{file.error}}</span>
+                                </div>
+                            </div>
+                            <div class="col flex-grow-0 text-right">
+                                <b-button v-if="file.failed" size="sm" variant="danger" @click="removeUploading(index)"><span class="fa fa-trash"></span></b-button>
+                            </div>
                         </div>
                     </div>
                     <div class="file-progress">
@@ -94,24 +121,6 @@
         </div>
 
 
-        <b-form-file
-            :id="id"
-            :name="name"
-            :state="Boolean(files)"
-            v-if="showInput()"
-            placeholder="Choose a file or drop it here..."
-            drop-placeholder="Drop file here..."
-            :accept="getAcceptAttributes()"
-            :multiple="schema.multiple"
-            :placeholder="placeholder"
-            :disabled="!uploadable"
-            :readonly="schema.readonly"
-            :required="schema.required"
-            :value="fileModel"
-            ref="file"
-            @input="handleFileInput"
-            :file-name-formatter="formatNames"
-        ></b-form-file>
     </div>
 </template>
 
@@ -174,7 +183,7 @@
         }
 
         .file-outer {
-            padding: 0 0 15px;
+            margin: 15px 0;
         }
 
         .file-name {

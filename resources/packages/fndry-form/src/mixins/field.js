@@ -1,5 +1,6 @@
 import { slugifyFormID } from "../utils/schema";
 import { get as objGet, forEach, isNil, isArray, isString, isFunction, map, isEmpty, find, merge } from "lodash";
+import {debounce} from "../utils";
 
 // import FormView from '../components/FormView';
 
@@ -76,6 +77,7 @@ export const uploadInput = {
             files: (this.schema.files) ? this.schema.files : [],
             upload: [],
             uploading: [],
+            process: false,
             fileModel: null,
             uploadable: !this.schema.disabled,
             placeholder: this.schema.placeholder
@@ -102,7 +104,7 @@ export const uploadInput = {
             }
         },
         handleFileInput(files){
-            if (files !== null) {
+            if ((isArray(files) && files.length > 0) || (files !== null && files.name)) {
                 let setFile = (file) => {
                     this.upload.push({
                         progress: 0,
@@ -117,37 +119,38 @@ export const uploadInput = {
                 } else {
                     setFile(files);
                 }
-
                 this.fileModel = null;
                 this.$refs['file'].reset();
-                this.processUploads();
+                this.process = true;
             }
         },
-        handleFileChange(evt){
-            forEach(evt.target.files, (file) => {
-                this.upload.push({
-                    progress: 0,
-                    uploading: true,
-                    uploaded: false,
-                    file
-                });
-            });
-            this.fileModel = null;
-            this.$refs['file'].reset();
-            this.processUploads();
-        },
+        // handleFileChange(evt){
+        //     forEach(evt.target.files, (file) => {
+        //         this.upload.push({
+        //             progress: 0,
+        //             uploading: true,
+        //             uploaded: false,
+        //             file
+        //         });
+        //     });
+        //     this.fileModel = null;
+        //     this.$refs['file'].reset();
+        //     this.processUploads();
+        // },
         removeModelFile(index) {
             this.files.splice(index, 1);
             this.onChange();
             this.canUpload();
             this.placeholder = this.formatNames();
         },
-        processUploads(){
+        processUploads: debounce(function(){
             let upload = this.upload.shift();
             if (upload !== undefined) {
                 this.processFileUpload(upload);
+            } else {
+                this.process = false;
             }
-        },
+        }, 250),
         processFileUpload(upload){
 
             let length = this.uploading.push(upload);
@@ -188,6 +191,9 @@ export const uploadInput = {
                     this.processUploads();
                 })
             ;
+        },
+        removeUploading(index){
+            this.uploading.splice(index, 1);
         },
         onChange(){
             this.$emit('input', this.getValue());
@@ -245,6 +251,13 @@ export const uploadInput = {
                 }
             }
             this.uploadable = true;
+        }
+    },
+    watch: {
+        process: function(newVal, oldVal) {
+            if (newVal !== oldVal && newVal === true) {
+                this.processUploads();
+            }
         }
     },
     computed: {

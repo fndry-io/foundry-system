@@ -72,6 +72,7 @@ class ImageService extends FileService
                 $url = Storage::url($file->name);
             }
             $data['url'] = url($url);
+            $data['token'] = $file->token;
 
 			return Response::success($data);
 		} else {

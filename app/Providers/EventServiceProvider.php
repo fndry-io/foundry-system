@@ -3,8 +3,10 @@
 namespace Foundry\System\Providers;
 
 use Foundry\System\Events\SyncPermissions as SyncPermissionsEvent;
+use Foundry\System\Events\SyncPickLists;
 use Foundry\System\Listeners\FolderActivitySubscriber;
 use Foundry\System\Listeners\SyncPermissions as SyncPermissionsListener;
+use Foundry\System\Listeners\SyncPickLists as SyncPickListsListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -17,6 +19,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         SyncPermissionsEvent::class => [
             SyncPermissionsListener::class
+        ],
+        SyncPickLists::class => [
+            SyncPickListsListener::class
         ]
     ];
 

@@ -11,7 +11,7 @@ class ThemeLinkCommand extends Command
 	 *
 	 * @var string
 	 */
-	protected $signature = 'foundry-system:link-theme {theme : The theme name as vendor/package}';
+	protected $signature = 'foundry:link-theme {theme : The theme name as vendor/package}';
 
 	/**
 	 * The console command description.

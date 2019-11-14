@@ -1,15 +1,22 @@
 <template>
     <div class="demo">
         <h2>demo</h2>
-        <div class="container text-left">
-            <ValidationObserver ref="observer" v-slot="{ invalid }" :slim="true">
-                <form @submit.prevent="onSubmit">
-                    <fndry-form-schema :schema="schema" :model="model" :errors="errors" @update="onUpdate"></fndry-form-schema>
-                    <button type="submit">Submit</button>
-                </form>
-            </ValidationObserver>
+        <div class="container-fluid text-left">
+            <div class="row">
+                <div class="col-8">
+                    <ValidationObserver ref="observer" v-slot="{ invalid }" :slim="true">
+                        <form @submit.prevent="onSubmit">
+                            <fndry-form-schema :schema="schema" :model="model" :errors="errors" @update="onUpdate"></fndry-form-schema>
+                            <button type="submit">Submit</button>
+                        </form>
+                    </ValidationObserver>
+                </div>
+                <div class="col-4">
+                    <h3>Model</h3>
+                    <pre>{{ model }}</pre>
+                </div>
+            </div>
 
-            <pre>{{ model }}</pre>
         </div>
     </div>
 </template>
@@ -98,9 +105,9 @@
                         'select-multiple-max': [
                             'red', 'blue'
                         ],
-                        date: '2018-09-01',
-                        datetime: '2018-11-21 17:33'
-                        //repeat: "DTSTART:20190917T120914Z\nRRULE:FREQ=MONTHLY;INTERVAL=5;COUNT=12;BYDAY=+3TU"
+                        date: '2019-11-26',
+                        datetime: '2018-11-21 17:33',
+                        repeat: "DTSTART:20191126T000000Z\nRRULE:FREQ=MONTHLY;COUNT=3;INTERVAL=1;BYMONTHDAY=26"
                     },
                     children: [
                         {
@@ -128,13 +135,52 @@
                             ]
                         },
                         {
-                            type: 'row',
+                            type: 'section',
+                            title: 'Date Time',
                             children: [
                                 {
-                                    type: 'repeat',
-                                    name: 'repeat',
-                                    required: false,
-                                    label: 'Repeat'
+                                    type: 'row',
+                                    children: [
+                                        {
+                                            type: 'date',
+                                            name: 'date',
+                                            required: true,
+                                            label: 'Date',
+                                            dateFormat: 'YYYY-MM-DD',
+                                        },
+                                        {
+                                            type: 'datetime',
+                                            name: 'datetime',
+                                            required: true,
+                                            label: 'Date time',
+                                            dateFormat: 'YYYY-MM-DD',
+                                            timeFormat: 'HH:mm',
+                                        },
+                                        {
+                                            type: 'repeat',
+                                            name: 'repeat',
+                                            required: false,
+                                            label: 'Repeat',
+                                            dateInputName: 'date',
+                                            options: [
+                                                {
+                                                    rule: "FREQ=MONTHLY;COUNT=3;INTERVAL=1;BYMONTHDAY=%MONTHDAY%",
+                                                    value: 'month3',
+                                                    text: "Monthly for 3 months",
+                                                },
+                                                {
+                                                    rule: "FREQ=MONTHLY;COUNT=6;INTERVAL=1;BYMONTHDAY=%MONTHDAY%",
+                                                    value: 'month6',
+                                                    text: "Monthly for 6 months",
+                                                },
+                                                {
+                                                    rule: "FREQ=MONTHLY;COUNT=12;INTERVAL=1;BYMONTHDAY=%MONTHDAY%" ,
+                                                    value: 'month12',
+                                                    text: "Monthly for 12 months",
+                                                }
+                                            ]
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -379,32 +425,6 @@
                                     url: '/api/system/pick-lists/13/list',
                                     taggableUrl: '/api/system/pick-lists/13/items/add',
                                     max: 3
-                                }
-                            ]
-                        },
-                        {
-                            type: 'section',
-                            title: 'Section Title',
-                            description: 'A description about the section',
-                            children: [
-                                {
-                                    type: 'row',
-                                    children: [
-                                        {
-                                            type: 'date',
-                                            name: 'date',
-                                            required: true,
-                                            label: 'Date',
-                                            format: 'YYYY-MM-DD',
-                                        },
-                                        {
-                                            type: 'datetime',
-                                            name: 'datetime',
-                                            required: true,
-                                            label: 'Date time',
-                                            format: 'YYYY-MM-DD HH:mm a',
-                                        }
-                                    ]
                                 }
                             ]
                         },

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="mb-3">
-            <b-form-select :value="config" :options="options" @change="onPresetChosen">
+            <b-form-select :value="config" :options="templateOptions" @change="onPresetChosen">
             </b-form-select>
             <b-form-text v-if="text">Repeat {{text}}</b-form-text>
         </div>
@@ -44,26 +44,27 @@
                 ></b-form-checkbox-group>
             </b-form-group>
 
-            <b-form-group
-                    id="ending-group"
-                    label="Ending"
-                    label-cols-sm="3"
-                    label-for="end"
-            >
-                <b-input-group>
-                    <b-form-select :value="ends" :options="endOptions" @blur="onBlur" @change="handleEnds"></b-form-select>
-                    <date v-if="ends === 'on'" id="endsOn" :schema="endsOnDateSchema" :value="endsOn" style="width: 50%" @input="handleEndsOn" @change="handleEndsOn" @blur="onBlur"></date>
-                    <b-form-input v-if="ends === 'after'" :value="endsAfter" type="number" :disabled="ends !== 'after'" min="0" style="width: 33%" @input="handleEndsAfter" @blur="onBlur"></b-form-input>
-                    <b-input-group-append v-if="ends === 'after'" is-text><span class="fa fa-redo"></span></b-input-group-append>
-                </b-input-group>
-            </b-form-group>
         </div>
+
+        <b-form-group
+            id="ending-group"
+            label="Ending"
+            label-cols-sm="3"
+            label-for="end"
+        >
+            <b-input-group>
+                <b-form-select :value="ends" :options="endOptions" @blur="onBlur" @change="handleEnds"></b-form-select>
+                <date v-if="ends === 'on'" id="endsOn" :schema="endsOnDateSchema" :value="endsOn" style="width: 50%" @input="handleEndsOn" @change="handleEndsOn" @blur="onBlur"></date>
+                <b-form-input v-if="ends === 'after'" :value="endsAfter" type="number" :disabled="ends !== 'after'" min="0" style="width: 33%" @input="handleEndsAfter" @blur="onBlur"></b-form-input>
+                <b-input-group-append v-if="ends === 'after'" is-text><span class="fa fa-redo"></span></b-input-group-append>
+            </b-input-group>
+        </b-form-group>
 
     </div>
 </template>
 
 <script>
-    import {forEach, merge, find, get} from 'lodash';
+    import {forEach, merge, find, get, isObject} from 'lodash';
     import moment from 'moment';
 
     import { RRule, RRuleSet, rrulestr } from 'rrule';
@@ -177,9 +178,9 @@
     };
 
     const base = {
-        freq: RRule.DAILY,
+        freq: null,
         dtstart: null,
-        interval: 2,
+        interval: null,
         wkst: null,
         count: null,
         until: null,
@@ -206,8 +207,22 @@
             abstractInput
         ],
         data () {
+
+            let freq = [];
+            forEach(frequencies, (interval) => {
+                freq.push({
+                    text: interval.label,
+                    value: interval.value
+                })
+            });
+
+            let endOptions = [];
+            forEach(ends, (option) => {
+                endOptions.push(option)
+            });
+
             return {
-                config: 'daily',
+                config: (this.schema.default) ? this.schema.default : 'monthly',
                 rule: null,
                 rvalue: null,
                 text: null,
@@ -219,32 +234,73 @@
                 ends: 'never',
                 endsAfter: null,
                 endsOn: null,
-                model: merge({}, base)
+                model: merge({}, base),
+                templateOptions: [],
+                frequencies: freq,
+                endOptions: endOptions,
+                endsOnDateSchema: {
+                    type: 'date',
+                    placeholder: 'Date',
+                    dateFormat: 'YYYY-MM-DD'
+                },
             }
         },
         created() {
-            let date;
-            if (this.schema.dateInputName) {
-                this.dateInput = get(this.rootModel, this.schema.dateInputName, null);
-                if (this.dateInput) {
-                    date = moment.utc(this.dateInput).local();
-                }
-            }
-
-            if (!date) {
-                date = moment();
-            }
-            this.date = date;
-            this.model.dtstart = date.toDate();
-
+            this.init();
             if (this.value) {
+                this.config = 'custom';
                 this.convertFromRRule(this.value);
-            } else {
-                this.convertToRRule();
+                this.onFreqChange();
             }
         },
         methods: {
+            init() {
+                let date;
+                if (this.schema.dateInputName) {
+                    this.dateInput = get(this.rootModel, this.schema.dateInputName, null);
+                    if (this.dateInput) {
+                        date = moment.utc(this.dateInput).local();
+                    }
+                }
+
+                if (!date) {
+                    date = moment();
+                }
+
+                this.date = date;
+                this.model.dtstart = date.toDate();
+                this.model = merge({}, this.model);
+                this.setOptions();
+
+                //copy this so we can set it to the newly set one after the date was changed
+                let ends = {
+                    ends: this.ends,
+                    endsOn: this.endsOn,
+                    endsAfter: this.endsAfter
+                };
+
+                if (this.config === 'custom') {
+                    this.onFreqChange();
+                } else {
+                    this.onPresetChosen(this.config, false);
+                }
+
+                if (ends.ends !== 'never') {
+                    this.ends = ends.ends;
+                    this.endsOn = ends.endsOn;
+                    this.endsAfter = ends.endsAfter;
+                    this.handleEnds(this.ends);
+                }
+
+            },
+            setValue(value){
+                if (value !== this.rvalue) {
+                    this.convertFromRRule(value);
+                    this.config = 'custom'
+                }
+            },
             onInput(){
+                this.convertToRRule(this.model);
                 let value = RRule.optionsToString(this.model);
                 if (value !== this.value) {
                     this.$emit('input', value);
@@ -260,11 +316,12 @@
                 this.$emit('blur');
             },
 
-            onPresetChosen(value) {
+            onPresetChosen(value, fireOnInput = true) {
                 this.config = value;
-                let selected = find(this.options, (option) => option.value === value);
+                let selected = find(this.templateOptions, (option) => option.value === value);
                 if (selected && selected.rule) {
                     this.convertFromRRule(selected.rule);
+                    if (fireOnInput) this.onInput();
                 }
             },
             handleEnds(value){
@@ -273,23 +330,28 @@
                     delete this.model.count;
                     delete this.model.until;
                     this.model = merge({}, this.model);
+                    this.onInput();
+                } else if (this.endsOn && value === 'on') {
+                    this.handleEndsOn(this.endsOn);
+                } else if (this.endsAfter && value === 'after') {
+                    this.handleEndsAfter(this.endsAfter);
                 }
             },
             handleEndsOn(value) {
                 this.model = merge({}, this.model, {count: null, until: moment.utc(value).toDate()});
                 this.endsOn = value;
+                this.onInput();
             },
             handleEndsAfter(value){
                 this.model = merge({}, this.model, {count: value, until: null});
                 this.endsAfter = value;
-            },
-            handleChange() {
-                this.model = merge({}, this.model);
+                this.onInput();
             },
             onIntervalChange(evt){
                 this.model = merge({}, this.model, {interval: evt.target.value});
+                this.onInput();
             },
-            onFreqChange(){
+            onFreqChange(val, fireOnInput = true){
                 delete this.model.bysetpos;
                 delete this.model.byweekday;
                 delete this.model.bymonthday;
@@ -302,7 +364,8 @@
                     this.intervalOptions = [];
                 }
 
-                this.handleChange();
+                this.model = merge({}, this.model);
+                if (fireOnInput) this.onInput();
             },
             getWeeklyOptions(selected = undefined){
                 let options = [];
@@ -324,6 +387,7 @@
                         this.intervalWeekOption = [weekDay.value];
                     }
                     this.model = merge({}, this.model, {byweekday: this.intervalWeekOption});
+                    this.onInput();
                 }
 
                 return options;
@@ -384,7 +448,8 @@
                 delete this.model.byweekday;
                 delete this.model.bymonthday;
                 this.intervalMonthOption = value;
-                this.model = merge({}, this.model, value)
+                this.model = merge({}, this.model, value);
+                this.onInput();
             },
             handleIntervalWeekChange(value) {
                 delete this.model.byweekday;
@@ -392,17 +457,20 @@
 
                 if (value.length > 0) {
                     this.intervalWeekOption = value;
-                    this.model = merge({}, this.model, {byweekday: value});
                 }
+                this.model = merge({}, this.model, {byweekday: value});
+                this.onInput();
             },
-            convertToRRule(){
-                this.rule = new RRule(this.model);
+            convertToRRule(model){
+                this.rule = new RRule(model);
                 this.text = this.rule.toText();
                 this.rvalue = this.rule.toString();
             },
             convertFromRRule(rfcString){
 
                 let model = RRule.parseString(rfcString);
+
+                this.date = moment.utc(model.dtstart).local();
 
                 if (model.freq === RRule.WEEKLY) {
 
@@ -443,117 +511,115 @@
                     this.ends = 'never';
                 }
 
-                this.convertToRRule();
-                this.model = model;
+                this.model = merge({}, model);
+                this.convertToRRule(this.model);
             },
             rrule(CONSTANT){
                 return RRule[CONSTANT];
-            }
-        },
-        watch: {
-            model: function(){
-                this.convertToRRule();
-                this.onInput();
             },
-            value: function(newVal, oldVal){
-                if (newVal !== this.rvalue) {
-                    this.convertFromRRule(newVal);
-                }
-            }
-        },
-        computed: {
-            options: function() {
-
+            setOptions() {
                 let day = this.date.isoWeekday() - 1;
+                let monthDay = this.date.date();
                 let month = this.date.month();
                 let dayText = frequencies.week.options[day];
                 let monthText = months[month];
-
                 let weekDay = find(frequencies.week.options, (option) => option.value === day);
-
-                let weekDayTextShort = weekDay.shortValue;
-
                 let weekCount = Math.floor(this.date.date() / 7);
                 let dayWeekOfMonth = counts[weekCount];
 
                 let dateString = this.date.utc().format('YYYYMMDDTHHmmss');
+                const dtstart = `DTSTART:${dateString}\nRRULE:`;
+
+                function replace(text, replacements) {
+                    replacements.forEach((replacement) => {
+                        text = text.replace(replacement.placeholder, replacement.value);
+                    });
+                    return text;
+                }
+
+                //replacements
+                let replacements = [
+                    {
+                        placeholder: '%WEEKDAY%',
+                        value: dayText.shortValue
+                    },
+                    {
+                        placeholder: '%MONTHDAY%',
+                        value: monthDay
+                    },
+                    {
+                        placeholder: '%DAY%',
+                        value: weekCount + 1
+                    }
+                ];
+
+                let defaults = [];
 
                 let options = [];
 
-                options.push({
-                    value: 'daily',
-                    text: 'Daily',
-                    rule: `DTSTART:${dateString}\nRRULE:FREQ=DAILY;INTERVAL=1`
-                });
-                options.push({
-                    value: 'weekly',
-                    text: `Weekly on ${dayText.label}`,
-                    rule: `DTSTART:${dateString}\nRRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=${dayText.shortValue}`
-                });
-                if (dayText.shortValue !== 'MO') {
-                    options.push({
-                        value: 'weekly-monday',
-                        text: `Weekly on Monday`,
-                        rule: `DTSTART:${dateString}\nRRULE:FREQ=WEEKLY;INTERVAL=1;BYWEEKDAY=MO`
-                    });
+                if (this.schema.options) {
+                    defaults = this.schema.options;
+                } else {
+                    defaults = [
+                        {
+                            value: 'daily',
+                            rule: `FREQ=DAILY;INTERVAL=1`
+                        },
+                        {
+                            value: 'weekly',
+                            rule: replace(`FREQ=WEEKLY;INTERVAL=1;BYDAY=%WEEKDAY%`, replacements)
+                        },
+                        {
+                            value: 'monthlybyday',
+                            rule: replace(`FREQ=MONTHLY;INTERVAL=1;BYDAY=%DAY%%WEEKDAY%`, replacements)
+                        },
+                        {
+                            value: 'monthly',
+                            rule: `FREQ=MONTHLY;INTERVAL=1`
+                        },
+                        {
+                            value: 'yearly',
+                            rule: `FREQ=YEARLY;INTERVAL=1`
+                        },
+                        {
+                            value: 'weekday',
+                            text: `Every weekday (Monday to Friday)`,
+                            rule: `FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,WE,TH,FR`
+                        }
+                    ];
                 }
 
-                options.push({
-                    value: 'monthly',
-                    text: `Monthly on the ${dayWeekOfMonth} ${dayText.label}`,
-                    rule: `DTSTART:${dateString}\nRRULE:FREQ=MONTHLY;INTERVAL=1;BYDAY=${weekCount + 1}${weekDayTextShort}`
-                });
-                if (dayText.shortValue !== 'MO') {
-                    options.push({
-                        value: 'monthly-monday',
-                        text: `Monthly on the first Monday`,
-                        rule: `DTSTART:${dateString}\nRRULE:FREQ=MONTHLY;INTERVAL=1;BYWEEKDAY=MO`
+                defaults.forEach((_option) => {
+                    let option = merge({}, _option, {
+                        rule: dtstart + replace(_option.rule, replacements)
                     });
-                }
+                    if (!option.hasOwnProperty('text')) {
+                        option.text = RRule.fromString(dtstart + option.rule).toText();
+                    }
+                    options.push(option);
+                });
 
-                options.push({
-                    value: 'yearly',
-                    text: `Annually on ${this.date.date()} ${monthText}`,
-                    rule: `DTSTART:${dateString}\nRRULE:FREQ=YEARLY;INTERVAL=1`
-                });
-                options.push({
-                    value: 'weekday',
-                    text: `Every weekday (Monday to Friday)`,
-                    rule: `DTSTART:${dateString}\nRRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,WE,TH,FR`
-                });
                 options.push({
                     text: `Custom`,
                     value: 'custom',
                     rule: ""
                 });
 
-                return options;
-            },
-            types: function() {
-                return types;
-            },
-            frequencies: function() {
-                let options = [];
-                forEach(frequencies, (interval) => {
-                    options.push({
-                        text: interval.label,
-                        value: interval.value
-                    })
-                });
-                return options;
-            },
-            endOptions: function() {
-                let options = [];
-                forEach(ends, (option, value) => {
-                    options.push(option)
-                });
-                return options;
-            },
-            endsOnDateSchema: function(){
-                return {
-                    type: 'date',
-                    placeholder: 'Date',
-                    dateFormat: 'DD/MM/YYYY'
+                this.templateOptions = [...options];
+            }
+        },
+        watch: {
+            rootModel: {
+                deep: true,
+                handler(newVal, oldVal){
+                    if (this.schema.dateInputName) {
+                        let newDate = get(newVal, this.schema.dateInputName, null);
+                        if (newDate !== this.dateInput) {
+                            this.init();
+                            this.onInput();
+                        }
+                    }
+
                 }
             }
         },

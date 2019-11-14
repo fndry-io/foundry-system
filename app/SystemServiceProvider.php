@@ -4,7 +4,8 @@ namespace Foundry\System;
 
 use Foundry\Core\Requests\FormRequestHandler;
 use Foundry\Core\Support\ServiceProvider;
-use Foundry\System\Console\Commands\SyncPermissionsCommand;
+use Foundry\System\Console\Commands\SyncCommand;
+use Foundry\System\Console\Commands\SyncPickListsCommand;
 use Foundry\System\Models\User;
 use Foundry\System\Providers\AuthServiceProvider;
 use Foundry\System\Providers\EventServiceProvider;
@@ -142,7 +143,7 @@ class SystemServiceProvider extends ServiceProvider
 //			UsersRegisterCommand::class,
 //			ThemeLinkCommand::class,
 //			SymLinkCommand::class
-            SyncPermissionsCommand::class
+            SyncCommand::class
 		]);
 	}
 

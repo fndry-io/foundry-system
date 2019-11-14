@@ -17,7 +17,7 @@ class ViewFileRequest extends BaseFormRequest implements EntityRequestInterface 
 	 */
 	public function authorize()
     {
-		return $this->getEntity()->isPublic() || ($this->user() && $this->user()->can('read/download files'));
+		return $this->getEntity()->isPublic() || ($this->user() && $this->user()->can('read/download files')) || ($this->user() && $this->getEntity()->user && $this->user()->id && $this->getEntity()->user->id);
 	}
 
 	/**

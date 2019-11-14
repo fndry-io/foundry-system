@@ -75,7 +75,8 @@ class UserService extends BaseService {
 				//detect if the user is longer active
 				if ($user->isActive()) {
 				    event(new UserLoggedIn($user));
-					$guard->setUser($user);
+                    $guard->login($user);
+                    $guard->setUser($user);
 					return $this->returnGuardUser($guard);
 				} else {
 					return Response::error(__("Account no longer active, please contact the Support Team"), 403);
@@ -112,8 +113,9 @@ class UserService extends BaseService {
 
 			//if current logged in user, log them out first
 			if ($guard instanceof StatefulGuard) {
-				Auth::logout();
+                $guard->logout();
 				Session::invalidate();
+				Session::regenerateToken();
 			}
 
             event(new UserLoggedOut($user));
@@ -144,7 +146,6 @@ class UserService extends BaseService {
         $data['user']['abilities'] = $user->getAllPermissions()->pluck('name');
 
 		if ($guard instanceof TokenGuard && $user instanceof HasApiToken) {
-
 			if ($setToken) {
 				$token = $guard->setToken($user);
 			} else {

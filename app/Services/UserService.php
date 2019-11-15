@@ -75,7 +75,9 @@ class UserService extends BaseService {
 				//detect if the user is longer active
 				if ($user->isActive()) {
 				    event(new UserLoggedIn($user));
-                    $guard->login($user);
+				    if ($guard instanceof StatefulGuard) {
+                        $guard->login($user);
+                    }
                     $guard->setUser($user);
 					return $this->returnGuardUser($guard);
 				} else {

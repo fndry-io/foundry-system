@@ -50,14 +50,16 @@ class PermissionsTest extends TestCase
         $this->assertTrue($result);
 
         //make some permissions
-        $permission1 = Permission::create(['name' => 'edit articles']);
-        $permission2 = Permission::create(['name' => 'delete articles']);
-        $permission3 = Permission::create(['name' => 'create articles']);
+        $permission1 = Permission::create(['name' => 'edit articles', 'module' => 'test', 'group' => 'test']);
+        $permission2 = Permission::create(['name' => 'delete articles', 'module' => 'test', 'group' => 'test']);
+        $permission3 = Permission::create(['name' => 'create articles', 'module' => 'test', 'group' => 'test']);
 
-        RoleRepository::repository()->syncPermissions($role1, [
-            $permission1->getKey(),
-            $permission2->getKey(),
-            $permission3->getKey()
+        RoleRepository::repository()->syncPermissions([
+            $role1->getKey() => [
+                $permission1->getKey(),
+                $permission2->getKey(),
+                $permission3->getKey()
+            ]
         ]);
 
         $permissions = RoleRepository::repository()->permissions($role1);
@@ -72,12 +74,10 @@ class PermissionsTest extends TestCase
         $this->assertDatabaseHas('roles', $data);
         $this->assertNotFalse($role3);
 
-        $result = RoleRepository::repository()->syncRolePermissions([
-            $role3->getKey() => [
-                $permission1->getKey(),
-                $permission2->getKey(),
-                $permission3->getKey()
-            ]
+        $result = RoleRepository::repository()->syncRolePermissions($role3->getKey(), [
+            $permission1->getKey(),
+            $permission2->getKey(),
+            $permission3->getKey()
         ]);
         $this->assertTrue($result);
 

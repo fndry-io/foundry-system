@@ -49,7 +49,7 @@ class ActivityRepository extends ModelRepository {
 
             /**
              * We need to determine based on the object we have been given, if we are accessing that specific node tree
-             * Or accessing a reference directly
+             * Or accessing a activitable directly
              */
             $node = null;
             if ($entity instanceof HasNode) {
@@ -57,7 +57,7 @@ class ActivityRepository extends ModelRepository {
             } elseif ($entity instanceof IsNode) {
                 $node = $entity;
             } else {
-                $query->whereHasMorph('reference', get_class($entity), function(Builder $query) use ($entity) {
+                $query->whereHasMorph('activitable', get_class($entity), function(Builder $query) use ($entity) {
                     $query->where('id', $entity->getKey());
                 });
             }

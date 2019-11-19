@@ -7,6 +7,7 @@ use Foundry\System\Inputs\Folder\FolderEditInput;
 use Foundry\System\Inputs\Folder\FolderInput;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Models\User;
+use Foundry\System\Repositories\FileRepository;
 use Foundry\System\Repositories\UserRepository;
 use Foundry\System\Services\FileService;
 use Foundry\System\Services\FolderService;
@@ -101,9 +102,9 @@ class FilesFoldersTest extends TestCase
 		$result = FileService::service()->add($input);
 		$this->assertTrue($result->isSuccess());
 
-		$file = $result->getData();
+		$file = FileRepository::repository()->find($result->getData()['id']);
 
-		$this->assertDatabaseHas('folders', ['file_id' => $file->getKey()]);
+		$this->assertDatabaseHas('folders', ['file_id' => $file->id]);
 
 		$result = FileService::service()->delete($file);
 		$this->assertTrue($result->isSuccess());
@@ -114,14 +115,14 @@ class FilesFoldersTest extends TestCase
 		$result = FileService::service()->delete($file);
 		$this->assertTrue($result->isSuccess());
 
-		$folder = DB::table('folders')->where('file_id', $file->getKey())->first();
+		$folder = DB::table('folders')->where('file_id', $file->id)->first();
 		$this->assertNotNull($folder->deleted_at);
 
 		$result = FileService::service()->delete($file);
 		$this->assertTrue($result->isSuccess());
 
-		$this->assertDatabaseMissing('files', ['id' => $file->getKey(), "original_name" => 'test.jpg']);
-		$this->assertDatabaseMissing('folders', ['file_id' => $file->getKey()]);
+		$this->assertDatabaseMissing('files', ['id' => $file->id, "original_name" => 'test.jpg']);
+		$this->assertDatabaseMissing('folders', ['file_id' => $file->id]);
 
 	}
 

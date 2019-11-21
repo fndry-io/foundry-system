@@ -66,15 +66,16 @@ class UsersRegisterCommand extends Command
 	    $arguments['password_confirmation'] = $password_confirmation;
 
 	    $entity = new UserRegisterInput($arguments);
-	    if ($super) {
-		    $entity->super_admin = true;
-	    }
 
 	    $response = $entity->validate();
 	    if ($response->isSuccess()) {
 		    $response = $this->service->register($entity);
 		    if ($response->isSuccess()) {
 			    $user = $response->getData();
+                if ($super) {
+                    $user->super_admin = true;
+                    $user->save();
+                }
 			    $user = $user->only(['id', 'username', 'display_name', 'email', 'super_admin']);
 			    $user['password'] = $password;
 			    $this->info('User registered');

@@ -36,6 +36,7 @@ class Kernel extends HttpKernel
             \Foundry\System\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
 	        \Barryvdh\Cors\HandleCors::class,
+            \Foundry\System\Http\Middleware\AppScope::class
         ],
 
         'api' => [

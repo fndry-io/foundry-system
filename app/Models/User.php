@@ -212,4 +212,12 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
         }
     }
 
+    public function can($ability, $arguments = [])
+    {
+        if ($this->isSuperAdmin() || $this->isAdmin()) {
+            return true;
+        }
+        return parent::can($ability, $arguments);
+    }
+
 }

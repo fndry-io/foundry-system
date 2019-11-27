@@ -163,7 +163,7 @@ class SystemServiceProvider extends ServiceProvider
 			/**
 			 * @var User $user
 			 */
-			if ($user->isSuperAdmin()) {
+			if ($user->isSuperAdmin() || $user->isAdmin()) {
 				return true;
 			}
 		});

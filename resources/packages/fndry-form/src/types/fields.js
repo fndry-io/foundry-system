@@ -12,6 +12,7 @@ import Reference from './inputs/Reference';
 import Hidden from './inputs/Hidden';
 import Upload from './inputs/Upload';
 import Repeat from './inputs/Repeat';
+import Html from './inputs/HtmlEditor';
 
 export default {
     'fndry-field-input': Input,
@@ -27,7 +28,8 @@ export default {
     'fndry-field-reference': Reference,
     'fndry-field-hidden': Hidden,
     'fndry-field-upload': Upload,
-    'fndry-field-repeat': Repeat
+    'fndry-field-repeat': Repeat,
+    'fndry-field-html': Html
     //collection
 };
 

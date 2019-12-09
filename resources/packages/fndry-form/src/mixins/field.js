@@ -382,6 +382,9 @@ export default {
                 case 'repeat':
                     type = 'repeat';
                     break;
+                case 'html':
+                    type = 'html';
+                    break;
             }
 
             type = (type === 'input')? (field.multiline)? 'textarea': type : type;

@@ -2,7 +2,6 @@
 
 namespace Foundry\System\Inputs\Types;
 
-
 use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Inputs\Contracts\FieldOptions;
 use Foundry\Core\Inputs\Types\AddButtonType;
@@ -33,7 +32,12 @@ class UserSelect extends ChoiceInputType implements Field, FieldOptions
 			->setTextKey('display_name')
             ->setValueKey('id')
 		;
-		return $input;
+
+        if (Auth::user() && Auth::user()->can('manage users')) {
+            $input->setButtons((new AddButtonType('add', __('New')))->setAction(route('foundry.system.users.add', [], false)));
+        }
+
+        return $input;
 	}
 
 

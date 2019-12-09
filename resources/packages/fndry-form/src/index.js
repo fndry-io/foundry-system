@@ -70,8 +70,6 @@ Validator.extend('date_format', {
     }
 });
 
-
-
 export {
     FndryFormSchema,
     FndryFormGroup,
@@ -87,12 +85,12 @@ export {
  * @license MIT
  */
 
-const FndryForm = {};
+const Plugin = {};
 
 /**
  * Plugin API
  */
-FndryForm.install = function (Vue, options) {
+Plugin.install = function (Vue, options) {
     Vue.component('fndry-form-schema', FndryFormSchema);
     Vue.component('fndry-form-type', FndryFormType);
     Vue.component('fndry-form-group', FndryFormGroup);
@@ -108,13 +106,11 @@ FndryForm.install = function (Vue, options) {
 
 };
 
-
 /**
  * Auto install
  */
 if (typeof window !== 'undefined' && window.Vue) {
-    window.Vue.use(FndryForm)
+    window.Vue.use(Plugin)
 }
 
-
-export default FndryForm
+export default Plugin

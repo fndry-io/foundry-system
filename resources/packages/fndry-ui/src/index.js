@@ -5,6 +5,8 @@ import BootstrapVue from 'bootstrap-vue'
 
 import Loader from './components/Loader';
 import App from './components/App';
+import Widget from './components/Widget';
+import Icon from './components/Icon';
 import store from './store';
 
 import FndryServices from '../../fndry-services';
@@ -22,7 +24,9 @@ Vue.component('fndry-app', App);
 
 export {
     Vue,
-    Loader
+    Loader,
+    Widget,
+    Icon
 }
 
 const FndryVue = (config) => {

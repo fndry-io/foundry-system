@@ -10,8 +10,6 @@
 
 <script>
 
-    import {merge} from 'lodash';
-
     export default {
         name: 'fndry-request-button',
         props: {
@@ -114,31 +112,15 @@
             onClick() {
                 this.submitting = true;
 
-                let $request;
+                let options = {};
 
-                switch(this.type) {
-                    case 'modal':
-                        $request = this.$fndryRequestForm(this.request, 'modal', merge({},
-                            this.modalOptions,
-                            {params: this.params, data: this.data}
-                        ));
-                        break;
-                    case 'action':
-                        $request = this.$fndryApiService.call(
-                            this.$fndryApiService.getHandleUrl(this.request, this.params),
-                            this.method,
-                            this.data
-                        );
-                        break;
-                    case 'confirm':
-                        $request = this.$fndryRequestConfirm(this.request, merge({},
-                            this.confirmOptions,
-                            {params: this.params, data: this.data}
-                        ));
-                        break;
+                if (this.type === 'confirm') {
+                    options = this.confirmOptions;
+                } else if (this.type === 'modal') {
+                    options = this.modalOptions;
                 }
 
-                $request
+                this.$fndryRequest(this.request, this.params, this.method, this.data, this.type, options)
                     .then((response) => {
                         this.onSuccess(response);
                     }, (response) => {

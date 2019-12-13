@@ -32,7 +32,7 @@ const auth = {
         }
     },
     getters : {
-        isLoggedIn: state => !!state.user,
+        isLoggedIn: state => (state.user && state.user.id),
         authStatus: state => state.status,
         userSettings: (state) => {
             if (state.user.settings) {

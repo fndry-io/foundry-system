@@ -78,9 +78,9 @@ class SystemServiceProvider extends ServiceProvider
 	 */
 	protected function registerConfig()
 	{
-//		$this->publishes([
-//			base_path('foundry/system/config/config.php') => config_path('foundry_system.php'),
-//		], 'config');
+		$this->publishes([
+			base_path('foundry/system/config/scope.php') => config_path('scope.php'),
+		], 'scope');
 	}
 
 	/**

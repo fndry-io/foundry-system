@@ -1,3 +1,5 @@
+import {merge} from 'lodash';
+
 import {makeRequestForm, makeRequestConfirm, makeRequestPanel} from './utils/instanceMethods';
 import RequestButton from './components/RequestButton';
 import RequestFormInline from './components/RequestFormInline';
@@ -39,6 +41,44 @@ Plugin.install = function (Vue, options) {
      * @return {Promise<T>}
      */
     Vue.prototype.$fndryRequestPanel = makeRequestPanel(Vue);
+
+    /**
+     * Convenience method for calling a fndryRequest
+     *
+     * @param path
+     * @param params
+     * @param method
+     * @param data
+     * @param type
+     * @param options
+     * @returns {response:{*}, model:{*}} the foundry response from the server, and the model data sent to the server
+     */
+    Vue.prototype.$fndryRequest = function(path, params, method, data, type = 'modal', options){
+        let $request;
+        switch(type) {
+            case 'action':
+                $request = this.$fndryApiService.call(
+                    this.$fndryApiService.getHandleUrl(path, params),
+                    method,
+                    data
+                );
+                break;
+            case 'confirm':
+                $request = this.$fndryRequestConfirm(path, merge({},
+                    options,
+                    {params, data}
+                ));
+                break;
+            default:
+                $request = this.$fndryRequestForm(path, 'modal', merge({},
+                    options,
+                    {params, data}
+                ));
+                break;
+        }
+
+        return $request;
+    }
 
 };
 

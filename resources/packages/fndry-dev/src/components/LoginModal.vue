@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-button @click="initModal" :disabled="loading" v-if="!isLoggedIn">Log In</b-button>
+        <b-button @click="initModal" :disabled="loading" v-if="!isLoggedIn">Log In <b-spinner v-if="loading" small></b-spinner></b-button>
         <ValidationObserver ref="observer" v-slot="{ invalid }">
             <b-modal ref="login-modal" id="login-modal">
                 <template v-slot:modal-title>
@@ -104,7 +104,7 @@
 
                 this.$store.dispatch('auth/login', payload)
                     .then((response) => {
-                        this.hideModal();
+                        //this.hideModal();
                     })
                     .finally(() => {
                         this.loading = false;

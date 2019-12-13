@@ -2,9 +2,9 @@
     <div class="widget card">
         <div class="card-header" v-if="!noHeader">
             <div class="d-flex">
-                <div class="card-title flex-grow-1">
+                <div class="flex-grow-1">
                     <slot name="header">
-                        <h3 class="mb-0">{{title}}</h3>
+                        <h5 class="card-title">{{title}}</h5>
                     </slot>
                 </div>
                 <div v-if="!noContext" class="card-context">
@@ -37,9 +37,7 @@
     .widget {
         .card-title {
             text-align: left;
-            h3 {
-                font-size: inherit;
-            }
+            margin-bottom: 0;
         }
         .card-body {
             overflow-x: auto;

@@ -1,5 +1,5 @@
 <template>
-    <div class="loading-area">
+    <div class="loading-area" :style="{'min-height': height}">
         <div v-if="loading" class="loading d-flex align-items-center justify-content-center">
             <div class="text-center">
                 <div class="spinner-border text-primary" role="status">
@@ -18,6 +18,12 @@
             loading: {
                 type: Boolean,
                 required: false
+            },
+            height: {
+                type: String,
+                default() {
+                    return '100px'
+                }
             }
         }
     }
@@ -27,7 +33,6 @@
 
     .loading-area {
         position: relative;
-        min-height: 100px;
     }
 
     .loading {

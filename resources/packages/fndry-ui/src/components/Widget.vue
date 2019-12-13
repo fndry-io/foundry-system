@@ -1,13 +1,13 @@
 <template>
     <div class="widget card">
         <div class="card-header" v-if="!noHeader">
-            <div class="row">
-                <div class="card-title col">
+            <div class="d-flex">
+                <div class="card-title flex-grow-1">
                     <slot name="header">
                         <h3 class="mb-0">{{title}}</h3>
                     </slot>
                 </div>
-                <div v-if="!noContext" class="card-context col">
+                <div v-if="!noContext" class="card-context">
                     <slot name="context"></slot>
                 </div>
             </div>

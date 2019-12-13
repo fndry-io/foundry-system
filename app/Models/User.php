@@ -8,6 +8,7 @@ use Foundry\Core\Entities\Contracts\IsUser;
 use Foundry\Core\Models\Traits\SoftDeleteable;
 use Foundry\Core\Models\Traits\Uuidable;
 use Foundry\Core\Models\Traits\Visible;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -179,7 +180,7 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 	 * @return bool
 	 */
 	public function isAdmin() {
-        return $this->isSuperAdmin() || $this->hasRole(config('permission.admin.role'));
+        return ($this->roles->contains('slug', '==', config('permission.admin.role', 'admin')) || $this->isSuperAdmin());
 	}
 
 	/**

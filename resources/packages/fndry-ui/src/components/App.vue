@@ -1,8 +1,6 @@
 <template>
     <div id="fndry-app" ref="fndry-app">
-        <div v-if="loaded">
-            <slot></slot>
-        </div>
+        <slot v-if="loaded"></slot>
         <div v-else>
             <div class="app-loading">
                 <div>

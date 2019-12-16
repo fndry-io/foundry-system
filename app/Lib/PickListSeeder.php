@@ -30,34 +30,37 @@ class PickListSeeder {
 				PickListRepository::repository()->save($picklist);
 			}
 
-			foreach ($list['items'] as $key => $item) {
+			if ($list['items']) {
+                foreach ($list['items'] as $key => $item) {
 
-				if (!is_array($item)) {
-					$item = [
-						'label' => $item,
-						'identifier' => $key
-					];
-				}
+                    if (!is_array($item)) {
+                        $item = [
+                            'label' => $item,
+                            'identifier' => $key
+                        ];
+                    }
 
-				$picklistItem = new PickListItem();
-				$picklistItem->picklist = $picklist;
-				$picklistItem->label = Arr::get($item, 'label');
-				if ($identifier = Arr::get($item, 'identifier', null)) {
-					$picklistItem->identifier = $identifier;
-				}
-				$picklistItem->sequence = Arr::get($item, 'sequence', 0);
-				$picklistItem->status = Arr::get($item, 'status', true);
-				$picklistItem->is_system = Arr::get($item, 'is_system', false);
+                    $picklistItem = new PickListItem();
+                    $picklistItem->picklist = $picklist;
+                    $picklistItem->label = Arr::get($item, 'label');
+                    if ($identifier = Arr::get($item, 'identifier', null)) {
+                        $picklistItem->identifier = $identifier;
+                    }
+                    $picklistItem->sequence = Arr::get($item, 'sequence', 0);
+                    $picklistItem->status = Arr::get($item, 'status', true);
+                    $picklistItem->is_system = Arr::get($item, 'is_system', false);
 
-				if (!PickListItemRepository::repository()->findOneBy(['identifier' => $picklistItem->identifier, 'picklist_id' => $picklist->getKey()])) {
-					PickListItemRepository::repository()->save($picklistItem);
+                    if (!PickListItemRepository::repository()->findOneBy(['identifier' => $picklistItem->identifier, 'picklist_id' => $picklist->getKey()])) {
+                        PickListItemRepository::repository()->save($picklistItem);
 
-					if (Arr::get($item, 'is_default')) {
-						$picklist->default_item = $picklistItem->getKey();
-						PickListRepository::repository()->save($picklist);
-					}
-				}
-			}
+                        if (Arr::get($item, 'is_default')) {
+                            $picklist->default_item = $picklistItem->getKey();
+                            PickListRepository::repository()->save($picklist);
+                        }
+                    }
+                }
+            }
+
 		}
 	}
 

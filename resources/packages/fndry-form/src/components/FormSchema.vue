@@ -62,3 +62,9 @@
         }
     }
 </script>
+
+<style lang="scss">
+    .form-fields {
+        text-align: left;
+    }
+</style>

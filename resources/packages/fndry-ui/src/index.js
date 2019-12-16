@@ -6,6 +6,7 @@ import Toasted from 'vue-toasted';
 
 import Loader from './components/Loader';
 import App from './components/App';
+import Screen from './components/Screen';
 import Widget from './components/Widget';
 import Icon from './components/Icon';
 import store, {userHasAbility} from './store';
@@ -13,22 +14,38 @@ import store, {userHasAbility} from './store';
 import FndryServices from '../../fndry-services';
 import FndryForm from '../../fndry-form/src';
 import FndryRequest from '../../fndry-requests/src';
-import ApiService from "../../fndry-services/src/ApiService";
+
+/**
+ * Plugin
+ * (c) 2019
+ * @license MIT
+ */
+const Plugin = {};
+
+/**
+ * Plugin API
+ */
+Plugin.install = function (Vue, options) {
+    Vue.component('loader', Loader);
+    Vue.component('fndry-app', App);
+    Vue.component('fndry-screen', Screen);
+    Vue.component('fndry-widget', Widget);
+    Vue.component('fndry-icon', Icon);
+};
 
 // Using plugin
+Vue.use(Plugin);
 Vue.use(BootstrapVue);
 Vue.use(FndryServices);
 Vue.use(FndryForm);
 Vue.use(FndryRequest);
 
-Vue.component('loader', Loader);
-Vue.component('fndry-app', App);
-
 export {
     Vue,
     Loader,
     Widget,
-    Icon
+    Icon,
+    Screen
 }
 
 Vue.use(Toasted, {

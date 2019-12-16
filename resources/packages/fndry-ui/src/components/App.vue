@@ -97,7 +97,7 @@
     };
 
     export default {
-        name: 'fndry-app',
+        name: 'FndryApp',
         mixins: [
             appMixin
         ],

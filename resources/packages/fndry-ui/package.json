@@ -1,0 +1,39 @@
+{
+    "name": "foundry-ui",
+    "description": "An UI package for the foundry framework",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "serve": "vue-cli-service serve demo/main.js",
+        "build": "vue-cli-service build --target lib --name bundle src/index.js",
+        "lint": "vue-cli-service lint"
+    },
+    "main": "./dist/bundle.common.js",
+    "files": [
+        "dist/*",
+        "src/*",
+        "public/*",
+        "*.json",
+        "*.js"
+    ],
+    "devDependencies": {
+        "@vue/cli-plugin-babel": "^3.9.0",
+        "@vue/cli-plugin-eslint": "^3.9.0",
+        "@vue/cli-service": "^3.9.0",
+        "babel-eslint": "^10.0.1",
+        "bootstrap-vue": "^2.0.0",
+        "eslint": "^5.16.0",
+        "eslint-plugin-vue": "^5.0.0",
+        "flag-icon-css": "^3.2.1",
+        "font-awesome": "^4.7.0",
+        "node-sass": "^4.9.0",
+        "sass-loader": "^7.1.0",
+        "simple-line-icons": "^2.4.1",
+        "vue": "^2.6.10",
+        "vue-json-pretty": "^1.6.0",
+        "vue-router": "^3.0.3",
+        "vue-template-compiler": "^2.6.10",
+        "vue-toasted": "^1.1.27",
+        "vuex": "^3.0.1"
+    }
+}

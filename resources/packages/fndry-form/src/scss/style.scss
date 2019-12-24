@@ -1,0 +1,285 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+$input-group-btn-color: $input-color !default;
+$input-group-btn-bg: $input-bg !default;
+$input-group-btn-border-color: $input-border-color !default;
+
+// input dropdowns
+.btn.btn-input {
+    @include button-variant($input-bg, $input-border-color);
+}
+
+//date picker
+.date-picker-dropdown {
+    ul {
+        padding: 0;
+        margin: 0;
+    }
+    .b-dropdown-form {
+        padding: 0 !important;
+        display: block !important;
+    }
+}
+
+.input-dropdown {
+    width: 100%;
+
+    &.show > button,
+    > button:focus {
+        color: $input-focus-color !important;
+        background-color: $input-focus-bg !important;
+        border-color: $input-focus-border-color !important;
+        outline: 0 !important;
+        // Avoid using mixin so we can pass custom focus shadow properly
+        @if $enable-shadows {
+            box-shadow: $input-box-shadow, $input-focus-box-shadow !important;
+        } @else {
+            box-shadow: $input-focus-box-shadow !important;
+        }
+    }
+
+    > button {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        text-align: left;
+
+        width: 100%;
+        height: $input-height;
+        padding: $input-padding-y $input-padding-x;
+        font-family: $input-font-family;
+        @include font-size($input-font-size);
+        font-weight: $input-font-weight;
+        line-height: $input-line-height;
+        color: $input-color;
+        background-color: $input-bg;
+        background-clip: padding-box;
+        border: $input-border-width solid $input-border-color;
+
+        // Note: This has no effect on <select>s in some browsers, due to the limited stylability of `<select>`s in CSS.
+        @include border-radius($input-border-radius, 0);
+
+        @include box-shadow($input-box-shadow);
+        @include transition($input-transition);
+
+        &:hover {
+            color: $input-color !important;
+            background-color: $input-bg !important;
+        }
+
+        > span {
+            flex-grow: 1;
+            display: block;
+            width: 100%;
+        }
+        &::after {
+            flex-grow: 0;
+        }
+    }
+}
+
+
+
+.date-picker {
+    max-width: 280px;
+    border-radius: $input-border-radius;
+    overflow: hidden;
+
+
+    .date-picker-buttons {
+        display: flex;
+        flex-direction: row;
+        align-content: stretch;
+
+        > div {
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn {
+            border-radius: 0;
+        }
+    }
+
+    .date-time {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        height: 100%;
+
+        .date-time-date {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+
+            > div {
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+                width: 100%;
+                padding: 3px;
+                border-right: 1px solid #fff;
+
+                &:last-child {
+                    border-right: none;
+                }
+            }
+        }
+
+        .date-time-range {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            height: 100%;
+
+            .range-up,
+            .range-down {
+                flex-grow: 0;
+            }
+            .range-value,
+            .range-label {
+                padding: 3px 0;
+                min-width: 40px;
+            }
+            .range-value {
+                display: flex;
+                flex-direction: row;
+                height: 100%;
+                text-align: center;
+                > div {
+                    align-self: center;
+                    width: 100%;
+                }
+
+                input {
+                    display: inline-block;
+                    width: 100%;
+                    padding: 0;
+                    height: auto;
+                    text-align: center;
+                    border: 0px;
+                }
+            }
+        }
+    }
+
+    .date-calendar {
+
+        font-size: 16px;
+        line-height: 30px;
+        width: 280px;
+
+        .date-calendar-ranges {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-content: stretch;
+            div {
+                width: 100%;
+                flex-grow: 1;
+            }
+
+            .date-calendar-block {
+                flex-grow: 0;
+                background: #ffffff;
+                border: 0;
+                max-width: (100% / 7);
+                text-align: center;
+            }
+        }
+
+        .date-calender-range {
+            display: flex;
+            flex-direction: row;
+            align-content: stretch;
+            background: #ffff;
+            border: 0;
+
+            .range-up,
+            .range-down {
+                flex-grow: 0;
+            }
+
+            .range-value {
+                text-align: center;
+                line-height: inherit;
+                padding: 3px 5px;
+            }
+        }
+
+        .date-calendar-days {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            > div {
+                text-align: center;
+                width: (100%/7);
+                background: transparent;
+                color: inherit;
+                border: 0;
+                box-sizing: border-box;
+                padding: 3px 5px;
+            }
+        }
+        .date-calendar-dates {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            padding: 5px 0 0;
+            > div {
+                text-align: center;
+                width: (100%/7);
+                background: transparent;
+                color: #b4b4b4;
+                border: 0;
+                box-sizing: border-box;
+            }
+            .current-month {
+                color: inherit;
+            }
+            .active {
+                background: #b4b4b4;
+                color: #efefef;
+                font-weight: bold;
+
+                .btn, a {
+                    &:hover {
+                        color: #000000;
+                        background: inherit;
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+
+        .date-calendar-block, .btn, a {
+            display: block;
+            color: inherit;
+            text-decoration: none;
+            padding: 3px 5px;
+            line-height: inherit;
+            border-radius: 0;
+        }
+
+        .date-calendar-ranges {
+            border-bottom: 1px solid #efefef;
+        }
+        .date-calendar-time {
+            border-top: 1px solid #efefef;
+        }
+
+        .btn, a {
+
+            &:hover {
+                color: #000000;
+                background: #efefef;
+                font-weight: bold;
+            }
+        }
+    }
+
+}
+
+

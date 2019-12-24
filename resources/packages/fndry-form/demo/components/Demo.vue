@@ -106,7 +106,10 @@
                             'red', 'blue'
                         ],
                         date: '2019-11-26',
+                        daterange: '2019-11-30',
                         datetime: '2018-11-21 17:33',
+                        datetimerange: '2018-11-21 17:33',
+                        timerange: null,
                         repeat: "DTSTART:20191126T000000Z\nRRULE:FREQ=MONTHLY;COUNT=3;INTERVAL=1;BYMONTHDAY=26"
                     },
                     children: [
@@ -142,19 +145,80 @@
                                     type: 'row',
                                     children: [
                                         {
-                                            type: 'date',
-                                            name: 'date',
-                                            required: true,
-                                            label: 'Date',
-                                            dateFormat: 'YYYY-MM-DD',
+                                            type: 'column',
+                                            children: [
+                                                {
+                                                    type: 'date',
+                                                    name: 'date',
+                                                    required: true,
+                                                    label: 'Date Picker (Calendar)',
+                                                    mask: '####-##-##',
+                                                    maskFormat: 'YYYY-MM-DD',
+                                                    dateFormat: 'YYYY-MM-DD',
+                                                    pickerOptions: {
+                                                        mode: 'calendar',
+                                                        noTime: true
+                                                    }
+                                                },
+                                                {
+                                                    type: 'date',
+                                                    name: 'daterange',
+                                                    required: true,
+                                                    label: 'Date Picker (Range)',
+                                                    mask: '####-##-##',
+                                                    maskFormat: 'YYYY-MM-DD',
+                                                    dateFormat: 'YYYY-MM-DD',
+                                                    pickerOptions: {
+                                                        mode: 'range',
+                                                        noTime: true
+                                                    }
+                                                }
+                                            ]
                                         },
                                         {
-                                            type: 'datetime',
-                                            name: 'datetime',
-                                            required: true,
-                                            label: 'Date time',
-                                            dateFormat: 'YYYY-MM-DD',
-                                            timeFormat: 'HH:mm',
+                                            type: 'column',
+                                            children: [
+                                                {
+                                                    type: 'datetime',
+                                                    name: 'datetime',
+                                                    required: true,
+                                                    label: 'Date time',
+                                                    mask: '####-##-## ##:##',
+                                                    maskFormat: 'YYYY-MM-DD HH:mm',
+                                                    dateFormat: 'YYYY-MM-DDTHH:mm:ssZZ',
+                                                    pickerOptions: {
+                                                        mode: 'calendar'
+                                                    }
+                                                },
+                                                {
+                                                    type: 'datetime',
+                                                    name: 'datetimerange',
+                                                    required: true,
+                                                    label: 'Date time',
+                                                    mask: '####-##-## ##:##',
+                                                    maskFormat: 'YYYY-MM-DD HH:mm',
+                                                    dateFormat: 'YYYY-MM-DDTHH:mm:ssZZ',
+                                                    pickerOptions: {
+                                                        mode: 'range'
+                                                    }
+                                                },
+                                                {
+                                                    type: 'datetime',
+                                                    name: 'timerange',
+                                                    required: true,
+                                                    label: 'Date time',
+                                                    mask: '##:##',
+                                                    maskFormat: 'HH:mm',
+                                                    dateFormat: 'YYYY-MM-DDTHH:mm:ssZZ',
+                                                    pickerOptions: {
+                                                        mode: 'range',
+                                                        noDate: true,
+                                                        interval: {
+                                                            minutes: 5
+                                                        }
+                                                    }
+                                                }
+                                            ]
                                         },
                                         {
                                             type: 'repeat',

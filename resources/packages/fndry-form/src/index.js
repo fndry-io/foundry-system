@@ -108,7 +108,7 @@ FndryForm.install = function (Vue, options) {
 
 };
 
-import './scss/style.scss';
+//import './scss/style.scss';
 
 /**
  * Auto install

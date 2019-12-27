@@ -73,17 +73,13 @@ export const HasBrowseRequest = {
         this.params = merge({}, this.defaultParams, this.params);
     },
     methods: {
-        setData(data){
-            this.response = data;
-        },
-
         /**
          * Pushes an item onto the data
          *
          * @param item
          */
         push(item){
-            let index = findIndex(this.data, (_item) => _item.id === item.id);
+            let index = findIndex(this.response.data, (_item) => _item.id === item.id);
             if (index !== -1) {
                 this.response.data[index] = item;
             } else {
@@ -110,8 +106,8 @@ export const HasBrowseRequest = {
                 return;
             }
             this.loading = true;
-            this.$fndryApiService.call(this.$fndryApiService.getHandleUrl(this.request), this.method, this.params).then(({data}) => {
-                this.setData(data);
+            this.$fndryApiService.call(this.$fndryApiService.getHandleUrl(this.request), this.method, this.params).then((response) => {
+                this.response = response;
                 this.loading = false;
             });
         },

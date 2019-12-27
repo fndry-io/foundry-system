@@ -1,5 +1,8 @@
 <template>
-    <div>
+    <div class="input-group">
+        <div class="input-group-prepend" v-if="schema.prepend">
+            <span class="input-group-text">{{schema.prepend}}</span>
+        </div>
         <b-form-input :type="this.schema.type"
                       :id="id"
                       :name="name"
@@ -14,6 +17,9 @@
                       :state="state"
                       :step="schema.step"
         ></b-form-input>
+        <div class="input-group-append" v-if="schema.append">
+            <span class="input-group-text">{{schema.append}}</span>
+        </div>
     </div>
 </template>
 

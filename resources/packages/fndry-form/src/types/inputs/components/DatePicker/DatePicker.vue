@@ -30,15 +30,15 @@
             :no-day="options.noDay"
             :no-period="options.noPeriod"
         ></date-calendar>
-        <div v-if="!options.noButtons" class="date-picker-buttons">
-            <div class="button">
-                <button type="button" class="btn btn-primary btn-block" @click="reset"><span class="fa fa-close"></span></button>
+        <div class="date-picker-buttons">
+            <div class="button" v-if="!options.noButtons">
+                <button type="button" class="btn btn-primary btn-block" @click="handleCancel"><span class="fa fa-close"></span></button>
             </div>
             <div class="button">
-                <button type="button" class="btn btn-primary btn-block" @click="reload"><span class="fa fa-refresh"></span></button>
+                <button type="button" class="btn btn-light btn-block" @click="handleReset"><span class="fa fa-trash"></span></button>
             </div>
-            <div class="button">
-                <button type="button" class="btn btn-primary btn-block" @click="accept"><span class="fa fa-check"></span></button>
+            <div class="button" v-if="!options.noButtons">
+                <button type="button" class="btn btn-success btn-block" @click="handleOk"><span class="fa fa-check"></span></button>
             </div>
         </div>
     </div>

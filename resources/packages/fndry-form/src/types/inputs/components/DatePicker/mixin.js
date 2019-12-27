@@ -40,6 +40,7 @@ export const datePickerMixin = {
             default() {
                 return {
                     mode: 'calendar',
+                    autoUpdate: true,
                     noButtons: false,
                     noDate: false,
                     noTime: false,
@@ -91,7 +92,6 @@ export const datePickerMixin = {
                 this.moment = moment();
                 if (this.interval && this.interval.minutes) {
                     let rounded = RoundTo(this.moment.minutes(), this.interval.minutes);
-                    console.log(rounded);
                     this.moment.minute(rounded);
                 }
             }
@@ -107,24 +107,26 @@ export const datePickerMixin = {
             this.moment.add(number, prop);
             this.date = this.moment.toObject();
             this.moment = moment(this.date);
-            if (this.options.noButtons) {
-                this.accept();
+            console.log(this.options.autoUpdate);
+            if (this.options.autoUpdate) {
+                this.handleOk();
             }
         },
         setDate(dateObj){
             this.date = merge({}, this.date, dateObj);
             this.moment = moment(this.date);
-            if (this.options.noButtons) {
-                this.accept();
+            console.log(this.options.autoUpdate);
+            if (this.options.autoUpdate) {
+                this.handleOk();
             }
         },
-        reset(){
+        handleCancel(){
             this.$emit('cancel');
         },
-        reload(){
-
+        handleReset(){
+            this.$emit('input', null);
         },
-        accept(){
+        handleOk(){
             this.$emit('input', this.moment);
         }
     }

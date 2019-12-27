@@ -127,6 +127,7 @@
                 inputFormatted: null,
                 date: null,
                 options: merge({}, {
+                    autoUpdate: true,
                     noButtons: true,
                     noDate: false,
                     noTime: false
@@ -168,11 +169,19 @@
             },
             handlePickerInput(value) {
                 this.date = value;
-                this.inputFormatted = this.date.format(this.inputMaskFormat);
+                if (this.date) {
+                    this.inputFormatted = this.date.format(this.inputMaskFormat);
+                } else {
+                    this.inputFormatted = "";
+                }
                 this.onInput();
             },
             onInput(){
-                this.$emit('input', this.date.format(this.dateFormat));
+                if (this.date) {
+                    this.$emit('input', this.date.format(this.dateFormat));
+                } else {
+                    this.$emit('input', null);
+                }
             },
             setValue(value){
                 this.setDateTime(value);

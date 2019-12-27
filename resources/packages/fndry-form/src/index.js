@@ -106,6 +106,8 @@ Plugin.install = function (Vue, options) {
 
 };
 
+//import './scss/style.scss';
+
 /**
  * Auto install
  */

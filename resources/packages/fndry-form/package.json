@@ -41,5 +41,8 @@
     "vue-template-compiler": "^2.6.10",
     "vuex": "^3.0.1",
     "rrule": "^2.6.2"
+  },
+  "dependencies": {
+    "moment-range": "^4.0.2"
   }
 }

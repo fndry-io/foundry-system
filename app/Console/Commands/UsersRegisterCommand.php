@@ -2,7 +2,7 @@
 
 namespace Foundry\System\Console\Commands;
 
-use Foundry\System\Inputs\UserRegisterInput;
+use Foundry\System\Inputs\User\UserRegisterInput;
 use Illuminate\Console\Command;
 use Foundry\System\Services\UserService;
 use Illuminate\Support\MessageBag;
@@ -15,9 +15,9 @@ class UsersRegisterCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'foundry:system:register-user
-        {first_name : The users first name}
-        {last_name : The users last name} 
+    protected $signature = 'foundry:users:register
+        {username : The username}
+        {display_name : The users display name} 
         {email : The email address of the user to create}
     ';
 
@@ -66,19 +66,20 @@ class UsersRegisterCommand extends Command
 	    $arguments['password_confirmation'] = $password_confirmation;
 
 	    $entity = new UserRegisterInput($arguments);
-	    if ($super) {
-		    $entity->super_admin = true;
-	    }
 
 	    $response = $entity->validate();
 	    if ($response->isSuccess()) {
 		    $response = $this->service->register($entity);
 		    if ($response->isSuccess()) {
 			    $user = $response->getData();
-			    $user = $user->only(['id', 'first_name', 'last_name', 'email', 'super_admin']);
+                if ($super) {
+                    $user->super_admin = true;
+                    $user->save();
+                }
+			    $user = $user->only(['id', 'username', 'display_name', 'email', 'super_admin']);
 			    $user['password'] = $password;
 			    $this->info('User registered');
-			    $this->table(['ID', 'First Name', 'Last Name', 'Email', 'Super Admin', 'Password'], [$user]);
+			    $this->table(['ID', 'Username', 'Display Name', 'Email', 'Super Admin', 'Password'], [$user]);
 			    return;
 		    }
 	    }

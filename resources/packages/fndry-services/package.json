@@ -1,0 +1,24 @@
+{
+  "name": "fndry-services",
+  "version": "0.0.0",
+  "description": "A package to assist with calling the foundry system",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "./node_modules/.bin/local-link"
+  },
+  "keywords": [
+    "foundry",
+    "fndry"
+  ],
+  "author": "Greg Gunner <greg@co-foundry.co.za>",
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "^3.3.1",
+    "sprintf-js": "^1.1.2"
+  },
+  "devDependencies": {
+    "lib-manager": "0.0.7"
+  }
+}

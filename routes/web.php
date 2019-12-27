@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +13,23 @@
 |
 */
 
-Route::get('/', function () {
-    return 'You have arrived!';
+Route::prefix('system')->group( function () {
+
+	Route::get('/files/{_entity}/download', 'FilesController@download')->name('files.download');
+	Route::get('/files/{_entity}', 'FilesController@read')->name('files.read');
+
 });
+
+if (config('app.env') !== 'production') {
+
+	//mailcatcher redirect
+	Route::get( 'mailcatcher', function () {
+		if ( config( 'app.env' ) === 'production' ) {
+			abort( 404 );
+		} else {
+			$ip = gethostbyname( $_SERVER['HTTP_HOST'] );
+
+			return redirect( 'http://' . $ip . ":1080" );
+		}
+	} );
+}

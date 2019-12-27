@@ -2,8 +2,9 @@
 
 namespace Foundry\System\Providers;
 
-use Illuminate\Support\Facades\Gate;
+use Foundry\Core\Auth\TokenGuard;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,6 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
     ];
 
     /**
@@ -24,7 +24,8 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        //
+	    Auth::extend('token', function ($app, $guard, $config) {
+		    return new TokenGuard(Auth::createUserProvider($config['provider']), $app->request, 'api_token', 'api_token', $config['hash']);
+	    });
     }
 }

@@ -1,28 +1,27 @@
 <?php
 
-namespace Plugins\Foundry\System\Models\Fields\Generic;
-
+namespace Foundry\System\Inputs\Types;
 
 use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 use Foundry\Core\Inputs\Types\DateTimeInputType;
-use Foundry\System\Entities\Entity;
+
 
 class CreatedAt extends DateTimeInputType implements Field
 {
 	/**
-	 * @param Entity|null $entity
+	 *
 	 *
 	 * @return Inputable|CreatedAt
 	 */
-    static function input( Entity &$entity = null ): Inputable
+    static function input( ): Inputable
     {
         return (new static(
             'created_at',
             __('Created At'),
             true
         ))
-            ->isSortable(true);
+            ->setSortable(true);
     }
 
 }

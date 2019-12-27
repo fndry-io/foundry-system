@@ -3,103 +3,138 @@
 namespace Foundry\System\Entities;
 
 use Carbon\Carbon;
-use Doctrine\ORM\Mapping as ORM;
+use Foundry\Core\Entities\Contracts\HasApiToken;
+use Foundry\Core\Entities\Contracts\HasIdentity;
+use Foundry\Core\Entities\Contracts\IsSoftDeletable;
+use Foundry\Core\Entities\Entity;
+use Foundry\Core\Entities\Traits\ApiTokenable;
+use Foundry\Core\Entities\Traits\Identifiable;
 use Foundry\Core\Entities\Traits\Uuidable;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Foundry\Core\Entities\Traits\SoftDeletable;
+use Foundry\Core\Entities\Traits\SoftDeleteable;
 use Foundry\Core\Entities\Traits\Timestampable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Support\Facades\Hash;
-use Foundry\System\Repositories\UserRepository;
 use LaravelDoctrine\ORM\Auth\Authenticatable;
+use LaravelDoctrine\ORM\Notifications\Notifiable;
+
+use LaravelDoctrine\ACL\Contracts\HasPermissions as HasPermissionsContract;
+use LaravelDoctrine\ACL\Contracts\HasRoles as HasRolesContract;
+
 
 /**
  * Class User Entity
  *
  * @package Foundry\System\Entities
- * @ORM\Entity(repositoryClass="UserRepository")
- * @ORM\Table(name="users")
+ *
+ * @property Carbon $last_login_at
+ * @property Boolean $logged_in
+ *
  */
-class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword {
+class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable, \Illuminate\Contracts\Auth\CanResetPassword, HasApiToken, HasIdentity, IsSoftDeletable {
 
 	use Uuidable;
-	use SoftDeletable;
+	use SoftDeleteable;
 	use Timestampable;
 	use Authenticatable;
 	use CanResetPassword;
+	use Notifiable;
+	use ApiTokenable;
+	use Identifiable;
+//	use HasPermissions;
+//	use HasRoles;
 
 	/**
 	 * @var array The fillable values
 	 */
 	protected $fillable = [
-		'first_name',
-		'last_name',
-		'email'
+		'username',
+		'display_name',
+		'email',
+		'job_title',
+		'job_department'
 	];
 
 	protected $hidden = [
 		'password',
+		'super_admin',
+		'active'
 	];
 
-	/**
-	 * @ORM\Id
-	 * @ORM\GeneratedValue
-	 * @ORM\Column(type="integer")
-	 */
-	protected $id;
+	protected $visible = [
+		'id',
+		'uuid',
+		'username',
+		'display_name',
+		'email',
+		'active',
+		'super_admin',
+		'timezone',
+		'last_login_at',
+		'created_at',
+		'updated_at',
+		'deleted_at',
+		'username',
+		'job_title',
+		'job_department',
+		'supervisor'
+	];
 
-	/**
-	 * @ORM\Column(type="string", nullable=false, unique=true)
-	 */
 	protected $email;
 
-	/**
-	 * @var string Password
-	 * @ORM\Column(type="string", nullable=false)
-	 */
 	protected $password;
 
-	/**
-	 * @var string First Name
-	 * @ORM\Column(type="string", nullable=false)
-	 */
-	protected $first_name;
+	protected $username;
 
-	/**
-	 * @var string Last Name
-	 * @ORM\Column(type="string", nullable=false)
-	 */
-	protected $last_name;
+	protected $display_name;
 
-	/**
-	 * @var boolean Is Active
-	 * @ORM\Column(type="boolean", options={"default":false})
-	 */
-	protected $active = false;
+	protected $active = true;
 
-	/**
-	 * @var boolean Is Super Admin
-	 * @ORM\Column(type="boolean", options={"default":false})
-	 */
 	protected $super_admin = false;
 
-	/**
-	 * @var string Timezone
-	 * @ORM\Column(type="string", nullable=true)
-	 */
 	protected $timezone;
 
-	/**
-	 * @ORM\Column(name="last_login_at", type="datetime", nullable=true)
-	 * @var Carbon
-	 */
 	protected $last_login_at;
 
+	protected $logged_in = false;
+
+	protected $job_title;
+
+	protected $job_department;
+
+	protected $supervisor;
+
 	/**
-	 * @var boolean Logged in
-	 * @ORM\Column(type="boolean", options={"default":false})
+	 * @var array
 	 */
-	protected $logged_in;
+	protected $settings;
+
+//	/**
+//	 * @ACL\HasRoles()
+//	 * @var \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[]
+//	 */
+//	protected $roles;
+
+//	/**
+//	 * @ACL\HasPermissions()
+//	 * @var \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Permission[]
+//	 */
+//	public $permissions;
+//
+//	/**
+//	 * @return \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Role[]
+//	 */
+//	public function getRoles()
+//	{
+//		return $this->roles;
+//	}
+
+//	/**
+//	 * @return \Doctrine\Common\Collections\ArrayCollection|\LaravelDoctrine\ACL\Contracts\Permission[]
+//	 */
+//	public function getPermissions()
+//	{
+//		return $this->permissions;
+//	}
 
 	/**
 	 * User constructor.
@@ -110,7 +145,6 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	public function __construct( array $properties = [] ) {
 		parent::__construct( $properties );
 		$this->setUuid();
-		$this->setCreatedAt(new Carbon());
 		$this->setTimezone(config('app.timezone'));
 	}
 
@@ -127,7 +161,7 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	 */
 	public function getAuthIdentifier()
 	{
-		return $this->id;
+		return $this->getId();
 	}
 
 	/**
@@ -138,38 +172,31 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	}
 
 	/**
-	 * @return mixed
+	 * @return string
 	 */
-	public function getId() {
-		return $this->id;
+	public function getUsername() {
+		return $this->username;
+	}
+
+	/**
+	 * @param string $username
+	 */
+	public function setUsername( string $username ): void {
+		$this->username = $username;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getFirstName(): string {
-		return $this->first_name;
+	public function getDisplayName() {
+		return $this->display_name;
 	}
 
 	/**
-	 * @param string $first_name
+	 * @param string $display_name
 	 */
-	public function setFirstName( string $first_name ): void {
-		$this->first_name = $first_name;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getLastName(): string {
-		return $this->last_name;
-	}
-
-	/**
-	 * @param string $last_name
-	 */
-	public function setLastName( string $last_name ): void {
-		$this->last_name = $last_name;
+	public function setDisplayName( string $display_name ): void {
+		$this->display_name = $display_name;
 	}
 
 	/**
@@ -189,21 +216,28 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	/**
 	 * @return bool
 	 */
-	public function isActive(): bool {
+	public function isActive() {
 		return $this->active;
 	}
 
 	/**
 	 * @param bool $active
 	 */
-	public function setActive( bool $active ): void {
+	public function setActive( bool $active ) {
 		$this->active = $active;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function isSuperAdmin(): bool {
+	public function isAdmin() {
+		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isSuperAdmin() {
 		return $this->super_admin;
 	}
 
@@ -217,7 +251,7 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	/**
 	 * @return string
 	 */
-	public function getTimezone(): string {
+	public function getTimezone() {
 		return $this->timezone;
 	}
 
@@ -228,16 +262,68 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 		$this->timezone = $timezone;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getFullName()
+
+	public function can($ability)
 	{
-		return $this->first_name . ' ' . $this->last_name;
+		//todo correct this to the permissions
+		return true;
 	}
 
+	/**
+	 * @return mixed
+	 */
+	public function getSupervisor() {
+		return $this->supervisor;
+	}
 
+	/**
+	 * @param mixed $supervisor
+	 */
+	public function setSupervisor( $supervisor ): void {
+		$this->supervisor = $supervisor;
+	}
 
+	/**
+	 * @return mixed
+	 */
+	public function getJobTitle() {
+		return $this->job_title;
+	}
+
+	/**
+	 * @param mixed $job_title
+	 */
+	public function setJobTitle( $job_title ): void {
+		$this->job_title = $job_title;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getJobDepartment() {
+		return $this->job_department;
+	}
+
+	/**
+	 * @param mixed $job_department
+	 */
+	public function setJobDepartment( $job_department ): void {
+		$this->job_department = $job_department;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getSettings() {
+		return $this->settings;
+	}
+
+	/**
+	 * @param array $settings
+	 */
+	public function setSettings( array $settings ): void {
+		$this->settings = $settings;
+	}
 
 
 }

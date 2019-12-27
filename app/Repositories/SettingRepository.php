@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Foundry\Core\Contracts\Repository;
 
 class SettingRepository implements Repository, ArrayAccess {
+
 	/**
 	 * All of the settings items.
 	 *

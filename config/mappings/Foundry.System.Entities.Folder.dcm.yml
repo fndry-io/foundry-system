@@ -1,0 +1,102 @@
+# Folder.dcm.yml
+Foundry\System\Entities\Folder:
+  type: entity
+  repositoryClass: Foundry\System\Repositories\FolderRepository
+  table: folders
+  lifecycleCallbacks:
+    preRemove: [ onBeforeRemove ]
+    postRemove: [ onAfterRemove ]
+  gedmo:
+    tree:
+      type: nested
+  indexes:
+    folders_name_index:
+      columns: [ name ]
+    folders_reference_type_index:
+      columns: [ reference_type ]
+    folders_reference_id_index:
+      columns: [ reference_id ]
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    uuid:
+      type: string
+      length: 36
+      unique: true
+    name:
+      type: string
+      length: 255
+    is_file:
+      type: boolean
+      default: false
+    reference_type:
+      type: string
+      length: 255
+      nullable: true
+    reference_id:
+      type: bigint
+      nullable: true
+    lft:
+      type: integer
+      gedmo:
+        - treeLeft
+    rgt:
+      type: integer
+      gedmo:
+        - treeRight
+    lvl:
+      type: integer
+      gedmo:
+        - treeLevel
+    created_at:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+    updated_at:
+      type: datetime
+      nullable: true
+      gedmo:
+        timestampable:
+          on: update
+    deleted_at:
+      type: datetime
+      nullable: true
+  manyToOne:
+    root:
+      targetEntity: Foundry\System\Entities\Folder
+      joinColumn:
+        name: tree_root
+        referencedColumnName: id
+        onDelete: CASCADE
+      gedmo:
+        - treeRoot
+    parent:
+      targetEntity: Foundry\System\Entities\Folder
+      inversedBy: children
+      joinColumn:
+        name: parent_id
+        referencedColumnName: id
+        onDelete: CASCADE
+      gedmo:
+        - treeParent
+  oneToMany:
+    children:
+      targetEntity: Foundry\System\Entities\Folder
+      mappedBy: parent
+      orderBy:
+        name: ASC
+      cascade: [ remove ]
+  oneToOne:
+    file:
+      targetEntity: Foundry\System\Entities\File
+      inversedBy: folder
+      nullable: true
+      joinColumn:
+        name: file_id
+        referencedColumnName: id
+        onDelete: CASCADE
+      cascade: [ remove ]

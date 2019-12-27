@@ -1,0 +1,64 @@
+# File.dcm.yml
+Foundry\System\Entities\File:
+  type: entity
+  repositoryClass: Foundry\System\Repositories\FileRepository
+  table: files
+  lifecycleCallbacks:
+    postRemove: [ onAfterRemove ]
+  indexes:
+    files_name_index:
+      columns: [ name ]
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    uuid:
+      type: string
+      length: 36
+      unique: true
+    name:
+      type: string
+      length: 255
+    original_name:
+      type: string
+      length: 255
+    type:
+      type: string
+      length: 255
+    ext:
+      type: string
+      length: 5
+    size:
+      type: decimal
+      precision: 18
+      scale: 2
+    is_public:
+      type: boolean
+      default: 0
+    reference_type:
+      type: string
+      length: 255
+      nullable: true
+    reference_id:
+      type: bigint
+      nullable: true
+    created_at:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+    updated_at:
+      type: datetime
+      nullable: true
+      gedmo:
+        timestampable:
+          on: update
+    deleted_at:
+      type: datetime
+      nullable: true
+  oneToOne:
+    folder:
+      targetEntity: Foundry\System\Entities\Folder
+      mappedBy: file

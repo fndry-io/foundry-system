@@ -164,7 +164,7 @@
 
     const ends = {
         never: {
-            text: 'Never',
+            text: 'Never (Limited to 1 year)',
             value: 'never',
         },
         on: {
@@ -222,7 +222,7 @@
             });
 
             return {
-                config: (this.schema.default) ? this.schema.default : 'monthly',
+                config: (this.schema.data && this.schema.data.config) ? this.schema.data.config : 'monthly',
                 rule: null,
                 rvalue: null,
                 text: null,
@@ -251,6 +251,8 @@
                 this.config = 'custom';
                 this.convertFromRRule(this.value);
                 this.onFreqChange();
+            } else {
+                this.onPresetChosen(this.config);
             }
         },
         methods: {

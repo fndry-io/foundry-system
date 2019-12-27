@@ -40,9 +40,9 @@
     "vue-router": "^3.0.3",
     "vue-template-compiler": "^2.6.10",
     "vuex": "^3.0.1",
-    "rrule": "^2.6.2"
-  },
-  "dependencies": {
+    "rrule": "^2.6.2",
+    "tiptap": "^1.26.6",
+    "tiptap-extensions": "^1.28.6",
     "moment-range": "^4.0.2"
   }
 }

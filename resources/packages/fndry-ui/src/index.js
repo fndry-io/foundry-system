@@ -9,6 +9,8 @@ import App from './components/App';
 import Screen from './components/Screen';
 import Widget from './components/Widget';
 import Icon from './components/Icon';
+import Paginate from './components/Paginate';
+
 import store, {userHasAbility} from './store';
 
 import FndryServices from '../../fndry-services';
@@ -45,7 +47,8 @@ export {
     Loader,
     Widget,
     Icon,
-    Screen
+    Screen,
+    Paginate
 }
 
 Vue.use(Toasted, {

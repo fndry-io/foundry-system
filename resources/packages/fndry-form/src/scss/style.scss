@@ -232,21 +232,24 @@ $input-group-btn-border-color: $input-border-color !default;
                 text-align: center;
                 width: (100%/7);
                 background: transparent;
-                color: #b4b4b4;
                 border: 0;
                 box-sizing: border-box;
+                color: #b4b4b4;
             }
-            .current-month {
+            .current-month.selectable {
                 color: inherit;
+            }
+            .previous-month.selectable {
+                color: #7d7d7d;
             }
             .active {
                 background: #b4b4b4;
-                color: #efefef;
+                color: #000000 !important;
                 font-weight: bold;
 
                 .btn, a {
                     &:hover {
-                        color: #000000;
+                        color: #000000 !important;
                         background: inherit;
                         font-weight: bold;
                     }
@@ -254,7 +257,7 @@ $input-group-btn-border-color: $input-border-color !default;
             }
         }
 
-        .date-calendar-block, .btn, a {
+        .date-calendar-block, .btn, a, .day {
             display: block;
             color: inherit;
             text-decoration: none;

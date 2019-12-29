@@ -15,10 +15,15 @@
             </div>
         </div>
         <div class="date-calendar-days">
-            <div v-for="day in days">{{day}}</div>
+            <div v-for="day in header">{{day}}</div>
         </div>
         <div class="date-calendar-dates">
-            <div v-for="dateObj in dates" :class="{'active':dateObj.active, 'current-month' : dateObj.currentMonth}"><a href="#" @click.prevent="() => $emit('change', dateObj)">{{dateObj.date}}</a></div>
+            <div v-for="dateObj in dates" :class="{
+                'active': dateObj.active,
+                'selectable': dateObj.selectable,
+                'current-month': dateObj.currentMonth,
+                'previous-month': !dateObj.currentMonth
+            }"><a v-if="dateObj.selectable" href="#" class="day" @click.prevent="() => $emit('change', dateObj)">{{dateObj.date}}</a><span v-else class="day">{{dateObj.date}}</span></div>
         </div>
         <div v-if="!noTime" class="date-calendar-ranges date-calendar-time">
 <!--            <div class="date-calendar-block">-->
@@ -59,7 +64,7 @@
         ],
         data(){
             return {
-                days: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+                header: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
                 range: null,
                 calendarMoment: null,
                 calendarDate: {
@@ -99,7 +104,23 @@
                     let {date, months, years} = day.toObject();
                     let active = day.isSame(this.moment, 'date');
                     let currentMonth = day.isSame(this.calendarMoment, 'month');
-                    range.push({date, months, years, active, currentMonth});
+
+                    //determine if it is selectable
+                    let selectable = true;
+                    if (this.days && this.days.length) {
+                        selectable = false;
+                        let found = this.days.find((dayOfWeek) => {
+                            return day.isoWeekday() === dayOfWeek;
+                        });
+                        if (found !== undefined) {
+                            selectable = true;
+                        }
+                    }
+                    if (selectable && !this.isDateInRange(day)) {
+                        selectable = false;
+                    }
+
+                    range.push({date, months, years, active, currentMonth, selectable});
                 }
                 return range;
             }

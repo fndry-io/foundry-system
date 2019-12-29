@@ -25,7 +25,6 @@ export const getMultipleFields = schema => {
 };
 
 // export const getInputValues = (schema, model) => {
-//     //console.log(schema);
 // 	if (schema.hasOwnProperty('name')) {
 // 		if (get(model, schema.name, undefined) === undefined) {
 //             if (schema.hasOwnProperty('type') && (schema.type === 'switch' || schema.type === 'checkbox')) {

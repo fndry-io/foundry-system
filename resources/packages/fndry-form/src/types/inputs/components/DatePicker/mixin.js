@@ -13,7 +13,21 @@ export const dateMixin = {
         noDay: Boolean,
         noMonth: Boolean,
         noYear: Boolean,
-        noPeriod: Boolean
+        noPeriod: Boolean,
+        days: Array,
+        minDate: Object,//a moment object
+        maxDate: Object//a moment object
+    },
+    methods: {
+        isDateInRange(date, prop){
+            if (this.minDate && !date.isSameOrAfter(this.minDate, prop)) {
+                return false;
+            }
+            if (this.maxDate && !date.isSameOrBefore(this.maxDate, prop)) {
+                return false;
+            }
+            return true;
+        }
     }
 };
 
@@ -35,6 +49,8 @@ export const datePickerMixin = {
                 return 'YYYY-MM-DDTHH:mmZ';
             }
         },
+        minDate: String,
+        maxDate: String,
         options: {
             type: Object,
             default() {
@@ -49,7 +65,8 @@ export const datePickerMixin = {
                     noDay: false,
                     noMonth: false,
                     noYear: false,
-                    noPeriod: false
+                    noPeriod: false,
+                    days: null
                 };
             },
         }
@@ -66,7 +83,11 @@ export const datePickerMixin = {
                 milliseconds: 0
             },
             moment: null,
-            range: null
+            range: null,
+            limit: {
+                min: (this.minDate) ? moment(this.minDate, moment.ISO_8601) : undefined,
+                max: (this.maxDate) ? moment(this.maxDate, moment.ISO_8601) : undefined
+            }
         }
     },
     computed: {
@@ -105,19 +126,17 @@ export const datePickerMixin = {
                 number = number * quantity;
             }
             this.moment.add(number, prop);
-            this.date = this.moment.toObject();
-            this.moment = moment(this.date);
-            console.log(this.options.autoUpdate);
-            if (this.options.autoUpdate) {
-                this.handleOk();
-            }
+            this.setDate(this.moment.toObject());
         },
         setDate(dateObj){
-            this.date = merge({}, this.date, dateObj);
-            this.moment = moment(this.date);
-            console.log(this.options.autoUpdate);
-            if (this.options.autoUpdate) {
-                this.handleOk();
+            let date = merge({}, this.date, dateObj);
+            let _moment = moment(date);
+            if (this.isDateInRange(_moment)) {
+                this.moment = _moment;
+                this.date = this.moment.toObject();
+                if (this.options.autoUpdate) {
+                    this.handleOk();
+                }
             }
         },
         handleCancel(){
@@ -128,6 +147,15 @@ export const datePickerMixin = {
         },
         handleOk(){
             this.$emit('input', this.moment);
+        },
+        isDateInRange(date, prop){
+            if (this.limit.min && !date.isSameOrAfter(this.limit.min, prop)) {
+                return false;
+            }
+            if (this.limit.max && !date.isSameOrBefore(this.limit.max, prop)) {
+                return false;
+            }
+            return true;
         }
     }
 };

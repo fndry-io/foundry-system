@@ -102,7 +102,6 @@ export const determineVisibility = (condition, model) => {
 export default {
 	methods: {
         fieldVisible() {
-            //console.log('schema', this.schema.type, this.schema.visible);
             return this.schema.visible === undefined || this.schema.visible;
         }
     }

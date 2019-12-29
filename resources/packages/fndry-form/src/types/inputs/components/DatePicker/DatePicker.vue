@@ -14,6 +14,9 @@
             :no-month="options.noMonth"
             :no-day="options.noDay"
             :no-period="options.noPeriod"
+            :days="options.days"
+            :min-date="limit.min"
+            :max-date="limit.max"
         ></date-time>
         <date-calendar
             v-else
@@ -29,6 +32,9 @@
             :no-month="options.noMonth"
             :no-day="options.noDay"
             :no-period="options.noPeriod"
+            :days="options.days"
+            :min-date="limit.min"
+            :max-date="limit.max"
         ></date-calendar>
         <div class="date-picker-buttons">
             <div class="button" v-if="!options.noButtons">

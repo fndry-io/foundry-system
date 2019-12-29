@@ -1,12 +1,18 @@
 <template>
     <div>
         <b-input-group>
-            <b-dropdown right variant="input" class="date-picker-dropdown input-dropdown">
+            <b-dropdown right variant="input" class="date-picker-dropdown input-dropdown" lazy :disabled="schema.disabled">
                 <template v-slot:button-content>
                     <span>{{inputFormatted}}&nbsp;</span>
                 </template>
                 <b-dropdown-form>
-                    <date-picker :value="date" @input="handlePickerInput" :options="options" :format="dateFormat"></date-picker>
+                    <date-picker :value="date"
+                                 @input="handlePickerInput"
+                                 :options="options"
+                                 :format="dateFormat"
+                                 :min-date="schema.min"
+                                 :max-date="schema.max"
+                    ></date-picker>
                 </b-dropdown-form>
             </b-dropdown>
         </b-input-group>

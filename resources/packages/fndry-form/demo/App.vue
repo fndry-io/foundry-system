@@ -11,22 +11,28 @@ export default {
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="scss">
 
-h1, h2 {
-  font-weight: normal;
-}
+    // Import CSS
+    @import '~bootstrap/scss/bootstrap.scss';
+    @import '~bootstrap-vue/src/index.scss';
+    @import '../src/scss/style.scss';
 
-a {
-  color: #333;
-}
+    #app {
+      font-family: 'Avenir', Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-align: center;
+      color: #2c3e50;
+      margin-top: 60px;
+    }
+
+    h1, h2 {
+      font-weight: normal;
+    }
+
+    a {
+      color: #333;
+    }
 
 </style>

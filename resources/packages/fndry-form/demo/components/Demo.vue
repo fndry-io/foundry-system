@@ -107,7 +107,7 @@
                         ],
                         date: '2019-11-26',
                         daterange: '2019-11-30',
-                        datetime: '2018-11-21 17:33',
+                        datetime: '2019-11-21 17:33',
                         datetimerange: '2018-11-21 17:33',
                         timerange: null,
                         repeat: "DTSTART:20191126T000000Z\nRRULE:FREQ=MONTHLY;COUNT=3;INTERVAL=1;BYMONTHDAY=26"
@@ -155,9 +155,12 @@
                                                     mask: '####-##-##',
                                                     maskFormat: 'YYYY-MM-DD',
                                                     dateFormat: 'YYYY-MM-DD',
+                                                    min: '2019-11-01T00:00:00',
+                                                    max: '2020-03-31T23:59:59',
                                                     pickerOptions: {
                                                         mode: 'calendar',
-                                                        noTime: true
+                                                        noTime: true,
+                                                        days: [4]
                                                     }
                                                 },
                                                 {
@@ -168,6 +171,7 @@
                                                     mask: '####-##-##',
                                                     maskFormat: 'YYYY-MM-DD',
                                                     dateFormat: 'YYYY-MM-DD',
+                                                    //disabled: true,
                                                     pickerOptions: {
                                                         mode: 'range',
                                                         noTime: true
@@ -186,6 +190,8 @@
                                                     mask: '####-##-## ##:##',
                                                     maskFormat: 'YYYY-MM-DD HH:mm',
                                                     dateFormat: 'YYYY-MM-DDTHH:mm:ssZZ',
+                                                    min: '2019-11-01T00:00:00',
+                                                    max: '2020-03-31T23:59:59',
                                                     pickerOptions: {
                                                         mode: 'calendar'
                                                     }

@@ -70,7 +70,6 @@
     import { RRule, RRuleSet, rrulestr } from 'rrule';
 
     import abstractInput from '../abstractInput';
-    import DatePicker from "vue-bootstrap-datetimepicker/src/component";
     import Date from "./Date";
 
     const counts = [
@@ -200,8 +199,7 @@
     export default {
         name: "repeat-input",
         components: {
-            Date,
-            DatePicker
+            Date
         },
         mixins: [
             abstractInput

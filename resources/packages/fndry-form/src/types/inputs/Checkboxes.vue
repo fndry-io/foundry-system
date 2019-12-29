@@ -5,7 +5,7 @@
             v-model="model"
             v-on="$listeners"
             :options="schema.options"
-            :stacked="!schema.inline"
+            :stacked="!schema.stacked"
             :disabled="disabled"
     ></b-form-checkbox-group>
 

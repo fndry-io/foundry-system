@@ -4,6 +4,9 @@
             <b-navbar-brand href="#">{{title}}</b-navbar-brand>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
             <b-collapse id="nav-collapse" is-nav>
+                <slot name="links">
+
+                </slot>
                 <b-navbar-nav class="ml-auto">
                     <login-modal v-if="!isLoggedIn"></login-modal>
                     <b-nav-item-dropdown v-if="isLoggedIn" right>

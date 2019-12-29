@@ -67,6 +67,7 @@ export default {
         onModelUpdated(model){
             this.dirty = true;
             this.model = model;
+            this.$emit('update', this.model);
         },
         submit(action, method){
             this.$refs.observer.validate().then((isValid) => {

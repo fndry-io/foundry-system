@@ -122,11 +122,20 @@ export const HasBrowseRequest = {
             this.params = Object.assign({}, this.defaultParams);
             this.fetch();
         },
+
         toggleOrderBy: function(orderBy){
             this.params = Object.assign({}, this.params, {
                 page: 1,
                 orderBy: orderBy,
                 orderByDirection: (this.params.orderBy !== undefined && this.params.orderBy == orderBy) ? ((this.params.orderByDirection !== undefined && this.params.orderByDirection == 'asc') ? 'desc': 'asc') : 'asc'
+            });
+            this.fetch();
+        },
+        toggleSortBy: function(sortBy, sortDesc){
+            this.params = Object.assign({}, this.params, {
+                page: 1,
+                sortBy: sortBy,
+                sortDesc: sortDesc
             });
             this.fetch();
         },

@@ -10,7 +10,7 @@
                     </slot>
                 </div>
                 <div class="screen-context">
-                    <slot name="screen-context"></slot>
+                    <slot name="context"></slot>
                 </div>
             </div>
         </div>
@@ -54,6 +54,10 @@
         }
         .screen-context {
             text-align: right;
+
+            > .btn {
+                margin-left: 5px;
+            }
         }
         .screen-body {
             padding: $screen-body-padding;

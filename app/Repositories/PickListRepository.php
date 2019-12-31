@@ -8,6 +8,7 @@ use Foundry\Core\Repositories\ModelRepository;
 use Foundry\System\Models\PickList;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 
 class PickListRepository extends ModelRepository {
@@ -133,7 +134,10 @@ class PickListRepository extends ModelRepository {
 	    $query->where('status', true);
 
 	    $picklist = $picklist->toArray();
-	    $picklist['items'] = $query->get()->toArray();
+	    $items = $query->get();
+	    $picklist['items'] = $items->mapWithKeys(function($item){
+	        return [$item->identifier => $item->toArray()];
+        });
 
 	    return $picklist;
     }
@@ -146,5 +150,26 @@ class PickListRepository extends ModelRepository {
 	    Cache::forget('picklist::' . $identifier);
     }
 
+    /**
+     * Get's the specific property of a pick list item or an array of values based on the given key
+     *
+     * @param string $pick_list_identifier The Pick List the item belongs to
+     * @param string $item_identifier The item identifier
+     * @param string|array $key A single key to extract off the item, or an array of keys to extract more than one property off the item
+     * @param null $default The default value to return if none is foudn
+     * @return array|mixed|null
+     */
+    public function getPickListItem($pick_list_identifier, $item_identifier, $key = 'label', $default = null)
+    {
+        $list = $this->getCachedSelectableList($pick_list_identifier);
+        if ($list && isset($list['items'][$item_identifier])) {
+            if (is_array($key)) {
+                return Arr::only($list['items'][$item_identifier], $key);
+            } else {
+                return Arr::get($list['items'][$item_identifier], $key);
+            }
+        }
+        return $default;
+    }
 
 }

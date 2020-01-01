@@ -5,7 +5,6 @@ namespace Foundry\System;
 use Foundry\Core\Requests\FormRequestHandler;
 use Foundry\Core\Support\ServiceProvider;
 use Foundry\System\Console\Commands\SyncCommand;
-use Foundry\System\Console\Commands\SyncPickListsCommand;
 use Foundry\System\Models\User;
 use Foundry\System\Providers\AuthServiceProvider;
 use Foundry\System\Providers\EventServiceProvider;
@@ -56,7 +55,6 @@ class SystemServiceProvider extends ServiceProvider
 		$this->registerTranslations();
 		$this->registerConfig();
 		$this->registerViews();
-		$this->registerFactories();
 		$this->registerCommands();
 		$this->loadMigrationsFrom(base_path('foundry/system/database/migrations'));
 		$this->mergeDoctrinePaths(base_path('foundry/system/config/mappings'));
@@ -120,16 +118,6 @@ class SystemServiceProvider extends ServiceProvider
 		$this->publishes([
 			base_path('foundry/system/resources/lang') => $langPath,
 		]);
-	}
-
-	/**
-	 * Register an additional directory of factories.
-	 *
-	 * @return void
-	 */
-	public function registerFactories()
-	{
-
 	}
 
 	/**

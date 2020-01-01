@@ -47,6 +47,7 @@
         }
         .card-context {
             text-align: right;
+            white-space: nowrap;
             .btn {
                 margin-left: 5px;
             }

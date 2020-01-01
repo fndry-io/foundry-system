@@ -7,7 +7,11 @@ use Foundry\Core\Entities\Contracts\IsUser;
 use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
 use Foundry\Core\Repositories\Traits\SoftDeleteable;
+use Foundry\System\Events\UserCreated;
+use Foundry\System\Events\UserDeleted;
 use Foundry\System\Events\UserRegistered;
+use Foundry\System\Events\UserRestored;
+use Foundry\System\Events\UserUpdated;
 use Foundry\System\Models\File;
 use Foundry\System\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
@@ -27,6 +31,18 @@ use Illuminate\Support\Facades\Auth;
 class UserRepository extends ModelRepository
 {
     use SoftDeleteable;
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'created' => UserCreated::class,
+        'updated' => UserUpdated::class,
+        'deleted' => UserDeleted::class,
+        'restored' => UserRestored::class
+    ];
 
 	/**
 	 * Returns the class name of the object managed by the repository.
@@ -196,7 +212,6 @@ class UserRepository extends ModelRepository
 
 		if ($user->save()) {
 			event(new PasswordReset($user));
-
 			return $user;
 		} else {
 			return false;
@@ -241,6 +256,7 @@ class UserRepository extends ModelRepository
         }
 
 		if ($this->save($user)) {
+            $this->dispatch('created', $user);
 			return $user;
 		} else {
 			return false;
@@ -291,6 +307,7 @@ class UserRepository extends ModelRepository
 		}
 
 		if ($user->save()) {
+            $this->dispatch('updated', $user);
 			return $user;
 		} else {
 			return false;

@@ -12,7 +12,7 @@
                         <template v-slot:button-content>
                             Log In As <b-spinner v-if="loading" small></b-spinner>
                         </template>
-                        <b-dropdown-item v-for="user in users" @click="() => logInAs(user)">{{user.display_name}}</b-dropdown-item>
+                        <b-dropdown-item v-for="user in users" @click="() => logInAs(user)" :key="user.username">{{user.display_name}}</b-dropdown-item>
                     </b-nav-item-dropdown>
                     <login-modal v-if="!isLoggedIn"></login-modal>
                     <b-nav-item-dropdown v-if="isLoggedIn" right>

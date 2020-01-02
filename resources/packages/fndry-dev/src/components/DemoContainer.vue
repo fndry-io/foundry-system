@@ -8,6 +8,12 @@
 
                 </slot>
                 <b-navbar-nav class="ml-auto">
+                    <b-nav-item-dropdown v-if="!isLoggedIn" right>
+                        <template v-slot:button-content>
+                            Log In As <b-spinner v-if="loading" small></b-spinner>
+                        </template>
+                        <b-dropdown-item v-for="user in users" @click="() => logInAs(user)">{{user.display_name}}</b-dropdown-item>
+                    </b-nav-item-dropdown>
                     <login-modal v-if="!isLoggedIn"></login-modal>
                     <b-nav-item-dropdown v-if="isLoggedIn" right>
                         <template v-slot:button-content>
@@ -24,6 +30,9 @@
 </template>
 
 <script>
+
+    import {merge} from 'lodash';
+
     import LoginModal from "./LoginModal";
 
     export default {
@@ -33,7 +42,29 @@
         },
         data() {
             return {
-                loading: false
+                loading: false,
+                users: [
+                    {
+                        display_name: 'Super Admin',
+                        email: 'superadmin@domain.com',
+                        password: 'test1234'
+                    },
+                    {
+                        display_name: 'Admin',
+                        email: 'admin@domain.com',
+                        password: 'test1234'
+                    },
+                    {
+                        display_name: 'Manager',
+                        email: 'manager@domain.com',
+                        password: 'test1234'
+                    },
+                    {
+                        display_name: 'Dummy 1',
+                        email: 'dummy1@domain.com',
+                        password: 'test1234'
+                    }
+                ]
             };
         },
         components: {
@@ -45,6 +76,19 @@
                 this.$store.dispatch('auth/logout').finally(() => {
                     this.loading = false;
                 });
+            },
+            logInAs(user){
+                this.loading = true;
+
+                let payload = merge({}, user, {
+                    guard: 'system',
+                });
+
+                this.$store.dispatch('auth/login', payload)
+                    .finally(() => {
+                        this.loading = false;
+                    })
+                ;
             }
         },
         computed: {

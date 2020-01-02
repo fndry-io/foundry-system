@@ -124,14 +124,6 @@
                 }
                 return range;
             }
-        },
-        watch: {
-            moment: function(newVal, oldVal){
-                if (!this.range.contains(newVal)) {
-                    this.setMoment();
-                    this.setRange();
-                }
-            }
         }
     }
 </script>

@@ -11,6 +11,10 @@ $factory->define(\Foundry\System\Models\User::class, function (Faker $faker) {
         'email' => $faker->unique()->safeEmail,
         'active' => 1,
         'super_admin' => false,
-        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm',
+        'password' => 'test1234'
     ];
 });
+
+$factory->state(\Foundry\System\Models\User::class, 'super_admin', [
+    'super_admin' => true
+]);

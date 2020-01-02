@@ -21,7 +21,7 @@ export default {
             let _newVal = objGet(newValue, `${this.schema.name}`);
             let _oldVal = objGet(oldValue, `${this.schema.name}`);
             if (_newVal !== _oldVal) {
-                if (_newVal === null) {
+                if (_newVal === null || _newVal === undefined) {
                     this.$refs['provider'].reset();
                 }
                 this.value = _newVal;

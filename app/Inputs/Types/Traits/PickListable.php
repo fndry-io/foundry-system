@@ -30,7 +30,7 @@ trait PickListable {
 	{
 		$this->picklist = PickListRepository::repository()->getCachedSelectableList($identifier);
 
-		$this->setOptions($this->picklist['items']);
+		$this->setOptions($this->picklist['items']->values());
 		$this->setTextKey($labelKey);
 		$this->setValueKey($valueKey);
 

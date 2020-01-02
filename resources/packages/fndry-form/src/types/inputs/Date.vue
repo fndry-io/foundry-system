@@ -1,108 +1,20 @@
 <template>
-    <div>
-        <b-input-group>
-            <b-dropdown right variant="input" class="date-picker-dropdown input-dropdown" lazy :disabled="schema.disabled">
-                <template v-slot:button-content>
-                    <span>{{inputFormatted}}&nbsp;</span>
-                </template>
-                <b-dropdown-form>
-                    <date-picker :value="date"
-                                 @input="handlePickerInput"
-                                 :options="options"
-                                 :format="dateFormat"
-                                 :min-date="schema.min"
-                                 :max-date="schema.max"
-                    ></date-picker>
-                </b-dropdown-form>
-            </b-dropdown>
-        </b-input-group>
-
-<!--        <div class="input-group">-->
-<!--            <b-input :id="`${id}Date`"-->
-<!--                     :name="`${name}-date`"-->
-<!--                     :disabled="disabled"-->
-<!--                     :autocomplete="schema.autocomplete"-->
-<!--                     :min="schema.min"-->
-<!--                     :max="schema.max"-->
-<!--                     :required="schema.required"-->
-<!--                     @input="onInput"-->
-<!--            ></b-input>-->
-<!--            <div class="input-group-append">-->
-<!--                <span class="input-group-button">-->
-<!--                    <b-dropdown id="dropdown-right" right variant="primary" class="m-2">-->
-<!--                        <template v-slot.button-content>-->
-<!--                            <span class="fa-calendar"></span>-->
-<!--                        </template>-->
-<!--                        <b-dropdown-item href="#">Action</b-dropdown-item>-->
-<!--                        <b-dropdown-item href="#">Another action</b-dropdown-item>-->
-<!--                        <b-dropdown-item href="#">Something else here</b-dropdown-item>-->
-<!--                    </b-dropdown>-->
-<!--                </span>-->
-
-
-<!--            </div>-->
-<!--        </div>-->
-<!--        <b-input-group v-if="!schema.invert">-->
-<!--            <date-picker v-if="schema.dateFormat"-->
-<!--                          :id="`${id}Date`"-->
-<!--                          :name="`${name}-date`"-->
-<!--                          :config="dateOptions"-->
-<!--                          v-model="date"-->
-<!--                          :disabled="disabled"-->
-<!--                          :autocomplete="schema.autocomplete"-->
-<!--                         placeholder="Date..."-->
-<!--                          :min="schema.min"-->
-<!--                          :max="schema.max"-->
-<!--                          :required="schema.required"-->
-<!--                          @input="onInput"-->
-<!--                          :class="{'col-8' : !!(schema.timeFormat)}"-->
-<!--            ></date-picker>-->
-<!--            <date-picker v-if="schema.timeFormat"-->
-<!--                         :id="`${id}Time`"-->
-<!--                          :name="`${name}-time`"-->
-<!--                          :config="timeOptions"-->
-<!--                          v-model="time"-->
-<!--                          :disabled="disabled"-->
-<!--                          :autocomplete="schema.autocomplete"-->
-<!--                          placeholder="Time..."-->
-<!--                          :min="schema.min"-->
-<!--                          :max="schema.max"-->
-<!--                          :required="schema.required"-->
-<!--                          @input="onInput"-->
-<!--                         :class="{'col-4' : !!(schema.dateFormat)}"-->
-<!--            ></date-picker>-->
-<!--        </b-input-group>-->
-<!--        <b-input-group v-else>-->
-<!--            <date-picker v-if="schema.timeFormat"-->
-<!--                         :id="`${id}Time`"-->
-<!--                         :name="`${name}-time`"-->
-<!--                         :config="timeOptions"-->
-<!--                         v-model="time"-->
-<!--                         :disabled="disabled"-->
-<!--                         :autocomplete="schema.autocomplete"-->
-<!--                         placeholder="Time..."-->
-<!--                         :min="schema.min"-->
-<!--                         :max="schema.max"-->
-<!--                         :required="schema.required"-->
-<!--                         @input="onInput"-->
-<!--                         :class="{'col-4' : !!(schema.dateFormat)}"-->
-<!--            ></date-picker>-->
-<!--            <date-picker v-if="schema.dateFormat"-->
-<!--                         :id="`${id}Date`"-->
-<!--                         :name="`${name}-date`"-->
-<!--                         :config="dateOptions"-->
-<!--                         v-model="date"-->
-<!--                         :disabled="disabled"-->
-<!--                         :autocomplete="schema.autocomplete"-->
-<!--                         placeholder="Date..."-->
-<!--                         :min="schema.min"-->
-<!--                         :max="schema.max"-->
-<!--                         :required="schema.required"-->
-<!--                         @input="onInput"-->
-<!--                         :class="{'col-8' : !!(schema.timeFormat)}"-->
-<!--            ></date-picker>-->
-<!--        </b-input-group>-->
-    </div>
+    <b-dropdown right variant="input" class="date-picker-dropdown form-control" lazy :disabled="schema.disabled">
+        <template v-slot:button-content>
+            <span>{{inputFormatted}}&nbsp;</span>
+        </template>
+        <template v-slot="{hide}">
+            <b-dropdown-form>
+                <date-picker :value="date"
+                             @change="(value) => {handlePickerInput(value, hide)}"
+                             :options="options"
+                             :format="dateFormat"
+                             :min-date="schema.min"
+                             :max-date="schema.max"
+                ></date-picker>
+            </b-dropdown-form>
+        </template>
+    </b-dropdown>
 </template>
 
 <script>
@@ -165,16 +77,22 @@
                     }
                     this.date = moment(value, this.dateFormat);
                     this.inputFormatted = this.date.format(this.inputMaskFormat);
+                } else {
+                    this.date = null;
+                    this.inputFormatted = null;
                 }
             },
-            handlePickerInput(value) {
+            handlePickerInput(value, callback) {
                 this.date = value;
-                if (this.date) {
+                if (this.date !== null && this.date !== undefined) {
                     this.inputFormatted = this.date.format(this.inputMaskFormat);
                 } else {
                     this.inputFormatted = "";
                 }
                 this.onInput();
+                if (callback) {
+                    callback();
+                }
             },
             onInput(){
                 if (this.date) {
@@ -185,6 +103,13 @@
             },
             setValue(value){
                 this.setDateTime(value);
+            }
+        },
+        watch: {
+            value: function(newVal, oldVal){
+                if (newVal !== oldVal) {
+                    this.setDateTime(newVal);
+                }
             }
         }
     };

@@ -1,15 +1,28 @@
 
-import { merge } from 'lodash';
+import { merge, forEach } from 'lodash';
 import { ValidationProvider, ValidationObserver } from 'vee-validate';
 
 export const HasFilter = {
     props: {
+        filters: {
+            type: Object,
+            required: false
+        },
+        defaultParams: {
+            type: Object,
+            default() {
+                return {
+                    search: null,
+                    deleted: false
+                };
+            }
+        },
         params: {
             type: Object,
             default() {
                 return {
                     search: null,
-                    deleted: 'deleted'
+                    deleted: false
                 };
             }
         }
@@ -19,11 +32,47 @@ export const HasFilter = {
         ValidationObserver
     },
     data() {
+
+        let form = {};
+
+        if (this.filters) {
+            forEach(this.filters, (filter, name) => {
+                form[name] = (filter.value) ? filter.value : ((filter.default) ? filter.default : null);
+            });
+        }
+
         return {
-            form: merge({}, this.params)
+            filterEndpoint: {
+                request: null,
+                method: 'GET',
+                params: {}
+            },
+            form: merge({}, form, this.params),
+            errors: {},
+            loading: false,
+            fields: null
         }
     },
+    created() {
+        if (this.filterEndpoint.request) this.getFilters();
+    },
     methods: {
+        getFilters() {
+            this.loading = true;
+            this.$fndryApiService.call(this.filterEndpoint.request, this.filterEndpoint.method, this.filterEndpoint.params)
+                .then((response) => {
+                    this.fields = response.data;
+                }).finally(() => {
+                this.loading = false;
+            })
+            ;
+        },
+        onFilterInput(name, value){
+            this.form = merge({}, this.form, {[name]: value});
+        },
+        onFilterChange(name, value){
+            this.form = merge({}, this.form, {[name]: value});
+        },
         onSubmit() {
             const isValid = this.$refs.observer.validate();
             if (!isValid) {
@@ -34,11 +83,16 @@ export const HasFilter = {
     },
     watch: {
         params: function(newValue, oldValue){
-            this.form = newValue;
+            let form = {};
+            if (this.filters) {
+                forEach(this.filters, (filter, name) => {
+                    form[name] = null;
+                });
+            }
+            this.form = merge({}, form, newValue);
         }
     }
 };
-
 
 export const HasBrowseRequest = {
 
@@ -61,7 +115,8 @@ export const HasBrowseRequest = {
             response: {
                 data: []
             },
-            filterActive: false
+            filterActive: false,
+            showFilter: false
         };
     },
     mounted: function(){
@@ -172,6 +227,10 @@ export const HasBrowseRequest = {
             if (this.$refs['filter']) {
                 this.$refs['filter'].hide();
             }
+            this.showFilter = false;
+        },
+        toggleFilter: function(){
+            this.showFilter = !this.showFilter;
         }
     }
 };

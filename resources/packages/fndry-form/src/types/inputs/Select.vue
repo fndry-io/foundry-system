@@ -194,7 +194,7 @@
         watch: {
             value: function(newVal, oldVal){
                 if (newVal !== oldVal) {
-                    this.model = newVal ? newVal : ((this.schema.multiple) ? [] : null);
+                    this.model = (newVal !== null && newVal !== undefined) ? newVal : ((this.schema.multiple) ? [] : null);
                     forEach(this.model, (value) => {
                         let selected = find(this.options, (option) => option.value === value);
                         if (selected) {

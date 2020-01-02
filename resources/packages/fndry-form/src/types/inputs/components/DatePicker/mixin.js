@@ -103,8 +103,8 @@ export const datePickerMixin = {
         this.setMoment(this.value);
     },
     methods: {
-        onInput(){
-            this.$emit('input', this.value);
+        onChange(){
+            this.$emit('change', this.value);
         },
         setMoment(value){
             if (!isEmpty(value)) {
@@ -143,10 +143,10 @@ export const datePickerMixin = {
             this.$emit('cancel');
         },
         handleReset(){
-            this.$emit('input', null);
+            this.$emit('change', null);
         },
         handleOk(){
-            this.$emit('input', this.moment);
+            this.$emit('change', this.moment);
         },
         isDateInRange(date, prop){
             if (this.limit.min && !date.isSameOrAfter(this.limit.min, prop)) {

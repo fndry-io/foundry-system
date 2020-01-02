@@ -23,8 +23,16 @@ $input-group-btn-border-color: $input-border-color !default;
     }
 }
 
-.input-dropdown {
+.dropdown.form-control {
     width: 100%;
+    padding: 0 !important;
+
+    > button {
+        border: 0 !important;
+        padding: 0.375rem 0.75rem !important;
+        height: 100% !important;
+        margin: 0 !important;
+    }
 
     &.show > button,
     > button:focus {
@@ -76,6 +84,22 @@ $input-group-btn-border-color: $input-border-color !default;
         }
         &::after {
             flex-grow: 0;
+        }
+    }
+}
+
+.input-group {
+    .form-control.dropdown {
+        padding: 0.25rem 0.5rem;;
+    }
+}
+
+.input-group-sm {
+    .form-control.dropdown {
+        > button {
+            border: 0 !important;
+            padding: 0.25rem 0.5rem;
+            height: 100% !important;
         }
     }
 }

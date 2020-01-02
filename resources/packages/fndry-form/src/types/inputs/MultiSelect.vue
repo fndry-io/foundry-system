@@ -497,7 +497,7 @@
         },
         watch: {
             value: function(newVal, oldVal){
-                if (newVal !== oldVal && newVal === null) {
+                if (newVal !== oldVal && (newVal === null || newVal === undefined)) {
                     this.selected = [];
                     this.model = [];
                 }

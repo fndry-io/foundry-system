@@ -14,6 +14,24 @@ import Upload from './inputs/Upload';
 import Repeat from './inputs/Repeat';
 import Html from './inputs/HtmlEditor';
 
+export {
+    Input as FndryFieldInput,
+    Telephone as FndryFieldTelephone,
+    Money as FndryFieldMoney,
+    TextArea as FndryFieldTextArea,
+    Checkbox as FndryFieldCheckbox,
+    Checkboxes as FndryFieldCheckboxes,
+    Radios as FndryFieldRadios,
+    Select as FndryFieldSelect,
+    MultiSelect as FndryFieldMultiSelect,
+    Date as FndryFieldDate,
+    Reference as FndryFieldReference,
+    Hidden as FndryFieldHidden,
+    Upload as FndryFieldUpload,
+    Repeat as FndryFieldRepeat,
+    Html as FndryFieldHtml
+}
+
 export default {
     'fndry-field-input': Input,
     'fndry-field-telephone': Telephone,

@@ -12,6 +12,9 @@
                     </div>
                 </div>
             </div>
+            <div class="card-filter" v-if="$slots.filter">
+                <slot name="filter"></slot>
+            </div>
             <div class="card-body">
                 <loader :loading="loading">
                     <slot></slot>
@@ -30,6 +33,7 @@
             title: String,
             noHeader: Boolean,
             noFooter: Boolean,
+            noFilter: Boolean,
             noContext: Boolean,
             loading: Boolean
         }

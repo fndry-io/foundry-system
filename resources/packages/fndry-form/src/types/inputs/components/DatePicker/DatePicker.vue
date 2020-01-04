@@ -15,8 +15,8 @@
             :no-day="options.noDay"
             :no-period="options.noPeriod"
             :days="options.days"
-            :min-date="limit.min"
-            :max-date="limit.max"
+            :min-date="options.minDate"
+            :max-date="options.maxDate"
         ></date-time>
         <date-calendar
             v-else
@@ -33,14 +33,14 @@
             :no-day="options.noDay"
             :no-period="options.noPeriod"
             :days="options.days"
-            :min-date="limit.min"
-            :max-date="limit.max"
+            :min-date="options.minDate"
+            :max-date="options.maxDate"
         ></date-calendar>
         <div class="date-picker-buttons">
             <div class="button" v-if="!options.noButtons">
                 <button type="button" class="btn btn-primary btn-block" @click="handleCancel"><span class="fa fa-close"></span></button>
             </div>
-            <div class="button">
+            <div class="button" v-if="!required">
                 <button type="button" class="btn btn-light btn-block" @click="handleReset"><span class="fa fa-trash"></span></button>
             </div>
             <div class="button" v-if="!options.noButtons">

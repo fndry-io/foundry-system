@@ -1,5 +1,10 @@
 <template>
-    <b-dropdown right variant="input" class="date-picker-dropdown form-control" lazy :disabled="schema.disabled">
+    <b-dropdown right variant="input" :class="{
+        'date-picker-dropdown': true,
+        'form-control': true,
+        'is-valid': state === true,
+        'is-invalid': state === false
+    }" lazy :disabled="schema.disabled">
         <template v-slot:button-content>
             <span>{{inputFormatted}}&nbsp;</span>
         </template>
@@ -9,8 +14,7 @@
                              @change="(value) => {handlePickerInput(value, hide)}"
                              :options="options"
                              :format="dateFormat"
-                             :min-date="schema.min"
-                             :max-date="schema.max"
+                             :required="schema.required"
                 ></date-picker>
             </b-dropdown-form>
         </template>
@@ -27,7 +31,7 @@
     import DatePicker from "./components/DatePicker";
 
     export default {
-        name: "fndry-field-input",
+        name: "FndryFieldDate",
         components: {
             DatePicker
         },

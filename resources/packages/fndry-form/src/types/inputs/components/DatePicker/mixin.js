@@ -15,8 +15,8 @@ export const dateMixin = {
         noYear: Boolean,
         noPeriod: Boolean,
         days: Array,
-        minDate: Object,//a moment object
-        maxDate: Object//a moment object
+        minDate: [String,Object],
+        maxDate: [String,Object]
     },
     methods: {
         isDateInRange(date, prop){
@@ -49,6 +49,7 @@ export const datePickerMixin = {
                 return 'YYYY-MM-DDTHH:mmZ';
             }
         },
+        required: Boolean,
         minDate: String,
         maxDate: String,
         options: {

@@ -25,7 +25,9 @@ export default {
             required: false
         },
         state: Boolean,
-        validation: Object
+        validation: Object,
+        size: String,
+        prepend: String
     },
     data(){
         return {

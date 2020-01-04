@@ -1,7 +1,10 @@
 <template>
     <div :class="{'select-dropdown': true, 'open': open}">
         <div ref="input-group" class="input-group-wrapper">
-            <div class="input-group">
+            <div :class="{'input-group': true, 'input-group-sm': schema.size || size}">
+                <div class="input-group-prepend" v-if="schema.prepend || prepend">
+                    <span class="input-group-text">{{schema.prepend || prepend}}</span>
+                </div>
 
                 <div :class="{'form-control': true, 'input-area': true, 'is-invalid': state === false, 'is-valid': state === true, 'disabled': schema.disabled}">
                     <div :id="id" class="selected-values" v-if="!open && selected.length > 0" @click.stop="handleClick" tabindex="0" @focus="handleClick">
@@ -101,6 +104,9 @@
         mixins: [
             abstractInput
         ],
+        props: {
+            multiple: Boolean
+        },
         data() {
             return {
                 key: 0,
@@ -183,7 +189,7 @@
             },
 
             onModelChange() {
-                this.$emit('input', this.model);
+                this.$emit('change', this.model);
             },
             onValueChange(value) {
                 if (this.schema.multiple) {

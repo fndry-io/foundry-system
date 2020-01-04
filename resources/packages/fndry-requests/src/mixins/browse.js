@@ -1,5 +1,5 @@
 
-import { merge, forEach } from 'lodash';
+import { merge, forEach, get } from 'lodash';
 import { ValidationProvider, ValidationObserver } from 'vee-validate';
 
 export const HasFilter = {
@@ -54,7 +54,7 @@ export const HasFilter = {
         }
     },
     created() {
-        if (this.filterEndpoint.request) this.getFilters();
+        if (!this.filters && this.filterEndpoint.request) this.getFilters();
     },
     methods: {
         getFilters() {
@@ -119,6 +119,11 @@ export const HasBrowseRequest = {
             showFilter: false
         };
     },
+    computed: {
+        filters: function(){
+            return get(this.response, 'meta.filters', undefined);
+        }
+    },
     mounted: function(){
         if (this.autoload === true) {
             this.fetch();
@@ -162,9 +167,12 @@ export const HasBrowseRequest = {
             }
             this.loading = true;
             this.$fndryApiService.call(this.$fndryApiService.getHandleUrl(this.request), this.method, this.params).then((response) => {
-                this.response = response;
+                this.setResponse(response);
                 this.loading = false;
             });
+        },
+        setResponse(response){
+            this.response = response;
         },
         refresh(){
             this.fetch();

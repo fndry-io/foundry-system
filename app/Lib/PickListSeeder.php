@@ -2,6 +2,7 @@
 
 namespace Foundry\System\Lib;
 
+use Foundry\System\Models\BasePickListItem;
 use Foundry\System\Models\PickList;
 use Foundry\System\Models\PickListItem;
 use Foundry\System\Repositories\PickListItemRepository;
@@ -63,5 +64,17 @@ class PickListSeeder {
 
 		}
 	}
+
+    /**
+     * @param string|BasePickListItem $class
+     */
+	public static function seedClass($class)
+    {
+        self::seed([
+            array_merge($class::originalList(), [
+                'items' => $class::originalItems()
+            ])
+        ]);
+    }
 
 }

@@ -2,6 +2,19 @@
 import { merge, forEach, get } from 'lodash';
 import { ValidationProvider, ValidationObserver } from 'vee-validate';
 
+export const HasBrowseData = {
+    props: {
+        data: {
+            type: Array,
+            default(){return [];}
+        },
+        fields: {
+            type: Array,
+            default(){return [];}
+        }
+    }
+};
+
 export const HasFilter = {
     props: {
         filters: {

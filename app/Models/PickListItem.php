@@ -17,7 +17,9 @@ class PickListItem extends Model implements IsPickListItem
 	protected $slug_field = 'identifier';
 
 	protected $attributes = [
-		'is_system' => false
+		'is_system' => false,
+        'sequence' => 0,
+        'status' => true
 	];
 
 	protected $fillable = [

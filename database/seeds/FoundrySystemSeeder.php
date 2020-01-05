@@ -23,10 +23,8 @@ class FoundrySystemSeeder extends Seeder
         ]);
 
         //make an admin role
-        $admin_role = \Foundry\System\Repositories\RoleRepository::repository()->insert([
-            'name' => 'Admin',
-            'guard_name' => 'system'
-        ]);
+        $admin_role = \Foundry\System\Repositories\RoleRepository::repository()->query()->where('slug', 'admin')->first();
+
         //make a manager role
         $manager_role = \Foundry\System\Repositories\RoleRepository::repository()->insert([
             'name' => 'Manager',

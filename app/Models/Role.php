@@ -8,13 +8,10 @@ use Foundry\Core\Models\Traits\Visible;
 
 class Role extends \Spatie\Permission\Models\Role implements IsRole
 {
-
     use Sluggable;
     use Visible;
 
     protected $table = 'roles';
-
-    protected $sluggable = 'name';
 
     /**
      * @var array The fillable values

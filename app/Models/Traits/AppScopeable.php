@@ -24,7 +24,9 @@ trait AppScopeable
 
         static::creating(function($model){
             if ($scope = Session::get(config('scope.session_key', 'scope'))) {
-                $model->setAppScope($scope);
+                if (!$model->{$model->getAppScopeColumn()}) {
+                    $model->setAppScope($scope);
+                }
             }
         });
     }

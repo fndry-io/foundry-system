@@ -8,13 +8,12 @@ use Foundry\Core\Models\Traits\Sluggable;
 
 class PickList extends Model implements IsPickList
 {
+    const SLUGGABLE_COLUMN  = 'identifier';
+    const SLUGGABLE_SOURCE  = 'label';
+
 	use Sluggable;
 
 	protected $table = 'picklists';
-
-	protected $sluggable = 'label';
-
-	protected $slug_field = 'identifier';
 
 	protected $attributes = [
 		'is_system' => false

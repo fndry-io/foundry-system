@@ -60,6 +60,20 @@
             .btn {
                 margin-left: 5px;
             }
+            .input-group .btn {
+                margin: 0;
+            }
+        }
+
+        .filter {
+            .filter-body {
+                padding: 1.25rem 1.25rem 0;
+            }
+            .filter-buttons {
+                background: #efefef;
+                padding: 0.75rem 1.25rem;
+                text-align: right;
+            }
         }
     }
 </style>

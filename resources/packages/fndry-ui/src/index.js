@@ -11,6 +11,12 @@ import Widget from './components/Widget';
 import Icon from './components/Icon';
 import Paginate from './components/Paginate';
 
+import PickListBadge from "./components/PickListBadge";
+
+//formatters
+import DateFormatter from "./components/formatters/DateFormatter";
+import UserFormatter from "./components/formatters/UserFormatter";
+
 import store, {userHasAbility} from './store';
 
 import FndryServices from '../../fndry-services';
@@ -48,7 +54,13 @@ export {
     Widget,
     Icon,
     Screen,
-    Paginate
+    Paginate,
+
+    PickListBadge,
+
+    //formatters
+    DateFormatter,
+    UserFormatter
 }
 
 Vue.use(Toasted, {

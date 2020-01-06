@@ -11,6 +11,14 @@ export const HasBrowseData = {
         fields: {
             type: Array,
             default(){return [];}
+        },
+        selected: {
+            type: Object,
+            default(){return [];}
+        },
+        allSelected: {
+            type: Boolean,
+            default(){return false;}
         }
     }
 };
@@ -252,6 +260,10 @@ export const HasBrowseRequest = {
         },
         toggleFilter: function(){
             this.showFilter = !this.showFilter;
+        },
+        onChangeLimit: function(value){
+            this.params.limit = this.defaultParams.limit = value;
+            this.fetch();
         }
     }
 };

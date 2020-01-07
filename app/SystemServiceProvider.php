@@ -72,12 +72,13 @@ class SystemServiceProvider extends ServiceProvider
                 return true;
             } elseif (is_string($value)) {
                 try {
-                    $date = Carbon::createFromFormat($parameters[0]);
+                    $date = Carbon::createFromFormat($parameters[0], $value);
                     return true;
                 } catch (\Throwable $e) {
                     return false;
                 }
             }
+
             return false;
         });
 	}

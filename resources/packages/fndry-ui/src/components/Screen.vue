@@ -49,7 +49,7 @@
 
     .screen {
         .screen-header {
-            padding: $screen-header-padding;
+            padding: 0 0 $screen-header-padding 0;
             text-align: left;
 
             .breadcrumb {
@@ -65,17 +65,15 @@
 
         }
         .screen-body {
-            padding: $screen-body-padding;
+            padding: 0;
             text-align: left;
         }
 
         .filter-block {
             display: flex;
             padding: 0.75rem 1rem;
-            margin-bottom: 1rem;
             list-style: none;
             background-color: #e9ecef;
-            border-radius: 0.25rem;
 
             align-content: flex-end;
             align-items: flex-end;

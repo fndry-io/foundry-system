@@ -16,7 +16,7 @@
         <div class="card-filter" v-if="$slots.filter">
             <slot name="filter"></slot>
         </div>
-        <div :class="{'card-body': !noCard}">
+        <div v-if="!noBody" :class="{'card-body': !noCard}">
             <loader :loading="loading">
                 <slot></slot>
             </loader>
@@ -38,7 +38,8 @@
             noFilter: Boolean,
             noContext: Boolean,
             loading: Boolean,
-            noCard: Boolean
+            noCard: Boolean,
+            noBody: Boolean
         }
     }
 </script>

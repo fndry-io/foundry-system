@@ -1,6 +1,6 @@
 <template>
     <div class="loading-area" :style="{'min-height': height}">
-        <div v-if="loading" class="loading d-flex align-items-center justify-content-center">
+        <div v-if="loading" :class="{'loading d-flex align-items-center justify-content-center': true, 'no-background': transparent}">
             <div class="text-center">
                 <div class="spinner-border text-primary" role="status">
                     <span class="sr-only">Loading...</span>
@@ -24,7 +24,8 @@
                 default() {
                     return '100px'
                 }
-            }
+            },
+            transparent: Boolean
         }
     }
 </script>
@@ -43,6 +44,10 @@
         right: 0;
         bottom: 0;
         left: 0;
+
+        &.no-background {
+            background: transparent;
+        }
     }
 
 </style>

@@ -15,8 +15,7 @@ class DefaultItem extends CheckboxInputType implements Field {
 			__( 'Is Default' ),
 			false )
 		)
-			->setHelp(__('Determines if this item is the default selected option when the pick list is displayed.'))
-			->setSortable( true )
+			->setHelp(__('Determines if this item is the default selected option when the list is displayed.'))
             ->setDefault(false)
             ;
 	}

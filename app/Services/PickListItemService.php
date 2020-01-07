@@ -46,12 +46,12 @@ class PickListItemService extends BaseService {
 	}
 
 	/**
-	 * @param PickListEditItemInput|Inputs $input
+	 * @param PickListItemInput|Inputs $input
 	 * @param IsPickListItem $pickListItem
 	 *
 	 * @return Response
 	 */
-	public function edit(PickListEditItemInput $input, IsPickListItem $pickListItem) : Response
+	public function edit(PickListItemInput $input, IsPickListItem $pickListItem) : Response
 	{
 		$pickListItem = PickListItemRepository::repository()->update($pickListItem, $input->values());
 		if ($pickListItem) {
@@ -60,6 +60,20 @@ class PickListItemService extends BaseService {
 			return Response::error(__('Unable to edit pick list item'), 500);
 		}
 	}
+
+    /**
+     * @param IsPickListItem $pickListItem
+     * @return Response
+     * @throws \Exception
+     */
+    public function delete(IsPickListItem $pickListItem) : Response
+    {
+        if (PickListItemRepository::repository()->delete($pickListItem)) {
+            return Response::success();
+        } else {
+            return Response::error(__('Unable to delete pick list item'), 500);
+        }
+    }
 
 
 }

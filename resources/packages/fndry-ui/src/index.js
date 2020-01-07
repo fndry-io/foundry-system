@@ -8,14 +8,16 @@ import Loader from './components/Loader';
 import App from './components/App';
 import Screen from './components/Screen';
 import Widget from './components/Widget';
+import WidgetFilter from './components/WidgetFilter';
 import Icon from './components/Icon';
 import Paginate from './components/Paginate';
 
 import PickListBadge from "./components/PickListBadge";
 
 //formatters
-import DateFormatter from "./components/formatters/DateFormatter";
-import UserFormatter from "./components/formatters/UserFormatter";
+import FormatDate from "./components/formatters/FormatDate";
+import FormatUser from "./components/formatters/FormatUser";
+import FormatSwitch from "./components/formatters/FormatSwitch";
 
 import store, {userHasAbility} from './store';
 
@@ -52,6 +54,7 @@ export {
     Vue,
     Loader,
     Widget,
+    WidgetFilter,
     Icon,
     Screen,
     Paginate,
@@ -59,8 +62,9 @@ export {
     PickListBadge,
 
     //formatters
-    DateFormatter,
-    UserFormatter
+    FormatDate,
+    FormatUser,
+    FormatSwitch
 }
 
 Vue.use(Toasted, {

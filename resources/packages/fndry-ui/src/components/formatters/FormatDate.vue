@@ -8,11 +8,11 @@
     import {isObject, isNumber} from 'lodash';
 
     export default {
-        name: 'DateFormatter',
+        name: 'FormatDate',
         props: {
             value: {
                 type: [String, Object, Number],
-                required: true,
+                required: false,
             },
             format: {
                 type: String,
@@ -32,16 +32,18 @@
         },
         computed: {
             formatted: function() {
-                return this.date.format(this.format);
+                return (this.date) ? this.date.format(this.format) : null;
             },
             since: function() {
-                return this.date.fromNow();
+                return (this.date) ? this.date.fromNow() : null;
             },
             date: function(){
-                if (isNumber(this.value)) {
-                    return moment.unix(this.value).utc();
-                } else {
-                    return moment.utc((isObject && this.value.date) ? this.value.date : this.value, this.source)
+                if (this.value) {
+                    if (isNumber(this.value)) {
+                        return moment.unix(this.value).utc().local();
+                    } else {
+                        return moment.utc((isObject && this.value.date) ? this.value.date : this.value, this.source).local();
+                    }
                 }
             }
         }

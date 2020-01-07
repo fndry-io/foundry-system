@@ -14,7 +14,7 @@ export const HasBrowseData = {
         },
         selected: {
             type: Object,
-            default(){return [];}
+            default(){return {};}
         },
         allSelected: {
             type: Boolean,
@@ -129,7 +129,10 @@ export const HasBrowseRequest = {
             defaultParams: {
                 page: 1,
                 orderBy: null,
-                orderByDirection: null
+                orderByDirection: null,
+                search: null,
+                tags: null,
+                category: null
             },
             params: {},
             request: null,
@@ -251,12 +254,12 @@ export const HasBrowseRequest = {
         },
         onResetFilter: function(){
             this.filterActive = false;
+            this.showFilter = false;
             this.params = Object.assign({}, this.defaultParams);
-            this.fetch();
             if (this.$refs['filter']) {
                 this.$refs['filter'].hide();
             }
-            this.showFilter = false;
+            this.fetch();
         },
         toggleFilter: function(){
             this.showFilter = !this.showFilter;

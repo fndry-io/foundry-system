@@ -23,6 +23,11 @@ class PickListRepository extends ModelRepository {
 		return PickList::class;
 	}
 
+	public function findByIdentifier($identifier)
+    {
+        return $this->findOneBy(['identifier' => $identifier]);
+    }
+
 	/**
 	 * @param array $inputs
 	 * @param int $page

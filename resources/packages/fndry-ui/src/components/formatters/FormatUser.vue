@@ -5,7 +5,7 @@
 <script>
 
     export default {
-        name: 'UserFormatter',
+        name: 'FormatUser',
         props: {
             value: {
                 type: Object,

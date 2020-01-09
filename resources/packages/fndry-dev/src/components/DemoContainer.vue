@@ -75,6 +75,7 @@
                 this.loading = true;
                 this.$store.dispatch('auth/logout').finally(() => {
                     this.loading = false;
+                    window.location.reload();
                 });
             },
             logInAs(user){

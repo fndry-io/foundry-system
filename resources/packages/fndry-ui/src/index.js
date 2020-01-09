@@ -75,6 +75,9 @@ Vue.use(Toasted, {
 });
 
 Vue.prototype.$userCan = userHasAbility;
+Vue.prototype.$isAuthUser = function(user){
+    return user && store.getters['auth/isLoggedIn'] && store.state.auth.user.id === user.id;
+};
 
 Vue.directive('can', (el, binding, vnode) => {
 

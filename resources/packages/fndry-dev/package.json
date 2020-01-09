@@ -1,0 +1,17 @@
+{
+    "name": "fndry-dev",
+    "description": "An Development package for the foundry framework",
+    "version": "0.0.0",
+    "private": true,
+    "main": "./src/index.js",
+    "files": [
+        "dist/*",
+        "src/*",
+        "public/*",
+        "*.json",
+        "*.js"
+    ],
+    "devDependencies": {
+
+    }
+}

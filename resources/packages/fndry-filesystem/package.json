@@ -1,6 +1,6 @@
 {
-  "name": "fndry-requests",
-  "description": "A package to assist with requests to the foundry system and displaying the results or forms",
+  "name": "fndry-filesystem",
+  "description": "A package to assist with files system requests",
   "version": "0.0.0",
   "private": true,
   "scripts": {

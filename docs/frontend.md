@@ -5,3 +5,27 @@ Using VueJS plugins and components makes this possible, and most of any Foundry 
 
 ## VueJS Packages
 Each Foundry Framework Module can optionally provide a VueJS package plugin that can be used in a themes dependencies and imported to that code base.
+
+## Package Parts
+Packages are built into main 3 types of Vue Components:
+
+- Apps
+- Widgets
+- Components
+
+### Components
+Components provide the basic building blocks to some functionality. Like a button, table list, paginator, and others.
+
+### Widgets
+Widgets are a set of Components grouped together to perform some level of grouped functionality. Like managing a list of products or tags.
+
+### Apps
+Apps are one or more Widgets wrapped into an "application" with the idea that a frontend theme would import and connect various "applications" together to make up one large application, such as a CMS or CRM.
+
+## Package Rules
+
+1. The ```index.js``` file of a package should typically control what components, widgets, and applications are provided by a package. Importing a component directly should be avoided.
+2. App names and filenames must end in `App`. E.G. `ProductsApp`.
+3. Widget names and filenames must end in `Widget`. E.G. `ProductsWidget`.
+4. Component names don't need to end in `Component` but should be prefixed with the Packages name to avoid confusion. E.G. `ProductsTable`.
+5. All packages should assume the end application will use Vue Router and must work using named routes. Each app registered therefor must provide it's base route name.

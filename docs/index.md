@@ -33,4 +33,9 @@ Themes are like Modules, but their purposes is centered around rendering the app
 A theme can choose any way it wishes to handle a request and use the Services provided by other Modules in the system. 
 
 ## Packages
-Packages are Javascript packages which are often connected to a Module and provide Javascript functionality, such as VueJS Plugins. For the most part, packages are imported through ```npm install file:../path/to/package```. 
+Packages are Javascript packages which are often connected to a Module and provide Javascript functionality, such as VueJS Plugins. For the most part, packages are imported through ```npm install file:../path/to/package```.
+
+## Additional Reading
+
+- [Modules](./modules.md)
+- [Frontend](./frontend.md)

@@ -1,11 +1,11 @@
-#Foundry Framework
+# Foundry Framework
 
-##Overview
+## Overview
 The Foundry Framework is built on top of Laravel and VueJS and uses many of the Laravel key features plus a few from the Foundry Framework.
 
 The Architecture of the Foundry Framework is built around the concept of modularised blocks of code, with the end goal of making the system as DRY as possible.
 
-##Core Concept
+## Core Concept
 The core concept to the Foundry Framework is further separation of concerns using existing application development concepts such as Services and Repositories. This is based on the idea of primarily being an API first based system, allowing flexibility for newer front-end technologies in the future.
 
 ![Foundry Framework Structure](./assets/framework-structure.png)
@@ -19,7 +19,7 @@ __The following outline the graph above:__
 - **Services**: A basic class object providing a variety of business logic that can be called from anywhere. Instead of building business logic in Controllers, Services contain the core business logic. In addition, a service expects a known Inputs Class, ensuring we know and have a valid set of parameters for that Service method.
 - **Repositories**: A wrapper for the store and Models and provides convenience methods for interacting with the desired store, which in most cases is a Database table. Repositories work with their Models to execute the desired operation, such as insert, update, delete, etc. In the Foundry Framework we always use Repositories to interact with the Database and never Model classes directly. This future helps to isolate layers of business logic.
 
-##Modules
+## Modules
 Each of these concerns are grouped together and then added to a “Module”. A module is Laravel package and structured like a minified version of a Laravel App, with the same folders and structure often seen in a Laravel Application. Modules work exactly the same way Laravel Packages work and each one has its’ own Service Provider, routes, config, etc. The concept is borrowed in some part from OctoberCMS which does a great job or module development.
 
 Modules are then included into the app using the applications composer file, allowing for dependency management and control.

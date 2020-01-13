@@ -5,7 +5,7 @@ The Foundry Framework is built on top of Laravel and VueJS and uses many of the 
 
 The Architecture of the Foundry Framework is built around the concept of modularised blocks of code, with the end goal of making the system as DRY as possible.
 
-## Core Concept
+## Concept
 The core concept to the Foundry Framework is further separation of concerns using existing application development concepts such as Services and Repositories. This is based on the idea of primarily being an API first based system, allowing flexibility for newer front-end technologies in the future.
 
 ![Foundry Framework Structure](./assets/framework-structure.png)
@@ -20,6 +20,17 @@ __The following outline the graph above:__
 - **Repositories**: A wrapper for the store and Models and provides convenience methods for interacting with the desired store, which in most cases is a Database table. Repositories work with their Models to execute the desired operation, such as insert, update, delete, etc. In the Foundry Framework we always use Repositories to interact with the Database and never Model classes directly. This future helps to isolate layers of business logic.
 
 ## Modules
-Each of these concerns are grouped together and then added to a “Module”. A module is Laravel package and structured like a minified version of a Laravel App, with the same folders and structure often seen in a Laravel Application. Modules work exactly the same way Laravel Packages work and each one has its’ own Service Provider, routes, config, etc. The concept is borrowed in some part from OctoberCMS which does a great job or module development.
+Each of these concerns are grouped together and then added to a “Module”. A module is Laravel package and structured like a minified version of a Laravel App, with the same folders and structure seen in a Laravel Application. Modules work exactly the same way Laravel Packages work and each one has its’ own Service Provider, routes, config, etc. The concept is borrowed in some part from OctoberCMS which does a great job or module development.
 
-Modules are then included into the app using the applications composer file, allowing for dependency management and control.
+Modules are then included into the app using the applications composer file, and the ```config/ap.php``` file, allowing for dependency management and control.
+
+## Core Modules
+The Foundry Framework comes with 2 core "Modules" which run the entire Foundry Application. These are Foundry Core and Foundry System. Core contains base classes, interfaces, abstracts, traits etc, and control the contracts of generic functionality of the Framework. System provides the application logic, is largely derived from a default Laravel Application, and contains the Kernel, Middleware, Request and Response handling.
+
+## Themes
+Themes are like Modules, but their purposes is centered around rendering the application or exposing it in some way other than as an API. As a Website as an example.
+
+A theme can choose any way it wishes to handle a request and use the Services provided by other Modules in the system. 
+
+## Packages
+Packages are Javascript packages which are often connected to a Module and provide Javascript functionality, such as VueJS Plugins. For the most part, packages are imported through ```npm install file:../path/to/package```. 

@@ -121,7 +121,9 @@
             },
             setValue(value) {
                 this.model = value;
-                this.$emit('change', this.model);
+                if (value !== this.value) {
+                    this.$emit('change', this.model);
+                }
             },
             removeValue(value) {
                 this.model = null;

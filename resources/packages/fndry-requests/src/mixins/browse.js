@@ -1,5 +1,5 @@
 
-import { merge, forEach, get } from 'lodash';
+import { merge, forEach, get, debounce } from 'lodash';
 import { ValidationProvider, ValidationObserver } from 'vee-validate';
 
 export const HasBrowseData = {
@@ -129,10 +129,7 @@ export const HasBrowseRequest = {
             defaultParams: {
                 page: 1,
                 orderBy: null,
-                orderByDirection: null,
-                search: null,
-                tags: null,
-                category: null
+                orderByDirection: null
             },
             params: {},
             request: null,
@@ -245,9 +242,9 @@ export const HasBrowseRequest = {
             this.fetch();
         },
         onFilter: function(params){
+            this.filterActive = true;
             this.params = Object.assign({}, this.params, params, {page: 1});
             this.fetch();
-            this.filterActive = true;
             if (this.$refs['filter']) {
                 this.$refs['filter'].hide();
             }
@@ -256,10 +253,10 @@ export const HasBrowseRequest = {
             this.filterActive = false;
             this.showFilter = false;
             this.params = Object.assign({}, this.defaultParams);
+            this.fetch();
             if (this.$refs['filter']) {
                 this.$refs['filter'].hide();
             }
-            this.fetch();
         },
         toggleFilter: function(){
             this.showFilter = !this.showFilter;

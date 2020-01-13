@@ -19,7 +19,7 @@ abstract class BasePickListItem extends PickListItem
         self::creating(function($model){
             /** @var BasePickListItem $model */
             if (!$model->picklist_id) {
-                if ($picklist = PickListRepository::repository()->getCachedSelectableList($model::getOriginalList('identifier'))) {
+                if ($picklist = self::getPicklist()) {
                     $model->picklist_id = $picklist['id'];
                 } else {
                     throw new \Exception(sprintf('Pick List \'%s\' does not exist. Did you run \'foundry:sync picklists\'?', [$model::getOriginalList('label')]));
@@ -46,7 +46,7 @@ abstract class BasePickListItem extends PickListItem
     public static function query()
     {
         $identifier = self::getOriginalList('identifier');
-        return parent::query()->join('picklists', function(JoinClause $query) use ($identifier) {
+        return parent::query()->select('picklist_items.*')->join('picklists', function(JoinClause $query) use ($identifier) {
             $query
                 ->on('picklists.id', '=', 'picklist_items.picklist_id')
                 ->where('picklists.identifier', $identifier)
@@ -83,5 +83,13 @@ abstract class BasePickListItem extends PickListItem
             return $original[$key];
         }
         return $original;
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function getPicklist()
+    {
+        return PickListRepository::repository()->findPicklist(self::getOriginalList('identifier'));
     }
 }

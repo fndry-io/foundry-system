@@ -124,7 +124,7 @@ class PickListRepository extends ModelRepository {
 	 */
     public function getSelectableList($identifier)
     {
-	    if (!$picklist = $this->findOneBy(['identifier' => $identifier])) {
+	    if (!$picklist = $this->findPicklist($identifier)) {
 	    	return null;
 	    }
 
@@ -145,6 +145,17 @@ class PickListRepository extends ModelRepository {
         });
 
 	    return $picklist;
+    }
+
+    /**
+     * Find a pick list
+     *
+     * @param $identifier
+     * @return Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function findPicklist($identifier)
+    {
+        return $this->query()->where('identifier', $identifier)->first();
     }
 
 	/**

@@ -12,6 +12,7 @@
             <b-dropdown-form>
                 <date-picker :value="date"
                              @change="(value) => {handlePickerInput(value, hide)}"
+                             @cancel="() => hide()"
                              :options="options"
                              :format="dateFormat"
                              :required="schema.required"

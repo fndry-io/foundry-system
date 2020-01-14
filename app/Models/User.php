@@ -8,12 +8,10 @@ use Foundry\Core\Entities\Contracts\IsUser;
 use Foundry\Core\Models\Traits\SoftDeleteable;
 use Foundry\Core\Models\Traits\Uuidable;
 use Foundry\Core\Models\Traits\Visible;
-use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Traits\HasRoles as Roleable;
 
 /**

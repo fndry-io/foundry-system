@@ -10,7 +10,10 @@
                     <div :id="id" class="selected-values" v-if="!open && selected.length > 0" @click.stop="handleClick" tabindex="0" @focus="handleClick">
                         <div>{{text}}&nbsp;</div>
                     </div>
-                    <div :id="id" class="input" v-if="open || selected.length == 0">
+                    <div :id="id" class="input" v-if="!open && selected.length == 0">
+                        <input ref="search" :placeholder="(schema.empty) ? schema.empty : searchPlaceholderText" class="form-control" v-model="search" @input="handleSearch" @keyup.tab="handleSearchEnter" @focus="handleFocus">
+                    </div>
+                    <div :id="id" class="input" v-if="open">
                         <input ref="search" :placeholder="searchPlaceholderText" class="form-control" v-model="search" @input="handleSearch" @keyup.tab="handleSearchEnter" @focus="handleFocus">
                     </div>
                     <span class="dropdown-toggle" @click.stop="handleClick"></span>

@@ -45,6 +45,7 @@
                     'section',
                     'form',
                     'row',
+                    'content',
                     'collection',
                     'column',
                     'tag',

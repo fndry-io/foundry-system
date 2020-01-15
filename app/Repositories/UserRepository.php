@@ -24,7 +24,8 @@ use Illuminate\Support\Facades\Auth;
  * Class CompanyRepository
  *
  * @method IsUser|User|boolean save(IsUser | Model | int $model)
- * @method User|Model getModel(int|Model $id)
+ * @method IsUser|User getModel(int|Model $id)
+ * @method IsUser|User find(int $id)
  *
  * @package Modules\Agm\Contacts\Repositories
  */

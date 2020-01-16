@@ -13,11 +13,15 @@ import Icon from './components/Icon';
 import Paginate from './components/Paginate';
 
 import PickListBadge from "./components/PickListBadge";
+import FndryPromiseButton from "./components/FndryPromiseButton";
 
 //formatters
 import FormatDate from "./components/formatters/FormatDate";
 import FormatUser from "./components/formatters/FormatUser";
 import FormatSwitch from "./components/formatters/FormatSwitch";
+import FormatPhone from "./components/formatters/FormatPhone";
+import FormatEmail from "./components/formatters/FormatEmail";
+import FormatFileSize from "./components/formatters/FormatFileSize";
 
 import store, {userHasAbility} from './store';
 
@@ -41,6 +45,7 @@ Plugin.install = function (Vue, options) {
     Vue.component('fndry-screen', Screen);
     Vue.component('fndry-widget', Widget);
     Vue.component('fndry-icon', Icon);
+    Vue.component('fndry-promise-button', FndryPromiseButton);
 };
 
 // Using plugin
@@ -64,7 +69,13 @@ export {
     //formatters
     FormatDate,
     FormatUser,
-    FormatSwitch
+    FormatSwitch,
+    FormatPhone,
+    FormatEmail,
+    FormatFileSize,
+    store,
+
+    FndryPromiseButton
 }
 
 Vue.use(Toasted, {

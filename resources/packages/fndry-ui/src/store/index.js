@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import {Vue} from '../index';
 import Vuex from 'vuex';
 
 import AuthStore from '../../../fndry-services/src/store/auth';

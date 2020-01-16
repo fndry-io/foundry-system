@@ -22,7 +22,7 @@
             height: {
                 type: String,
                 default() {
-                    return '100px'
+                    return '80px'
                 }
             },
             transparent: Boolean

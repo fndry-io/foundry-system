@@ -14,6 +14,8 @@ import Paginate from './components/Paginate';
 
 import PickListBadge from "./components/PickListBadge";
 import FndryPromiseButton from "./components/FndryPromiseButton";
+import PermissionDeniedWidget from './components/PermissionDeniedWidget';
+import WithPermission from './components/WithPermission'
 
 //formatters
 import FormatDate from "./components/formatters/FormatDate";
@@ -75,7 +77,9 @@ export {
     FormatFileSize,
     store,
 
-    FndryPromiseButton
+    FndryPromiseButton,
+    PermissionDeniedWidget,
+    WithPermission
 }
 
 Vue.use(Toasted, {

@@ -1,5 +1,5 @@
 
-import { merge, forEach, get, debounce } from 'lodash';
+import { merge, forEach, get, debounce, unset } from 'lodash';
 import { ValidationProvider, ValidationObserver } from 'vee-validate';
 
 export const HasBrowseData = {
@@ -131,18 +131,45 @@ export const HasBrowseRequest = {
                 orderBy: null,
                 orderByDirection: null
             },
+            selected: {},
+            allSelected: false,
+            selectedCount: 0,
             params: {},
             request: null,
             response: {
                 data: []
             },
             filterActive: false,
-            showFilter: false
+            showFilter: false,
+            limits: [10,25,50,100]
         };
     },
     computed: {
         filters: function(){
             return get(this.response, 'meta.filters', undefined);
+        },
+        fields: function()
+        {
+            let columns = [];
+            if (this.selectable) {
+                columns.push({
+                    key: 'selectable',
+                    label: 'Select'
+                });
+            }
+            forEach(this.columns, (column) => {
+                if (column.display) {
+                    columns.push(column);
+                }
+            });
+            if (!this.noActions) {
+                columns.push({
+                    key: 'actions',
+                    label: 'Actions',
+                    tdClass: 'text-right buttons'
+                });
+            }
+            return columns;
         }
     },
     mounted: function(){
@@ -193,6 +220,7 @@ export const HasBrowseRequest = {
             });
         },
         setResponse(response){
+            this.allSelected = false;
             this.response = response;
         },
         refresh(){
@@ -264,7 +292,36 @@ export const HasBrowseRequest = {
         onChangeLimit: function(value){
             this.params.limit = this.defaultParams.limit = value;
             this.fetch();
+        },
+        handleToggleSelect(id, value, updateCount = true){
+            if (value === true) {
+                this.selected[id] = value;
+            } else {
+                unset(this.selected, id);
+            }
+            this.selected = {...this.selected};
+            this.updateSelectedCount();
+        },
+        handleToggleSelectAll(select){
+            this.allSelected = select;
+            forEach(this.response.data, (item) => {
+                this.handleToggleSelect(item.id, select, false);
+            });
+            this.selected = {...this.selected};
+            this.updateSelectedCount();
+        },
+        updateSelectedCount: function(){
+            this.selectedCount = Object.keys(this.selected).length;
+        },
+        clearSelected: function(){
+            this.allSelected = false;
+            this.selected = {};
+            this.selectedCount = 0
+        },
+        getSelected: function(){
+            return Object.keys(this.selected);
         }
+
     }
 };
 

@@ -1,5 +1,5 @@
 <template>
-    <component :is="tag" :variant="variant" :size="size" @click.prevent="onClick" :title="title">
+    <component :is="tag" :variant="variant" :size="size" @click.prevent="onClick" :title="title" :disabled="disabled">
         <slot>
             <span v-if="icon" :class="icon" aria-hidden="true"></span>
             <span v-if="text"><span v-if="icon">&nbsp;</span>{{text}}</span>
@@ -25,6 +25,7 @@
                     return ''
                 }
             },
+            disabled: Boolean,
             variant: {
                 type: String,
                 default() {

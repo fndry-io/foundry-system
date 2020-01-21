@@ -141,11 +141,11 @@ export default {
                 case 'submit':
                     let action = this.schema.action || undefined;
 
-                    if (button.hasOwnProperty('action')) {
+                    if (button.hasOwnProperty('action') && button.action) {
                         action = button.action;
                     }
 
-                    if (button.hasOwnProperty('params')) {
+                    if (button.hasOwnProperty('params') && button.params) {
                         action = this.$fndryApiService.getHandleUrl(action, button.params);
                     }
 

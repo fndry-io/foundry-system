@@ -10,8 +10,8 @@
                     <slot name="context"></slot>
                 </div>
             </div>
-            <slot name="breadcrumbs" v-if="breadcrumbs && breadcrumbs.length">
-                <b-breadcrumb :items="breadcrumbs"></b-breadcrumb>
+            <slot name="breadcrumbs" v-if="!noBreadcrumbs">
+                <b-breadcrumb v-if="list && list.length" :items="list"></b-breadcrumb>
             </slot>
         </div>
         <div class="screen-body">
@@ -31,9 +31,21 @@
             subHeading: String,
             noHeader: Boolean,
             noFooter: Boolean,
+            noBreadcrumbs: Boolean,
             breadcrumbs: {
                 type: Array,
                 required: false
+            }
+        },
+        computed: {
+            list: function() {
+                let matched = this.$route.matched.filter((route) => route.name || route.meta.label);
+                return matched.map((route) => {
+                    return {
+                        text: route.meta.title || route.name,
+                        href: route.url
+                    }
+                })
             }
         }
     }

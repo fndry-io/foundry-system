@@ -166,6 +166,7 @@ export const HasBrowseRequest = {
                 columns.push({
                     key: 'actions',
                     label: 'Actions',
+                    thClass: 'text-right buttons',
                     tdClass: 'text-right buttons'
                 });
             }

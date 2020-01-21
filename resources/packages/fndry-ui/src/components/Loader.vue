@@ -1,9 +1,11 @@
 <template>
-    <div class="loading-area" :style="{'min-height': height}">
-        <div v-if="loading" :class="{'loading d-flex align-items-center justify-content-center': true, 'no-background': transparent}">
-            <div class="text-center">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
+    <div class="loading-wrapper" :style="{'min-height': (loading) ? height : null}">
+        <div v-if="loading">
+            <div :class="{'loading d-flex align-items-center justify-content-center': true, 'no-background': transparent}">
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -32,7 +34,7 @@
 
 <style lang="scss">
 
-    .loading-area {
+    .loading-wrapper {
         position: relative;
     }
 

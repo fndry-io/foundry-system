@@ -2,8 +2,8 @@
     <div class="row paginate">
         <div class="col-md flex-grow-1">
             <div role="status" aria-live="polite" class="paginate-report">
-              <span v-if="response.from">Showing {{response.from}} to {{response.to}} of {{response.total}} entries</span>
-              <span v-else>No results found</span>
+              <div v-if="response.from">Showing {{response.from}} to {{response.to}} of {{response.total}} entries</div>
+              <div v-else :class="noResultsClass">{{noResultsText}}</div>
             </div>
         </div>
         <div class="col-md flex-grow-0">
@@ -30,6 +30,13 @@
         props: {
             response: Object,
             simple: Boolean,
+            noResultsClass: String,
+            noResultsText: {
+                type: String,
+                default() {
+                    return 'No results found';
+                }
+            },
             default: function(){
                 return {
                     from: 0,

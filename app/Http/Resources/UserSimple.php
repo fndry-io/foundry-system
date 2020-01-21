@@ -17,7 +17,8 @@ class UserSimple extends JsonResource {
 			'uuid' => $this->uuid,
 			'username' => $this->username,
 			'display_name' => $this->display_name,
-            'profile_url' => $this->profile_url
+            'profile_url' => $this->profile_url,
+            'active' => $this->active
 		];
 	}
 }

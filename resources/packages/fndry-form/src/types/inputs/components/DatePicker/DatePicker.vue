@@ -17,6 +17,7 @@
             :days="options.days"
             :min-date="options.minDate"
             :max-date="options.maxDate"
+            :valid-dates="options.validDates"
         ></date-time>
         <date-calendar
             v-else
@@ -35,6 +36,7 @@
             :days="options.days"
             :min-date="options.minDate"
             :max-date="options.maxDate"
+            :valid-dates="options.validDates"
         ></date-calendar>
         <div class="date-picker-buttons">
             <div class="button" v-if="!options.noButtons">

@@ -116,6 +116,9 @@
                             selectable = true;
                         }
                     }
+                    if (this.validDates && this.validDates.indexOf(day.format('YYYY-MM-DD')) === -1) {
+                        selectable = false;
+                    }
                     if (selectable && !this.isDateInRange(day)) {
                         selectable = false;
                     }

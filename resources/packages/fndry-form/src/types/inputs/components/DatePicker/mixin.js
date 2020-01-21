@@ -16,7 +16,8 @@ export const dateMixin = {
         noPeriod: Boolean,
         days: Array,
         minDate: [String,Object],
-        maxDate: [String,Object]
+        maxDate: [String,Object],
+        validDates: Array
     },
     methods: {
         isDateInRange(date, prop){

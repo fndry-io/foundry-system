@@ -76,10 +76,6 @@ class UploadImageFileRequest extends BaseUploadFileRequest {
     public function handle(): Response
     {
         $validation = $this->input->validate();
-        if (!$validation->isSuccess()) {
-            return $validation;
-        }
-
         return ImageService::service()->add($this->getInput());
     }
 

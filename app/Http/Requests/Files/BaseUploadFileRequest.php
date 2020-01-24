@@ -79,16 +79,13 @@ abstract class BaseUploadFileRequest extends FormRequest implements InputInterfa
 		return $input;
 	}
 
-	/**
-	 * {@inheritdoc}
-	 */
+    /**
+     * @return Response
+     * @throws \Illuminate\Validation\ValidationException
+     */
 	public function handle(): Response
 	{
-		$validation = $this->input->validate();
-		if (!$validation->isSuccess()) {
-			return $validation;
-		}
-
+		$this->input->validate();
 		return FileService::service()->add($this->input);
 	}
 }

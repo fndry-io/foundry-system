@@ -63,8 +63,7 @@ class AddPickListItemRequest extends PickListRequest implements InputInterface, 
 		    'status' => true,
 		    'picklist' => $this->getEntity()->getKey()
 	    ]);
-    	$response = $input->validate();
-    	if ($response->isSuccess()) {
+    	if ($input->validate()) {
     		$response = PickListItemService::service()->add($input);
     		if ($response->isSuccess()) {
     			$item = $response->getData();
@@ -74,7 +73,6 @@ class AddPickListItemRequest extends PickListRequest implements InputInterface, 
 			    ]);
 		    }
 	    }
-        return $response;
     }
 
 	/**

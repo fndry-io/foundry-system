@@ -62,15 +62,14 @@ class ResetPasswordRequest extends FormRequest implements InputInterface, Viewab
 	/**
 	 * Handle the request
 	 *
-	 * @return Response
-	 */
+     * @return Response
+     * @throws \Illuminate\Validation\ValidationException
+     */
 	public function handle() : Response
 	{
-		$response = $this->input->validate();
-		if ($response->isSuccess()) {
+		if ($this->input->validate()) {
 			return UserService::service()->resetPassword($this->input);
 		}
-		return $response;
 	}
 
 	/**

@@ -2,17 +2,17 @@
 
 namespace Foundry\System\Http\Requests\Files;
 
-use Foundry\Core\Requests\BaseFormRequest;
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
+use Foundry\Core\Requests\FoundryFormRequest;
 use Foundry\Core\Requests\Traits\HasEntity;
 use Foundry\System\Models\File;
 use Foundry\System\Repositories\FileRepository;
 
-class ViewFileRequest extends BaseFormRequest implements EntityRequestInterface {
+class ViewFileRequest extends FoundryFormRequest implements EntityRequestInterface {
 
 	use HasEntity;
 
-	/**
+    /**
 	 * @return bool
 	 */
 	public function authorize()

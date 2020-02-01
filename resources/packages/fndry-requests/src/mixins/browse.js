@@ -127,6 +127,7 @@ export const HasBrowseRequest = {
         return {
             loading: false,
             defaultParams: {
+                limit: 25,
                 page: 1,
                 orderBy: null,
                 orderByDirection: null

@@ -94,5 +94,11 @@
                 text-align: right;
             }
         }
+
+        .card-footer {
+            .paginate .paginate-report {
+                padding: 0.5rem 0;
+            }
+        }
     }
 </style>

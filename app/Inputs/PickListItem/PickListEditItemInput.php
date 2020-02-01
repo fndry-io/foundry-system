@@ -19,7 +19,7 @@ use Foundry\System\Inputs\PickListItem\Types\Status;
  *
  * @property $name
  */
-class PickListEditItemInput extends Inputs {
+class PickListEditItemInput extends PickListItemInput {
 
 
 	public function types() : InputTypeCollection

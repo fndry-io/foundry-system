@@ -38,16 +38,16 @@ class DeletedSelect extends ChoiceInputType implements Field, FieldOptions
     {
         return [
             [
-                'value' => '-1',
+                'value' => null,
+                'text' => 'Active'
+            ],
+            [
+                'value' => 'trashed',
+                'text' => 'Trashed'
+            ],
+            [
+                'value' => 'all',
                 'text' => 'All'
-            ],
-            [
-                'value' => '1',
-                'text' => 'Deleted'
-            ],
-            [
-                'value' => '0',
-                'text' => 'Not Deleted'
             ]
         ];
     }

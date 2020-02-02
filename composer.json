@@ -40,7 +40,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Foundry\\System\\Providers\\SystemServiceProvider"
+                "Foundry\\System\\SystemServiceProvider"
             ],
             "aliases": {
             }

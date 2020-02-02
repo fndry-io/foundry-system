@@ -1,7 +1,6 @@
 {
     "name": "foundry/system",
     "description": "A system plugin for the Foundry Framework.",
-    "version": "1.0.0",
     "keywords": [
         "foundry",
         "framework",

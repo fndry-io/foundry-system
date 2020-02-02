@@ -1,6 +1,7 @@
 {
     "name": "foundry/system",
     "description": "A system plugin for the Foundry Framework.",
+    "version": "1.0.0",
     "keywords": [
         "foundry",
         "framework",
@@ -12,6 +13,12 @@
         {
             "name": "Co-Foundry",
             "email": "digital@co-foundry.co.za"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/fndry-io/foundry-core.git"
         }
     ],
     "require": {

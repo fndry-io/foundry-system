@@ -1,7 +1,7 @@
 {
     "name": "fndry-requests",
     "description": "A package to assist with requests to the foundry system and displaying the results or forms",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "private": true,
     "scripts": {
         "serve": "vue-cli-service serve ./demo/main.js",

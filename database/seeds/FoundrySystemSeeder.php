@@ -76,4 +76,5 @@ class FoundrySystemSeeder extends Seeder
             $user->syncRoles($dummy_role);
         }
     }
+
 }

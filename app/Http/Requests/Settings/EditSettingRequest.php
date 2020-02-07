@@ -9,12 +9,13 @@ use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SectionType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Inputs\Types\TextInputType;
+use Foundry\Core\Repositories\SettingRepository;
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
 use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
-use Foundry\System\Inputs\Role\RoleInput;
+use Foundry\System\Inputs\Setting\SettingInput;
 use Foundry\System\Models\Setting;
 use Foundry\System\Services\SettingService;
 
@@ -32,7 +33,8 @@ class EditSettingRequest extends SettingRequest implements ViewableFormRequestIn
 	 * @return string
 	 */
 	public function makeInput($inputs) {
-		return new RoleInput($inputs);
+	    $setting = SettingRepository::repository()->find($this->route('_entity'));
+		return new SettingInput($setting, $inputs);
 	}
 
 	/**
@@ -67,36 +69,10 @@ class EditSettingRequest extends SettingRequest implements ViewableFormRequestIn
 		$form->setTitle(__('Update Setting'));
 		$form->setButtons((new SubmitButtonType(__('Update'), $form->getAction())));
 
-		$model = $form->getEntity();
-        $settings = Setting::settings();
-        $setting = isset($settings[$model->domain . '.' . $model->name]) ? $settings[$model->domain . '.' . $model->name] : null;
-
-        if (isset($setting['options']) && sizeof($setting['options']) > 0) {
-            $value = new ChoiceInputType('value', __('New Value'), true, $setting['options'], false);
-        } else {
-            switch ($model->type) {
-                case 'int':
-                case 'integer':
-                case 'double':
-                    $value = new NumberInputType('value', __('New Value'), false);
-                    break;
-                case 'bool':
-                case 'boolean':
-                    $value = new ChoiceInputType('value', __('New Value'), true, [
-                        1 => __("Yes"), 0 => __("No")
-                    ], false);
-                    break;
-                case 'string':
-                default:
-                    $value = new TextInputType('value', __('New Value'), false);
-                    break;
-            }
-        }
-
         $form->addChildren(
             (new SectionType(__('Setting')))->addChildren(
                 RowType::withChildren($form->get('default')),
-                RowType::withChildren($value->setHelp($model? $model->description: ''))
+                RowType::withChildren($form->get('value'))
             )
         );
 

@@ -32,11 +32,10 @@
         "moment-timezone": "^0.5.26",
         "node-sass": "^4.9.0",
         "numeral": "^2.0.6",
+        "quill": "^1.3.6",
         "rrule": "^2.6.4",
         "sass-loader": "^7.1.0",
         "serialize-javascript": ">=2.1.1",
-        "tiptap": "^1.26.6",
-        "tiptap-extensions": "^1.28.6",
         "vee-validate": "^2.2.10",
         "vue": "^2.6.10",
         "vue-json-pretty": "^1.6.0",
@@ -45,5 +44,7 @@
         "vue-template-compiler": "^2.6.10",
         "vuex": "^3.0.1"
     },
-    "dependencies": {}
+    "dependencies": {
+        "vue-quill-editor": "^3.0.6"
+    }
 }

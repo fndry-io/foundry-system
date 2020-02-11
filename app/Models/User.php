@@ -33,9 +33,6 @@ use Spatie\Permission\Traits\HasRoles as Roleable;
  * @property Carbon deleted_at
  * @property string username
  * @property string display_name
- * @property User supervisor
- * @property string job_title
- * @property string job_department
  * @property array settings
  * @package Foundry\System\Models
  */
@@ -55,9 +52,7 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 	protected $fillable = [
 		'username',
 		'display_name',
-		'email',
-		'job_title',
-		'job_department'
+		'email'
 	];
 
 	protected $hidden = [
@@ -78,9 +73,6 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 		'updated_at',
 		'deleted_at',
 		'username',
-		'job_title',
-		'job_department',
-		'supervisor',
         'profile_url'
 	];
 
@@ -148,23 +140,6 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 	public function setApiTokenExpiresAt(\DateTime $token = null)
 	{
 		$this->attributes['api_token_expires_at'] = $token;
-	}
-
-	public function supervisor()
-	{
-		return $this->belongsTo(User::class);
-	}
-
-	/**
-	 * @param int|User $supervisor
-	 */
-	public function setSupervisorAttribute($supervisor)
-	{
-		if ($supervisor instanceof User) {
-			$this->attributes['supervisor_id'] = $supervisor->getKey();
-		} else {
-			$this->attributes['supervisor_id'] = $supervisor;
-		}
 	}
 
 	/**

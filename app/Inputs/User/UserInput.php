@@ -7,8 +7,6 @@ use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Inputs\Types\User;
 use Foundry\System\Inputs\User\Types\Active;
 use Foundry\System\Inputs\User\Types\Email;
-use Foundry\System\Inputs\User\Types\JobDepartment;
-use Foundry\System\Inputs\User\Types\JobTitle;
 use Foundry\System\Inputs\User\Types\Roles;
 use Foundry\System\Inputs\User\Types\SuperAdmin;
 use Foundry\System\Inputs\User\Types\Username;
@@ -37,12 +35,7 @@ class UserInput extends Inputs {
 			DisplayName::input(),
 			Email::input(),
 			Password::input()->addRule('min:8')->addRule('max:20')->addRule('confirmed:password_confirmation')->setRequired(false),
-			PasswordConfirmation::input()->setRequired(false),
-
-			JobTitle::input(),
-			JobDepartment::input(),
-			User::input()->setLabel(__('Supervisor'))->setName('supervisor')
-
+			PasswordConfirmation::input()->setRequired(false)
 		];
 		if (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {
 			$types[] = Active::input();

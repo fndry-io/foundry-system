@@ -99,13 +99,6 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 			);
 		}
 
-		$form->addChildren(
-			(new SectionType(__('Job Title & Position')))->addChildren(
-				RowType::withChildren($form->get('job_title')->setAutocomplete(false), $form->get('job_department')->setAutocomplete(false)),
-				RowType::withChildren($form->get('supervisor')->setAutocomplete(false))
-			)
-		);
-
 		if ($this->entity->getKey() !== Auth::user()->getKey() && $this->entity->getKey() !== 1 && (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())) {
 			$children = [];
 			$children[] = $form->get('active');

@@ -85,8 +85,7 @@ class BulkAddUserRequest extends FormRequest implements ViewableFormRequestInter
 				"display_name" => $row[$headers["Display Name"]],
 				"email" => $row[$headers["E-mail"]],
 				"password" => $row[$headers["Password"]],
-				"password_confirmation" => $row[$headers["Password"]],
-				"job_title" => $row[$headers["Job Title"]]
+				"password_confirmation" => $row[$headers["Password"]]
 			];
 
 			$inputs = new UserInput($values);

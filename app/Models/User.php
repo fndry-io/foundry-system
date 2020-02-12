@@ -73,7 +73,8 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 		'updated_at',
 		'deleted_at',
 		'username',
-        'profile_url'
+        'profile_url',
+        'roles'
 	];
 
 	/**

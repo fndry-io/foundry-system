@@ -3,17 +3,13 @@
 namespace Foundry\System\Inputs\User\Types;
 
 use Foundry\Core\Inputs\Contracts\Field;
-use Foundry\Core\Inputs\Contracts\FieldOptions;
 use Foundry\Core\Inputs\Types\CheckboxInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
-
 
 class Active extends CheckboxInputType implements Field {
 
 	/**
-	 *
-	 *
-	 * @return Inputable|Active
+	 * @return self
 	 */
 	static function input( ): Inputable {
 		return ( new static(
@@ -22,8 +18,8 @@ class Active extends CheckboxInputType implements Field {
 			false
 		) )
 			->setDefault(true)
-			->setHelp(__('Enables or Disables the users access to the system.'))
-			->setSortable( true );
+			->setHelp(__('Enables or Disables access to the system.'))
+			;
 	}
 
 }

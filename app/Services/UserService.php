@@ -262,12 +262,11 @@ class UserService extends BaseService {
 		if ($user->isSuperAdmin()) {
 			return Response::error(__('You cannot delete a Super User'), 408);
 		}
-		try {
-			UserRepository::repository()->delete($user);
-			return Response::success();
-		} catch (\Throwable $e) {
-			return Response::error(__('Could not delete the user'), 500);
-		}
+		if (UserRepository::repository()->delete($user)) {
+            return Response::success();
+        } else {
+            return Response::error(__('Could not delete the user'), 500);
+        }
 	}
 
 	/**

@@ -122,6 +122,13 @@ class PickListItemRepository extends ModelRepository
 		}
 	}
 
+    public function read($picklistItem)
+    {
+        $picklistItem = $this->getModel($picklistItem);
+
+        return $picklistItem;
+    }
+
 	/**
 	 * @param IsPickListItem|Model|int $id
 	 * @param array $data

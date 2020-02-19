@@ -39,13 +39,17 @@
         },
         computed: {
             list: function() {
-                let matched = this.$route.matched.filter((route) => route.name || route.meta.label);
-                return matched.map((route) => {
-                    return {
-                        text: route.meta.title || route.name,
-                        href: route.url
-                    }
-                })
+                if (this.breadcrumbs) {
+                    return this.breadcrumbs;
+                } else {
+                    let matched = this.$route.matched.filter((route) => route.name || route.meta.label);
+                    return matched.map((route) => {
+                        return {
+                            text: route.meta.title || route.name,
+                            href: route.url
+                        }
+                    })
+                }
             }
         }
     }

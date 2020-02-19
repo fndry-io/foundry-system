@@ -15,7 +15,7 @@ class RemoveJobTitleDepartment extends Migration {
         Schema::table('users', function(Blueprint $table)
         {
             $table->dropForeign('FK_1483A5E919E9AC5F');
-            $table->dropIndex('IDX_1483A5E919E9AC5F');
+            //$table->dropIndex('IDX_1483A5E919E9AC5F');
             $table->dropColumn(['job_title', 'job_department', 'supervisor_id']);
         });
 

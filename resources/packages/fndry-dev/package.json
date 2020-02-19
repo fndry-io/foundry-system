@@ -13,5 +13,9 @@
     ],
     "devDependencies": {
 
+    },
+    "dependencies": {
+        "vue-json-pretty": "^1.6.0",
+        "vee-validate": "^2.2.10"
     }
 }

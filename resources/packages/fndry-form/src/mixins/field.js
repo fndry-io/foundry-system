@@ -330,9 +330,14 @@ export default {
         // Get type of field 'field-xxx'. It'll be the name of HTML element
         fieldType(field) {
 
-            let type = "input";
+            let type = field.type;
 
             switch (field.type) {
+                case 'text':
+                case 'number':
+                case 'email':
+                    type = "input";
+                    break;
                 case 'autocomplete':
                     type = "auto-complete";
                     break;

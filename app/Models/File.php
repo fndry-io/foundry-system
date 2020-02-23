@@ -9,12 +9,15 @@ use Foundry\Core\Models\Traits\Uuidable;
 use Foundry\Core\Entities\Contracts\IsFile;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class File extends Model implements IsFile
+class File extends Model implements IsFile, Auditable
 {
 	use Uuidable;
 	use SoftDeleteable;
 	use Referencable;
+    use AuditableTrait;
 
 	protected $table = 'files';
 

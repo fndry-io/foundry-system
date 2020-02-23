@@ -10,9 +10,13 @@ use Foundry\Core\Models\Traits\Uuidable;
 use Foundry\Core\Models\Traits\Visible;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles as Roleable;
+use OwenIt\Auditing\Contracts\Auditable;
+
 
 /**
  * Class User
@@ -39,13 +43,14 @@ use Spatie\Permission\Traits\HasRoles as Roleable;
  * @property array settings
  * @package Foundry\System\Models
  */
-class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDeletable
+class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDeletable, Auditable
 {
 	use SoftDeleteable;
 	use Uuidable;
 	use Notifiable;
 	use Visible;
     use Roleable;
+    use \OwenIt\Auditing\Auditable;
 
 	protected $table = 'users';
 
@@ -81,7 +86,8 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 		'job_title',
 		'job_department',
 		'supervisor',
-        'profile_url'
+        'profile_url',
+        'roles'
 	];
 
 	/**
@@ -101,6 +107,16 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 		'logged_in' => 'boolean',
 	];
 
+    /**
+     * Attributes to exclude from the Audit.
+     *
+     * @var array
+     */
+    protected $auditExclude = [
+        'password',
+        'api_token'
+    ];
+
 	protected static function boot()
     {
         parent::boot();
@@ -111,6 +127,7 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
             if ($model->getKey() === 1) {
                 throw new \Exception('You cannot delete the master user account');
             }
+            Log::info('User Deleting Request: ' . json_encode(debug_backtrace()), ['user' => Auth::user()->username, 'url' => url()->current()]);
         });
     }
 

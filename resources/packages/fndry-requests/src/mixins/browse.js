@@ -120,7 +120,15 @@ export const HasBrowseRequest = {
     props: {
         autoload: {
             type: Boolean,
-            default: true
+            default(){
+                return true;
+            }
+        },
+        query: {
+            type: Object,
+            default(){
+                return {}
+            }
         }
     },
     data: function(){
@@ -180,7 +188,7 @@ export const HasBrowseRequest = {
         }
     },
     created(){
-        this.params = merge({}, this.defaultParams, this.params);
+        this.params = merge({}, this.defaultParams, this.params, this.query);
     },
     methods: {
         /**

@@ -1,5 +1,5 @@
 <template>
-    <component :is="tag" :variant="variant" :size="size" @click.prevent="onClick" :title="title" :disabled="disabled" class="fndry-promise-button">
+    <component :is="tag" :variant="variant" :size="size" @click.prevent="onClick" :title="title" :disabled="submitting || disabled" class="fndry-promise-button">
         <slot>
             <span v-if="icon" :class="icon" aria-hidden="true"></span>
             <span v-if="text"><span v-if="icon">&nbsp;</span>{{text}}</span>

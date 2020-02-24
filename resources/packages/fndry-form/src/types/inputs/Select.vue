@@ -14,7 +14,7 @@
                 :disabled="disabled"
                 :size="schema.size || size"
         >
-            <option v-if="schema.empty && !schema.multiple" :value="null">{{(schema.empty === true) ? 'Please select an option' : schema.empty}}</option>
+            <option v-if="schema.empty && !schema.multiple" value="">{{(schema.empty === true) ? 'Please select an option' : schema.empty}}</option>
             <option v-if="options" v-for="option in options" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>
             <optgroup v-if="groups" v-for="(group) in groups" :label="group.label" :key="`group-${key}-${group.label}`">
                 <option v-for="option in group.values" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>
@@ -66,7 +66,7 @@
         },
         mounted(){
             this.setOptions();
-            this.model = this.value ? this.value : ((this.schema.multiple) ? [] : null);
+            this.model = this.value !== undefined ? this.value : ((this.schema.multiple) ? [] : null);
             forEach(this.model, (value) => {
                 let selected = find(this.options, (option) => option.value === value);
                 if (selected) {

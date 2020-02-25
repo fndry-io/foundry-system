@@ -4,7 +4,7 @@
             <b-spinner label="Loading..."></b-spinner>
         </div>
         <div v-else-if="!request || response.data">
-            <component :is="panel" :data="response.data" :panel="panelProps" @update="onUpdate"></component>
+            <component :is="panel" :data="response.data" :panel="panelProps" @update="onUpdate" @deleted="onDelete"></component>
         </div>
     </b-modal>
 </template>
@@ -63,8 +63,9 @@
                 this.response.data = d;
                 this.$emit('update', d);
             },
-            onClose(){
-                this.$emit('close');
+            onDelete(){
+                this.$emit('deleted');
+                this.show = false;
             },
             getData(){
                 this.$fndryApiService.call(this.request, this.method, this.params)

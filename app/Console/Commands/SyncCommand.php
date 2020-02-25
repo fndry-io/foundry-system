@@ -4,6 +4,7 @@ namespace Foundry\System\Console\Commands;
 
 use Foundry\System\Events\SyncPermissions;
 use Foundry\System\Events\SyncPickLists;
+use Foundry\System\Events\SyncSettings;
 use Illuminate\Console\Command;
 
 class SyncCommand extends Command
@@ -28,14 +29,19 @@ class SyncCommand extends Command
 	public function handle()
 	{
 	    $type = $this->argument('type');
-	    if ($type === 'permissions') {
-            event(new SyncPermissions());
-        } elseif ($type === 'picklists') {
-            event(new SyncPickLists());
-        } else {
-            event(new SyncPermissions());
-            event(new SyncPickLists());
-        }
 
+	    $syncs = [
+	        'permissions' => SyncPermissions::class,
+            'picklists' => SyncPickLists::class,
+            'settings' => SyncSettings::class
+        ];
+
+	    if($type){
+	        event(new $syncs[$type]);
+        }else{
+	        foreach ($syncs as $key => $class){
+	            event(new $class());
+            }
+        }
 	}
 }

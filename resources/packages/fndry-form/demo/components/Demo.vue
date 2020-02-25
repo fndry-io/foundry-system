@@ -42,6 +42,7 @@
                     action: 'http://www.google.com',
                     method: 'POST',
                     values: {
+                        html: "<p>Example content goes here...</p>",
                         name: {
                             first_name: 'bob',
                             last_name: 'smith'
@@ -113,6 +114,30 @@
                         repeat: "DTSTART:20191126T000000Z\nRRULE:FREQ=MONTHLY;COUNT=3;INTERVAL=1;BYMONTHDAY=26"
                     },
                     children: [
+                        {
+                            type: 'html',
+                            name: 'html',
+                            required: true,
+                            label: 'HTML Editor',
+                            config: {
+                                editor: {
+                                    block: 'p',
+                                    toolbar: [
+                                        [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
+                                        [{'header': [1, 2, 3, 4, 5, 6, false]}],
+
+                                        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+                                        ['blockquote', 'code-block'],
+                                        [{'align': []}],
+                                        [{'list': 'ordered'}, {'list': 'bullet'}],
+
+                                        ['image', 'video'],
+
+                                        ['clean']                                         // remove formatting button
+                                    ]
+                                }
+                            }
+                        },
                         {
                             type: 'row',
                             children: [

@@ -14,10 +14,10 @@
                 :disabled="disabled"
                 :size="schema.size || size"
         >
-            <option v-if="schema.empty && !schema.multiple" value="">{{(schema.empty === true) ? 'Please select an option' : schema.empty}}</option>
-            <option v-if="options" v-for="option in options" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>
-            <optgroup v-if="groups" v-for="(group) in groups" :label="group.label" :key="`group-${key}-${group.label}`">
-                <option v-for="option in group.values" :value="option.value" :key="`${key}-${option.value}`">{{option.text}}</option>
+            <option v-if="schema.empty && !schema.multiple" :value="null">{{(schema.empty === true) ? 'Please select an option' : schema.empty}}</option>
+            <option v-if="options" v-for="(option, index) in options" :value="option.value" :key="`option-${index}`">{{option.text}}</option>
+            <optgroup v-if="groups" v-for="(group, index) in groups" :label="group.label" :key="`group-${index}`">
+                <option v-for="(option, index) in group.values" :value="option.value" :key="`option-${index}`">{{option.text}}</option>
             </optgroup>
         </b-form-select>
 

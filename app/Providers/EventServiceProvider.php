@@ -7,6 +7,8 @@ use Foundry\System\Events\SyncPickLists;
 use Foundry\System\Listeners\FolderActivitySubscriber;
 use Foundry\System\Listeners\SyncPermissions as SyncPermissionsListener;
 use Foundry\System\Listeners\SyncPickLists as SyncPickListsListener;
+use Foundry\System\Listeners\SyncSettings as SyncSettingsListener;
+use Foundry\System\Events\SyncSettings;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -22,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         SyncPickLists::class => [
             SyncPickListsListener::class
+        ],
+        SyncSettings::class => [
+            SyncSettingsListener::class
         ]
     ];
 

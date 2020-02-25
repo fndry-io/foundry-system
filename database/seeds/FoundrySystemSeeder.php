@@ -11,8 +11,7 @@ class FoundrySystemSeeder extends Seeder
         app(Factory::class)->load(base_path('foundry/system/database/factories'));
 
         //run sync permissions
-        \Illuminate\Support\Facades\Artisan::call('foundry:sync', ['type' => 'permissions']);
-        \Illuminate\Support\Facades\Artisan::call('foundry:sync', ['type' => 'picklists']);
+        \Illuminate\Support\Facades\Artisan::call('foundry:sync');
 
         //make the admin user
         $admin = factory(User::class)->create([
@@ -23,7 +22,13 @@ class FoundrySystemSeeder extends Seeder
         ]);
 
         //make an admin role
-        $admin_role = \Foundry\System\Repositories\RoleRepository::repository()->query()->where('slug', 'admin')->first();
+        $admin_role = \Foundry\System\Models\Role::findByName('Admin');
+        if (!$admin_role) {
+            $admin_role = \Foundry\System\Repositories\RoleRepository::repository()->insert([
+                'name' => 'Admin',
+                'guard_name' => 'system'
+            ]);
+        }
 
         //make a manager role
         $manager_role = \Foundry\System\Repositories\RoleRepository::repository()->insert([
@@ -76,4 +81,5 @@ class FoundrySystemSeeder extends Seeder
             $user->syncRoles($dummy_role);
         }
     }
+
 }

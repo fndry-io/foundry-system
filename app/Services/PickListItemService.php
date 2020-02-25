@@ -11,10 +11,24 @@ use Foundry\System\Inputs\PickListItem\PickListEditItemInput;
 use Foundry\System\Inputs\PickListItem\PickListItemInput;
 use Foundry\System\Repositories\PickListItemRepository;
 use Illuminate\Contracts\Pagination\Paginator;
+use Modules\Unlimited\Faqs\Repositories\FaqRepository;
 
 class PickListItemService extends BaseService {
 
-	/**
+
+    /**
+     * Read a Faq
+     *
+     * @param $faq
+     * @return Response
+     * @throws \Exception
+     */
+    public function read($picklistItem)
+    {
+        return Response::success(PickListItemRepository::repository()->read($picklistItem));
+    }
+
+    /**
 	 * Browse the list of companies
 	 *
 	 * @param IsPickList $pick_list

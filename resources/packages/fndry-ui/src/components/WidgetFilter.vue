@@ -4,7 +4,7 @@
             <ValidationObserver v-if="!loading" ref="observer" v-slot="{ invalid }" tag="form" @submit.prevent="onSubmit">
                 <div class="filter-body">
                     <div class="row" v-for="row in layout">
-                        <div class="col" v-for="name in row">
+                        <div class="col" v-for="name in row" v-if="name">
                             <fndry-form-group v-if="filters && filters[name]" :model="form" :errors="errors" :schema="filters[name]" @input="onFilterInput" @change="onFilterChange"></fndry-form-group>
                         </div>
                     </div>

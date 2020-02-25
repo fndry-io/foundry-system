@@ -15,7 +15,7 @@ class AddTokenForDeletingToFilesTable extends Migration {
 		Schema::table('files', function(Blueprint $table)
 		{
             $table->integer('user_id')->nullable();
-			$table->string('token')->index();
+			$table->string('token')->index()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('SET NULL');
 		});
 	}
@@ -30,7 +30,13 @@ class AddTokenForDeletingToFilesTable extends Migration {
         Schema::table('files', function(Blueprint $table)
         {
             $table->dropForeign('files_user_id_foreign');
+        });
+        Schema::table('files', function(Blueprint $table)
+        {
             $table->dropColumn('token');
+        });
+        Schema::table('files', function(Blueprint $table)
+        {
             $table->dropColumn('user_id');
         });
 	}

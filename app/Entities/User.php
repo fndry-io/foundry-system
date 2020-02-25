@@ -49,9 +49,7 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 	protected $fillable = [
 		'username',
 		'display_name',
-		'email',
-		'job_title',
-		'job_department'
+		'email'
 	];
 
 	protected $hidden = [
@@ -73,10 +71,7 @@ class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable,
 		'created_at',
 		'updated_at',
 		'deleted_at',
-		'username',
-		'job_title',
-		'job_department',
-		'supervisor'
+		'username'
 	];
 
 	protected $email;

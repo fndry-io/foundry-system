@@ -17,8 +17,6 @@ class AuthUser extends JsonResource {
 			'uuid' => $this->uuid,
 			'username' => $this->username,
 			'display_name' => $this->display_name,
-			'job_title' => $this->job_title,
-			'job_department' => $this->job_department,
 			'email' => $this->email,
 			'active' => $this->active,
 			'super_admin' => $this->super_admin,

@@ -23,7 +23,7 @@ class DeletedSelect extends ChoiceInputType implements Field, FieldOptions
 	        false,
             static::options()
         ))
-            ->setDefault(0);
+            ->setEmpty(__('Not Deleted'));
     }
 
     /**
@@ -38,16 +38,12 @@ class DeletedSelect extends ChoiceInputType implements Field, FieldOptions
     {
         return [
             [
-                'value' => null,
-                'text' => 'Active'
-            ],
-            [
                 'value' => 'trashed',
-                'text' => 'Trashed'
+                'text' => __('Trashed')
             ],
             [
                 'value' => 'all',
-                'text' => 'All'
+                'text' => __('All')
             ]
         ];
     }

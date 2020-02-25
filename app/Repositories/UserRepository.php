@@ -85,8 +85,6 @@ class UserRepository extends ModelRepository
             $sortDesc = ($sortDesc === true) ? 'DESC' : 'ASC';
             if ($sortBy === 'username') {
                 $query->orderBy('users.username', $sortDesc);
-            } else if($sortBy ==='job_title') {
-                $query->orderBy('users.job_title', $sortDesc);
             } else {
                 $query->orderBy('users.display_name', $sortDesc);
             }
@@ -244,12 +242,6 @@ class UserRepository extends ModelRepository
 			}
 		}
 
-		if ($supervisor = Arr::get($data, 'supervisor', null)) {
-			if ($supervisor = $this->find($supervisor)) {
-				$user->supervisor = $supervisor;
-			}
-		}
-
         if ((Auth::user()->isSuperAdmin() || Auth::user()->isAdmin()) && Arr::exists($data, 'roles')) {
             $roleIds = Arr::get($data, 'roles');
             $user->syncRoles($roleIds);
@@ -297,14 +289,6 @@ class UserRepository extends ModelRepository
 
         if (Arr::exists($data, 'active') && $user->getKey() !== Auth::user()->getKey()) {
 			$user->active = Arr::get($data, 'active', false);
-		}
-
-		if ($supervisor = Arr::get($data, 'supervisor')) {
-			if ($supervisor = $this->find($supervisor)) {
-				if ($supervisor->getKey() !== $user->getKey()) {
-					$user->supervisor = $supervisor;
-				}
-			}
 		}
 
 		if ($user->save()) {

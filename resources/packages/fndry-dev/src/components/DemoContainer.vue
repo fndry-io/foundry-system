@@ -24,8 +24,10 @@
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
-        <slot v-bind:isLoggedIn="isLoggedIn">
-        </slot>
+        <div class="m-3">
+            <slot v-bind:isLoggedIn="isLoggedIn">
+            </slot>
+        </div>
     </div>
 </template>
 

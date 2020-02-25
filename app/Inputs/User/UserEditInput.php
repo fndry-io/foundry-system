@@ -7,8 +7,6 @@ use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Inputs\Types\User;
 use Foundry\System\Inputs\User\Types\Active;
 use Foundry\System\Inputs\User\Types\Email;
-use Foundry\System\Inputs\User\Types\JobDepartment;
-use Foundry\System\Inputs\User\Types\JobTitle;
 use Foundry\System\Inputs\User\Types\ProfileImage;
 use Foundry\System\Inputs\User\Types\Roles;
 use Foundry\System\Inputs\User\Types\SuperAdmin;
@@ -40,9 +38,6 @@ class UserEditInput extends Inputs {
 			Email::input()->addRule('unique:users,email'),
 			Password::input()->addRule('min:8')->addRule('max:20')->addRule('confirmed:password_confirmation')->setRequired(false),
 			PasswordConfirmation::input()->setRequired(false),
-			JobTitle::input(),
-			JobDepartment::input(),
-			User::input()->setLabel(__('Supervisor'))->setName('supervisor'),
             ProfileImage::input()
 		];
 

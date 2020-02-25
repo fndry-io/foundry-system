@@ -45,6 +45,10 @@ Route::prefix('system')->middleware('auth:system')->group( function () {
 	FormRequestHandler::route('/roles/{_entity}/edit',          'Foundry\System\Http\Requests\Roles\EditRoleRequest');
 	FormRequestHandler::route('/roles/{_entity}/delete',        'Foundry\System\Http\Requests\Roles\DeleteRoleRequest');
 
+    //settings
+    FormRequestHandler::route('/settings',                      'Foundry\System\Http\Requests\Settings\BrowseSettingsRequest');
+    FormRequestHandler::route('/settings/{_entity}/edit',          'Foundry\System\Http\Requests\Settings\EditSettingRequest');
+
     FormRequestHandler::route('/permissions/sync',              'Foundry\System\Http\Requests\Permissions\SyncPermissionsRequest');
 
 	//PickList Items

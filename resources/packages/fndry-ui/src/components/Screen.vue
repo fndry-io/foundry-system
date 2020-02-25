@@ -1,26 +1,28 @@
 <template>
-    <div class="screen">
-        <div v-if="!noHeader" class="screen-header">
-            <div class="d-flex flex-row">
-                <div class="flex-grow-1">
-                    <slot name="heading"><h2>{{this.heading}}</h2></slot>
-                    <slot name="sub-heading"><p class="lead">{{this.subHeading}}</p></slot>
+    <loader :loading="loading">
+        <div class="screen">
+            <div v-if="!noHeader" class="screen-header">
+                <div class="d-flex flex-row">
+                    <div class="flex-grow-1">
+                        <slot name="heading"><h2>{{this.heading}}</h2></slot>
+                        <slot name="sub-heading"><p class="lead">{{this.subHeading}}</p></slot>
+                    </div>
+                    <div class="screen-context">
+                        <slot name="context"></slot>
+                    </div>
                 </div>
-                <div class="screen-context">
-                    <slot name="context"></slot>
-                </div>
+                <slot name="breadcrumbs" v-if="!noBreadcrumbs">
+                    <b-breadcrumb v-if="list && list.length" :items="list"></b-breadcrumb>
+                </slot>
             </div>
-            <slot name="breadcrumbs" v-if="!noBreadcrumbs">
-                <b-breadcrumb v-if="list && list.length" :items="list"></b-breadcrumb>
-            </slot>
+            <div class="screen-body">
+                <slot></slot>
+            </div>
+            <div v-if="!noFooter">
+                <slot name="footer"></slot>
+            </div>
         </div>
-        <div class="screen-body">
-            <slot></slot>
-        </div>
-        <div v-if="!noFooter">
-            <slot name="footer"></slot>
-        </div>
-    </div>
+    </loader>
 </template>
 
 <script>
@@ -28,6 +30,7 @@
         name: "Screen",
         props: {
             heading: String,
+            loading: Boolean,
             subHeading: String,
             noHeader: Boolean,
             noFooter: Boolean,
@@ -39,13 +42,17 @@
         },
         computed: {
             list: function() {
-                let matched = this.$route.matched.filter((route) => route.name || route.meta.label);
-                return matched.map((route) => {
-                    return {
-                        text: route.meta.title || route.name,
-                        href: route.url
-                    }
-                })
+                if (this.breadcrumbs) {
+                    return this.breadcrumbs;
+                } else {
+                    let matched = this.$route.matched.filter((route) => route.name || route.meta.label);
+                    return matched.map((route) => {
+                        return {
+                            text: route.meta.title || route.name,
+                            href: route.url
+                        }
+                    })
+                }
             }
         }
     }

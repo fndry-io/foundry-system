@@ -97,13 +97,6 @@ class AddUserRequest extends FormRequest implements ViewableFormRequestInterface
 			)
 		);
 
-		$form->addChildren(
-			(new SectionType(__('Job Title & Position')))->addChildren(
-				RowType::withChildren($form->get('job_title')->setAutocomplete(false), $form->get('job_department')->setAutocomplete(false)),
-				RowType::withChildren($form->get('supervisor')->setAutocomplete(false))
-			)
-		);
-
 		if (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) {
 			$children = [];
 			$children[] = $form->get('active');

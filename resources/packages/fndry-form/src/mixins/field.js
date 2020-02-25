@@ -336,6 +336,9 @@ export default {
                 case 'text':
                 case 'number':
                 case 'email':
+                case 'password':
+                case 'range':
+                case 'url':
                     type = "input";
                     break;
                 case 'autocomplete':
@@ -382,6 +385,7 @@ export default {
                     break;
                 case 'date':
                 case "datetime":
+                case "time":
                     type = 'date';
                     break;
                 case 'repeat':

@@ -30,7 +30,7 @@ class Activity extends Model implements IsActivity, HasNode {
      * @var array
      */
     protected $casts = [
-        'created_at' => 'datetime:Y-m-d\TH:i:sO',
+        'created_at' => 'datetime:Y-m-d\TH:i:sP',
     ];
 
     protected $fillable = [

@@ -66,7 +66,7 @@
         },
         mounted(){
             this.setOptions();
-            this.model = this.value ? this.value : ((this.schema.multiple) ? [] : null);
+            this.model = this.value !== undefined ? this.value : ((this.schema.multiple) ? [] : null);
             forEach(this.model, (value) => {
                 let selected = find(this.options, (option) => option.value === value);
                 if (selected) {

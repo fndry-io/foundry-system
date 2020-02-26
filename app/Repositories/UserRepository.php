@@ -230,10 +230,11 @@ class UserRepository extends ModelRepository
 			$user->password = $password;
 		}
 
-		if (Auth::user() && Auth::user()->isSuperAdmin()) {
+		if (Auth::user() && (Auth::user()->isSuperAdmin() || Auth::user()->isAdmin())) {
+            $user->active = Arr::get($data, 'active', false);
+        }
 
-			//todo change to control this in the form
-			$user->active = true;
+        if (Auth::user() && Auth::user()->isSuperAdmin()) {
 
 			if (Arr::get($data, 'super_admin', false) === true) {
 				$user->super_admin = true;

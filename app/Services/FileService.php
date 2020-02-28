@@ -3,7 +3,6 @@
 namespace Foundry\System\Services;
 
 use Foundry\Core\Inputs\Inputs;
-use Foundry\Core\Inputs\Types\Contracts\IsFileInput;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
 use Foundry\Core\Entities\Contracts\IsEntity;
@@ -12,8 +11,6 @@ use Foundry\System\Inputs\File\FileInput;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Repositories\FileRepository;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use function GuzzleHttp\Psr7\str;
 
 class FileService extends BaseService
 {
@@ -68,10 +65,11 @@ class FileService extends BaseService
 	/**
 	 * Delete a file
 	 *
-	 * @param IsFile $file
-	 *
-	 * @return Response
-	 */
+     * @param IsFile $file
+     * @param bool $force
+     * @return Response
+     * @throws \Exception
+     */
 	public function delete(IsFile $file, bool $force = false): Response
 	{
 		if (FileRepository::repository()->delete($file, $force)) {

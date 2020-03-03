@@ -137,6 +137,7 @@ class UserService extends BaseService {
 		 * @var $user IsUser
 		 */
 		$user = $guard->user();
+		$user->load('profile_image');
 		$user->logged_in = true;
 		$user->last_login_at = new Carbon();
 

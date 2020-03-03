@@ -33,14 +33,15 @@ class UploadFileRequest extends BaseUploadFileRequest {
             'rtf',
 
             //audio/video
-//            'mp3',
-//            'wav',
-//            'mpa',
-//            'mpeg',
-//            'ogg',
-//            'mpg',
-//            'mpe',
-//            'mov',
+            'mp3',
+            'wav',
+            'mpa',
+            'mpeg',
+            'ogg',
+            'mpg',
+            'mpe',
+            'mov',
+            'mp4',
 
             //compressed
             'zip',
@@ -51,10 +52,10 @@ class UploadFileRequest extends BaseUploadFileRequest {
             'csv',
 
             //fonts
-//            'ttf',
-//            'otf',
-//            'fon',
-//            'fnt',
+            'ttf',
+            'otf',
+            'fon',
+            'fnt',
 		];
 	}
 

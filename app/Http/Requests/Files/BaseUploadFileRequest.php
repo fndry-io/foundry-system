@@ -45,7 +45,7 @@ abstract class BaseUploadFileRequest extends FormRequest implements InputInterfa
 	 */
 	static function fileSize()
 	{
-		return 15000;
+		return 64000;
 	}
 
 	/**

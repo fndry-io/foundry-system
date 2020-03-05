@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div v-if="loading" class="text-center">
+    <div class="request-form-inline">
+        <div v-if="loading" class="loading text-center">
             <b-spinner label="Loading..."></b-spinner>
         </div>
         <div v-else>

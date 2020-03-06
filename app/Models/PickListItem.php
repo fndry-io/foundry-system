@@ -61,4 +61,30 @@ class PickListItem extends Model implements IsPickListItem
 			$this->picklist()->associate($picklist);
 		}
 	}
+
+    /**
+     * Get models with given slug
+     *
+     * @param $slug
+     *
+     * @return mixed
+     */
+    private function getRelatedSlugs( $slug ) {
+        if (method_exists($this, 'trashed')) {
+            $query = static::withTrashed();
+        } else {
+            $query = static::query();
+        }
+        $query->select( $this->getQualifiedSluggableColumn(), $this->getQualifiedSluggableSourceColumn() )
+            ->where( $this->getQualifiedSluggableColumn(), 'like', $slug . '%' )
+            ->where( 'picklist_id', $this->picklist_id)
+        ;
+
+        //ensure not the same record
+        if ( $key = $this->getKey() ) {
+            $query->where( $this->getQualifiedKeyName(), '!=', $key );
+        }
+
+        return $query->get();
+    }
 }

@@ -67,8 +67,7 @@ class UsersRegisterCommand extends Command
 
 	    $entity = new UserRegisterInput($arguments);
 
-	    $response = $entity->validate();
-	    if ($response->isSuccess()) {
+	    if ($entity->validate()) {
 		    $response = $this->service->register($entity);
 		    if ($response->isSuccess()) {
 			    $user = $response->getData();

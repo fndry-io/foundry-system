@@ -112,7 +112,7 @@ class File extends Model implements IsFile, Auditable
         }
 
         if ($this->isPublic()) {
-            return Storage::url($this->name);
+            return Storage::url(str_replace('public/', '', $this->name));
         } else {
             return route('files.read', ['_entity' => $this->id], true);
         }

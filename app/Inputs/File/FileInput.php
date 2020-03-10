@@ -34,14 +34,14 @@ class FileInput extends Inputs implements IsFileInput
 	protected $file;
 
 	/**
-	 * @return mixed
+	 * @return UploadedFile|mixed
 	 */
 	public function getFile() {
 		return $this->file;
 	}
 
 	/**
-	 * @param mixed $file
+	 * @param UploadedFile|mixed $file
 	 */
 	public function setFile( $file ): void {
 		$this->file = $file;

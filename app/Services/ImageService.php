@@ -69,9 +69,9 @@ class ImageService extends FileService
                 }
 		        $url = route('files.read', $params);
             } else {
-                $url = Storage::url($file->name);
+                $url = $file->url;
             }
-            $data['url'] = url($url);
+            $data['url'] = $url;
             $data['token'] = $file->token;
 
 			return Response::success($data);

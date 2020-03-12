@@ -2,7 +2,7 @@
 
 namespace Foundry\System\Models;
 
-use Foundry\Core\Models\Setting as Base;
+use Foundry\Core\Models\Setting as BaseSetting;
 
 /**
  * Class Setting
@@ -14,7 +14,8 @@ use Foundry\Core\Models\Setting as Base;
  * @property $value
  *
  */
-class Setting extends Base{
+class Setting extends BaseSetting
+{
 
     /**
      * @inheritdoc

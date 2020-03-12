@@ -3,7 +3,6 @@
 namespace Foundry\System\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Foundry\System\Models\Setting as Model;
 
 /**
  * Class Setting
@@ -12,10 +11,17 @@ use Foundry\System\Models\Setting as Model;
  */
 class Setting extends JsonResource {
 
-	public function toArray( $request ) {
+	public function toArray( $request )
+    {
+        /** @var \Foundry\Core\Models\Setting $model */
+        $model = $this->resource->model;
+	    $settings = $model::settings();
 
-	    $settings = Model::settings();
-	    $setting = isset($settings[$this->domain . '.' . $this->name]) ? $settings[$this->domain . '.' . $this->name] : null;
+	    if (!isset($settings[$this->domain . '.' . $this->name])) {
+	        throw new \Exception(sprintf('Base settings for %s not found in %s', $this->domain . '.' . $this->name, $model));
+        }
+
+	    $setting = $settings[$this->domain . '.' . $this->name];
 	    $value = $this->value;
 	    $default = $setting['default'];
 

@@ -21,7 +21,7 @@
 <script>
 
     import abstractInput from '../abstractInput';
-    import { AsYouType } from 'libphonenumber-js'
+    import { AsYouType } from 'libphonenumber-js';
 
     export default {
         name: "fndry-field-input",
@@ -30,7 +30,7 @@
         ],
         data() {
             return {
-                model: new AsYouType().input(this.value)
+                model: new AsYouType().input((this.value) ? this.value : '')
             }
         },
         methods: {

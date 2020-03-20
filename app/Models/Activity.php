@@ -11,6 +11,14 @@ use Foundry\System\Entities\Contracts\IsActivitable;
 use Foundry\System\Entities\Contracts\IsActivity;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * Class Activity
+ *
+ * @property string $title
+ * @property string $description
+ *
+ * @package Foundry\System\Models
+ */
 class Activity extends Model implements IsActivity, HasNode {
 
     const UPDATED_AT = null;
@@ -50,13 +58,10 @@ class Activity extends Model implements IsActivity, HasNode {
     {
         parent::boot();
         static::creating(function(IsActivity $model){
-            if ($model->activitable) {
-
-
+            if ($model->activitable && !$model->node) {
                 if ($model->activitable instanceof HasNode) {
                     $model->node()->associate($model->activitable->getNode());
                 }
-
                 if (!$model->node && $model->activitable instanceof HasReference && $model->activitable->reference && $model->activitable->reference instanceof HasNode && $node = $model->activitable->reference->getNode()) {
                     $model->node()->associate($node);
                 }

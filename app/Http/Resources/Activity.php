@@ -14,8 +14,8 @@ class Activity extends JsonResource {
             'description' => $this->description,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
-            'related_type' => $this->related_type,
-            'related_id' => $this->related_id
+            'activitable_type' => $this->activitable_type,
+            'activitable_id' => $this->activitable_id
         ];
 	}
 }

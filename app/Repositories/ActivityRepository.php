@@ -87,7 +87,7 @@ class ActivityRepository extends ModelRepository {
      * @param string|null $description
      * @return bool|Activity
      */
-    static function create($entity, $title, $user, $description = null)
+    static function create($entity, $title, $user = null, $description = null)
     {
         $activity = self::make(['title' => $title, 'description' => $description]);
         $activity->activitable()->associate($entity);

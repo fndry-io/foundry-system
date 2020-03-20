@@ -9,6 +9,7 @@ use Foundry\Core\Entities\Contracts\IsUser;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
+use Foundry\System\Events\AfterLogIn;
 use Foundry\System\Events\UserLoggedIn;
 use Foundry\System\Events\UserLoggedOut;
 use Foundry\System\Inputs\User\ForgotPasswordInput;
@@ -159,7 +160,11 @@ class UserService extends BaseService {
 
 		UserRepository::repository()->save($user);
 
-		return Response::success($data);
+		//fire the event for others to hook in to
+		$event = new AfterLogIn($data);
+		event($event);
+
+		return Response::success($event->data);
 	}
 
 	/**

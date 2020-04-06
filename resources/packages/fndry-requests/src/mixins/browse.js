@@ -226,6 +226,10 @@ export const HasBrowseRequest = {
             this.loading = true;
             this.$fndryApiService.call(this.$fndryApiService.getHandleUrl(this.request), this.method, this.params).then((response) => {
                 this.setResponse(response);
+
+            }).catch(() => {
+
+            }).finally(() => {
                 this.loading = false;
             });
         },

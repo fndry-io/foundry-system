@@ -126,6 +126,9 @@
                     }, (response) => {
                         this.onFail(response);
                     })
+                    .catch(() => {
+                        this.onCancel();
+                    })
                     .finally((response) => {
                         this.submitting = false;
                     })
@@ -134,6 +137,9 @@
             },
             onSuccess(response){
                 this.$emit('success', response);
+            },
+            onCancel(){
+                this.$emit('cancel');
             },
             onFail(response){
                 this.$emit('fail', response);

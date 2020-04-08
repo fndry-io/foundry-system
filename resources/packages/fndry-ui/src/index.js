@@ -25,7 +25,7 @@ import FormatPhone from "./components/formatters/FormatPhone";
 import FormatEmail from "./components/formatters/FormatEmail";
 import FormatFileSize from "./components/formatters/FormatFileSize";
 
-import store, {userHasAbility} from './store';
+import store, {userHasAbility, userHasAbilityWith} from './store';
 
 import FndryServices from '../../fndry-services';
 import FndryForm from '../../fndry-form/src';
@@ -90,6 +90,7 @@ Vue.use(Toasted, {
 });
 
 Vue.prototype.$userCan = userHasAbility;
+Vue.prototype.$userCanWith = userHasAbilityWith;
 Vue.prototype.$isAuthUser = function(user){
     return user && store.getters['auth/isLoggedIn'] && store.state.auth.user.id === user.id;
 };

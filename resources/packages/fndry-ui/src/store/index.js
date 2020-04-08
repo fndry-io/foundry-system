@@ -2,6 +2,7 @@ import {Vue} from '../index';
 import Vuex from 'vuex';
 
 import AuthStore from '../../../fndry-services/src/store/auth';
+import {has} from 'lodash';
 
 Vue.use(Vuex);
 
@@ -51,6 +52,17 @@ export const userHasAbility = (ability) => {
         }
     }
     return can;
+};
+
+export const userHasAbilityWith = (ability, withObject, pathToUserId) => {
+
+    if (userHasAbility(ability)) {
+        if (!has(withObject, pathToUserId)) {
+            return false;
+        }
+        return (get(withObject, pathToUserId) === store.state.auth.user.id);
+    }
+    return false;
 };
 
 export default store;

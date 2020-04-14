@@ -2,7 +2,7 @@ import {Vue} from '../index';
 import Vuex from 'vuex';
 
 import AuthStore from '../../../fndry-services/src/store/auth';
-import {has} from 'lodash';
+import {has, get} from 'lodash';
 
 Vue.use(Vuex);
 

@@ -24,6 +24,7 @@ import FormatSwitch from "./components/formatters/FormatSwitch";
 import FormatPhone from "./components/formatters/FormatPhone";
 import FormatEmail from "./components/formatters/FormatEmail";
 import FormatFileSize from "./components/formatters/FormatFileSize";
+import FormatMoney from "./components/formatters/FormatMoney";
 
 import store, {userHasAbility} from './store';
 
@@ -75,6 +76,7 @@ export {
     FormatPhone,
     FormatEmail,
     FormatFileSize,
+    FormatMoney,
     store,
 
     FndryPromiseButton,

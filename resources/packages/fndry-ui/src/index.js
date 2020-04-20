@@ -79,7 +79,10 @@ export {
 
     FndryPromiseButton,
     PermissionDeniedWidget,
-    WithPermission
+    WithPermission,
+
+    userHasAbility,
+    userHasAbilityWith
 }
 
 Vue.use(Toasted, {

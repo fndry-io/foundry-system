@@ -25,8 +25,13 @@ Plugin.install = function (Vue, options) {
     Vue.component('fndry-request-button', RequestButton);
 
     /**
-     * @see requestForm
-     * @return {Promise<T>}
+     * @param {string} request The request name
+     * @param {string} type The type of form to display [target|modal]
+     * @param {object} options The options to pass to the sub components
+     * @see modalForm
+     * @see targetForm
+     *
+     * @returns {Promise<any>}
      */
     Vue.prototype.$fndryRequestForm = makeRequestForm(Vue);
 

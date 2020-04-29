@@ -1,6 +1,8 @@
 import jQuery from 'jquery'
 import __ from './TranslateService'
-import {merge} from 'lodash';
+import {merge, forEach} from 'lodash';
+import qs from 'qs';
+import fileDownload from 'js-file-download';
 
 const viewRequestUri = '/system/request/view';
 const handleRequestUri = '/system/request/handle';
@@ -170,7 +172,29 @@ const handleCall = function (options, that) {
     return new Promise((resolve, reject) => {
         that.vm.$http(options)
             .then(function (response) {
-                handleResponse(response, resolve, reject);
+
+                //is it a download
+                if(response.headers['content-disposition'] && response.headers['content-disposition'].indexOf('attachment') !== -1) {
+                    let filename = 'attachment';
+                    let parts = qs.parse(response.headers['content-disposition'],{delimiter:';'});
+                    forEach(parts, (val, key) => {
+                        key = key.trim();
+                        if (key === 'filename') {
+                            filename = val
+                        }
+                    });
+
+                    fileDownload(response.data, filename);
+
+                    handleResponse({
+                        data: {
+                            status: true,
+                            data: {}
+                        }
+                    }, resolve, reject);
+                } else {
+                    handleResponse(response, resolve, reject);
+                }
             })
             .catch(function (error) {
                 handleError(error, resolve, reject);

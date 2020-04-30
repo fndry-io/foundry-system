@@ -5,12 +5,12 @@
                 <div class="d-flex flex-row">
                     <div class="flex-grow-1">
                         <slot name="heading"><h2>{{this.heading}}</h2></slot>
-                        <slot name="sub-heading"><p class="lead">{{this.subHeading}}</p></slot>
                     </div>
                     <div class="screen-context">
                         <slot name="context"></slot>
                     </div>
                 </div>
+                <slot name="sub-heading"><p class="lead">{{this.subHeading}}</p></slot>
                 <slot name="breadcrumbs" v-if="!noBreadcrumbs">
                     <b-breadcrumb v-if="list && list.length" :items="list"></b-breadcrumb>
                 </slot>

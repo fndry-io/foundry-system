@@ -271,13 +271,13 @@ export const HasBrowseRequest = {
             this.goToPage(1)
         },
         goToLastPage: function(){
-            this.goToPage(this.response.last_page)
+            this.goToPage(this.response.meta.last_page)
         },
         goToNextPage: function(){
-            this.goToPage(this.response.current_page + 1)
+            this.goToPage(this.response.meta.current_page + 1)
         },
         goToPrevPage: function(){
-            this.goToPage(this.response.current_page - 1)
+            this.goToPage(this.response.meta.current_page - 1)
         },
         goToPage: function(number){
             this.params = Object.assign({}, this.params, {page: number});

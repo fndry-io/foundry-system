@@ -132,6 +132,7 @@ function updateUrlPlaceholders(url, params, remove)
             }
         });
     }
+
     return {
         url: url,
         data: _params
@@ -152,7 +153,7 @@ export const route = (url, params) => {
     let data = updateUrlPlaceholders(url, params, true);
     let queryString = '';
     if (data.data && Object.keys(data.data).length > 0) {
-        queryString = decodeURIComponent( jQuery.param( data.data ) );
+        queryString = jQuery.param( data.data );
         if (data.url.indexOf('?') === -1) {
             queryString = "?" + queryString;
         } else {
@@ -257,7 +258,7 @@ ApiService.prototype = {
         options = Object.assign(options, updateUrlPlaceholders(url, _params));
 
         if (method === 'GET') {
-            options.params = options.data;
+            options.url = route(options.url, options.data);
             delete(options.data);
         }
 

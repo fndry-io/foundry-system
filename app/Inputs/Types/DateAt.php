@@ -21,7 +21,7 @@ class DateAt extends DateTimeInputType implements Field
             __('Date At'),
             false
         ))
-            ->setSortable(true);
+        ;
     }
 
 }

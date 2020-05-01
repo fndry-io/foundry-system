@@ -120,7 +120,7 @@ class UserRepository extends ModelRepository
 	 *
 	 * @return User[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|Builder[]|\Illuminate\Support\Collection
 	 */
-	public function getLabelList($name, $limit = 20, $deleted = false)
+	public function getLabelList($name, $limit = null, $deleted = false)
 	{
 
 		if ($deleted) {
@@ -153,7 +153,7 @@ class UserRepository extends ModelRepository
 	 *
 	 * @return array
 	 */
-	public function getEmailList($name, $limit = 20, $deleted = false)
+	public function getEmailList($name, $limit = null, $deleted = false)
 	{
 
 		if ($deleted) {
@@ -170,7 +170,9 @@ class UserRepository extends ModelRepository
 			$query->orWhere('email', 'like', "%" . $name . "%");
 		});
 
-		$query->limit($limit);
+		if ($limit) {
+            $query->limit($limit);
+        }
 
 		$list = $query->get();
 

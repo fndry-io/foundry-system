@@ -36,15 +36,7 @@ class SystemServiceProvider extends ServiceProvider
 	    $this->app->register(EventServiceProvider::class);
 	    $this->app->register(AuthServiceProvider::class);
 	    //$this->app->register(BroadcastServiceProvider::class);
-	    $this->registerServices();
     }
-
-	public function registerServices()
-	{
-		$this->app->singleton( 'Foundry\Core\Contracts\FormRequestHandler', function () {
-			return new FormRequestHandler();
-		} );
-	}
 
 	/**
 	 * Boot the application events.
@@ -58,7 +50,6 @@ class SystemServiceProvider extends ServiceProvider
 		$this->registerViews();
 		$this->registerCommands();
 		$this->loadMigrationsFrom(base_path('foundry/system/database/migrations'));
-		$this->mergeDoctrinePaths(base_path('foundry/system/config/mappings'));
 		$this->registerGates();
 
 		Validator::extend('username', function ($attribute, $value, $parameters, $validator) {

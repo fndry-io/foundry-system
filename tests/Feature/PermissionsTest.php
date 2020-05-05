@@ -30,7 +30,7 @@ class PermissionsTest extends TestCase
             'name' => 'Test Role 1 edited'
         ];
         $role1 = RoleRepository::repository()->update($role1, $data);
-        $this->assertDatabaseHas('roles', $data);
+        $this->assertDatabaseHas('system_roles', $data);
         $this->assertNotFalse($role1);
 
         $data = [
@@ -38,7 +38,7 @@ class PermissionsTest extends TestCase
             'guard_name' => 'system'
         ];
         $role2 = RoleRepository::repository()->insert($data);
-        $this->assertDatabaseHas('roles', $data);
+        $this->assertDatabaseHas('system_roles', $data);
         $this->assertNotFalse($role2);
 
         $result = RoleRepository::repository()->browse([]);
@@ -46,7 +46,7 @@ class PermissionsTest extends TestCase
         $this->assertCount(2, $result->items());
 
         $result = RoleRepository::repository()->delete($role2);
-        $this->assertDatabaseMissing('roles', $data);
+        $this->assertDatabaseMissing('system_roles', $data);
         $this->assertTrue($result);
 
         //make some permissions
@@ -71,7 +71,7 @@ class PermissionsTest extends TestCase
             'guard_name' => 'system'
         ];
         $role3 = RoleRepository::repository()->insert($data);
-        $this->assertDatabaseHas('roles', $data);
+        $this->assertDatabaseHas('system_roles', $data);
         $this->assertNotFalse($role3);
 
         $result = RoleRepository::repository()->syncRolePermissions($role3->getKey(), [

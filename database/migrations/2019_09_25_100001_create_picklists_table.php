@@ -12,7 +12,7 @@ class CreatePicklistsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('picklists', function(Blueprint $table)
+		Schema::create('system_picklists', function(Blueprint $table)
 		{
 			$table->integer('id', true);
 			$table->string('label', 50)->index();
@@ -33,7 +33,7 @@ class CreatePicklistsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('picklists');
+		Schema::drop('system_picklists');
 	}
 
 }

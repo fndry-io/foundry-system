@@ -127,11 +127,11 @@ class UsersTest extends TestCase
 		$user2 = $response->getData();
 		$this->assertArrayHasKey('token', $user2);
 		$this->assertArrayHasKey('user', $user2);
-		$this->assertDatabaseHas('users', ['api_token' => $user2['token']]);
+		$this->assertDatabaseHas('system_users', ['api_token' => $user2['token']]);
 
 		$response = UserService::service()->logout('api');
 		$this->assertTrue($response->isSuccess());
-		$this->assertDatabaseMissing('users', ['api_token' => $user2['token']]);
+		$this->assertDatabaseMissing('system_users', ['api_token' => $user2['token']]);
 
 	}
 

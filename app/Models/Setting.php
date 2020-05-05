@@ -17,6 +17,8 @@ use Foundry\Core\Models\Setting as BaseSetting;
 class Setting extends BaseSetting
 {
 
+    protected $table = 'system_settings';
+
     /**
      * @inheritdoc
      *

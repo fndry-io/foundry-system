@@ -12,7 +12,7 @@ class CreateActivitiesActivitiesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('activities', function(Blueprint $table)
+		Schema::create('system_activities', function(Blueprint $table)
 		{
 			$table->integer('id', true);
 
@@ -22,11 +22,10 @@ class CreateActivitiesActivitiesTable extends Migration {
 			$table->morphs('activitable');
 			$table->timestamp('created_at');
 			$table->string('created_by');
-            $table->integer('created_by_user_id')->nullable();
+            $table->unsignedInteger('created_by_user_id')->nullable();
             $table->bigInteger('node_id')->nullable();
 
             $table->foreign('node_id')->references('id')->on('nodes')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            $table->foreign('created_by_user_id')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('SET NULL');
 		});
 	}
 
@@ -38,7 +37,7 @@ class CreateActivitiesActivitiesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('activities');
+		Schema::drop('system_activities');
 	}
 
 }

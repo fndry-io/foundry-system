@@ -12,11 +12,11 @@ class CreatePicklistItemRelationsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('picklist_item_relations', function(Blueprint $table)
+		Schema::create('system_picklist_item_relations', function(Blueprint $table)
 		{
 			$table->integer('picklist_item_id');
 			$table->morphs('relatable');
-            $table->foreign('picklist_item_id')->references('id')->on('picklist_items')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->foreign('picklist_item_id')->references('id')->on('system_picklist_items')->onUpdate('NO ACTION')->onDelete('CASCADE');
 		});
 	}
 
@@ -28,7 +28,7 @@ class CreatePicklistItemRelationsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('picklist_item_relations');
+		Schema::drop('system_picklist_item_relations');
 	}
 
 }

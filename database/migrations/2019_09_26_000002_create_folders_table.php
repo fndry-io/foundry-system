@@ -12,12 +12,11 @@ class CreateFoldersTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('folders', function(Blueprint $table)
+		Schema::create('system_folders', function(Blueprint $table)
 		{
 			$table->integer('id', true);
-			//$table->integer('tree_root')->nullable()->index('IDX_FE37D30FA977936C');
-			$table->integer('parent_id')->nullable()->index('IDX_FE37D30F727ACA70');
-			$table->string('uuid', 36)->unique('UNIQ_FE37D30FD17F50A6');
+			$table->integer('parent_id')->nullable();
+			$table->string('uuid', 36);
 			$table->string('name')->index();
 			$table->string('reference_type')->nullable()->index();
 			$table->bigInteger('reference_id')->nullable()->index();
@@ -26,9 +25,13 @@ class CreateFoldersTable extends Migration {
 			//$table->integer('lvl');
 			$table->timestamps();
 			$table->softDeletes();
-			$table->integer('file_id')->nullable()->unique('UNIQ_FE37D30F93CB796C');
+			$table->integer('file_id')->nullable();
 			$table->boolean('is_file')->default(0);
-		});
+
+            $table->foreign('parent_id')->references('id')->on('system_folders')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->foreign('file_id')->references('id')->on('system_files')->onUpdate('NO ACTION')->onDelete('CASCADE');
+
+        });
 	}
 
 
@@ -39,7 +42,7 @@ class CreateFoldersTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('folders');
+		Schema::drop('system_folders');
 	}
 
 }

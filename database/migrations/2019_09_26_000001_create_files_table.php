@@ -12,10 +12,10 @@ class CreateFilesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('files', function(Blueprint $table)
+		Schema::create('system_files', function(Blueprint $table)
 		{
 			$table->integer('id', true);
-			$table->string('uuid', 36)->unique('UNIQ_6354059D17F50A6');
+			$table->string('uuid', 36);
 			$table->string('name')->index();
 			$table->string('original_name');
 			$table->string('type');
@@ -24,8 +24,13 @@ class CreateFilesTable extends Migration {
 			$table->boolean('is_public');
 			$table->string('reference_type')->nullable();
 			$table->bigInteger('reference_id')->nullable();
+            $table->string('token')->index()->nullable();
+            $table->unsignedInteger('user_id')->nullable();
 			$table->timestamps();
 			$table->softDeletes();
+
+            $table->foreign('user_id')->references('id')->on('system_users')->onUpdate('NO ACTION')->onDelete('SET NULL');
+
 		});
 	}
 
@@ -37,7 +42,7 @@ class CreateFilesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('files');
+		Schema::drop('system_files');
 	}
 
 }

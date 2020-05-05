@@ -46,10 +46,10 @@ abstract class BasePickListItem extends PickListItem
     public static function query()
     {
         $identifier = self::getOriginalList('identifier');
-        return parent::query()->select('picklist_items.*')->join('picklists', function(JoinClause $query) use ($identifier) {
+        return parent::query()->select('system_picklist_items.*')->join('system_picklists', function(JoinClause $query) use ($identifier) {
             $query
-                ->on('picklists.id', '=', 'picklist_items.picklist_id')
-                ->where('picklists.identifier', $identifier)
+                ->on('system_picklists.id', '=', 'system_picklist_items.picklist_id')
+                ->where('system_picklists.identifier', $identifier)
             ;
         });
     }

@@ -35,18 +35,18 @@ class PickListRepository extends ModelRepository {
 	 *
 	 * @return Paginator
 	 */
-	public function browse(array $inputs, $page = 1, $perPage = 20, $sortBy = 'picklists.label', $sortDesc = false): Paginator
+	public function browse(array $inputs, $page = 1, $perPage = 20, $sortBy = 'label', $sortDesc = false): Paginator
 	{
 		return $this->filter(function (Builder $query) use ($inputs, $sortBy, $sortDesc) {
 			$query
-				->select('picklists.*');
+				->select('system_picklists.*');
 
             $sortDesc = ($sortDesc === true) ? 'DESC' : 'ASC';
             if ($sortBy === 'id') {
-                $query->orderBy('picklists.id', $sortDesc);
+                $query->orderBy('system_picklists.id', $sortDesc);
             }
-            else {
-                $query->orderBy('picklists.label', $sortDesc);
+            else if ($sortBy === 'label') {
+                $query->orderBy('system_picklists.label', $sortDesc);
             }
 			return $query;
 		}, $page, $perPage);

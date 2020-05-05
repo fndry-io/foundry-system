@@ -49,7 +49,7 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
     use Roleable;
     use \OwenIt\Auditing\Auditable;
 
-	protected $table = 'users';
+	protected $table = 'system_users';
 
 	/**
 	 * @var array The fillable values

@@ -13,7 +13,7 @@ class PickListItem extends Model implements IsPickListItem
 
 	use Sluggable;
 
-	protected $table = 'picklist_items';
+	protected $table = 'system_picklist_items';
 
 	protected $attributes = [
 		'is_system' => false,

@@ -4,6 +4,9 @@ namespace Foundry\System\Models;
 
 class Permission extends \Spatie\Permission\Models\Permission {
 
+
+    protected $table = 'system_permissions';
+
 	/**
 	 * Seed the database with a set of permissions
 	 *

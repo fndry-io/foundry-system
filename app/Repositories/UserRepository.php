@@ -67,7 +67,7 @@ class UserRepository extends ModelRepository
 		return $this->filter(function (Builder $query) use ($inputs,$sortBy,$sortDesc) {
 
 			$query
-				->select('users.*');
+				->select('system_users.*');
 
 			if ($search = Arr::get($inputs, 'search', null)) {
 				$query->where(function (Builder $query) use ($search) {
@@ -84,9 +84,9 @@ class UserRepository extends ModelRepository
 
             $sortDesc = ($sortDesc === true) ? 'DESC' : 'ASC';
             if ($sortBy === 'username') {
-                $query->orderBy('users.username', $sortDesc);
+                $query->orderBy('system_users.username', $sortDesc);
             } else {
-                $query->orderBy('users.display_name', $sortDesc);
+                $query->orderBy('system_users.display_name', $sortDesc);
             }
 
 			return $query;

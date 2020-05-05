@@ -22,7 +22,7 @@ class Folder extends Model implements IsFolder, HasReference
 	use Referencable;
 	use NodeTrait;
 
-	protected $table = 'folders';
+	protected $table = 'system_folders';
 
 	protected $deleteableFiles;
 

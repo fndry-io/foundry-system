@@ -14,4 +14,5 @@ use Kalnoy\Nestedset\NodeTrait;
  */
 class Node extends \Foundry\Core\Models\Node {
 
+    protected $table = 'system_nodes';
 }

@@ -52,7 +52,7 @@ class BrowsePickListItemsRequest extends PickListRequest implements ViewableForm
 
 		$page = $this->input('page', 1);
 		$limit = $this->input('limit', 20);
-        list($page, $limit, $sortBy, $sortDesc) = $this->getBrowseMeta(1, 20, 'picklist_items.label', false);
+        list($page, $limit, $sortBy, $sortDesc) = $this->getBrowseMeta(1, 20, 'system_picklist_items.label', false);
         return PickListItemService::service()->browse($this->getEntity(), $inputs, $page, $limit, $sortBy, $sortDesc )->asResource(PickListItem::class, true);
 	}
 

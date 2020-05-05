@@ -12,10 +12,10 @@ class CreatePicklistItemsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('picklist_items', function(Blueprint $table)
+		Schema::create('system_picklist_items', function(Blueprint $table)
 		{
 			$table->integer('id', true);
-			$table->integer('picklist_id')->nullable()->index('IDX_458CA088F0FA04DC');
+			$table->integer('picklist_id')->nullable();
 			$table->string('label', 50)->index();
 			$table->text('description')->nullable();
 			$table->string('identifier', 100);
@@ -23,6 +23,8 @@ class CreatePicklistItemsTable extends Migration {
 			$table->boolean('status');
 			$table->boolean('is_system');
 			$table->timestamps();
+
+            $table->foreign('picklist_id')->references('id')->on('system_picklists')->onUpdate('RESTRICT')->onDelete('RESTRICT');
 		});
 	}
 
@@ -34,7 +36,7 @@ class CreatePicklistItemsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('picklist_items');
+		Schema::drop('system_picklist_items');
 	}
 
 }

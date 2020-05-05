@@ -19,7 +19,7 @@ class File extends Model implements IsFile, Auditable
 	use Referencable;
     use AuditableTrait;
 
-	protected $table = 'files';
+	protected $table = 'system_files';
 
 	protected $visible = [
 		'id',

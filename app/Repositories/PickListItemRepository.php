@@ -46,27 +46,27 @@ class PickListItemRepository extends ModelRepository
 
 			$query
 				->select(
-					'picklist_items.id',
-					'picklist_items.label',
-					'picklist_items.identifier',
-					'picklist_items.description',
-					'picklist_items.sequence',
-					'picklist_items.status'
+					'system_picklist_items.id',
+					'system_picklist_items.label',
+					'system_picklist_items.identifier',
+					'system_picklist_items.description',
+					'system_picklist_items.sequence',
+					'system_picklist_items.status'
 				)
-                ->selectRaw('IF(picklists.default_item = picklist_items.id, true, false) as is_default')
-				->join('picklists', 'picklists.id', '=', 'picklist_items.picklist_id');
+                ->selectRaw('IF(system_picklists.default_item = system_picklist_items.id, true, false) as is_default')
+				->join('system_picklists', 'system_picklists.id', '=', 'system_picklist_items.picklist_id');
 
 			if ($search = Arr::get($inputs, 'search')) {
-				$query->where('picklist_items.label', 'like', "%" . $search . "%");
+				$query->where('system_picklist_items.label', 'like', "%" . $search . "%");
 			}
 
-			$query->where('picklist_items.picklist_id', $pick_list->getKey());
+			$query->where('system_picklist_items.picklist_id', $pick_list->getKey());
 
             $sortDesc = ($sortDesc === true) ? 'DESC' : 'ASC';
             if ($sortBy === 'label') {
-                $query->orderBy('picklist_items.label', $sortDesc);
+                $query->orderBy('system_picklist_items.label', $sortDesc);
             } else {
-                $query->orderBy('picklist_items.label', $sortDesc);
+                $query->orderBy('system_picklist_items.label', $sortDesc);
             }
 
 			return $query;

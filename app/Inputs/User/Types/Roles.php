@@ -32,7 +32,7 @@ class Roles extends ChoiceInputType implements Field, FieldOptions {
 	}
 
 	static function options( \Closure $closure = null, $value = null ): array {
-		$query = DB::table( 'roles' );
+		$query = DB::table( 'system_roles' );
 		if ( is_callable( $closure ) ) {
 			call_user_func( $closure, $query );
 		}

@@ -12,10 +12,10 @@ class AddProfileImageToUsersTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('users', function(Blueprint $table)
+		Schema::table('system_users', function(Blueprint $table)
 		{
             $table->integer('profile_image_id')->nullable();
-            $table->foreign('profile_image_id')->references('id')->on('files')->onUpdate('NO ACTION')->onDelete('SET NULL');
+            $table->foreign('profile_image_id')->references('id')->on('system_files')->onUpdate('NO ACTION')->onDelete('SET NULL');
 		});
 	}
 
@@ -27,11 +27,11 @@ class AddProfileImageToUsersTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('users', function(Blueprint $table)
-		{
-		    $table->dropForeign('users_profile_image_id_foreign');
+        Schema::table('system_users', function(Blueprint $table)
+        {
+            $table->dropForeign('system_users_profile_image_id_foreign');
             $table->dropColumn('profile_image_id');
-		});
+        });
 	}
 
 }

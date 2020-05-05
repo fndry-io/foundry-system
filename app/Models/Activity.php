@@ -26,7 +26,7 @@ class Activity extends Model implements IsActivity, HasNode {
     use NodeReferenceable;
     use Blameable;
 
-    protected $table = 'activities';
+    protected $table = 'system_activities';
 
     protected $dates = [
         'created_at'

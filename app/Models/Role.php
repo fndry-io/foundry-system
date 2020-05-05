@@ -11,7 +11,7 @@ class Role extends \Spatie\Permission\Models\Role implements IsRole
     use Sluggable;
     use Visible;
 
-    protected $table = 'roles';
+    protected $table = 'system_roles';
 
     /**
      * @var array The fillable values

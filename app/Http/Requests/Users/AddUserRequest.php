@@ -48,16 +48,16 @@ class AddUserRequest extends FormRequest implements ViewableFormRequestInterface
 		$rules['email'] = [
 			'required',
 			'email',
-			Rule::unique('users', 'email')
+			Rule::unique('system_users', 'email')
 		];
 		$rules['username'] = [
 			'required',
 			'username',
-			Rule::unique('users', 'username')
+			Rule::unique('system_users', 'username')
 		];
 		$rules['display_name'] = [
 			'required',
-			Rule::unique('users', 'display_name')
+			Rule::unique('system_users', 'display_name')
 		];
 		return $rules;
 	}

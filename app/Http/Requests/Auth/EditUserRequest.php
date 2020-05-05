@@ -53,16 +53,16 @@ class EditUserRequest extends UserRequest implements ViewableFormRequestInterfac
 			$rules['email'] = [
 				'required',
 				'email',
-				Rule::unique('users', 'email')->ignore($entity->getKey())
+				Rule::unique('system_users', 'email')->ignore($entity->getKey())
 			];
 			$rules['username'] = [
 				'required',
 				'username',
-				Rule::unique('users', 'username')->ignore($entity->getKey())
+				Rule::unique('system_users', 'username')->ignore($entity->getKey())
 			];
 			$rules['display_name'] = [
 				'required',
-				Rule::unique('users', 'display_name')->ignore($entity->getKey())
+				Rule::unique('system_users', 'display_name')->ignore($entity->getKey())
 			];
 		}
 		return $rules;

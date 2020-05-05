@@ -7,11 +7,9 @@ use Foundry\Core\Entities\Contracts\IsPickListItem;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
-use Foundry\System\Inputs\PickListItem\PickListEditItemInput;
 use Foundry\System\Inputs\PickListItem\PickListItemInput;
 use Foundry\System\Repositories\PickListItemRepository;
 use Illuminate\Contracts\Pagination\Paginator;
-use Modules\Unlimited\Faqs\Repositories\FaqRepository;
 
 class PickListItemService extends BaseService {
 

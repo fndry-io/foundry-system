@@ -14,7 +14,7 @@ class CreateFilesTable extends Migration {
 	{
 		Schema::create('system_files', function(Blueprint $table)
 		{
-			$table->integer('id', true);
+			$table->increments('id');
 			$table->string('uuid', 36);
 			$table->string('name')->index();
 			$table->string('original_name');
@@ -23,7 +23,7 @@ class CreateFilesTable extends Migration {
 			$table->decimal('size', 18);
 			$table->boolean('is_public');
 			$table->string('reference_type')->nullable();
-			$table->bigInteger('reference_id')->nullable();
+			$table->unsignedBigInteger('reference_id')->nullable();
             $table->string('token')->index()->nullable();
             $table->unsignedInteger('user_id')->nullable();
 			$table->timestamps();

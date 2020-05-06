@@ -14,8 +14,8 @@ class CreatePicklistItemsTable extends Migration {
 	{
 		Schema::create('system_picklist_items', function(Blueprint $table)
 		{
-			$table->integer('id', true);
-			$table->integer('picklist_id')->nullable();
+            $table->increments('id');
+			$table->unsignedInteger('picklist_id')->nullable();
 			$table->string('label', 50)->index();
 			$table->text('description')->nullable();
 			$table->string('identifier', 100);

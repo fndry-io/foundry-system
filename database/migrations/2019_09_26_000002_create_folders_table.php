@@ -14,8 +14,8 @@ class CreateFoldersTable extends Migration {
 	{
 		Schema::create('system_folders', function(Blueprint $table)
 		{
-			$table->integer('id', true);
-			$table->integer('parent_id')->nullable();
+			$table->increments('id');
+			$table->unsignedInteger('parent_id')->nullable();
 			$table->string('uuid', 36);
 			$table->string('name')->index();
 			$table->string('reference_type')->nullable()->index();
@@ -25,7 +25,7 @@ class CreateFoldersTable extends Migration {
 			//$table->integer('lvl');
 			$table->timestamps();
 			$table->softDeletes();
-			$table->integer('file_id')->nullable();
+			$table->unsignedInteger('file_id')->nullable();
 			$table->boolean('is_file')->default(0);
 
             $table->foreign('parent_id')->references('id')->on('system_folders')->onUpdate('NO ACTION')->onDelete('CASCADE');

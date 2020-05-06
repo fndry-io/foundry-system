@@ -3,7 +3,7 @@
 namespace Foundry\System\Http\Requests\Roles;
 
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
-use Foundry\Core\Requests\FormRequest;
+use Foundry\Core\Requests\FoundryFormRequest;
 use Foundry\Core\Requests\Traits\HasEntity;
 use Foundry\Core\Entities\Contracts\IsRole;
 use Foundry\System\Models\Role;
@@ -16,7 +16,7 @@ use Foundry\System\Repositories\RoleRepository;
  *
  * @package Foundry\System\Http\Requests\Roles
  */
-abstract class RoleRequest extends FormRequest implements EntityRequestInterface
+abstract class RoleRequest extends FoundryFormRequest implements EntityRequestInterface
 {
 	use HasEntity;
 

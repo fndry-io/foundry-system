@@ -2,16 +2,10 @@
 
 namespace Foundry\System\Http\Requests\Roles;
 
-use Foundry\Core\Requests\FormRequest;
-use Foundry\Core\Requests\Response;
-use Foundry\System\Services\RoleService;
+use Foundry\Core\Requests\FoundryFormRequest;
 
-class EditRolePermissionsRequest extends FormRequest
+class EditRolePermissionsRequest extends FoundryFormRequest
 {
-	public static function name(): String {
-		return 'foundry.system.roles.permissions.edit';
-	}
-
 	/**
      * Determine if the role is authorized to make this request.
      *
@@ -19,7 +13,7 @@ class EditRolePermissionsRequest extends FormRequest
      */
     public function authorize()
     {
-        return ($this->user() && $this->user()->can('edit permissions'));
+        return ($this->user() && $this->user()->can('manage permissions'));
     }
 
     public function rules()
@@ -27,15 +21,6 @@ class EditRolePermissionsRequest extends FormRequest
         return [
             'permissions' => 'required'
         ];
-    }
-
-    /**
-     * @return Response
-     * @throws \Exception
-     */
-    public function handle() : Response
-    {
-	    return RoleService::service()->syncPermissions($this->input('permissions'));
     }
 
 }

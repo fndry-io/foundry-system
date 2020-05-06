@@ -46,13 +46,8 @@ class SyncPermissions
                     'read/download files'
                 ],
                 'roles & permissions' => [
-                    'browse roles',
-                    'add roles',
-                    'edit roles',
-                    'delete roles',
-                    'assign roles',
-                    'browse permissions',
-                    'edit permissions'
+                    'manage roles',
+                    'read roles'
                 ],
                 'pick lists' => [
                     'browse pick lists',

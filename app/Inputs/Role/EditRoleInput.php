@@ -20,31 +20,14 @@ use Foundry\System\Inputs\Role\Types\Name;
  *
  * @property $name
  */
-class RoleInput extends Inputs implements ViewableInputInterface
+class EditRoleInput extends RoleInput
 {
-    use ViewableInput;
-
-	public function types() : InputTypeCollection
-	{
-		return InputTypeCollection::fromTypes([
-			Name::input(),
-            Guard::input()
-		]);
-	}
-
     public function view($request) : FormType
     {
-        $form = $this->form($request);
+        $form = parent::view($request);
 
         $form->setTitle(__('Create Role'));
         $form->setButtons((new SubmitButtonType(__('Create'), $form->getAction())));
-
-        $form->addChildren(
-            (new SectionType(__('Role')))->addChildren(
-                RowType::withChildren($form->get('name')),
-                RowType::withChildren($form->get('guard_name'))
-            )
-        );
 
         return $form;
     }

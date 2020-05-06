@@ -38,12 +38,12 @@ Route::prefix('system')->middleware('auth:system')->group( function () {
 	//FormRequestHandler::route('/users/{_entity}',       'Foundry\System\Http\Requests\Users\ReadUserRequest');
 
 	//roles
-	FormRequestHandler::route('/roles',                         'Foundry\System\Http\Requests\Roles\BrowseRolesRequest');
-	FormRequestHandler::route('/roles/add',                     'Foundry\System\Http\Requests\Roles\AddRoleRequest');
-    FormRequestHandler::route('/roles/permissions/edit',        'Foundry\System\Http\Requests\Roles\EditRolePermissionsRequest');
-    FormRequestHandler::route('/roles/permissions/{guard}',     'Foundry\System\Http\Requests\Roles\ReadRolePermissionsRequest');
-	FormRequestHandler::route('/roles/{_entity}/edit',          'Foundry\System\Http\Requests\Roles\EditRoleRequest');
-	FormRequestHandler::route('/roles/{_entity}/delete',        'Foundry\System\Http\Requests\Roles\DeleteRoleRequest');
+    Route::get(                   '/roles',                 'RolesController@browse')->name('foundry.system.roles.browse');
+    Route::match(['GET', 'POST'], '/roles/add',             'RolesController@add')->name('foundry.system.roles.add');
+    Route::match(['GET', 'POST'], '/roles/{_entity}/edit',  'RolesController@edit')->name('foundry.system.roles.edit');
+    Route::post(                  '/roles/{_entity}/delete','RolesController@delete')->name('foundry.system.roles.delete');
+    Route::post(                  '/roles/permissions/edit',        'RolesController@editPermissions')->name('foundry.system.roles.edit-permissions');
+    Route::get(                   '/roles/permissions/{guard}',     'RolesController@readPermissions')->name('foundry.system.roles.read-permissions');
 
     //settings
     FormRequestHandler::route('/settings',                      'Foundry\System\Http\Requests\Settings\BrowseSettingsRequest');

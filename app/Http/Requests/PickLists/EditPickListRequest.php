@@ -15,23 +15,8 @@ use Foundry\System\Inputs\PickList\PickListInput;
 use Foundry\System\Services\PickListService;
 use Modules\Foundry\Checklists\Inputs\Checklist\ChecklistInput;
 
-class EditPickListRequest extends PickListRequest implements ViewableFormRequestInterface, EntityRequestInterface, InputInterface
+class EditPickListRequest extends PickListRequest
 {
-	use HasInput;
-
-	public static function name(): String {
-		return 'foundry.system.pick-lists.edit';
-	}
-
-	/**
-	 * @param $inputs
-	 *
-	 * @return \Foundry\Core\Inputs\Inputs|ChecklistInput
-	 */
-	public function makeInput($inputs) {
-		return new PickListInput($inputs);
-	}
-
 	/**
 	 * Determine if the checklist is authorized to make this request.
 	 *
@@ -40,16 +25,6 @@ class EditPickListRequest extends PickListRequest implements ViewableFormRequest
 	public function authorize()
 	{
         return ($this->user() && $this->user()->can('edit pick lists'));
-	}
-
-	/**
-	 * Handle the request
-	 *
-	 * @return Response
-	 */
-	public function handle() : Response
-	{
-		return PickListService::service()->edit($this->input, $this->getEntity());
 	}
 
 	/**

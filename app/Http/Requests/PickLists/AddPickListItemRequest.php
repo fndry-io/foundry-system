@@ -12,6 +12,6 @@ class AddPickListItemRequest extends PickListRequest
     public function authorize()
     {
     	//todo update to use the permissions
-        return ($this->user() && $this->user()->can('create pick list items')) && $this->getEntity()->is_tag;
+        return ($this->user() && $this->user()->can('manage pick list items')) && $this->getEntity()->is_tag;
     }
 }

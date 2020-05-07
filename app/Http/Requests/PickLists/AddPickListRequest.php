@@ -11,6 +11,6 @@ class AddPickListRequest extends FoundryFormRequest
 	 */
 	public function authorize(): bool
 	{
-        return ($this->user() && $this->user()->can('create pick lists'));
+        return ($this->user() && $this->user()->can('manage pick lists'));
 	}
 }

@@ -50,14 +50,10 @@ class SyncPermissions
                     'read roles'
                 ],
                 'pick lists' => [
-                    'browse pick lists',
-                    'add pick lists',
-                    'edit pick lists',
-                    'disable pick lists',
-                    'browse pick list items',
-                    'add pick list items',
-                    'edit pick list items',
-                    'disable pick list items'
+                    'manage pick lists',
+                    'read pick lists',
+                    'manage pick list items',
+                    'read pick list items'
                 ]
             ]
         ];

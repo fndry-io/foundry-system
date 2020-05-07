@@ -18,27 +18,12 @@ use Foundry\Core\Support\InputTypeCollection;
  *
  * @property $search
  */
-class SearchFilterInput extends Inputs implements ViewableInputInterface
+class SearchFilterInput extends Inputs
 {
-    use ViewableInput;
-
 	public function types() : InputTypeCollection
 	{
 		return InputTypeCollection::fromTypes([
 			(new TextInputType('search', 'Search', false))
 		]);
 	}
-
-    public function view($request) : FormType
-    {
-        $form = $this->form();
-
-        $form->setTitle(__('Filter Roles'));
-        $form->setButtons((new SubmitButtonType(__('Filter'), $form->getAction())));
-        $form->addChildren(
-            RowType::withChildren($form->get('search'))
-        );
-        return $form;
-    }
-
 }

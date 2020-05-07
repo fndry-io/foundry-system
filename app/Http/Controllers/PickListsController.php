@@ -12,8 +12,9 @@ use Foundry\System\Http\Requests\PickLists\ListPickListItemsRequest;
 use Foundry\System\Http\Requests\PickLists\ReadPickListRequest;
 use Foundry\System\Http\Resources\PickList;
 use Foundry\System\Http\Resources\PickListItem;
-use Foundry\System\Inputs\PickList\PickListInput;
-use Foundry\System\Inputs\PickListItem\PickListItemInput;
+use Foundry\System\Inputs\PickList\AddPickListInput;
+use Foundry\System\Inputs\PickList\AddPickListItemInput;
+use Foundry\System\Inputs\PickList\EditPickListInput;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Repositories\PickListItemRepository;
 use Foundry\System\Services\PickListItemService;
@@ -37,7 +38,7 @@ class PickListsController extends Controller
 
     public function add(AddPickListRequest $request)
     {
-        $inputs = PickListInput::make($request->all());
+        $inputs = AddPickListInput::make($request->all());
         $view = $inputs->viewOrValidate($request);
 
         if ($view) {
@@ -49,7 +50,7 @@ class PickListsController extends Controller
 
     public function edit(EditPickListRequest $request)
     {
-        $inputs = PickListInput::make($request->all());
+        $inputs = EditPickListInput::make($request->all());
         $view = $inputs->viewOrValidate($request);
 
         if ($view) {
@@ -66,7 +67,7 @@ class PickListsController extends Controller
 
     public function addItem(AddPickListItemRequest $request)
     {
-        $inputs = PickListItemInput::make($request->all());
+        $inputs = AddPickListItemInput::make($request->all());
         $inputs->setValue('sequence', 0);
         $inputs->setValue('status', true);
         $inputs->setValue('picklist', $request->getEntity()->getKey());
@@ -82,9 +83,7 @@ class PickListsController extends Controller
     public function browseItem(BrowsePickListItemsRequest $request)
     {
         $inputs = SearchFilterInput::make($request->all());
-
         $inputs->validate();
-
         $page = $request->input('page', 1);
         $limit = $request->input('limit', 20);
 

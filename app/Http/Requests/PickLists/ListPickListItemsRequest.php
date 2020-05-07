@@ -10,7 +10,7 @@ use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\System\Repositories\PickListItemRepository;
 
-class ListPickListItemsRequest extends PickListRequest implements ViewableFormRequestInterface
+class ListPickListItemsRequest extends PickListRequest
 {
 
 	public static function name(): String {

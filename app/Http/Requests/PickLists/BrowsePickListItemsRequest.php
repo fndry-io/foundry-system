@@ -17,12 +17,8 @@ use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Services\PickListItemService;
 use Foundry\System\Services\PickListService;
 
-class BrowsePickListItemsRequest extends PickListRequest implements ViewableFormRequestInterface, InputInterface
+class BrowsePickListItemsRequest extends PickListRequest
 {
-
-    use HasInput;
-    use BrowseableRequest;
-
 	public static function name(): String {
 		return 'foundry.system.pick-lists.items.browse';
 	}

@@ -60,6 +60,9 @@ Route::prefix('system')->middleware('auth:system')->group( function () {
     Route::match(['GET', 'POST'], '/pick-lists/add', 'PickListsController@add')->name('foundry.system.pick-lists.add');
     Route::match(['GET', 'POST'], '/pick-lists/{_entity}/edit', 'PickListsController@edit')->name('foundry.system.pick-lists.edit');
     Route::get('/pick-lists/{_entity}', 'PickListsController@read')->name('foundry.system.pick-lists.read');
+    Route::get('/pick-lists/{_entity}/list',     'PickListsController@listItem');
+    Route::match(['GET', 'POST'], '/pick-lists/{_entity}/items/add','PickListsController@addItem');
+    Route::get('/pick-lists/{_entity}/items',    'PickListsController@browseItem');
 
     // Route::route('/pick-lists/{_entity}/list',     'PickListsController@ListPickListItemsRequest');
     // Route::route('/pick-lists/{_entity}/items/add','PickListsController@AddPickListItemRequest');
@@ -68,9 +71,9 @@ Route::prefix('system')->middleware('auth:system')->group( function () {
     // FormRequestHandler::route('/pick-lists',                    'Foundry\System\Http\Requests\PickLists\BrowsePickListsRequest');
     // FormRequestHandler::route('/pick-lists/add',                'Foundry\System\Http\Requests\PickLists\AddPickListRequest');
     // FormRequestHandler::route('/pick-lists/{_entity}/edit',     'Foundry\System\Http\Requests\PickLists\EditPickListRequest');
-	FormRequestHandler::route('/pick-lists/{_entity}/list',     'Foundry\System\Http\Requests\PickLists\ListPickListItemsRequest');
-	FormRequestHandler::route('/pick-lists/{_entity}/items/add','Foundry\System\Http\Requests\PickLists\AddPickListItemRequest');
-	FormRequestHandler::route('/pick-lists/{_entity}/items',    'Foundry\System\Http\Requests\PickLists\BrowsePickListItemsRequest');
+	// FormRequestHandler::route('/pick-lists/{_entity}/list',     'Foundry\System\Http\Requests\PickLists\ListPickListItemsRequest');
+	// FormRequestHandler::route('/pick-lists/{_entity}/items/add','Foundry\System\Http\Requests\PickLists\AddPickListItemRequest');
+	// FormRequestHandler::route('/pick-lists/{_entity}/items',    'Foundry\System\Http\Requests\PickLists\BrowsePickListItemsRequest');
     // FormRequestHandler::route('/pick-lists/{_entity}',          'Foundry\System\Http\Requests\PickLists\ReadPickListRequest');
 
 

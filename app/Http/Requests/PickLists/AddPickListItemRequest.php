@@ -16,28 +16,8 @@ use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Inputs\PickListItem\PickListItemInput;
 use Foundry\System\Services\PickListItemService;
 
-class AddPickListItemRequest extends PickListRequest implements InputInterface, ViewableFormRequestInterface
+class AddPickListItemRequest extends PickListRequest
 {
-	use HasInput;
-
-	public static function name(): String {
-		return 'foundry.system.pick-lists.items.add';
-	}
-
-	/**
-	 * Make the input class for the request
-	 *
-	 * @param $inputs
-	 *
-	 * @return mixed
-	 */
-	public function makeInput($inputs)
-	{
-		return SimpleInputs::make($inputs, InputTypeCollection::make([
-			(new TextInputType('label', __('Label'), true))
-		]));
-	}
-
 	/**
      * Determine if the user is authorized to make this request.
      *
@@ -47,32 +27,6 @@ class AddPickListItemRequest extends PickListRequest implements InputInterface, 
     {
     	//todo update to use the permissions
         return ($this->user() && $this->user()->can('create pick list items')) && $this->getEntity()->is_tag;
-    }
-
-	/**
-	 * Handle the request
-	 *
-	 * @see UserResource
-	 * @return Response
-	 */
-    public function handle() : Response
-    {
-    	$input = new PickListItemInput([
-    		'label' => $this->getInput()->value('label'),
-		    'sequence' => 0,
-		    'status' => true,
-		    'picklist' => $this->getEntity()->getKey()
-	    ]);
-    	if ($input->validate()) {
-    		$response = PickListItemService::service()->add($input);
-    		if ($response->isSuccess()) {
-    			$item = $response->getData();
-    			return Response::success([
-    				'label' => $item->label,
-				    'id' => $item->getKey()
-			    ]);
-		    }
-	    }
     }
 
 	/**

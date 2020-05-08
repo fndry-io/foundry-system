@@ -13,7 +13,7 @@ Route::prefix( 'system' )->middleware('web')->group( function () {
 FormRequestHandler::route('/auth/login',                'Foundry\System\Http\Requests\Auth\LoginRequest');
 FormRequestHandler::route('/auth/forgot',               'Foundry\System\Http\Requests\Auth\ForgotPasswordRequest');
 FormRequestHandler::route('/auth/reset',                'Foundry\System\Http\Requests\Auth\ResetPasswordRequest');
-FormRequestHandler::route('/auth/register',             'Foundry\System\Http\Requests\Users\RegisterUserRequest');
+Route::post('/auth/register',                           'UserController@register');
 FormRequestHandler::route('/auth/logout',                   'Foundry\System\Http\Requests\Auth\LogoutRequest');
 
 Route::middleware('auth:system')->group( function () {
@@ -28,13 +28,13 @@ Route::middleware('auth:system')->group( function () {
 Route::prefix('system')->middleware('auth:system')->group( function () {
 
 	//users
-	FormRequestHandler::route('/users',                     'Foundry\System\Http\Requests\Users\BrowseUsersRequest');
-	FormRequestHandler::route('/users/add',                 'Foundry\System\Http\Requests\Users\AddUserRequest');
-	FormRequestHandler::route('/users/add-bulk',            'Foundry\System\Http\Requests\Users\BulkAddUserRequest');
-	FormRequestHandler::route('/users/list',                'Foundry\System\Http\Requests\Users\ListUsersRequest');
-	FormRequestHandler::route('/users/{_entity}/edit',      'Foundry\System\Http\Requests\Users\EditUserRequest');
-	FormRequestHandler::route('/users/{_entity}/delete',    'Foundry\System\Http\Requests\Users\DeleteUserRequest');
-	FormRequestHandler::route('/users/{_entity}/restore',   'Foundry\System\Http\Requests\Users\RestoreUserRequest');
+	Route::get(                    '/users',                     'UsersController@browse')->name('foundry.system.users.browse');
+	Route::match(['GET', 'POST'],  '/users/add',                 'UsersController@add')->name('foundry.system.users.add');
+	Route::post(                   '/users/add-bulk',            'UsersController@bulkAdd')->name('foundry.system.users.add.bulk');
+	Route::get(                    '/users/list',                'UsersController@list')->name('foundry.system.users.list');
+	Route::match(['GET', 'POST'],  '/users/{_entity}/edit',      'UsersController@edit')->name('foundry.system.users.edit');
+	Route::post(                   '/users/{_entity}/delete',    'UsersController@delete')->name('foundry.system.users.delete');
+	Route::post(                   '/users/{_entity}/restore',   'UsersController@restore')->name('foundry.system.users.restore');
 	//FormRequestHandler::route('/users/{_entity}',       'Foundry\System\Http\Requests\Users\ReadUserRequest');
 
 	//roles

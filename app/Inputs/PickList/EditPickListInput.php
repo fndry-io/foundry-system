@@ -3,11 +3,7 @@
 namespace Foundry\System\Inputs\PickList;
 
 use Foundry\Core\Inputs\Types\FormType;
-use Foundry\Core\Inputs\Types\RowType;
-use Foundry\Core\Inputs\Types\SectionType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
-use Foundry\Core\Inputs\Types\Traits\ViewableInput;
-use Foundry\Core\Requests\Contracts\ViewableInputInterface;
 
 /**
  * Class ChecklistInput
@@ -16,10 +12,8 @@ use Foundry\Core\Requests\Contracts\ViewableInputInterface;
  *
  * @property $name
  */
-class EditPickListInput extends PickListInput implements ViewableInputInterface
+class EditPickListInput extends AddPickListInput
 {
-    use ViewableInput;
-
     /**
      * Make a viewable DocType for the request
      *
@@ -27,20 +21,10 @@ class EditPickListInput extends PickListInput implements ViewableInputInterface
      */
     public function view($request) : FormType
     {
-        $form = $this->form($request);
+        $form = parent::view($request);
 
         $form->setTitle(__('Update Pick List'));
-        $form->setButtons((new SubmitButtonType(__('Create'), $form->getAction())));
-
-        $picklist = (new SectionType(__('Details')))->addChildren(
-            RowType::withChildren($form->get('label')),
-            RowType::withChildren($form->get('description')),
-            RowType::withChildren($form->get('is_tag'))
-        );
-
-        $form->addChildren(
-            $picklist
-        );
+        $form->setButtons((new SubmitButtonType(__('Save'), $form->getAction())));
 
         return $form;
     }

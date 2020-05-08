@@ -51,9 +51,7 @@ class SyncPermissions
                 ],
                 'pick lists' => [
                     'manage pick lists',
-                    'read pick lists',
-                    'manage pick list items',
-                    'read pick list items'
+                    'read pick lists'
                 ]
             ]
         ];

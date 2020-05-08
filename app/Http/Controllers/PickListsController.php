@@ -8,7 +8,6 @@ use Foundry\System\Http\Requests\PickLists\AddPickListRequest;
 use Foundry\System\Http\Requests\PickLists\BrowsePickListItemsRequest;
 use Foundry\System\Http\Requests\PickLists\BrowsePickListsRequest;
 use Foundry\System\Http\Requests\PickLists\EditPickListRequest;
-use Foundry\System\Http\Requests\PickLists\ListPickListItemsRequest;
 use Foundry\System\Http\Requests\PickLists\ReadPickListRequest;
 use Foundry\System\Http\Resources\PickList;
 use Foundry\System\Http\Resources\PickListItem;
@@ -93,7 +92,7 @@ class PickListsController extends Controller
             ->toJsonResponse($request);
     }
 
-    public function listItems(ListPickListItemsRequest $request)
+    public function listItems(ReadPickListRequest $request)
     {
         /** @var PickListItemRepository */
         $repo = PickListItemRepository::repository();

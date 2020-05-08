@@ -56,13 +56,13 @@ Route::prefix('system')->middleware('auth:system')->group( function () {
 	FormRequestHandler::route('/pick-list-items/{_entity}/edit',  'Foundry\System\Http\Requests\PickListItems\EditPickListItemRequest');
 
     //PickList
-    Route::get('/pick-lists', 'PickListsController@browse')->name('foundry.system.pick-lists.browse');
-    Route::match(['GET', 'POST'], '/pick-lists/add', 'PickListsController@add')->name('foundry.system.pick-lists.add');
-    Route::match(['GET', 'POST'], '/pick-lists/{_entity}/edit', 'PickListsController@edit')->name('foundry.system.pick-lists.edit');
-    Route::get('/pick-lists/{_entity}', 'PickListsController@read')->name('foundry.system.pick-lists.read');
-    Route::get('/pick-lists/{_entity}/list',     'PickListsController@listItem');
-    Route::match(['GET', 'POST'], '/pick-lists/{_entity}/items/add','PickListsController@addItem');
-    Route::get('/pick-lists/{_entity}/items',    'PickListsController@browseItem');
+    Route::get(                     '/pick-lists',                      'PickListsController@browse')->name('foundry.system.pick-lists.browse');
+    Route::match(['GET', 'POST'],   '/pick-lists/add',                  'PickListsController@add')->name('foundry.system.pick-lists.add');
+    Route::match(['GET', 'POST'],   '/pick-lists/{_entity}/edit',       'PickListsController@edit')->name('foundry.system.pick-lists.edit');
+    Route::get(                     '/pick-lists/{_entity}',            'PickListsController@read')->name('foundry.system.pick-lists.read');
+    Route::get(                     '/pick-lists/{_entity}/list',       'PickListsController@listItem')->name('foundry.system.pick-lists.items.list');
+    Route::match(['GET', 'POST'],   '/pick-lists/{_entity}/items/add',  'PickListsController@addItem')->name('foundry.system.pick-lists.items.add');
+    Route::get(                     '/pick-lists/{_entity}/items',      'PickListsController@browseItem')->name('foundry.system.pick-lists.items.browse');
 
 	//Files
 	FormRequestHandler::route('/files/upload',                 'Foundry\System\Http\Requests\Files\UploadFileRequest');

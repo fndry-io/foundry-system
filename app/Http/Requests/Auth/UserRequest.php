@@ -12,7 +12,7 @@ abstract class UserRequest extends FormRequest implements EntityRequestInterface
 {
 	use HasEntity;
 
-	function form($params = []): FormType {
+	public function form($params = []): FormType {
 		$this->setEntity($this->user());
 		return parent::form();
 	}

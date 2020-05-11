@@ -2,18 +2,10 @@
 
 namespace Foundry\System\Http\Requests\Auth;
 
-use Foundry\Core\Requests\FormRequest;
-use Foundry\Core\Requests\Response;
-use Foundry\System\Services\UserService;
-use Illuminate\Support\Facades\Auth;
+use Foundry\Core\Requests\FoundryFormRequest;
 
-class ReadUserRequest extends FormRequest
+class ReadUserRequest extends FoundryFormRequest
 {
-
-	public static function name(): String {
-		return 'foundry.system.auth.user';
-	}
-
 	/**
      * Determine if the user is authorized to make this request.
      *
@@ -23,15 +15,4 @@ class ReadUserRequest extends FormRequest
     {
         return !!($this->user());
     }
-
-	/**
-	 * Handle the request
-	 *
-	 * @return Response
-	 */
-    public function handle() : Response
-    {
-        return UserService::service()->returnGuardUser(Auth::guard(), false);
-    }
-
 }

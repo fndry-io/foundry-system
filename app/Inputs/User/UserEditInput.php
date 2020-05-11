@@ -96,14 +96,26 @@ class UserEditInput extends Inputs implements ViewableInputInterface
     public function view(Request $request) : FormType
     {
         $form = $this->form($request);
-        $entity = $request->getEntity();
+        $entity = $form->getEntity();
+
+        if (!$entity) {
+            throw new \Exception("Entity is null");
+        }
+
+        /** @var \Foundry\Core\Inputs\Types\FileInputType|null $image **/
+        $image = $form->get('profile_image');
+
+        if (isset($entity->profile_image) && $image) {
+            $image->setFiles([$entity->profile_image->only('id', 'url', 'original_name', 'type', 'size', 'token')]);
+        }
 
         $form->setTitle(__('Edit User'));
         $form->setButtons((new SubmitButtonType(__('Save'), $form->getAction())));
         $form->addChildren(
             (new SectionType(__('Details')))->addChildren(
                 RowType::withChildren($form->get('username')->setAutocomplete(false), $form->get('display_name')->setAutocomplete(false)),
-                RowType::withChildren($form->get('email')->setAutocomplete(false))
+                RowType::withChildren($form->get('email')->setAutocomplete(false)),
+                RowType::withChildren($image)
             )
         );
 

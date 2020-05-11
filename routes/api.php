@@ -10,19 +10,19 @@ Route::prefix( 'system' )->middleware('web')->group( function () {
 });
 
 //auth
-FormRequestHandler::route('/auth/login',                'Foundry\System\Http\Requests\Auth\LoginRequest');
-FormRequestHandler::route('/auth/forgot',               'Foundry\System\Http\Requests\Auth\ForgotPasswordRequest');
-FormRequestHandler::route('/auth/reset',                'Foundry\System\Http\Requests\Auth\ResetPasswordRequest');
-Route::post('/auth/register',                           'UserController@register');
-FormRequestHandler::route('/auth/logout',                   'Foundry\System\Http\Requests\Auth\LogoutRequest');
+Route::match(['GET', 'POST'], '/auth/login',    'AuthController@login')->name('foundry.system.auth.login');
+Route::match(['GET', 'POST'], '/auth/forgot',   'AuthController@forgotPassword')->name('foundry.system.auth.forgot_password');
+Route::match(['GET', 'POST'], '/auth/reset',    'AuthController@resetPassword')->name('foundry.system.auth.reset_password');
+Route::match(['GET', 'POST'], '/auth/register', 'UserController@register')->name('foundry.system.auth.register');
+Route::match(['GET', 'POST'], '/auth/logout',   'AuthController@logout')->name('foundry.system.auth.logout');
 
 Route::middleware('auth:system')->group( function () {
 	//auth user
-	FormRequestHandler::route( '/auth/edit',    'Foundry\System\Http\Requests\Auth\EditUserRequest' );
+	Route::match(['GET', 'POST'], '/auth/edit', 'AuthController@edit' )->name('foundry.system.auth.edit');
     FormRequestHandler::route( '/auth/profile', 'Foundry\System\Http\Requests\Auth\UploadProfileImageRequest' );
     FormRequestHandler::route( '/auth/profile/delete', 'Foundry\System\Http\Requests\Auth\DeleteProfileImageRequest' );
-	FormRequestHandler::route( '/auth/user',    'Foundry\System\Http\Requests\Auth\ReadUserRequest' );
-	FormRequestHandler::route( '/auth/settings','Foundry\System\Http\Requests\Auth\SyncUserSettingsRequest' );
+	Route::get('/auth/user',       'AuthController@readUser')->name('foundry.system.auth.user');
+	Route::post('/auth/settings',  'AuthController@syncUserSettings')->name('foundry.system.auth.sync-settings');
 });
 
 Route::prefix('system')->middleware('auth:system')->group( function () {

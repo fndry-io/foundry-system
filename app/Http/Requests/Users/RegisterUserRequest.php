@@ -14,6 +14,6 @@ class RegisterUserRequest extends FoundryFormRequest
 	public function authorize()
 	{
 	    //todo connect this to a setting for allowing public registrations
-        return ($this->user() && $this->user()->can('add users'));
+        return ($this->user() && $this->user()->can('manage users'));
 	}
 }

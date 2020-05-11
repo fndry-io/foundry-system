@@ -1,4 +1,5 @@
 <?php
+
 namespace Foundry\System\Http\Controllers;
 
 use Foundry\Core\Requests\Response;

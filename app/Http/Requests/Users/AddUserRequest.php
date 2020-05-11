@@ -13,6 +13,6 @@ class AddUserRequest extends FoundryFormRequest
      */
     public function authorize()
     {
-        return ($this->user() && $this->user()->can('add users'));
+        return ($this->user() && $this->user()->can('manage users'));
     }
 }

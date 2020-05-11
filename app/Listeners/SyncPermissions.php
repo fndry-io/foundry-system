@@ -25,11 +25,7 @@ class SyncPermissions
                     'manage system'
                 ],
                 'users' => [
-                    'browse users',
-                    'add users',
-                    'edit users',
-                    'delete users',
-                    'archive users',
+                    'manage users',
                     'read users'
                 ],
                 'activities' => [

@@ -26,7 +26,7 @@ class UserSelect extends ChoiceInputType implements Field, FieldOptions
 			static::options()
 		))
 			->setRules([
-				'exists:users,id',
+				'exists:system_users,id',
 			])
 			->setSortable(false)
 			->setTextKey('display_name')

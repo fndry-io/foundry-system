@@ -19,7 +19,7 @@ trait PickListRelations
      */
     public function morphToManyPickListItems($related = PickListItem::class)
     {
-        return $this->morphToMany($related, 'relatable', 'picklist_item_relations', 'relatable_id', 'picklist_item_id');
+        return $this->morphToMany($related, 'relatable', 'system_picklist_item_relations', 'relatable_id', 'picklist_item_id');
     }
 
     /**

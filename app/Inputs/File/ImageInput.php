@@ -41,13 +41,21 @@ class ImageInput extends FileInput {
 	}
 
 	/**
+     * Create a file input from an uploaded file
+     *
+     * The value of the $resize can be one of the following:
+     *  - `crop`: crop the image using the supplied width and height
+     *  - `resize`: resize the image to the desired width and height (does not maintain aspect ratio)
+     *  - `fit`: resize and crop the image to the best possible position using the supplied with and height
+     *  - null: do not resize the image at all
+     *
 	 * @param UploadedFile $file The uploaded file
 	 * @param array $inputs The inputs from the request
 	 * @param boolean $is_public If the file is public
-     * @param int $width
-     * @param int $height
+     * @param int $width The width to make the image based on the resize parameter
+     * @param int $height The height to mage the image base on the resize parameter
      * @param string $resize
-	 *
+     *
 	 * @return self
 	 */
 	static function fromUploadedFile(UploadedFile $file, array $inputs = [], $is_public = false, $width = null, $height = null, $resize = null){

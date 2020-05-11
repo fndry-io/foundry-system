@@ -49,7 +49,8 @@ Route::prefix('system')->middleware('auth:system')->group( function () {
     FormRequestHandler::route('/settings',                      'Foundry\System\Http\Requests\Settings\BrowseSettingsRequest');
     FormRequestHandler::route('/settings/{_entity}/edit',          'Foundry\System\Http\Requests\Settings\EditSettingRequest');
 
-    FormRequestHandler::route('/permissions/sync',              'Foundry\System\Http\Requests\Permissions\SyncPermissionsRequest');
+    // permissions
+    Route::post('/permissions/sync', 'PermissionsController@sync');
 
 	//PickList Items
 	FormRequestHandler::route('/pick-list-items/add',             'Foundry\System\Http\Requests\PickListItems\AddPickListItemRequest');

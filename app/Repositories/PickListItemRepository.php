@@ -4,6 +4,7 @@ namespace Foundry\System\Repositories;
 
 use Foundry\Core\Entities\Contracts\IsPickList;
 use Foundry\Core\Entities\Contracts\IsPickListItem;
+use Foundry\Core\Entities\Contracts\IsSoftDeletable;
 use Foundry\Core\Models\Model;
 use Foundry\Core\Repositories\ModelRepository;
 use Foundry\System\Models\PickListItem;
@@ -14,7 +15,6 @@ use Illuminate\Support\Arr;
 /**
  * Class CompanyRepository
  *
- * @method boolean delete(IsPickListItem | Model | int $model)
  * @method IsPickListItem|Model getModel(Model $id)
  *
  * @package Modules\Agm\Contacts\Repositories
@@ -167,6 +167,27 @@ class PickListItemRepository extends ModelRepository
 			return false;
 		}
 	}
+
+    /**
+     * Delete an record in the database
+     *
+     * @param Model|int $id
+     *
+     * @return bool|null
+     * @throws \Exception
+     */
+    public function delete($id, bool $force = false)
+    {
+        $pickListItem = $this->getModel($id);
+        $identifiter = $pickListItem->picklist->identifier;
+        $result = $pickListItem->delete();
+        if ($result) {
+            PickListRepository::repository()->clearCachedSelectableList($identifiter);
+            $this->dispatch('deleted', $pickListItem);
+        }
+        return $result;
+    }
+
 
 
 }

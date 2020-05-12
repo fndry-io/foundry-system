@@ -1,6 +1,6 @@
 <?php
 
-namespace Foundry\System\Model\Traits;
+namespace Foundry\System\Models\Traits;
 
 use Foundry\Core\Entities\Contracts\HasFolder;
 use Foundry\Core\Entities\Contracts\IsFolder;

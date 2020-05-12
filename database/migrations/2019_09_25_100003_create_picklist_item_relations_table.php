@@ -14,7 +14,7 @@ class CreatePicklistItemRelationsTable extends Migration {
 	{
 		Schema::create('system_picklist_item_relations', function(Blueprint $table)
 		{
-			$table->integer('picklist_item_id');
+			$table->unsignedInteger('picklist_item_id');
 			$table->morphs('relatable');
             $table->foreign('picklist_item_id')->references('id')->on('system_picklist_items')->onUpdate('NO ACTION')->onDelete('CASCADE');
 		});

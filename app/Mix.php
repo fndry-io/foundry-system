@@ -11,17 +11,18 @@ class Mix
     /**
      * Get the path to a versioned Mix file.
      *
-     * @param  string  $path
-     * @param  string  $manifestDirectory
-     * @return \Illuminate\Support\HtmlString|string
-     *
-     * @throws \Exception
+     * @param $name The theme or module name. I.E. provider/name
+     * @param $path The path desired
+     * @param string $manifestDirectory
+     * @param string $base the base root folder directory
+     * @return HtmlString|string
+     * @throws Exception
      */
-    public function __invoke($theme, $path, $manifestDirectory = '')
+    public function __invoke($name, $path, $manifestDirectory = '', $base = '/themes')
     {
         static $manifests = [];
 
-        $manifestDirectory = '/themes' . DIRECTORY_SEPARATOR . $theme . $manifestDirectory;
+        $manifestDirectory = $base . DIRECTORY_SEPARATOR . $name . $manifestDirectory;
 
         if (! Str::startsWith($path, '/')) {
             $path = "/{$path}";
@@ -66,5 +67,15 @@ class Mix
         }
 
         return new HtmlString(app('config')->get('app.mix_url').$manifestDirectory.$manifest[$path]);
+    }
+
+    static function theme($name, $path, $manifestDirectory = '')
+    {
+        return (new static)->__invoke($name, $path, $manifestDirectory);
+    }
+
+    static function module($name, $path, $manifestDirectory = '')
+    {
+        return (new static)->__invoke($name, $path, $manifestDirectory, '/modules');
     }
 }

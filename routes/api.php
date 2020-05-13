@@ -37,20 +37,21 @@ Route::prefix('system')->middleware('auth:system')->group( function () {
 	Route::post(                   '/users/{_entity}/restore',   'UsersController@restore')->name('foundry.system.users.restore');
 	//FormRequestHandler::route('/users/{_entity}',       'Foundry\System\Http\Requests\Users\ReadUserRequest');
 
-	//roles
+    // permissions
+    Route::post('/permissions/sync', 'PermissionsController@sync');
+    Route::post(                  '/roles/permissions/edit',        'RolesController@editPermissions')->name('foundry.system.roles.edit-permissions');
+    Route::get(                   '/roles/permissions/{guard}',     'RolesController@readPermissions')->name('foundry.system.roles.read-permissions');
+
+    //roles
     Route::get(                   '/roles',                 'RolesController@browse')->name('foundry.system.roles.browse');
     Route::match(['GET', 'POST'], '/roles/add',             'RolesController@add')->name('foundry.system.roles.add');
     Route::match(['GET', 'POST'], '/roles/{_entity}/edit',  'RolesController@edit')->name('foundry.system.roles.edit');
     Route::post(                  '/roles/{_entity}/delete','RolesController@delete')->name('foundry.system.roles.delete');
-    Route::post(                  '/roles/permissions/edit',        'RolesController@editPermissions')->name('foundry.system.roles.edit-permissions');
-    Route::get(                   '/roles/permissions/{guard}',     'RolesController@readPermissions')->name('foundry.system.roles.read-permissions');
 
     //settings
     FormRequestHandler::route('/settings',                      'Foundry\System\Http\Requests\Settings\BrowseSettingsRequest');
     FormRequestHandler::route('/settings/{_entity}/edit',          'Foundry\System\Http\Requests\Settings\EditSettingRequest');
 
-    // permissions
-    Route::post('/permissions/sync', 'PermissionsController@sync');
 
 	//PickList Items
 	FormRequestHandler::route('/pick-list-items/add',             'Foundry\System\Http\Requests\PickListItems\AddPickListItemRequest');

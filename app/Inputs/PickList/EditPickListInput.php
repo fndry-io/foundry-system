@@ -12,7 +12,7 @@ use Foundry\Core\Inputs\Types\SubmitButtonType;
  *
  * @property $name
  */
-class EditPickListInput extends AddPickListInput
+class EditPickListInput extends PickListInput
 {
     /**
      * Make a viewable DocType for the request

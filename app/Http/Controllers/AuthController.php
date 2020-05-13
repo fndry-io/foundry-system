@@ -61,13 +61,8 @@ class AuthController extends Controller
     public function logout(LogoutRequest $request, UserService $service)
     {
         $input = new UserLogoutInput($request->all());
-        $view = $input->viewOrValidate($request);
-
-        if ($view) {
-            return Response::success($view)->toJsonResponse($request);
-        }
-
-        return $service->logout($input)->toJsonResponse($request);
+        $input->validate();
+        return $service->logout()->toJsonResponse($request);
     }
 
     public function readUser(ReadUserRequest $request, AuthManager $auth, UserService $service)

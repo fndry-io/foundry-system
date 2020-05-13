@@ -7,7 +7,7 @@ use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\HiddenInputType;
 use Foundry\Core\Inputs\Types\RowType;
 use Foundry\Core\Inputs\Types\SubmitButtonType;
-use Foundry\Core\Inputs\Types\Traits\ViewableInput;
+use Foundry\Core\Inputs\Traits\ViewableInput;
 use Foundry\Core\Requests\Contracts\ViewableInputInterface;
 use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Inputs\User\Types\Email;

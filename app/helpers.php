@@ -35,3 +35,19 @@ if (! function_exists('module_mix')) {
         return app(Mix::class)::module(...func_get_args());
     }
 }
+
+if (! function_exists('theme_file')) {
+    /**
+     * Get the path to a versioned Mix file.
+     *
+     * @param  string  $theme
+     * @param  string  $path
+     * @return string
+     *
+     * @throws \Exception
+     */
+    function theme_file($theme, $path)
+    {
+        return '/themes/' . $theme . '/' . $path;
+    }
+}

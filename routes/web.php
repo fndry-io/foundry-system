@@ -21,15 +21,5 @@ Route::prefix('system')->group( function () {
 });
 
 if (config('app.env') !== 'production') {
-
-	//mailcatcher redirect
-	Route::get( 'mailcatcher', function () {
-		if ( config( 'app.env' ) === 'production' ) {
-			abort( 404 );
-		} else {
-			$ip = gethostbyname( $_SERVER['HTTP_HOST'] );
-
-			return redirect( 'http://' . $ip . ":1080" );
-		}
-	} );
+	Route::get( 'mailcatcher', 'SystemController@mailcatcher' );
 }

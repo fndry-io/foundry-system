@@ -3,6 +3,7 @@
 namespace Foundry\System;
 
 use Carbon\Carbon;
+use Foundry\Core\Models\Traits\Authenticatable;
 use Foundry\Core\Requests\FormRequestHandler;
 use Foundry\Core\Support\ServiceProvider;
 use Foundry\System\Console\Commands\SyncCommand;
@@ -153,11 +154,8 @@ class SystemServiceProvider extends ServiceProvider
 
 	public function registerGates()
 	{
-		Gate::before(function (User $user, $ability) {
-			/**
-			 * @var User $user
-			 */
-			if ($user->isSuperAdmin() || $user->isAdmin()) {
+		Gate::before(function (Authenticatable $user, $ability) {
+			if ($user instanceof HasAdminRights && ($user->isSuperAdmin() || $user->isAdmin())) {
 				return true;
 			}
 		});

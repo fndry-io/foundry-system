@@ -5,6 +5,7 @@ namespace Foundry\System\Models;
 use Carbon\Carbon;
 use Foundry\Core\Entities\Contracts\IsSoftDeletable;
 use Foundry\Core\Entities\Contracts\IsUser;
+use Foundry\Core\Models\Contracts\HasAdminRights;
 use Foundry\Core\Models\Traits\SoftDeleteable;
 use Foundry\Core\Models\Traits\Uuidable;
 use Foundry\Core\Models\Traits\Visible;
@@ -40,7 +41,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property array settings
  * @package Foundry\System\Models
  */
-class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDeletable, Auditable
+class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDeletable, Auditable, HasAdminRights
 {
 	use SoftDeleteable;
 	use Uuidable;
@@ -169,14 +170,14 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 	/**
 	 * @return bool
 	 */
-	public function isAdmin() {
+	public function isAdmin() : boolean {
         return ($this->roles->contains('slug', '==', config('permission.admin.role', 'admin')) || $this->isSuperAdmin());
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function isSuperAdmin() {
+	public function isSuperAdmin() : boolean {
 		return $this->super_admin;
 	}
 

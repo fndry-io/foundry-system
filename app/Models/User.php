@@ -170,14 +170,14 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
 	/**
 	 * @return bool
 	 */
-	public function isAdmin() : boolean {
+	public function isAdmin() : bool {
         return ($this->roles->contains('slug', '==', config('permission.admin.role', 'admin')) || $this->isSuperAdmin());
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function isSuperAdmin() : boolean {
+	public function isSuperAdmin() : bool {
 		return $this->super_admin;
 	}
 

@@ -22,15 +22,16 @@ class CreateFilesTable extends Migration {
 			$table->string('ext', 5);
 			$table->decimal('size', 18);
 			$table->boolean('is_public');
+
 			$table->string('reference_type')->nullable();
 			$table->unsignedBigInteger('reference_id')->nullable();
+
             $table->string('token')->index()->nullable();
+
+            $table->string('user_type')->nullable();
             $table->unsignedInteger('user_id')->nullable();
 			$table->timestamps();
 			$table->softDeletes();
-
-            $table->foreign('user_id')->references('id')->on('system_users')->onUpdate('NO ACTION')->onDelete('SET NULL');
-
 		});
 	}
 

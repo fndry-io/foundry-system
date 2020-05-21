@@ -2,10 +2,8 @@
 
 namespace Foundry\System\Http\Requests\Files;
 
-use Foundry\Core\Requests\Response;
 use Foundry\System\Inputs\File\FileInput;
 use Foundry\System\Inputs\File\ImageInput;
-use Foundry\System\Services\ImageService;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class UploadImageFileRequest extends BaseUploadFileRequest {
@@ -33,12 +31,15 @@ class UploadImageFileRequest extends BaseUploadFileRequest {
      */
     protected $resize = null;
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public static function name(): String {
-		return 'foundry.system.files.upload.image';
-	}
+    /**
+     * The max file size to allow
+     *
+     * @return int
+     */
+    static function fileSize()
+    {
+        return 2000;
+    }
 
 	static function fileTypes() {
 		return [
@@ -68,15 +69,6 @@ class UploadImageFileRequest extends BaseUploadFileRequest {
         }
         $input = ImageInput::fromUploadedFile($this->file, $inputs, $this->isPublic(), $this->width, $this->height, $this->resize);
         return $input;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function handle(): Response
-    {
-        $validation = $this->input->validate();
-        return ImageService::service()->add($this->getInput());
     }
 
 }

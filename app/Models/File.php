@@ -124,7 +124,17 @@ class File extends Model implements IsFile, Auditable
      */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->morphTo('user');
+    }
+
+    /**
+     * Returns the values for an input
+     *
+     * @return mixed
+     */
+    public function onlyForInput()
+    {
+        return $this->only('id', 'url', 'original_name', 'type', 'size', 'token');
     }
 
 }

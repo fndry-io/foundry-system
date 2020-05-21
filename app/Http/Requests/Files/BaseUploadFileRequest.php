@@ -2,17 +2,11 @@
 
 namespace Foundry\System\Http\Requests\Files;
 
-use Foundry\Core\Requests\Contracts\InputInterface;
-use Foundry\Core\Requests\FormRequest;
-use Foundry\Core\Requests\Response;
-use Foundry\Core\Requests\Traits\HasInput;
+use Foundry\Core\Requests\FoundryFormRequest;
 use Foundry\System\Inputs\File\FileInput;
-use Foundry\System\Services\FileService;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-abstract class BaseUploadFileRequest extends FormRequest implements InputInterface {
-
-	use HasInput;
+abstract class BaseUploadFileRequest extends FoundryFormRequest {
 
 	/**
 	 * {@inheritdoc}
@@ -66,7 +60,7 @@ abstract class BaseUploadFileRequest extends FormRequest implements InputInterfa
 	 *
 	 * Override this function to customise the file upload with your own max size and file types
 	 *
-	 * @param $inputs
+	 * @param array $inputs The inputs from the request
 	 *
 	 * @see FileInput::fromUploadedFile
 	 * @return \Foundry\Core\Inputs\Inputs|FileInput
@@ -79,13 +73,4 @@ abstract class BaseUploadFileRequest extends FormRequest implements InputInterfa
 		return $input;
 	}
 
-    /**
-     * @return Response
-     * @throws \Illuminate\Validation\ValidationException
-     */
-	public function handle(): Response
-	{
-		$this->input->validate();
-		return FileService::service()->add($this->input);
-	}
 }

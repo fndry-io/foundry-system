@@ -67,10 +67,10 @@ Route::prefix('system')->middleware('auth:system')->group( function () {
     Route::get(                     '/pick-lists/{_entity}/items',      'PickListsController@browseItem')->name('foundry.system.pick-lists.items.browse');
 
 	//Files
-	FormRequestHandler::route('/files/upload',                 'Foundry\System\Http\Requests\Files\UploadFileRequest');
-	FormRequestHandler::route('/files/upload/image',           'Foundry\System\Http\Requests\Files\UploadImageFileRequest');
-	FormRequestHandler::route('/files/browse',                 'Foundry\System\Http\Requests\Files\BrowseFilesRequest');
-	FormRequestHandler::route('/files/{_entity}/delete',       'Foundry\System\Http\Requests\Files\DeleteFileRequest');
+    Route::post(                     '/files/upload',      'FilesController@saveFile')->name('foundry.system.files.upload');
+    Route::post(                     '/files/upload/image',      'FilesController@saveFile')->name('foundry.system.files.upload.image');
+    Route::match(['GET', 'POST'],    '/files/browse',      'FilesController@browse')->name('foundry.system.files.browse');
+    Route::post(                     '/files/{_entity}/delete',      'FilesController@delete')->name('foundry.system.files.delete');
 
 	Route::get('/files/{_entity}/download', 'FilesController@download');
 	Route::get('/files/{_entity}',          'FilesController@read');

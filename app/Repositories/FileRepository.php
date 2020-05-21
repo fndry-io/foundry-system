@@ -81,14 +81,15 @@ class FileRepository extends ModelRepository
 	/**
 	 * @param array $data
 	 *
-	 * @return bool|IsFile|Model|mixed
-	 */
-	public function insert($data)
+     * @param null $user
+     * @return bool|Model|mixed
+     */
+	public function insert($data, $user = null)
 	{
 		$file = self::make($data);
 		$file->token = Str::random(32);
 
-		if ($user = Auth::user()) {
+		if ($user) {
             $file->user()->associate($user);
         }
 

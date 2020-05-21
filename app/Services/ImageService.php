@@ -3,11 +3,11 @@
 namespace Foundry\System\Services;
 
 use Foundry\Core\Auth\TokenGuard;
-use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Inputs\Types\Contracts\IsFileInput;
 use Foundry\Core\Requests\Response;
 use Foundry\System\Inputs\File\ImageInput;
 use Foundry\System\Repositories\FileRepository;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
@@ -15,12 +15,14 @@ use Intervention\Image\Facades\Image;
 class ImageService extends FileService
 {
 
-	/**
-	 * @param ImageInput|Inputs $input
-	 *
-	 * @return Response
-	 */
-	public function add(Inputs $input): Response
+    /**
+     * Add an image
+     *
+     * @param ImageInput|IsFileInput $input
+     * @param Authenticatable $user
+     * @return Response
+     */
+	public function add(IsFileInput $input, Authenticatable $user): Response
 	{
 		$values = $input->values();
 
@@ -56,7 +58,7 @@ class ImageService extends FileService
 		$values['name'] = $filename;
 		$values['original_name'] = $input->getFile()->getClientOriginalName();
 
-		$file = FileRepository::repository()->insert($values);
+		$file = FileRepository::repository()->insert($values, $user);
 		if ($file) {
 
 		    $data = $file->toArray();

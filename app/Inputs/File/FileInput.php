@@ -25,7 +25,6 @@ use Symfony\Component\HttpFoundation\File\File;
  */
 class FileInput extends Inputs implements IsFileInput
 {
-
 	use HasMultiple;
 
 	/**

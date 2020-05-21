@@ -2,9 +2,19 @@
 
 namespace Foundry\System\Http\Controllers;
 
+use Foundry\Core\Requests\Response;
+use Foundry\System\Http\Requests\Files\BrowseFilesRequest;
+use Foundry\System\Http\Requests\Files\DeleteFileRequest;
+use Foundry\System\Http\Requests\Files\UploadFileRequest;
+use Foundry\System\Http\Requests\Files\UploadImageFileRequest;
 use Foundry\System\Http\Requests\Files\ViewFileRequest;
+use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Models\File;
+use Foundry\System\Services\FileService;
+use Foundry\System\Services\ImageService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class FilesController extends Controller {
 
@@ -76,5 +86,64 @@ class FilesController extends Controller {
 			return response()->file(storage_path('app/' . $file->name));
 		}
 	}
+
+    /**
+     * Save a file to the system
+     *
+     * @param UploadFileRequest $request
+     * @param FileService $service
+     * @return JsonResponse
+     */
+	public function saveFile(UploadFileRequest $request, FileService $service)
+    {
+        return $service->add($request->makeInput($request->all()))->toJsonResponse($request);
+    }
+
+    /**
+     * Save a file to the system
+     *
+     * @param UploadImageFileRequest $request
+     * @param ImageService $service
+     * @return JsonResponse
+     */
+    public function saveImage(UploadImageFileRequest $request, ImageService $service)
+    {
+        return $service->add($request->makeInput($request->all()))->toJsonResponse($request);
+    }
+
+    /**
+     * Delete a file from the system
+     *
+     * @param DeleteFileRequest $request
+     * @param FileService $service
+     * @return Response
+     * @throws \Exception
+     */
+    public function delete(DeleteFileRequest $request, FileService $service)
+    {
+        $file = $request->getEntity();
+        return $service->delete($file, (boolean) $this->input('force', false));
+    }
+
+    /**
+     * @param BrowseFilesRequest $request
+     * @param FileService $service
+     * @return JsonResponse
+     * @throws ValidationException
+     */
+    public function browse(BrowseFilesRequest $request, FileService $service)
+    {
+        $inputs = SearchFilterInput::make($request->all());
+
+        $inputs->validate();
+
+        $page = $request->input('page', 1);
+        $limit = $request->input('limit', 20);
+
+        return $service
+            ->browse($inputs, $page, $limit)
+            //todo add File resource
+            ->toJsonResponse($request);
+    }
 
 }

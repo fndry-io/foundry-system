@@ -2,7 +2,7 @@
 
 namespace Foundry\System\Services;
 
-use Foundry\Core\Inputs\Inputs;
+use Foundry\Core\Inputs\Types\Contracts\IsFileInput;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
 use Foundry\Core\Entities\Contracts\IsEntity;
@@ -10,6 +10,7 @@ use Foundry\Core\Entities\Contracts\IsFile;
 use Foundry\System\Inputs\File\FileInput;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Repositories\FileRepository;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Storage;
 
 class FileService extends BaseService
@@ -32,11 +33,13 @@ class FileService extends BaseService
 	}
 
 	/**
-	 * @param FileInput|Inputs $input
-	 *
-	 * @return Response
-	 */
-	public function add(Inputs $input): Response
+     * Add a file to the system
+     *
+     * @param FileInput|IsFileInput $input
+     * @param Authenticatable $user
+     * @return Response
+     */
+	public function add(IsFileInput $input, Authenticatable $user): Response
 	{
 		$values = $input->values();
 
@@ -52,7 +55,7 @@ class FileService extends BaseService
 		$values['name'] = $file;
 		$values['original_name'] = $input->getFile()->getClientOriginalName();
 
-		$file = FileRepository::repository()->insert($values);
+		$file = FileRepository::repository()->insert($values, $user);
 		if ($file) {
 		    $data = $file->toArray();
 		    $data['token'] = $file->token;

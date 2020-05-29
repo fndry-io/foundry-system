@@ -12,14 +12,14 @@ use Foundry\Core\Inputs\Types\SubmitButtonType;
  *
  * @property $name
  */
-class EditRoleInput extends RoleInput
+class AddRoleInput extends RoleInput
 {
     public function view($request) : FormType
     {
         $form = parent::view($request);
 
-        $form->setTitle(__('Edit Role'));
-        $form->setButtons((new SubmitButtonType(__('Edit'), $form->getAction())));
+        $form->setTitle(__('Add Role'));
+        $form->setButtons((new SubmitButtonType(__('Create'), $form->getAction())));
 
         return $form;
     }

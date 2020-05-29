@@ -4,7 +4,7 @@ namespace Foundry\System\Http\Requests\Settings;
 
 use Foundry\Core\Repositories\SettingRepository;
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
-use Foundry\Core\Requests\FormRequest;
+use Foundry\Core\Requests\FoundryFormRequest;
 use Foundry\Core\Requests\Traits\HasEntity;
 use Foundry\System\Models\Setting;
 
@@ -14,7 +14,7 @@ use Foundry\System\Models\Setting;
  *
  * @package Foundry\System\Http\Requests\Roles
  */
-abstract class SettingRequest extends FormRequest implements EntityRequestInterface
+abstract class SettingRequest extends FoundryFormRequest implements EntityRequestInterface
 {
 	use HasEntity;
 

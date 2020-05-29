@@ -10,12 +10,15 @@ use Foundry\System\Http\Requests\Auth\LogoutRequest;
 use Foundry\System\Http\Requests\Auth\ReadUserRequest;
 use Foundry\System\Http\Requests\Auth\ResetPasswordRequest;
 use Foundry\System\Http\Requests\Auth\SyncUserSettingsRequest;
+use Foundry\System\Http\Requests\Auth\UploadProfileImageRequest;
+use Foundry\System\Http\Requests\Files\DeleteFileRequest;
 use Foundry\System\Http\Resources\AuthUser;
 use Foundry\System\Inputs\User\ForgotPasswordInput;
 use Foundry\System\Inputs\User\ResetPasswordInput;
 use Foundry\System\Inputs\User\UserEditInput;
 use Foundry\System\Inputs\User\UserLoginInput;
 use Foundry\System\Inputs\User\UserLogoutInput;
+use Foundry\System\Services\ImageService;
 use Foundry\System\Services\UserService;
 use Illuminate\Auth\AuthManager;
 
@@ -87,5 +90,32 @@ class AuthController extends Controller
         $settings = $request->get('settings');
 
         return $service->syncSettings($this->user(), $settings)->toJsonResponse($request);
+    }
+
+    /**
+     * Save a file to the system
+     *
+     * @param UploadProfileImageRequest $request
+     * @param ImageService $service
+     * @return JsonResponse
+     */
+    public function savePhoto(UploadProfileImageRequest $request, ImageService $service)
+    {
+        $values = $request->all();
+        return $service->add($request->makeInput($values), $request->user())->toJsonResponse($request);
+    }
+
+    /**
+     * Delete a profile image from the system
+     *
+     * @param DeleteFileRequest $request
+     * @param ImageService $service
+     * @return Response
+     * @throws \Exception
+     */
+    public function deletePhoto(DeleteFileRequest $request, ImageService $service)
+    {
+        $file = $request->getEntity();
+        return $service->delete($file, (boolean) $request->input('force', false));
     }
 }

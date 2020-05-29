@@ -3,6 +3,7 @@
 namespace Foundry\System\Http\Controllers;
 
 use Foundry\Core\Requests\Response;
+use Foundry\System\Http\Requests\PickListItems\EditPickListItemRequest;
 use Foundry\System\Http\Requests\PickLists\AddPickListItemRequest;
 use Foundry\System\Http\Requests\PickLists\AddPickListRequest;
 use Foundry\System\Http\Requests\PickLists\BrowsePickListItemsRequest;
@@ -14,6 +15,7 @@ use Foundry\System\Http\Resources\PickListItem;
 use Foundry\System\Inputs\PickList\AddPickListInput;
 use Foundry\System\Inputs\PickList\AddPickListItemInput;
 use Foundry\System\Inputs\PickList\EditPickListInput;
+use Foundry\System\Inputs\PickListItem\PickListEditItemInput;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Repositories\PickListItemRepository;
 use Foundry\System\Services\PickListItemService;
@@ -77,6 +79,17 @@ class PickListsController extends Controller
         }
 
         return PickListItemService::service()->add($inputs)->toJsonResponse($request);
+    }
+
+    public function editItem(EditPickListItemRequest $request)
+    {
+        $inputs = PickListEditItemInput::make($request->all());
+
+        if ($view = $inputs->viewOrValidate($request)) {
+            return Response::success($view)->toJsonResponse($request);
+        }
+
+        return PickListItemService::service()->edit($inputs, $request->getEntity())->toJsonResponse($request);
     }
 
     public function browseItem(BrowsePickListItemsRequest $request)

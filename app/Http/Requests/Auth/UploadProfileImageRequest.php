@@ -7,11 +7,6 @@ use Foundry\System\Http\Requests\Files\UploadImageFileRequest;
 class UploadProfileImageRequest extends UploadImageFileRequest
 {
 
-    public static function name(): String
-    {
-        return 'foundry.system.auth.profile.upload';
-    }
-
     protected $width = 600;
 
     protected $height = 600;

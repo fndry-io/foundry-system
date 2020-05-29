@@ -6,7 +6,7 @@ use Foundry\Core\Inputs\Contracts\Field;
 use Foundry\Core\Inputs\Contracts\FieldOptions;
 use Foundry\Core\Inputs\Types\ChoiceInputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
-use Illuminate\Support\Facades\DB;
+use Foundry\System\Models\Role;
 
 class Roles extends ChoiceInputType implements Field, FieldOptions {
 
@@ -31,12 +31,8 @@ class Roles extends ChoiceInputType implements Field, FieldOptions {
 			->setSortable( false );
 	}
 
-	static function options( \Closure $closure = null, $value = null ): array {
-		$query = DB::table( 'system_roles' );
-		if ( is_callable( $closure ) ) {
-			call_user_func( $closure, $query );
-		}
-		return $query->select( [ 'id', 'name' ] )->orderBy( 'name', 'ASC' )->get()->toArray();
+	static function options(): array {
+		return Role::query()->select( [ 'id', 'name' ] )->orderBy( 'name', 'ASC' )->get()->toArray();
 	}
 
 }

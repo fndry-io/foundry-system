@@ -31,7 +31,7 @@ class RememberMe extends ChoiceInputType implements Field, FieldOptions {
 			->setSortable( false );
 	}
 
-	static function options( \Closure $closure = null, $value = null ): array {
+	static function options(): array {
 		return [
 			0 => __( 'No' ),
 			1 => __( 'Yes' )

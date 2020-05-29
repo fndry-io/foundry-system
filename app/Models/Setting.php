@@ -32,6 +32,7 @@ class Setting extends BaseSetting
 		        'description' => __('Comma separated admin emails'),
 		        'default' => 'info@domain.com',
 		        'type' => 'string',
+                'rules' => 'nullable|email'
 	        )
         ];
     }

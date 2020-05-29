@@ -35,7 +35,7 @@ class Timezone extends ChoiceInputType implements Field, FieldOptions {
 	 *
 	 * @return array
 	 */
-	static function options( \Closure $closure = null, $value = null ): array
+	static function options(): array
 	{
 		return array_combine( timezone_identifiers_list(), timezone_identifiers_list() );
 	}

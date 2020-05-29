@@ -6,7 +6,8 @@ use Foundry\Core\Entities\Contracts\IsRole;
 use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
-use Foundry\System\Inputs\Role\RoleInput;
+use Foundry\System\Inputs\Role\AddRoleInput;
+use Foundry\System\Inputs\Role\EditRoleInput;
 use Foundry\System\Repositories\RoleRepository;
 
 class RoleService extends BaseService
@@ -26,11 +27,11 @@ class RoleService extends BaseService
 	}
 
 	/**
-	 * @param RoleInput|Inputs $input
+	 * @param AddRoleInput|Inputs $input
 	 *
 	 * @return Response
 	 */
-	public function add(RoleInput $input): Response
+	public function add(AddRoleInput $input): Response
 	{
 		$role = RoleRepository::repository()->insert($input->values());
 		if ($role) {
@@ -40,13 +41,13 @@ class RoleService extends BaseService
 		}
 	}
 
-	/**
-	 * @param RoleInput|Inputs $input
-	 * @param IsRole $role
-	 *
-	 * @return Response
-	 */
-	public function edit(RoleInput $input, IsRole $role): Response
+    /**
+     * @param EditRoleInput $input
+     * @param IsRole $role
+     * @return Response
+     * @throws \Exception
+     */
+	public function edit(EditRoleInput $input, IsRole $role): Response
 	{
 		$role = RoleRepository::repository()->update($role, $input->values());
 		if ($role) {

@@ -55,29 +55,23 @@ class AddFolderRequest extends FolderRequest implements ViewableFormRequestInter
 		return FolderService::service()->add($this->getInput(), $this->getEntity(), $reference);
 	}
 
-	/**
-	 * @return FormType
-	 */
+    /**
+     * @param array $params
+     * @return FormType
+     */
 	function form($params = []): FormType {
 
-		$form   = new FormType( static::name() );
+		$form = new FormType( static::name() );
 
-		$params = [
-			'_entity' => $this->getEntity()->getKey(),
-			'reference_type' => $this->input('reference_type'),
-			'reference_id' => $this->input('reference_id'),
-			'parent' => $this->input('parent')
-		];
-
-        if ( $this instanceof InputInterface) {
-            $form->attachInputCollection( $this->getInput()->getTypes() );
-            $inputs = $this->only($this->getInput()->keys());
-            $this->getInput()->cast($inputs);
-            $form->setValues( $inputs );
-        }
+        $form->attachInputs( $this );
 
         $form->setAction( resourceUri( $this::name()) );
-        $form->setParams($params);
+        $form->setParams(array_merge([
+            '_entity' => $this->getEntity()->getKey(),
+            'reference_type' => $this->input('reference_type'),
+            'reference_id' => $this->input('reference_id'),
+            'parent' => $this->input('parent')
+        ], $params));
         $form->setRequest( $this );
 
         return $form;
@@ -86,8 +80,9 @@ class AddFolderRequest extends FolderRequest implements ViewableFormRequestInter
 	/**
 	 * Make a viewable DocType for the request
 	 *
-	 * @return FormType
-	 */
+     * @return FormType
+     * @throws \Exception
+     */
 	public function view() : FormType
 	{
 		$form = $this->form();

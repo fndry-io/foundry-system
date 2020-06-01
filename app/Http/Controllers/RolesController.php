@@ -10,7 +10,8 @@ use Foundry\System\Http\Requests\Roles\EditRolePermissionsRequest;
 use Foundry\System\Http\Requests\Roles\EditRoleRequest;
 use Foundry\System\Http\Requests\Roles\ReadRolePermissionsRequest;
 use Foundry\System\Http\Resources\Role;
-use Foundry\System\Inputs\Role\RoleInput;
+use Foundry\System\Inputs\Role\AddRoleInput;
+use Foundry\System\Inputs\Role\EditRoleInput;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Repositories\RoleRepository;
 use Foundry\System\Services\RoleService;
@@ -38,7 +39,7 @@ class RolesController extends Controller
 
     public function add(AddRoleRequest $request)
     {
-        $inputs = RoleInput::make($request->all());
+        $inputs = AddRoleInput::make($request->all());
 
         if ($view = $inputs->viewOrValidate($request)) {
             return Response::success($view)->toJsonResponse($request);
@@ -49,7 +50,7 @@ class RolesController extends Controller
 
     public function edit(EditRoleRequest $request)
     {
-        $inputs = RoleInput::make($request->all());
+        $inputs = EditRoleInput::make($request->all());
 
         if ($view = $inputs->viewOrValidate($request)) {
             return Response::success($view)->toJsonResponse($request);

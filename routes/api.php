@@ -19,8 +19,8 @@ Route::match(['GET', 'POST'], '/auth/logout',   'AuthController@logout')->name('
 Route::middleware('auth:system')->group( function () {
 	//auth user
 	Route::match(['GET', 'POST'], '/auth/edit', 'AuthController@edit' )->name('foundry.system.auth.edit');
-    FormRequestHandler::route( '/auth/profile', 'Foundry\System\Http\Requests\Auth\UploadProfileImageRequest' );
-    FormRequestHandler::route( '/auth/profile/delete', 'Foundry\System\Http\Requests\Auth\DeleteProfileImageRequest' );
+    Route::post(                 '/auth/profile/photo', 'AuthController@savePhoto' )->name('foundry.system.auth.profile.upload');
+    Route::post(                 '/auth/profile/photo/delete', 'AuthController@deletePhoto' )->name('foundry.system.auth.profile.delete');
 	Route::get('/auth/user',       'AuthController@readUser')->name('foundry.system.auth.user');
 	Route::post('/auth/settings',  'AuthController@syncUserSettings')->name('foundry.system.auth.sync-settings');
 });
@@ -49,13 +49,8 @@ Route::prefix('system')->middleware('auth:system')->group( function () {
     Route::post(                  '/roles/{_entity}/delete','RolesController@delete')->name('foundry.system.roles.delete');
 
     //settings
-    FormRequestHandler::route('/settings',                      'Foundry\System\Http\Requests\Settings\BrowseSettingsRequest');
-    FormRequestHandler::route('/settings/{_entity}/edit',          'Foundry\System\Http\Requests\Settings\EditSettingRequest');
-
-
-	//PickList Items
-	FormRequestHandler::route('/pick-list-items/add',             'Foundry\System\Http\Requests\PickListItems\AddPickListItemRequest');
-	FormRequestHandler::route('/pick-list-items/{_entity}/edit',  'Foundry\System\Http\Requests\PickListItems\EditPickListItemRequest');
+    Route::get(                   '/settings',                      'SettingsController@browse')->name('foundry.system.settings.browse');
+    Route::match(['GET', 'POST'], '/settings/{_entity}/edit',          'SettingsController@edit')->name('foundry.system.settings.edit');
 
     //PickList
     Route::get(                     '/pick-lists',                      'PickListsController@browse')->name('foundry.system.pick-lists.browse');
@@ -65,8 +60,10 @@ Route::prefix('system')->middleware('auth:system')->group( function () {
     Route::get(                     '/pick-lists/{_entity}/list',       'PickListsController@listItem')->name('foundry.system.pick-lists.items.list');
     Route::match(['GET', 'POST'],   '/pick-lists/{_entity}/items/add',  'PickListsController@addItem')->name('foundry.system.pick-lists.items.add');
     Route::get(                     '/pick-lists/{_entity}/items',      'PickListsController@browseItem')->name('foundry.system.pick-lists.items.browse');
+    //PickList Items
+    Route::match(['GET', 'POST'],   '/pick-list-items/{_entity}/edit',  'PickListsController@editItem')->name('foundry.system.pick-lists.items.edit');
 
-	//Files
+    //Files
     Route::post(                     '/files/upload',      'FilesController@saveFile')->name('foundry.system.files.upload');
     Route::post(                     '/files/upload/image',      'FilesController@saveFile')->name('foundry.system.files.upload.image');
     Route::match(['GET', 'POST'],    '/files/browse',      'FilesController@browse')->name('foundry.system.files.browse');

@@ -3,13 +3,20 @@
 namespace Foundry\System\Inputs\Setting;
 
 use Foundry\Core\Inputs\Inputs;
+use Foundry\Core\Inputs\Traits\ViewableInput;
 use Foundry\Core\Inputs\Types\CheckboxInputType;
 use Foundry\Core\Inputs\Types\ChoiceInputType;
+use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Inputs\Types\NumberInputType;
+use Foundry\Core\Inputs\Types\RowType;
+use Foundry\Core\Inputs\Types\SectionType;
+use Foundry\Core\Inputs\Types\SubmitButtonType;
 use Foundry\Core\Inputs\Types\TextInputType;
+use Foundry\Core\Requests\Contracts\ViewableInputInterface;
 use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Models\Setting;
 use Foundry\System\Inputs\Setting\Types\DefaultValue;
+use Illuminate\Http\Request;
 
 /**
  * Class SettingInput
@@ -17,7 +24,9 @@ use Foundry\System\Inputs\Setting\Types\DefaultValue;
  * @package Foundry\System\Inputs
  *
  */
-class SettingInput extends Inputs {
+class SettingInput extends Inputs implements ViewableInputInterface {
+
+    use ViewableInput;
 
     /**
      * @var $setting Setting
@@ -40,10 +49,7 @@ class SettingInput extends Inputs {
 	public function types() : InputTypeCollection
 	{
         $model = $this->setting;
-
-        $settings = Setting::settings();
-        $setting = isset($settings[$model->domain . '.' . $model->name]) ? $settings[$model->domain . '.' . $model->name] : null;
-
+        $setting = $this->setting->setting();
 	    $valueInput = $this->getValueInput($setting, $model);
 
 		return InputTypeCollection::fromTypes([
@@ -79,7 +85,35 @@ class SettingInput extends Inputs {
             }
         }
 
+        if (isset($setting['rules'])) {
+            $value->setRules($setting['rules']);
+        }
+
         return $value;
+    }
+
+    /**
+     * Make a viewable DocType for the request
+     *
+     * @param Request $request
+     * @return FormType
+     * @throws \Exception
+     */
+    public function view(Request $request) : FormType
+    {
+        $form = $this->form($request);
+
+        $form->setTitle(__('Update Setting'));
+        $form->setButtons((new SubmitButtonType(__('Update'), $form->getAction())));
+
+        $form->addChildren(
+            (new SectionType(__('Setting')))->addChildren(
+                RowType::withChildren($form->get('default')),
+                RowType::withChildren($form->get('value'))
+            )
+        );
+
+        return $form;
     }
 
 }

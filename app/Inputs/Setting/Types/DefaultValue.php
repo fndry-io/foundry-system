@@ -18,9 +18,10 @@ class DefaultValue extends TextInputType implements Field {
 		return ( new static(
 			'default',
 			__( 'Default' ),
-			true
+			false
 		) )
 			->setMax( 100 )
+            ->setDisabled()
 			->setSortable( true );
 	}
 

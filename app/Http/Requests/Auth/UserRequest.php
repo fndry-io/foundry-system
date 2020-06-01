@@ -2,9 +2,7 @@
 
 namespace Foundry\System\Http\Requests\Auth;
 
-use Foundry\Core\Inputs\Types\FormType;
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
-use Foundry\Core\Requests\FormRequest;
 use Foundry\Core\Requests\FoundryFormRequest;
 use Foundry\Core\Requests\Traits\HasEntity;
 use Foundry\System\Models\User;

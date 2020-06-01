@@ -4,7 +4,7 @@ namespace Foundry\System\Http\Requests\PickListItems;
 
 use Foundry\Core\Entities\Contracts\IsPickListItem;
 use Foundry\Core\Requests\Contracts\EntityRequestInterface;
-use Foundry\Core\Requests\FormRequest;
+use Foundry\Core\Requests\FoundryFormRequest;
 use Foundry\Core\Requests\Traits\HasEntity;
 use Foundry\System\Models\PickListItem;
 use Foundry\System\Repositories\PickListItemRepository;
@@ -16,7 +16,7 @@ use Foundry\System\Repositories\PickListItemRepository;
  *
  * @package Foundry\System\Http\Requests\PickListItems
  */
-abstract class PickListItemRequest extends FormRequest implements EntityRequestInterface
+abstract class PickListItemRequest extends FoundryFormRequest implements EntityRequestInterface
 {
 	use HasEntity;
 

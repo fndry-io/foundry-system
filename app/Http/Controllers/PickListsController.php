@@ -83,8 +83,8 @@ class PickListsController extends Controller
     {
         $inputs = SearchFilterInput::make($request->all());
         $inputs->validate();
-        $page = $request->input('page', 1);
-        $limit = $request->input('limit', 20);
+        $page = (int) $request->input('page', 1);
+        $limit = (int) $request->input('limit', 20);
 
         return PickListItemService::service()
             ->browse($request->getEntity(), $inputs, $page, $limit)

@@ -122,7 +122,7 @@ class FilesController extends Controller {
     public function delete(DeleteFileRequest $request, FileService $service)
     {
         $file = $request->getEntity();
-        return $service->delete($file, (boolean) $this->input('force', false));
+        return $service->delete($file, (boolean) $request->input('force', false));
     }
 
     /**

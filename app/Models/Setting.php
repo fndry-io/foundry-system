@@ -28,8 +28,8 @@ class Setting extends BaseSetting
     {
         return [
 	        'system.admin_emails' => array(
-                'label'=> __('Admin E-mails'),
-		        'description' => __('Comma separated admin emails'),
+                'label'=> __('Admin E-mail'),
+		        'description' => __('Email address for admin notifications'),
 		        'default' => 'info@domain.com',
 		        'type' => 'string',
                 'rules' => 'nullable|email'

@@ -220,7 +220,7 @@ class UserService extends BaseService {
 		if($response === Password::PASSWORD_RESET){
 			return Response::success();
 		} else {
-			return Response::error(__("Account with provided E-mail address not found!"), 404);
+			return Response::error(__("Unable to reset your password. Please restart the forgot password process."), 404);
 		}
 	}
 

@@ -3,22 +3,21 @@
 use Illuminate\Support\Facades\Route;
 use Foundry\Core\Facades\FormRequestHandler;
 
-Route::prefix( 'system' )->middleware('web')->group( function () {
-	if (config('app.debug')) {
-		Route::get( 'request/all', 'FormRequestController@all' )->name( 'system.request.all' );
-	}
+Route::prefix( 'system' )->group( function () {
+
+    Route::match(['GET', 'POST'], '/auth/login',    'AuthController@login')->name('foundry.system.auth.login');
+    Route::match(['GET', 'POST'], '/auth/forgot',   'AuthController@forgotPassword')->name('foundry.system.auth.forgot_password');
+    Route::match(['GET', 'POST'], '/auth/reset',    'AuthController@resetPassword')->name('foundry.system.auth.reset_password');
+    Route::match(['GET', 'POST'], '/auth/register', 'UserController@register')->name('foundry.system.auth.register');
+    Route::match(['GET', 'POST'], '/auth/logout',   'AuthController@logout')->name('foundry.system.auth.logout');
+
 });
 
 //auth
-Route::match(['GET', 'POST'], '/auth/login',    'AuthController@login')->name('foundry.system.auth.login');
-Route::match(['GET', 'POST'], '/auth/forgot',   'AuthController@forgotPassword')->name('foundry.system.auth.forgot_password');
-Route::match(['GET', 'POST'], '/auth/reset',    'AuthController@resetPassword')->name('foundry.system.auth.reset_password');
-Route::match(['GET', 'POST'], '/auth/register', 'UserController@register')->name('foundry.system.auth.register');
-Route::match(['GET', 'POST'], '/auth/logout',   'AuthController@logout')->name('foundry.system.auth.logout');
 
-Route::middleware('auth:system')->group( function () {
+Route::prefix('system')->middleware('auth:system')->group( function () {
 	//auth user
-	Route::match(['GET', 'POST'], '/auth/edit', 'AuthController@edit' )->name('foundry.system.auth.edit');
+	Route::match(['GET', 'POST'],'/auth/edit', 'AuthController@edit' )->name('foundry.system.auth.edit');
     Route::post(                 '/auth/profile/photo', 'AuthController@savePhoto' )->name('foundry.system.auth.profile.upload');
     Route::post(                 '/auth/profile/photo/delete', 'AuthController@deletePhoto' )->name('foundry.system.auth.profile.delete');
 	Route::get('/auth/user',       'AuthController@readUser')->name('foundry.system.auth.user');

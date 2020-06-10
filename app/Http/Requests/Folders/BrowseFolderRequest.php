@@ -19,7 +19,7 @@ class BrowseFolderRequest extends FolderRequest implements ViewableFormRequestIn
 	use HasInput;
 
 	public static function name(): String {
-		return 'foundry.system.folders.browse';
+		return 'system.folders.browse';
 	}
 
 	/**

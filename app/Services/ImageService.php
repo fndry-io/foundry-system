@@ -69,7 +69,7 @@ class ImageService extends FileService
 		        if ($guard && $guard instanceof TokenGuard && $user = $guard->user()) {
                     $params['api_token'] = $user->api_token;
                 }
-		        $url = route('files.read', $params);
+		        $url = route('system.files.read', $params);
             } else {
                 $url = $file->url;
             }

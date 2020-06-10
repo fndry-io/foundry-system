@@ -13,6 +13,6 @@ class SyncPermissionsRequest extends FoundryFormRequest
 	 */
 	public function authorize()
 	{
-        return ($this->user() && $this->user()->can('manage roles'));
+        return ($this->user() && $this->user()->can('system.roles.manage'));
 	}
 }

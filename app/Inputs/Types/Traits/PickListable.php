@@ -75,14 +75,14 @@ trait PickListable {
 			->setTaggable(true)
 			->setSearchable(true)
 			->setParams(['_entity' => $this->picklist['id']])
-			->setUrl(resourceUri('foundry.system.pick-lists.items.list'))
+			->setUrl(resourceUri('system.pick-lists.items.list'))
 		;
 
 		//todo add permission check to ensure the user has this right
 		if ($this->picklist['is_tag']) {
 			$this
 				->setTaggableParam('label')
-				->setTaggableUrl(resourceUri('foundry.system.pick-lists.items.add'))
+				->setTaggableUrl(resourceUri('system.pick-lists.items.add'))
 			;
 		}
 

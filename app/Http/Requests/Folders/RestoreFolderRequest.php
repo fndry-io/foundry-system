@@ -12,7 +12,7 @@ class RestoreFolderRequest  extends FolderRequest implements EntityRequestInterf
 {
 
 	public static function name(): String {
-		return 'foundry.system.folders.restore';
+		return 'system.folders.restore';
 	}
 
 	public function authorize()

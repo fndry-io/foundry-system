@@ -13,7 +13,7 @@ class BrowseRolesRequest extends FoundryFormRequest
      */
     public function authorize()
     {
-        return ($this->user() && $this->user()->can('read roles'));
+        return ($this->user() && $this->user()->can('system.roles.read'));
     }
 
 

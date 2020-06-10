@@ -34,7 +34,7 @@ class UserSelect extends ChoiceInputType implements Field, FieldOptions
 		;
 
         if (Auth::user() && Auth::user()->can('add users')) {
-            $input->setButtons((new AddButtonType('add', __('New')))->setAction(route('foundry.system.users.add', [], false)));
+            $input->setButtons((new AddButtonType('add', __('New')))->setAction(route('system.users.add', [], false)));
         }
 
         return $input;

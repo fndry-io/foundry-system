@@ -13,7 +13,7 @@ class BrowseSettingsRequest extends FoundryFormRequest
      */
     public function authorize()
     {
-        return ($this->user() && $this->user()->can('browse settings'));
+        return ($this->user() && $this->user()->can('system.settings.read'));
     }
 
 }

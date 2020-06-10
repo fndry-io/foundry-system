@@ -17,7 +17,7 @@ class AddFileRequest extends FolderRequest implements ViewableFormRequestInterfa
     use HasReference;
 
 	public static function name(): String {
-		return 'foundry.system.folders.add.file';
+		return 'system.folders.add.file';
 	}
 
 	/**

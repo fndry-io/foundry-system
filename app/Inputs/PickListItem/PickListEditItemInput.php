@@ -39,7 +39,7 @@ class PickListEditItemInput extends PickListItemInput implements ViewableInputIn
      */
     public function view(Request $request) : FormType
     {
-        $form = $this->form();
+        $form = $this->form($request);
 
         $form->setTitle(__('Update Pick List Item'));
         $form->setButtons((new SubmitButtonType(__('Update'), $form->getAction())));

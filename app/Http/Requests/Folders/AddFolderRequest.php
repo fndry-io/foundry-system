@@ -21,7 +21,7 @@ class AddFolderRequest extends FolderRequest implements ViewableFormRequestInter
 	use HasReference;
 
 	public static function name(): String {
-		return 'foundry.system.folders.add.folder';
+		return 'system.folders.add.folder';
 	}
 
 	/**

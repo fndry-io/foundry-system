@@ -28,10 +28,7 @@ class PickListItemInput extends Inputs {
 			Description::input(),
 			Sequence::input(),
 			Status::input(),
-            DefaultItem::input(),
-            ( new HiddenInputType('picklist'))->setRequired(true)->setRules([
-                'exists:system_picklists,id',
-            ])
+            DefaultItem::input()
 		]);
 	}
 

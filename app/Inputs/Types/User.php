@@ -21,7 +21,7 @@ class User extends ReferenceInputType implements Field {
 			__('User'),
 			false,
 			null,
-			route('foundry.system.users.list', [], false)
+			route('system.users.list', [], false)
 		))
 			->setRules([
 				'exists:system_users,id',
@@ -32,8 +32,8 @@ class User extends ReferenceInputType implements Field {
 			->setValueKey('id')
 		;
 
-		if (Auth::user() && Auth::user()->can('manage users')) {
-			$input->setButtons((new AddButtonType('add', __('New')))->setAction(route('foundry.system.users.add', [], false)));
+		if (Auth::user() && Auth::user()->can('system.users.manage')) {
+			$input->setButtons((new AddButtonType('add', __('New')))->setAction(route('system.users.add', [], false)));
 		}
 		return $input;
 	}

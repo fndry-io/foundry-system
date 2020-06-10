@@ -11,7 +11,7 @@ class EditSettingRequest extends SettingRequest
 	 */
 	public function authorize()
 	{
-        return ($this->user() && $this->user()->can('edit settings'));
+        return ($this->user() && $this->user()->can('system.settings.manage'));
 	}
 
 }

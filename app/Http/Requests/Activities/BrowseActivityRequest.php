@@ -43,7 +43,7 @@ class BrowseActivityRequest extends FormRequest implements ViewableFormRequestIn
      */
     public function authorize()
     {
-	    return ($this->user() && $this->user()->can('browse activities'));
+	    return ($this->user() && $this->user()->can('system.activities.read'));
     }
 
 	/**

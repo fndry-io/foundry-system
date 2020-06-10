@@ -19,7 +19,7 @@ class EditFolderRequest extends FolderRequest implements ViewableFormRequestInte
 	use HasInput;
 
 	public static function name(): String {
-		return 'foundry.system.folders.edit';
+		return 'system.folders.edit';
 	}
 
 	/**

@@ -7,7 +7,7 @@ use Foundry\Core\Requests\Response;
 class ReadFolderRequest extends FolderRequest
 {
 	public static function name(): String {
-		return 'foundry.system.folders.read';
+		return 'system.folders.read';
 	}
 
 	/**

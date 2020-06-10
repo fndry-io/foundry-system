@@ -12,7 +12,7 @@ class DeleteFolderRequest  extends FolderRequest implements EntityRequestInterfa
 {
 
 	public static function name(): String {
-		return 'foundry.system.folders.delete';
+		return 'system.folders.delete';
 	}
 
 	public function authorize()

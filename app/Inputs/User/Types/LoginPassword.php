@@ -9,7 +9,7 @@ use Foundry\Core\Inputs\Types\PasswordInputType;
 use Foundry\Core\Inputs\Types\InputType;
 use Foundry\Core\Inputs\Types\Contracts\Inputable;
 
-class Password extends PasswordInputType implements Field {
+class LoginPassword extends PasswordInputType implements Field {
 
 	/**
 	 *
@@ -22,9 +22,6 @@ class Password extends PasswordInputType implements Field {
 			__( 'Password' ),
 			true
 		) )
-            ->addServerRule('regex:/^S*(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$/' )
-            ->addFrontRule('regex:^S*(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])(?=\S*[\W])\S*$' )
-            ->setHelp('Password should be a minimum of 8 characters and contain at least one lowercase letter, one uppercase letter, one digit, and one symbol.')
             ;
 	}
 

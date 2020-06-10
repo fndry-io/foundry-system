@@ -11,6 +11,7 @@ use Foundry\Core\Inputs\Traits\ViewableInput;
 use Foundry\Core\Requests\Contracts\ViewableInputInterface;
 use Foundry\Core\Support\InputTypeCollection;
 use Foundry\System\Inputs\User\Types\Email;
+use Foundry\System\Inputs\User\Types\LoginPassword;
 use Foundry\System\Inputs\User\Types\Password;
 use Illuminate\Http\Request;
 
@@ -38,7 +39,7 @@ class UserLoginInput extends Inputs implements ViewableInputInterface
 	{
 		return InputTypeCollection::fromTypes([
 			Email::input(),
-			Password::input(),
+            LoginPassword::input(),
 			(new HiddenInputType('guard'))->setRequired(false)
 		]);
 	}

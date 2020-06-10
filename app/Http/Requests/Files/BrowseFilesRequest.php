@@ -16,6 +16,6 @@ class BrowseFilesRequest extends FoundryFormRequest
 	 */
 	public function authorize()
 	{
-        return ($this->user() && $this->user()->can('browse folders'));
+        return ($this->user() && $this->user()->can('system.folders.read'));
 	}
 }

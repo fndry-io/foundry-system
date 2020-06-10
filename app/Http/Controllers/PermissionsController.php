@@ -13,6 +13,6 @@ class PermissionsController extends Controller
     {
         $event->dispatch(new SyncPermissions());
 
-        return Response::success();
+        return Response::success()->withMessage("Permissions Synchronized");
     }
 }

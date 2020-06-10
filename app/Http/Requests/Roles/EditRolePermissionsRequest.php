@@ -13,7 +13,7 @@ class EditRolePermissionsRequest extends FoundryFormRequest
      */
     public function authorize()
     {
-        return ($this->user() && $this->user()->can('manage permissions'));
+        return ($this->user() && $this->user()->can('system.permissions.manage'));
     }
 
     public function rules()

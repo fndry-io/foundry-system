@@ -17,7 +17,10 @@ class ViewFileRequest extends FoundryFormRequest implements EntityRequestInterfa
 	 */
 	public function authorize()
     {
-		return $this->getEntity()->isPublic() || ($this->user() && $this->user()->can('read/download files')) || ($this->user() && $this->getEntity()->user && $this->user()->id && $this->getEntity()->user->id);
+        $user = $this->user();
+		return $this->getEntity()->isPublic()
+            || ($user && $user->can('system.files.read'))
+            || ($user && $this->getEntity()->user && $user->id && $this->getEntity()->user->id);
 	}
 
 	/**

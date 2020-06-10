@@ -13,6 +13,6 @@ class BrowsePickListsRequest extends FoundryFormRequest
 	 */
 	public function authorize()
 	{
-        return ($this->user() && $this->user()->can('read pick lists'));
+        return ($this->user() && $this->user()->can('system.pick-lists.read'));
 	}
 }

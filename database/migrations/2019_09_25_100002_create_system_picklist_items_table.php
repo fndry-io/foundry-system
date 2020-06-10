@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreatePicklistsTable extends Migration {
+class CreateSystemPicklistItemsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,16 +12,19 @@ class CreatePicklistsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('system_picklists', function(Blueprint $table)
+		Schema::create('system_picklist_items', function(Blueprint $table)
 		{
-			$table->increments('id');
+            $table->increments('id');
+			$table->unsignedInteger('picklist_id')->nullable();
 			$table->string('label', 50)->index();
 			$table->text('description')->nullable();
 			$table->string('identifier', 100);
-			$table->integer('default_item')->nullable();
+			$table->integer('sequence');
+			$table->boolean('status');
 			$table->boolean('is_system');
 			$table->timestamps();
-			$table->boolean('is_tag')->nullable();
+
+            $table->foreign('picklist_id')->references('id')->on('system_picklists')->onUpdate('RESTRICT')->onDelete('RESTRICT');
 		});
 	}
 
@@ -33,7 +36,7 @@ class CreatePicklistsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('system_picklists');
+		Schema::drop('system_picklist_items');
 	}
 
 }

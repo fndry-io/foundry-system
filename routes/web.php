@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('system')->group( function () {
 
-	Route::get('/files/{_entity}/download', 'FilesController@download')->name('files.download');
-	Route::get('/files/{_entity}', 'FilesController@read')->name('files.read');
+	Route::get('/files/{_entity}/download', 'FilesController@download')->name('system.files.download');
+	Route::get('/files/{_entity}', 'FilesController@read')->name('system.files.read');
 
 });
 

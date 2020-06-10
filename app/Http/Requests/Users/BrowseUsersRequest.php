@@ -14,6 +14,6 @@ class BrowseUsersRequest extends FoundryFormRequest
     public function authorize()
     {
     	//todo update to use the permissions
-        return ($this->user() && $this->user()->can('read users'));
+        return ($this->user() && $this->user()->can('system.users.read'));
     }
 }

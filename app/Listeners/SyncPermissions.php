@@ -22,32 +22,32 @@ class SyncPermissions
         $permissions = [
             'system' => [
                 'system' => [
-                    'manage system'
+                    'system.manage'
                 ],
-                'users' => [
-                    'manage users',
-                    'read users'
+                'system users' => [
+                    'system.users.manage',
+                    'system.users.read'
                 ],
-                'activities' => [
-                    'browse activities'
+                'system activities' => [
+                    'system.activities.read'
                 ],
-                'files & folders' => [
-                    'browse folders',
-                    'add folders',
-                    'edit folders',
-                    'delete folders',
-                    'upload files',
-                    'edit files',
-                    'delete files',
-                    'read/download files'
+                'system files' => [
+                    'system.files.read',
+                    'system.files.create',
+                    'system.files.manage'
                 ],
-                'roles & permissions' => [
-                    'manage roles',
-                    'read roles'
+                'system folders' => [
+                    'system.folders.read',
+                    'system.folders.create',
+                    'system.folders.manage',
                 ],
-                'pick lists' => [
-                    'manage pick lists',
-                    'read pick lists'
+                'system roles & permissions' => [
+                    'system.roles.manage',
+                    'system.roles.read'
+                ],
+                'system pick lists' => [
+                    'system.pick-lists.manage',
+                    'system.pick-lists.read'
                 ]
             ]
         ];

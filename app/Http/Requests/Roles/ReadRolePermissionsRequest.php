@@ -13,7 +13,7 @@ class ReadRolePermissionsRequest extends FoundryFormRequest
      */
     public function authorize()
     {
-        return ($this->user() && $this->user()->can('read permissions'));
+        return ($this->user() && $this->user()->can('system.permissions.read'));
     }
 
 

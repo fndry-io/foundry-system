@@ -24,8 +24,8 @@ class File extends FileInputType implements Field {
 			->setPlaceholder(__('Drag and Drop here or click to browse'))
 			->addRule('file')
             ->setHelp(__('File type should be one of: :types and no bigger than :size', ['types' => implode(', ', UploadFileRequest::fileTypes()), 'size' => number_format(UploadFileRequest::fileSize() / 1000) . 'MB']))
-			->setAction(resourceUri('foundry.system.files.upload'))
-			->setDeleteUrl(resourceUri('foundry.system.files.delete'))
+			->setAction(resourceUri('system.files.upload'))
+			->setDeleteUrl(resourceUri('system.files.delete'))
 			;
 	}
 

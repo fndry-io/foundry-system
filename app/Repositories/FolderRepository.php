@@ -45,6 +45,13 @@ class FolderRepository extends ModelRepository {
 		return Folder::class;
 	}
 
+	public function read($id)
+    {
+        $folder = $this->getModel($id);
+        $folder->load(['file']);
+        return $folder;
+    }
+
 	/**
 	 * @param IsEntity $folder
 	 * @param array $inputs
@@ -53,25 +60,25 @@ class FolderRepository extends ModelRepository {
 	 *
 	 * @return Paginator
 	 */
-	public function browse(IsEntity $folder, array $inputs, $page = 1, $perPage = 20) : Paginator
+	public function browse(IsEntity $folder, array $inputs, $page = 1, $perPage = 20, $sortBy = null, $sortDesc = null) : Paginator
 	{
-		return $this->filter(function(Builder $query) use ($folder, $inputs) {
+		return $this->filter(function(Builder $query) use ($folder, $inputs, $sortBy, $sortDesc) {
 
 			$query
-				->select('folders.*')
+				->select('system_folders.*')
                 ->with(['file'])
-				->leftJoin('files', 'folders.file_id', '=', 'files.id')
-				->orderBy('folders.is_file', 'ASC')
-				->orderBy('folders.name', 'ASC');
+				->leftJoin('system_files', 'system_folders.file_id', '=', 'system_files.id')
+				->orderBy('system_folders.is_file', 'ASC')
+				->orderBy('system_folders.name', 'ASC');
 
-			$query->where('folders.parent_id', $folder->getKey());
+			$query->where('system_folders.parent_id', $folder->getKey());
 
 			if ($search = Arr::get($inputs,'search')) {
-				$query->where('folder.name', 'like', "%" . $search . "%");
+				$query->where('system_folders.name', 'like', "%" . $search . "%");
 			}
 
-			$deleted = Arr::get($inputs,'deleted', 'undeleted');
-			if ($deleted == 'deleted') {
+			$state = Arr::get($inputs,'status');
+			if ($state == 'deleted') {
 				$query->onlyTrashed();
 			}
 			return $query;

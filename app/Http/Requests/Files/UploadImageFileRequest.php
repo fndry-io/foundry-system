@@ -68,6 +68,11 @@ class UploadImageFileRequest extends BaseUploadFileRequest {
             throw new BadRequestHttpException('No file supplied');
         }
         $input = ImageInput::fromUploadedFile($this->file, $inputs, $this->isPublic(), $this->width, $this->height, $this->resize);
+
+        if (!$input->value('folder') && ($folder = $this->folder())) {
+            $input->setValue('folder', $folder->getKey());
+        }
+
         return $input;
     }
 

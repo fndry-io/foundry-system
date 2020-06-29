@@ -9,6 +9,8 @@ use Foundry\Core\Entities\Contracts\IsEntity;
 use Foundry\Core\Entities\Contracts\IsFile;
 use Foundry\System\Inputs\File\FileInput;
 use Foundry\System\Inputs\SearchFilterInput;
+use Foundry\System\Models\File;
+use Foundry\System\Models\Folder;
 use Foundry\System\Repositories\FileRepository;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +18,14 @@ use Illuminate\Support\Facades\Storage;
 class FileService extends BaseService
 {
 
-	/**
+    public FileRepository $repository;
+
+    public function __construct(FileRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    /**
 	 * Browse for files associated with an entity
 	 *
 	 * @param IsEntity $entity
@@ -29,7 +38,7 @@ class FileService extends BaseService
 	public function browse(IsEntity $entity, SearchFilterInput $inputs, $page = 1, $perPage = 20): Response
 	{
 
-		return Response::success(FileRepository::repository()->browse($entity, $inputs->values(), $page, $perPage));
+		return Response::success($this->repository->browse($entity, $inputs->values(), $page, $perPage));
 	}
 
 	/**
@@ -55,15 +64,35 @@ class FileService extends BaseService
 		$values['name'] = $file;
 		$values['original_name'] = $input->getFile()->getClientOriginalName();
 
-		$file = FileRepository::repository()->insert($values, $user);
-		if ($file) {
-		    $data = $file->toArray();
+		$file = $this->repository->insert($values, $user);
+
+        if ($file) {
+            //create a folder to represent this file in the system_folders
+            if ($folder_id = $input->value('folder')) {
+                $folder = new Folder();
+                $folder->name = $values['original_name'];
+                $folder->parent_id = $folder_id;
+                $folder->file()->associate($file);
+                $folder->is_file = true;
+                $folder->save();
+            }
+
+            $data = $file->toArray();
 		    $data['token'] = $file->token;
-			return Response::success($data);
+			return Response::success($file);
 		} else {
 			return Response::error(__('Unable to add file'), 500);
 		}
 	}
+
+    public function edit(IsFileInput $inputs, File $file) : Response
+    {
+        if ($file = $this->repository->update($file, $inputs->values())) {
+            return Response::success($file);
+        } else {
+            return Response::error(__('Unable to update file'), 500);
+        }
+    }
 
 	/**
 	 * Delete a file
@@ -75,7 +104,7 @@ class FileService extends BaseService
      */
 	public function delete(IsFile $file, bool $force = false): Response
 	{
-		if (FileRepository::repository()->delete($file, $force)) {
+		if ($this->repository->delete($file, $force)) {
 			return Response::success();
 		} else {
 			return Response::error(__('Unable to delete file'), 500);
@@ -91,7 +120,7 @@ class FileService extends BaseService
 	 */
 	public function restore(IsFile $file): Response
 	{
-		if (FileRepository::repository()->restore($file)) {
+		if ($this->repository->restore($file)) {
 			return Response::success();
 		} else {
 			return Response::error(__('Unable to restore file'), 500);

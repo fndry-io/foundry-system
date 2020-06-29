@@ -11,7 +11,6 @@ use Foundry\System\Events\FolderCreated;
 use Foundry\System\Models\File;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 /**
@@ -35,6 +34,12 @@ class FileRepository extends ModelRepository
 	{
 		return File::class;
 	}
+
+	public function read($id)
+    {
+        $file = $this->getModel($id);
+        return $file;
+    }
 
 	/**
 	 * @param IsEntity $entity
@@ -93,9 +98,10 @@ class FileRepository extends ModelRepository
             $file->user()->associate($user);
         }
 
-		$file->save();
+        $result = $file->save();
 
-		if ($parent = Arr::get($data, 'folder')) {
+        if ($parent = Arr::get($data, 'folder')) {
+
 			if ($parent = FolderRepository::repository()->find($parent)) {
 				$folder = FolderRepository::repository()->make(['name' => Arr::get($data, 'name')]);
 				$folder->setFile($file);
@@ -106,7 +112,7 @@ class FileRepository extends ModelRepository
 			}
 		}
 
-		if ($this->save($file)) {
+		if ($result) {
 			return $file;
 		} else {
 			return false;

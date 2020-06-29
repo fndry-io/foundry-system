@@ -67,7 +67,6 @@ class Folder extends Model implements IsFolder, HasReference
                 } else {
                     $folder->file->delete();
                 }
-
             }
 		});
 	}

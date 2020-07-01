@@ -103,7 +103,7 @@ class FileRepository extends ModelRepository
         if ($parent = Arr::get($data, 'folder')) {
 
 			if ($parent = FolderRepository::repository()->find($parent)) {
-				$folder = FolderRepository::repository()->make(['name' => Arr::get($data, 'name')]);
+				$folder = FolderRepository::repository()->make(['name' => Arr::get($data, 'original_name')]);
 				$folder->setFile($file);
 				$folder->parent = $parent;
 				if ($folder->save()) {

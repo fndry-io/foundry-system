@@ -67,15 +67,15 @@ class FileService extends BaseService
 		$file = $this->repository->insert($values, $user);
 
         if ($file) {
-            //create a folder to represent this file in the system_folders
-            if ($folder_id = $input->value('folder')) {
-                $folder = new Folder();
-                $folder->name = $values['original_name'];
-                $folder->parent_id = $folder_id;
-                $folder->file()->associate($file);
-                $folder->is_file = true;
-                $folder->save();
-            }
+//            //create a folder to represent this file in the system_folders
+//            if ($folder_id = $input->value('folder')) {
+//                $folder = new Folder();
+//                $folder->name = $values['original_name'];
+//                $folder->parent_id = $folder_id;
+//                $folder->file()->associate($file);
+//                $folder->is_file = true;
+//                $folder->save();
+//            }
 
             $data = $file->toArray();
 		    $data['token'] = $file->token;

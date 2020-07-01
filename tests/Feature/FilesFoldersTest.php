@@ -3,7 +3,7 @@
 namespace Foundry\System\Tests\Feature;
 
 use Foundry\System\Inputs\File\FileInput;
-use Foundry\System\Inputs\Folder\FolderEditInput;
+use Foundry\System\Inputs\Folder\EditFolderInput;
 use Foundry\System\Inputs\Folder\FolderInput;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Models\User;
@@ -41,7 +41,7 @@ class FilesFoldersTest extends TestCase
 			'name' => 'Test Folder Changed'
 		];
 
-		$result = FolderService::service()->edit(new FolderEditInput($data), $folder);
+		$result = FolderService::service()->edit(new EditFolderInput($data), $folder);
 		$this->assertTrue($result->isSuccess());
 
 		$result = FolderService::service()->browse($folder, new SearchFilterInput(['search' => null]));

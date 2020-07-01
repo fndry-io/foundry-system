@@ -10,7 +10,7 @@ class AddFolderInput extends FolderInput {
 
 	public function view(Request $request) : FormType
     {
-        $form = parent::view();
+        $form = parent::view($request);
         $form->setTitle(__('Create Folder'));
         $form->setButtons((new SubmitButtonType(__('Create'), $form->getAction())));
         return $form;

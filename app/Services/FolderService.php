@@ -8,8 +8,9 @@ use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Models\Model;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
-use Foundry\System\Inputs\Folder\FolderEditInput;
+use Foundry\System\Inputs\Folder\EditFolderInput;
 use Foundry\System\Inputs\Folder\FolderInput;
+use Foundry\System\Inputs\Folder\SearchFolderInput;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Models\Folder;
 use Foundry\System\Repositories\FolderRepository;
@@ -31,13 +32,13 @@ class FolderService extends BaseService
 	 * Browse the contents of a folder
 	 *
 	 * @param IsFolder $folder
-	 * @param SearchFilterInput $inputs
+	 * @param SearchFolderInput $inputs
 	 * @param int $page
 	 * @param int $perPage
 	 *
 	 * @return Response
 	 */
-	public function browse( IsFolder $folder, SearchFilterInput $inputs, $page = 1, $perPage = 20, $sortBy = null, $sortDesc = null ): Response
+	public function browse( IsFolder $folder, SearchFolderInput $inputs, $page = 1, $perPage = 20, $sortBy = null, $sortDesc = null ): Response
     {
 		return Response::success($this->repository->browse($folder, $inputs->values(), $page, $perPage, $sortBy, $sortDesc));
 	}
@@ -61,12 +62,12 @@ class FolderService extends BaseService
 	}
 
 	/**
-	 * @param FolderEditInput|Inputs $inputs
+	 * @param EditFolderInput|Inputs $inputs
 	 * @param Folder|Model $folder
 	 *
 	 * @return Response
 	 */
-	public function edit(FolderEditInput $inputs, Folder $folder) : Response
+	public function edit(EditFolderInput $inputs, Folder $folder) : Response
 	{
 		if ($folder = $this->repository->update($folder, $inputs->values())) {
 			return Response::success($folder);

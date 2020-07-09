@@ -2,6 +2,7 @@
 
 namespace Foundry\System\Services;
 
+use Foundry\Core\Auth\TokenGuard;
 use Foundry\Core\Inputs\Types\Contracts\IsFileInput;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
@@ -13,6 +14,7 @@ use Foundry\System\Models\File;
 use Foundry\System\Models\Folder;
 use Foundry\System\Repositories\FileRepository;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class FileService extends BaseService
@@ -56,7 +58,10 @@ class FileService extends BaseService
 
 		if ($input->value('is_public',  false)) {
 			$visibility = 'public';
-		}
+			$values['is_public'] = true;
+		} else {
+            $values['is_public'] = false;
+        }
 
 		$file = $input->getFile()->store($visibility);
 		Storage::setVisibility($file, $visibility);
@@ -67,19 +72,22 @@ class FileService extends BaseService
 		$file = $this->repository->insert($values, $user);
 
         if ($file) {
-//            //create a folder to represent this file in the system_folders
-//            if ($folder_id = $input->value('folder')) {
-//                $folder = new Folder();
-//                $folder->name = $values['original_name'];
-//                $folder->parent_id = $folder_id;
-//                $folder->file()->associate($file);
-//                $folder->is_file = true;
-//                $folder->save();
-//            }
-
             $data = $file->toArray();
 		    $data['token'] = $file->token;
-			return Response::success($file);
+
+            if (!$file->isPublic()) {
+                $params = ['_entity' => $file->getKey()];
+                $guard = Auth::guard();
+                if ($guard && $guard instanceof TokenGuard && $user = $guard->user()) {
+                    $params['api_token'] = $user->api_token;
+                }
+                $url = route('system.files.read', $params);
+            } else {
+                $url = $file->url;
+            }
+            $data['url'] = $url;
+
+			return Response::success($data);
 		} else {
 			return Response::error(__('Unable to add file'), 500);
 		}

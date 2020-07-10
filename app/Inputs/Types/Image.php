@@ -18,8 +18,9 @@ class Image extends FileInputType implements Field {
 			true
 		))
             ->setType('image')
+            ->setLayout('thumbnail')
 			->setPlaceholder(__('Drag and Drop here or click to browse'))
-			->addRule('exists:system_files,id')
+			->addRule('file_exists')
 			->setAction(resourceUri('system.files.upload.image'))
 			->setDeleteUrl(resourceUri('system.files.delete'))
 			;

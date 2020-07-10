@@ -32,7 +32,11 @@ class File extends Model implements IsFile, Auditable
 	    'is_public' => false
     ];
 
-	protected $visible = [
+    protected $appends = [
+        'url'
+    ];
+
+    protected $visible = [
 		'id',
 		'uuid',
 		'original_name',
@@ -41,7 +45,8 @@ class File extends Model implements IsFile, Auditable
 		'created_at',
 		'updated_at',
 		'deleted_at',
-		'is_public'
+		'is_public',
+        'url'
 	];
 
 	protected $fillable = [

@@ -10,7 +10,9 @@ use Foundry\System\Providers\AuthServiceProvider;
 use Foundry\System\Providers\EventServiceProvider;
 use Foundry\System\Providers\RouteServiceProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
@@ -71,6 +73,13 @@ class SystemServiceProvider extends ServiceProvider
             }
 
             return false;
+        });
+        Validator::extend('file_exists', function($attribute, $value, $parameters)
+        {
+            if (is_array($value)) {
+                $value = Arr::get($value, 'id');
+            }
+            return DB::table('system_files')->where('id', $value)->exists();
         });
 	}
 

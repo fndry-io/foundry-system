@@ -71,16 +71,16 @@ abstract class BaseUploadFileRequest extends FoundryFormRequest {
 	 *
 	 * Override this function to customise the file upload with your own max size and file types
 	 *
-	 * @param array $inputs The inputs from the request
+	 * @param array $values The values from the request
 	 *
 	 * @see FileInput::fromUploadedFile
 	 * @return \Foundry\Core\Inputs\Inputs|FileInput
 	 */
-	public function makeInput( $inputs ) {
+	public function makeInput( $values ) {
 		if (empty($this->file)) {
 			throw new BadRequestHttpException('No file supplied');
 		}
-		$input = FileInput::fromUploadedFile($this->file, $inputs, $this->isPublic());
+		$input = FileInput::fromUploadedFile($this->file, $values, $this->isPublic());
 
 		if (!$input->value('folder') && ($folder = $this->folder())) {
 		    $input->setValue('folder', $folder->getKey());

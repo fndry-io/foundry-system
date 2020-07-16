@@ -43,10 +43,10 @@ class UserRegisterInput extends Inputs implements ViewableInputInterface
 	public function types() : InputTypeCollection
 	{
 		return InputTypeCollection::fromTypes([
-			Username::input()->addRule('unique:users,username')
+			Username::input()->addRule('unique:system_users,username')
 			                 ->setHelp(__('A unique username that is URL friendly. Must only contain letters, numbers or _.')),
-			DisplayName::input()->addRule('unique:users,display_name'),
-			Email::input()->addRule('unique:users,email'),
+			DisplayName::input()->addRule('unique:system_users,display_name'),
+			Email::input()->addRule('unique:system_users,email'),
 			Password::input()->addRule('min:8')->addRule('max:20')->addRule('confirmed:password_confirmation'),
 			PasswordConfirmation::input()
 		]);

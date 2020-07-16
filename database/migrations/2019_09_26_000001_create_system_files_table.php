@@ -19,7 +19,7 @@ class CreateSystemFilesTable extends Migration {
 			$table->string('name')->index();
 			$table->string('original_name');
 			$table->string('type');
-			$table->string('ext', 5);
+			$table->string('ext', 20);
 			$table->decimal('size', 18);
 			$table->boolean('is_public');
 

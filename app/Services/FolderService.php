@@ -8,27 +8,39 @@ use Foundry\Core\Inputs\Inputs;
 use Foundry\Core\Models\Model;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Services\BaseService;
-use Foundry\System\Inputs\Folder\FolderEditInput;
+use Foundry\System\Inputs\Folder\EditFolderInput;
 use Foundry\System\Inputs\Folder\FolderInput;
+use Foundry\System\Inputs\Folder\SearchFolderInput;
 use Foundry\System\Inputs\SearchFilterInput;
 use Foundry\System\Models\Folder;
 use Foundry\System\Repositories\FolderRepository;
 
-class FolderService extends BaseService {
+class FolderService extends BaseService
+{
 
-	/**
+    /**
+     * @var FolderRepository
+     */
+    public FolderRepository $repository;
+
+    public function __construct(FolderRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    /**
 	 * Browse the contents of a folder
 	 *
 	 * @param IsFolder $folder
-	 * @param SearchFilterInput $inputs
+	 * @param SearchFolderInput $inputs
 	 * @param int $page
 	 * @param int $perPage
 	 *
 	 * @return Response
 	 */
-	public function browse( IsFolder $folder, SearchFilterInput $inputs, $page = 1, $perPage = 20 ): Response {
-
-		return Response::success(FolderRepository::repository()->browse($folder, $inputs->values(), $page, $perPage));
+	public function browse( IsFolder $folder, SearchFolderInput $inputs, $page = 1, $perPage = 20, $sortBy = null, $sortDesc = null ): Response
+    {
+		return Response::success($this->repository->browse($folder, $inputs->values(), $page, $perPage, $sortBy, $sortDesc));
 	}
 
 	/**
@@ -42,7 +54,7 @@ class FolderService extends BaseService {
      */
 	public function add(FolderInput $inputs, IsFolder $parent = null, IsEntity $reference = null) : Response
 	{
-		if ($folder = FolderRepository::repository()->insert($inputs->values(), $parent, $reference)) {
+		if ($folder = $this->repository->insert($inputs->values(), $parent, $reference)) {
 			return Response::success($folder);
 		} else {
 			return Response::error(__('Unable to add folder'), 500);
@@ -50,15 +62,15 @@ class FolderService extends BaseService {
 	}
 
 	/**
-	 * @param FolderEditInput|Inputs $inputs
+	 * @param EditFolderInput|Inputs $inputs
 	 * @param Folder|Model $folder
 	 *
 	 * @return Response
 	 */
-	public function edit(FolderEditInput $inputs, Folder $folder) : Response
+	public function edit(EditFolderInput $inputs, Folder $folder) : Response
 	{
-		if (FolderRepository::repository()->update($folder, $inputs->values())) {
-			return Response::success();
+		if ($folder = $this->repository->update($folder, $inputs->values())) {
+			return Response::success($folder);
 		} else {
 			return Response::error(__('Unable to update folder'), 500);
 		}
@@ -74,7 +86,7 @@ class FolderService extends BaseService {
 	 */
 	public function delete(IsFolder $folder): Response
 	{
-		if (FolderRepository::repository()->delete($folder)) {
+		if ($this->repository->delete($folder)) {
 			return Response::success();
 		} else {
 			return Response::error(__('Unable to delete folder'), 500);
@@ -90,7 +102,7 @@ class FolderService extends BaseService {
 	 */
 	public function restore(IsFolder $folder): Response
 	{
-		if (FolderRepository::repository()->restore($folder)) {
+		if ($this->repository->restore($folder)) {
 			return Response::success();
 		} else {
 			return Response::error(__('Unable to restore folder'), 500);

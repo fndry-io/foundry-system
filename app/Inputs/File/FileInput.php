@@ -67,13 +67,14 @@ class FileInput extends Inputs implements IsFileInput
 	 * @return FileInput
 	 */
 	static function fromUploadedFile(UploadedFile $file, array $inputs = [], $is_public = false){
+
 		$input = new static([
 			'folder' => Arr::get($inputs, 'folder'),
 			'reference_type' => Arr::get($inputs, 'reference_type'),
 			'reference_id' => Arr::get($inputs, 'reference_id'),
 			'type' => $file->getMimeType(),
 			'ext'  => $file->getClientOriginalExtension(),
-			'size' => round($file->getSize() / 1000, 2),
+			'size' => $file->getSize(),
 			'is_public' => $is_public
 		]);
 

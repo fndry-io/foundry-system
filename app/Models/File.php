@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Storage;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable;
 
+/**
+ * Class File
+ *
+ * @property Folder $folder The folder this file is representing by in the system_folders
+ *
+ * @package Foundry\System\Models
+ */
 class File extends Model implements IsFile, Auditable
 {
 	use Uuidable;
@@ -21,7 +28,15 @@ class File extends Model implements IsFile, Auditable
 
 	protected $table = 'system_files';
 
-	protected $visible = [
+	protected $attributes = [
+	    'is_public' => false
+    ];
+
+    protected $appends = [
+        'url'
+    ];
+
+    protected $visible = [
 		'id',
 		'uuid',
 		'original_name',
@@ -30,7 +45,8 @@ class File extends Model implements IsFile, Auditable
 		'created_at',
 		'updated_at',
 		'deleted_at',
-		'is_public'
+		'is_public',
+        'url'
 	];
 
 	protected $fillable = [
@@ -51,19 +67,22 @@ class File extends Model implements IsFile, Auditable
 	public static function boot()
 	{
 		parent::boot();
-		File::deleted(function($file){
-			$folder = Folder::query()->withTrashed()->where('file_id', $file->getKey())->first();
+        static::deleted(function($file){
 			if ($file->forceDeleting) {
 				Storage::delete($file->name);
-				if ($folder){
-					$folder->forceDelete();
-				}
-			} else {
-				if ($folder && !$folder->isDeleted()){
-					$folder->delete();
-				}
 			}
 		});
+
+		static::saving(function(File $file){
+		    if ($file->folder) {
+		        if ($file->folder->name !== $file->original_name) {
+                    $file->folder->name = $file->original_name;
+                    $file->folder->save();
+                } else {
+                    $file->folder->touch();
+                }
+            }
+        });
 	}
 
 	/**
@@ -74,9 +93,14 @@ class File extends Model implements IsFile, Auditable
 		return $this->is_public;
 	}
 
+    /**
+     * The folder which represents this file
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
 	public function folder()
 	{
-		return $this->belongsTo(Folder::class)->withoutGlobalScopes();
+		return $this->hasOne(Folder::class)->withoutGlobalScopes();
 	}
 
 	/**

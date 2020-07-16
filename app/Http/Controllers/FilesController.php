@@ -13,6 +13,7 @@ use Foundry\System\Models\File;
 use Foundry\System\Services\FileService;
 use Foundry\System\Services\ImageService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
@@ -96,7 +97,8 @@ class FilesController extends Controller {
      */
 	public function saveFile(UploadFileRequest $request, FileService $service)
     {
-        return $service->add($request->makeInput($request->all()))->toJsonResponse($request);
+        $user = Auth::user();
+        return $service->add($request->makeInput($request->all()), $user)->toJsonResponse($request);
     }
 
     /**
@@ -108,7 +110,8 @@ class FilesController extends Controller {
      */
     public function saveImage(UploadImageFileRequest $request, ImageService $service)
     {
-        return $service->add($request->makeInput($request->all()))->toJsonResponse($request);
+        $user = Auth::user();
+        return $service->add($request->makeInput($request->all()), $user)->toJsonResponse($request);
     }
 
     /**

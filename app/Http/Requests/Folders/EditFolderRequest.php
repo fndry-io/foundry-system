@@ -11,7 +11,7 @@ use Foundry\Core\Requests\Contracts\InputInterface;
 use Foundry\Core\Requests\Contracts\ViewableFormRequestInterface;
 use Foundry\Core\Requests\Response;
 use Foundry\Core\Requests\Traits\HasInput;
-use Foundry\System\Inputs\Folder\FolderEditInput;
+use Foundry\System\Inputs\Folder\EditFolderInput;
 use Foundry\System\Services\FolderService;
 
 class EditFolderRequest extends FolderRequest implements ViewableFormRequestInterface, EntityRequestInterface, InputInterface
@@ -28,7 +28,7 @@ class EditFolderRequest extends FolderRequest implements ViewableFormRequestInte
 	 * @return string
 	 */
 	public function makeInput($inputs) {
-		return new FolderEditInput($inputs);
+		return new EditFolderInput($inputs);
 	}
 
 	/**

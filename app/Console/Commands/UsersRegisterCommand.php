@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use Foundry\System\Services\UserService;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class UsersRegisterCommand extends Command
 {
@@ -60,39 +61,36 @@ class UsersRegisterCommand extends Command
 	    $super = $this->choice('Should this user be a Super Admin', ['No', 'Yes'], 0);
 
 	    if (empty($password)) {
-		    $password = $password_confirmation = Str::random(8);
+		    $password = $password_confirmation = str_shuffle(Str::ucfirst(Str::random(4)) . '#' . random_int(2343, 9127));
 	    }
 	    $arguments['password'] = $password;
 	    $arguments['password_confirmation'] = $password_confirmation;
 
 	    $entity = new UserRegisterInput($arguments);
 
-	    if ($entity->validate()) {
-		    $response = $this->service->register($entity);
-		    if ($response->isSuccess()) {
-			    $user = $response->getData();
+	    try {
+            $entity->validate();
+            $response = $this->service->register($entity);
+            if ($response->isSuccess()) {
+                $user = $response->getData();
                 if ($super) {
                     $user->super_admin = true;
                     $user->save();
                 }
-			    $user = $user->only(['id', 'username', 'display_name', 'email', 'super_admin']);
-			    $user['password'] = $password;
-			    $this->info('User registered');
-			    $this->table(['ID', 'Username', 'Display Name', 'Email', 'Super Admin', 'Password'], [$user]);
-			    return;
-		    }
-	    }
+                $user = $user->only(['id', 'username', 'display_name', 'email', 'super_admin']);
+                $user['password'] = $password;
+                $this->info('User registered');
+                $this->table(['ID', 'Username', 'Display Name', 'Email', 'Super Admin', 'Password'], [$user]);
+                return;
+            }
+        } catch (ValidationException $e) {
+            $this->error('User could not be registered. See below for errors.');
+            $errors = $e->validator;
+            $this->table(['Error'], $errors->errors());
+        } catch (\Throwable $e) {
+            $error = $e->getError();
+            $this->table(['Error'], [(array) $error]);
+        }
 
-	    $this->error('User could not be registered. See below for errors.');
-	    if ($response->getCode() == 422) {
-		    /**
-		     * @var MessageBag $errors
-		     */
-	    	$errors = $response->getData();
-		    $this->table(['Error'], $errors->getMessages());
-	    } else {
-		    $error = $response->getError();
-		    $this->table(['Error'], [(array) $error]);
-	    }
     }
 }

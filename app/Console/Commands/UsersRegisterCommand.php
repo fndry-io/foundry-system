@@ -61,7 +61,7 @@ class UsersRegisterCommand extends Command
 	    $super = $this->choice('Should this user be a Super Admin', ['No', 'Yes'], 0);
 
 	    if (empty($password)) {
-		    $password = $password_confirmation = str_shuffle(Str::ucfirst(Str::random(4)) . '#' . random_int(2343, 9127));
+		    $password = $password_confirmation = str_shuffle(Str::ucfirst(Str::random(8)) . '#' . random_int(2343, 9127));
 	    }
 	    $arguments['password'] = $password;
 	    $arguments['password_confirmation'] = $password_confirmation;

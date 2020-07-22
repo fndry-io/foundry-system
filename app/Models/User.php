@@ -120,7 +120,6 @@ class User extends \Illuminate\Foundation\Auth\User implements IsUser, IsSoftDel
             if ($model->getKey() === 1) {
                 throw new \Exception('You cannot delete the master user account');
             }
-            Log::info('User Deleting Request: ' . json_encode(debug_backtrace()), ['user' => Auth::user()->username, 'url' => url()->current()]);
         });
     }
 

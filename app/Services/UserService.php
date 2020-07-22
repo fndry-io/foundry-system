@@ -29,7 +29,14 @@ use Illuminate\Support\Facades\Session;
 
 class UserService extends BaseService {
 
-	/**
+    public UserRepository $repository;
+
+    public function __construct(UserRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    /**
 	 * Browse Users
 	 *
 	 * @param Inputs $inputs
@@ -39,7 +46,7 @@ class UserService extends BaseService {
 	 * @return Response
 	 */
 	public function browse( Inputs $inputs, $page = 1, $perPage = 20, $sortBy = null, $sortDesc = null ): Response {
-		return Response::success(UserRepository::repository()->browse($inputs->values(), $page, $perPage, $sortBy, $sortDesc));
+		return Response::success($this->repository->browse($inputs->values(), $page, $perPage, $sortBy, $sortDesc));
 	}
 
 	/**
@@ -111,7 +118,7 @@ class UserService extends BaseService {
             //if the guard is an api guard, remove the token
 			if ($guard instanceof TokenGuard) {
 				$guard->clearToken($user);
-				UserRepository::repository()->save($user);
+				$this->repository->save($user);
 			}
 
 			//if current logged in user, log them out first
@@ -158,7 +165,7 @@ class UserService extends BaseService {
 			$data['token'] = $token;
 		}
 
-		UserRepository::repository()->save($user);
+		$this->repository->save($user);
 
 		//fire the event for others to hook in to
 		$event = new AfterLogIn($data);
@@ -174,7 +181,7 @@ class UserService extends BaseService {
 	 */
 	public function register(UserRegisterInput $input) : Response
 	{
-		$user = UserRepository::repository()->register($input->values());
+		$user = $this->repository->register($input->values());
 		if ($user) {
 			return Response::success($user);
 		} else {
@@ -198,7 +205,7 @@ class UserService extends BaseService {
 			return Response::success([], __('Please check your email for reset instructions.'));
 		}
 		else{
-			$user = UserRepository::repository()->findOneBy(['email' => $input->email]);
+			$user = $this->repository->findOneBy(['email' => $input->email]);
 			return $user
 				? Response::error(__("Requested resource was not found"), 400)
 				: Response::error(__("Account with provided E-mail address not found!"), 404);
@@ -214,7 +221,7 @@ class UserService extends BaseService {
 	public function resetPassword(ResetPasswordInput $input)
 	{
 		$response = $this->broker()->reset( $input->toArray(), function ($user, $password) {
-			return UserRepository::repository()->resetPassword($user, $password);
+			return $this->repository->resetPassword($user, $password);
 		} );
 
 		if($response === Password::PASSWORD_RESET){
@@ -232,7 +239,7 @@ class UserService extends BaseService {
 	 */
 	public function add(UserInput $input) : Response
 	{
-		$user = UserRepository::repository()->insert($input->values());
+		$user = $this->repository->insert($input->values());
 		if ($user) {
 			return Response::success($user);
 		} else {
@@ -248,7 +255,7 @@ class UserService extends BaseService {
 	 */
 	public function edit(UserEditInput $input, IsUser $user) : Response
 	{
-		$user = UserRepository::repository()->update($user, $input->values());
+		$user = $this->repository->update($user, $input->values());
 		if ($user) {
 			return Response::success($user->load('profile_image'));
 		} else {
@@ -268,7 +275,7 @@ class UserService extends BaseService {
 		if ($user->isSuperAdmin()) {
 			return Response::error(__('You cannot delete a Super User'), 408);
 		}
-		if (UserRepository::repository()->delete($user)) {
+		if ($this->repository->delete($user)) {
             return Response::success();
         } else {
             return Response::error(__('Could not delete the user'), 500);
@@ -285,7 +292,7 @@ class UserService extends BaseService {
 	 */
 	public function restore(IsUser $user) : Response
 	{
-		$user = UserRepository::repository()->restore($user);
+		$user = $this->repository->restore($user);
 		if($user) {
 			return Response::success();
 		} else {
@@ -315,7 +322,7 @@ class UserService extends BaseService {
 	 */
 	public function syncSettings(IsUser $user, array $settings = [])
 	{
-		$user = UserRepository::repository()->syncSettings($user, $settings);
+		$user = $this->repository->syncSettings($user, $settings);
 		if($user) {
 			return Response::success();
 		} else {

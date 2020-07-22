@@ -8,7 +8,7 @@ Route::prefix( 'system' )->group( function () {
     Route::match(['GET', 'POST'], '/auth/login',    'AuthController@login')->name('system.auth.login');
     Route::match(['GET', 'POST'], '/auth/forgot',   'AuthController@forgotPassword')->name('system.auth.forgot');
     Route::match(['GET', 'POST'], '/auth/reset',    'AuthController@resetPassword')->name('system.auth.reset');
-    Route::match(['GET', 'POST'], '/auth/register', 'UserController@register')->name('system.auth.register');
+    Route::match(['GET', 'POST'], '/auth/register', 'UsersController@register')->name('system.auth.register');
     Route::match(['GET', 'POST'], '/auth/logout',   'AuthController@logout')->name('system.auth.logout');
 
 });
@@ -34,7 +34,7 @@ Route::prefix('system')->middleware('auth:system')->group( function () {
 	Route::match(['GET', 'POST'],  '/users/{_entity}/edit',      'UsersController@edit')->name('system.users.edit');
 	Route::post(                   '/users/{_entity}/delete',    'UsersController@delete')->name('system.users.delete');
 	Route::post(                   '/users/{_entity}/restore',   'UsersController@restore')->name('system.users.restore');
-	//FormRequestHandler::route('/users/{_entity}',       'Foundry\System\Http\Requests\Users\ReadUserRequest');
+    Route::get(                    '/users/{_entity}',          'UsersController@read')->name('system.users.read');
 
     // permissions
     Route::post('/permissions/sync', 'PermissionsController@sync');

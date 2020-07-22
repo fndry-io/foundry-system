@@ -3,6 +3,7 @@
 namespace Foundry\System\Http\Controllers;
 
 use Foundry\Core\Requests\Response;
+use Foundry\System\Http\Requests\Users\ReadUserRequest;
 use Foundry\System\Http\Requests\Users\AddUserRequest;
 use Foundry\System\Http\Requests\Users\BrowseUsersRequest;
 use Foundry\System\Http\Requests\Users\BulkAddUserRequest;
@@ -32,6 +33,13 @@ class UsersController extends Controller
         return $userService
             ->browse($inputs, $page, $limit)
             ->asResource(User::class, true)
+            ->toJsonResponse($request);
+    }
+
+    public function read(ReadUserRequest $request, UserService $userService)
+    {
+        return Response::success($userService->repository->read($request->getEntity()))
+            ->asResource(User::class)
             ->toJsonResponse($request);
     }
 

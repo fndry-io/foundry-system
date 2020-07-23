@@ -2,6 +2,8 @@
 
 namespace Foundry\System\Http\Middleware;
 
+use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
 class VerifyCsrfToken extends Middleware
@@ -18,7 +20,13 @@ class VerifyCsrfToken extends Middleware
      *
      * @var array
      */
-    protected $except = [
-        'api/auth/*'
-    ];
+    protected $except = [];
+
+    public function __construct(Application $app, Encrypter $encrypter)
+    {
+        parent::__construct($app, $encrypter);
+        $this->except = config('system.csrf.except', [
+            'api/auth/*'
+        ]);
+    }
 }

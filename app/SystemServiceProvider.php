@@ -94,6 +94,11 @@ class SystemServiceProvider extends ServiceProvider
 		$this->publishes([
 			base_path('foundry/system/config/scope.php') => config_path('scope.php'),
 		], 'scope');
+
+        $this->publishes([
+            base_path('foundry/system/config/system.php') => config_path('system.php'),
+        ], 'system');
+
 	}
 
 	/**

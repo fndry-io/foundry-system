@@ -65,7 +65,7 @@ class ImageInput extends FileInput {
 			'reference_id' => Arr::get($inputs, 'reference_id'),
 			'type' => $file->getMimeType(),
 			'ext'  => $file->getClientOriginalExtension(),
-			'size' => round($file->getSize() / 1000, 2),
+			'size' => $file->getSize(),
 			'is_public' => $is_public,
             'width' => $width,
             'height' => $height,

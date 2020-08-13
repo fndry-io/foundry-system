@@ -14,12 +14,11 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 trait PickListRelations
 {
     /**
-     * @param string $related
      * @return MorphToMany
      */
-    public function morphToManyPickListItems($related = PickListItem::class)
+    public function morphToManyPickListItems()
     {
-        return $this->morphToMany($related, 'relatable', 'picklist_item_relations', 'relatable_id', 'picklist_item_id');
+        return $this->morphToMany(PickListItem::class, 'relatable', 'picklist_item_relations', 'relatable_id', 'picklist_item_id');
     }
 
     /**

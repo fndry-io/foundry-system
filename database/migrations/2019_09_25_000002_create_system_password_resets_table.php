@@ -14,6 +14,7 @@ class CreateSystemPasswordResetsTable extends Migration {
 	{
 		Schema::create('system_password_resets', function(Blueprint $table)
 		{
+            $table->increments('id');
 			$table->string('email');
 			$table->string('token');
 			$table->dateTime('created_at');

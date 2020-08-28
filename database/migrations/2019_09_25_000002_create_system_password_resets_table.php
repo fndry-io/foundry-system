@@ -12,6 +12,9 @@ class CreateSystemPasswordResetsTable extends Migration {
 	 */
 	public function up()
 	{
+	    //this is set because digitalocean mysql 8 has this setting on and the create command below won't work without it
+        //see https://github.com/laravel/framework/issues/33238
+        \Illuminate\Support\Facades\DB::statement('SET SESSION sql_require_primary_key=0');
 		Schema::create('system_password_resets', function(Blueprint $table)
 		{
 			$table->string('email');

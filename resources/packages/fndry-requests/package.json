@@ -30,7 +30,7 @@
         "jquery": "^3.5.0",
         "libphonenumber-js": "^1.7.21",
         "moment-timezone": "^0.5.26",
-        "node-sass": "^4.9.0",
+        "node-sass": "^4.13.1",
         "numeral": "^2.0.6",
         "rrule": "^2.6.2",
         "sass-loader": "^7.1.0",

@@ -46,7 +46,7 @@ class Mix
 
         if (! isset($manifests[$manifestPath])) {
             if (! file_exists($manifestPath)) {
-                throw new Exception('The Mix manifest does not exist.');
+                throw new Exception(sprintf('The Mix manifest %s does not exist.', $manifestPath));
             }
 
             $manifests[$manifestPath] = json_decode(file_get_contents($manifestPath), true);
@@ -55,7 +55,7 @@ class Mix
         $manifest = $manifests[$manifestPath];
 
         if (! isset($manifest[$path])) {
-            $exception = new Exception("Unable to locate Mix file: {$path}.");
+            $exception = new Exception("Unable to locate Mix file {$path}.");
 
             if (! app('config')->get('app.debug')) {
                 report($exception);

@@ -124,7 +124,7 @@ class File extends Model implements IsFile, Auditable
 	public function getUrlAttribute()
     {
 
-        if (config('filesystems.default') === 's3') {
+        if (config('filesystems.default') === 's3' || config('filesystems.default') === 'do_spaces') {
             if (!$this->isPublic()) {
                 /**
                  * Create a temp url with an expiry period

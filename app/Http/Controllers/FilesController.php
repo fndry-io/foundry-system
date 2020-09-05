@@ -27,7 +27,7 @@ class FilesController extends Controller {
 		 */
 		$file = $request->getEntity();
 
-		if (config('filesystems.default') === 's3') {
+        if (config('filesystems.default') === 's3' || config('filesystems.default') === 'do_spaces') {
 			if (!$file->isPublic()) {
 				/**
 				 * Create a temp url with an expiry period
@@ -69,7 +69,7 @@ class FilesController extends Controller {
 		 */
 		$file = $request->getEntity();
 
-		if (config('filesystems.default') === 's3') {
+        if (config('filesystems.default') === 's3' || config('filesystems.default') === 'do_spaces') {
 			if (!$file->isPublic()) {
 				/**
 				 * Create a temp url with an expiry period

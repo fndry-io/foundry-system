@@ -10,10 +10,9 @@ class EditFolderInput extends FolderInput {
 
 	public function view(Request $request) : FormType
     {
-        $form = parent::view();
+        $form = parent::view($request);
         $form->setTitle(__('Update Folder'));
         $form->setButtons((new SubmitButtonType(__('Update'), $form->getAction())));
         return $form;
     }
-
 }

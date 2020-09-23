@@ -11,6 +11,7 @@ class UploadFileRequest extends BaseUploadFileRequest {
             'jpg',
 			'gif',
 			'png',
+            'svg',
 
             //documents
 			'doc',

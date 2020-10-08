@@ -63,6 +63,11 @@ class SettingInput extends Inputs implements ViewableInputInterface {
 	private function getValueInput($setting, $model)
     {
 
+        if ($setting['input']) {
+            $class = $setting['input'];
+            return $class::input()->setName('value');
+        }
+
         if (isset($setting['options']) && sizeof($setting['options']) > 0) {
             $value = new ChoiceInputType('value', __('New Value'), true, $setting['options'], false);
         } else {

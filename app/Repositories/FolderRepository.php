@@ -13,6 +13,7 @@ use Foundry\System\Events\FolderDeleted;
 use Foundry\System\Events\FolderRestored;
 use Foundry\System\Events\FolderUpdated;
 use Foundry\System\Models\Folder;
+use Foundry\System\Repositories\Criteria\SearchCriteria;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
@@ -74,7 +75,7 @@ class FolderRepository extends ModelRepository {
 			$query->where('system_folders.parent_id', $folder->getKey());
 
 			if ($search = Arr::get($inputs,'search')) {
-				$query->where('system_folders.name', 'like', "%" . $search . "%");
+				$query = (new SearchCriteria(['system_folders.name', 'system_files.name'], $search))->apply($query, $this);
 			}
 
 			$state = Arr::get($inputs,'status');

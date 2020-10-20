@@ -75,7 +75,10 @@ class FolderRepository extends ModelRepository {
 			$query->where('system_folders.parent_id', $folder->getKey());
 
 			if ($search = Arr::get($inputs,'search')) {
-				$query = (new SearchCriteria(['system_folders.name', 'system_files.name'], $search))->apply($query, $this);
+		        $query->where(function ($q) use ($search) {
+					$q->orWhere('system_folders.name', "LIKE", "%{$search}%");
+					$q->orWhere('system_files.name', "LIKE", "%{$search}%");
+		        });
 			}
 
 			$state = Arr::get($inputs,'status');

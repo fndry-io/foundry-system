@@ -13,6 +13,7 @@ class File extends JsonResource {
             'original_name' => $this->original_name,
             'url' => $this->url,
             'type' => $this->type,
+            'alt' => $this->alt,
             'size' => $this->size,
             'folder' => new Folder($this->whenLoaded('folder')),
             'is_public' => $this->is_public,

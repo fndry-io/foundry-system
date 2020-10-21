@@ -21,15 +21,15 @@ use OwenIt\Auditing\Contracts\Auditable;
  */
 class File extends Model implements IsFile, Auditable
 {
-	use Uuidable;
-	use SoftDeleteable;
-	use Referencable;
+    use Uuidable;
+    use SoftDeleteable;
+    use Referencable;
     use AuditableTrait;
 
-	protected $table = 'system_files';
+    protected $table = 'system_files';
 
-	protected $attributes = [
-	    'is_public' => false
+    protected $attributes = [
+        'is_public' => false
     ];
 
     protected $appends = [
@@ -37,45 +37,47 @@ class File extends Model implements IsFile, Auditable
     ];
 
     protected $visible = [
-		'id',
-		'uuid',
-		'original_name',
-		'type',
-		'size',
-		'created_at',
-		'updated_at',
-		'deleted_at',
-		'is_public',
-        'url'
-	];
+        'id',
+        'uuid',
+        'original_name',
+        'type',
+        'size',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'is_public',
+        'url',
+        'alt'
+    ];
 
-	protected $fillable = [
-		'name',
-		'original_name',
-		'type',
-		'ext',
-		'size',
-		'is_public',
-		'reference_type',
-		'reference_id'
-	];
+    protected $fillable = [
+        'name',
+        'original_name',
+        'type',
+        'ext',
+        'alt',
+        'size',
+        'is_public',
+        'reference_type',
+        'reference_id'
+    ];
 
-	protected $casts = [
-		'is_public' => 'boolean'
-	];
+    protected $casts = [
+        'is_public' => 'boolean'
+    ];
 
-	public static function boot()
-	{
-		parent::boot();
-        static::deleted(function($file){
-			if ($file->forceDeleting) {
-				Storage::delete($file->name);
-			}
-		});
+    public static function boot()
+    {
+        parent::boot();
+        static::deleted(function ($file) {
+            if ($file->forceDeleting) {
+                Storage::delete($file->name);
+            }
+        });
 
-		static::saved(function(File $file){
-		    if ($file->folder) {
-		        if ($file->folder->name !== $file->original_name) {
+        static::saved(function (File $file) {
+            if ($file->folder) {
+                if ($file->folder->name !== $file->original_name) {
                     $file->folder->name = $file->original_name;
                     $file->folder->save();
                 } else {
@@ -83,32 +85,32 @@ class File extends Model implements IsFile, Auditable
                 }
             }
         });
-	}
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function isPublic()
-	{
-		return $this->is_public;
-	}
+    /**
+     * @return bool
+     */
+    public function isPublic()
+    {
+        return $this->is_public;
+    }
 
     /**
      * The folder which represents this file
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-	public function folder()
-	{
-		return $this->hasOne(Folder::class)->withoutGlobalScopes();
-	}
+    public function folder()
+    {
+        return $this->hasOne(Folder::class)->withoutGlobalScopes();
+    }
 
     /**
      * Get the URL to the file
      *
      * @return string
      */
-	public function getUrlAttribute()
+    public function getUrlAttribute()
     {
 
         if (config('filesystems.default') === 's3' || config('filesystems.default') === 'do_spaces') {
@@ -116,7 +118,7 @@ class File extends Model implements IsFile, Auditable
                 /**
                  * Create a temp url with an expiry period
                  */
-                return Storage::temporaryUrl( $this->name, now()->addMinutes(20) );
+                return Storage::temporaryUrl($this->name, now()->addMinutes(20));
             } else {
                 return Storage::url($this->name);
             }
@@ -146,6 +148,23 @@ class File extends Model implements IsFile, Auditable
     public function onlyForInput()
     {
         return $this->only('id', 'url', 'original_name', 'type', 'size', 'token');
+    }
+
+    /**
+     * @param $obj
+     * @return array
+     */
+    public static function getDetails($obj)
+    {
+        if($obj){
+            return [
+                'id'=> $obj->id,
+                'alt' => $obj->alt,
+                'url' => $obj->url
+            ];
+        }
+        return [];
+
     }
 
 }

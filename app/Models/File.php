@@ -73,7 +73,7 @@ class File extends Model implements IsFile, Auditable
 			}
 		});
 
-		static::saving(function(File $file){
+		static::saved(function(File $file){
 		    if ($file->folder) {
 		        if ($file->folder->name !== $file->original_name) {
                     $file->folder->name = $file->original_name;
@@ -101,19 +101,6 @@ class File extends Model implements IsFile, Auditable
 	public function folder()
 	{
 		return $this->hasOne(Folder::class)->withoutGlobalScopes();
-	}
-
-	/**
-	 * @param int|Folder $folder
-	 */
-	public function setFolderAttribute($folder)
-	{
-		if(!$folder instanceof Folder && !empty($folder)) {
-			$folder = Folder::query()->find($folder);
-		}
-		if ($folder) {
-			$this->folder()->associate($folder);
-		}
 	}
 
     /**

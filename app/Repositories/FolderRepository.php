@@ -12,6 +12,7 @@ use Foundry\System\Events\FolderCreated;
 use Foundry\System\Events\FolderDeleted;
 use Foundry\System\Events\FolderRestored;
 use Foundry\System\Events\FolderUpdated;
+use Foundry\System\Models\File;
 use Foundry\System\Models\Folder;
 use Foundry\System\Repositories\Criteria\SearchCriteria;
 use Illuminate\Contracts\Pagination\Paginator;
@@ -180,6 +181,14 @@ class FolderRepository extends ModelRepository {
 		}
 
 		if ($folder->save()) {
+		    if($alt = Arr::get($data, 'alt'))
+            {
+                if($folder->file)
+                {
+                    $folder->file->alt = $alt;
+                    $folder->file->save();
+                }
+            }
 		    $this->dispatch('updated', $folder);
 			return $folder;
 		} else {

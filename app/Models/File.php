@@ -21,15 +21,15 @@ use OwenIt\Auditing\Contracts\Auditable;
  */
 class File extends Model implements IsFile, Auditable
 {
-	use Uuidable;
-	use SoftDeleteable;
-	use Referencable;
+    use Uuidable;
+    use SoftDeleteable;
+    use Referencable;
     use AuditableTrait;
 
-	protected $table = 'system_files';
+    protected $table = 'system_files';
 
-	protected $attributes = [
-	    'is_public' => false
+    protected $attributes = [
+        'is_public' => false
     ];
 
     protected $appends = [
@@ -47,23 +47,25 @@ class File extends Model implements IsFile, Auditable
 		'deleted_at',
 		'is_public',
         'url',
-        'share_url'
-	];
+        'share_url',
+        'alt'
+    ];
 
 	protected $fillable = [
 		'name',
 		'original_name',
 		'type',
 		'ext',
+        'alt',
 		'size',
 		'is_public',
 		'reference_type',
 		'reference_id'
 	];
 
-	protected $casts = [
-		'is_public' => 'boolean'
-	];
+    protected $casts = [
+        'is_public' => 'boolean'
+    ];
 
 	public static function boot()
 	{
@@ -174,6 +176,19 @@ class File extends Model implements IsFile, Auditable
     public function onlyForInput()
     {
         return $this->only('id', 'url', 'original_name', 'type', 'size', 'token');
+    }
+
+    /**
+     * @param $obj
+     * @return array
+     */
+    public static function getFile($id)
+    {
+        return [
+            'id'=> $obj->id,
+            'alt' => $obj->alt,
+            'url' => $obj->url
+        ];
     }
 
 }

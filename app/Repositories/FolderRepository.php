@@ -12,7 +12,9 @@ use Foundry\System\Events\FolderCreated;
 use Foundry\System\Events\FolderDeleted;
 use Foundry\System\Events\FolderRestored;
 use Foundry\System\Events\FolderUpdated;
+use Foundry\System\Models\File;
 use Foundry\System\Models\Folder;
+use Foundry\System\Repositories\Criteria\SearchCriteria;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
@@ -74,7 +76,10 @@ class FolderRepository extends ModelRepository {
 			$query->where('system_folders.parent_id', $folder->getKey());
 
 			if ($search = Arr::get($inputs,'search')) {
-				$query->where('system_folders.name', 'like', "%" . $search . "%");
+		        $query->where(function ($q) use ($search) {
+					$q->orWhere('system_folders.name', "LIKE", "%{$search}%");
+					$q->orWhere('system_files.name', "LIKE", "%{$search}%");
+		        });
 			}
 
 			$state = Arr::get($inputs,'status');
@@ -176,6 +181,14 @@ class FolderRepository extends ModelRepository {
 		}
 
 		if ($folder->save()) {
+		    if($alt = Arr::get($data, 'alt'))
+            {
+                if($folder->file)
+                {
+                    $folder->file->alt = $alt;
+                    $folder->file->save();
+                }
+            }
 		    $this->dispatch('updated', $folder);
 			return $folder;
 		} else {

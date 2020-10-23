@@ -37,7 +37,8 @@ class Folder extends Model implements IsFolder, HasReference
 	protected $visible = [
 		'id',
 		'uuid',
-		'name'
+		'name',
+        'alt'
 	];
 
 	public static function boot()
@@ -93,6 +94,11 @@ class Folder extends Model implements IsFolder, HasReference
 	{
 		return $this->belongsTo(File::class)->withoutGlobalScopes();
 	}
+
+    public function getAltAttribute()
+    {
+        return $this->file ? ($this->file->alt ? $this->file->alt  : null ) : null;
+    }
 
 	public function setFile(IsFile $file)
 	{

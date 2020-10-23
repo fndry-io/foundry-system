@@ -14,6 +14,7 @@ class File extends JsonResource {
             'url' => $this->url,
             'share_url' => $this->share_url,
             'type' => $this->type,
+            'alt' => $this->alt,
             'size' => $this->size,
             'folder' => new Folder($this->whenLoaded('folder')),
             'is_public' => $this->is_public,

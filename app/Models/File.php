@@ -8,6 +8,7 @@ use Foundry\Core\Models\Traits\SoftDeleteable;
 use Foundry\Core\Models\Traits\Uuidable;
 use Foundry\Core\Entities\Contracts\IsFile;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -74,6 +75,7 @@ class File extends Model implements IsFile, Auditable
 			if ($file->forceDeleting) {
 				Storage::delete($file->name);
 			}
+            Cache::forget('system_files:' . $file->id);
 		});
 
 		static::saved(function(File $file){
@@ -85,6 +87,7 @@ class File extends Model implements IsFile, Auditable
                     $file->folder->touch();
                 }
             }
+            Cache::forget('system_files:' . $file->id);
         });
 	}
 
@@ -179,16 +182,23 @@ class File extends Model implements IsFile, Auditable
     }
 
     /**
-     * @param $obj
+     * @param int $id The file ID
      * @return array
      */
     public static function getFile($id)
     {
-        return [
-            'id'=> $obj->id,
-            'alt' => $obj->alt,
-            'url' => $obj->url
-        ];
+        return Cache::rememberForever('system_files:' . $id, function() use ($id){
+            $file = File::query()->find($id);
+            return [
+                'id'=> $file->id,
+                'uuid' => $file->uuid,
+                'ext' => $file->ext,
+                'alt' => $file->alt,
+                'url' => $file->url,
+                'share_url' => $file->share_url
+            ];
+        });
+
     }
 
 }

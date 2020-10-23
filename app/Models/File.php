@@ -46,7 +46,8 @@ class File extends Model implements IsFile, Auditable
 		'updated_at',
 		'deleted_at',
 		'is_public',
-        'url'
+        'url',
+        'share_url'
 	];
 
 	protected $fillable = [
@@ -124,6 +125,33 @@ class File extends Model implements IsFile, Auditable
 
         if ($this->isPublic()) {
             return Storage::url(str_replace('public/', '', $this->name));
+        } else {
+            return route('system.files.read', ['_entity' => $this->id], true);
+        }
+
+    }
+
+    /**
+     * Get the URL to the file
+     *
+     * @return string
+     */
+    public function getShareUrlAttribute()
+    {
+
+        if (config('filesystems.default') === 's3' || config('filesystems.default') === 'do_spaces') {
+            if (!$this->isPublic()) {
+                /**
+                 * Create a temp url with an expiry period
+                 */
+                return Storage::temporaryUrl( $this->name, now()->addMinutes(20) );
+            } else {
+                return Storage::url($this->name);
+            }
+        }
+
+        if ($this->isPublic()) {
+            return url('/files/' . $this->id . '/' . $this->original_name);
         } else {
             return route('system.files.read', ['_entity' => $this->id], true);
         }

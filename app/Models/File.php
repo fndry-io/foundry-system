@@ -188,7 +188,7 @@ class File extends Model implements IsFile, Auditable
     public static function getFile($id)
     {
         return Cache::rememberForever('system_files:' . $id, function() use ($id){
-            $file = File::query()->find($id);
+            $file = File::query()->find($id)->withoutGlobalScopes();
             return [
                 'id'=> $file->id,
                 'uuid' => $file->uuid,

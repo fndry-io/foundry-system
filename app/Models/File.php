@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class File
@@ -74,8 +75,8 @@ class File extends Model implements IsFile, Auditable
         static::deleted(function($file){
 			if ($file->forceDeleting) {
 				Storage::delete($file->name);
+                Cache::forget('system_files:' . $file->id);
 			}
-            Cache::forget('system_files:' . $file->id);
 		});
 
 		static::saved(function(File $file){
@@ -188,7 +189,10 @@ class File extends Model implements IsFile, Auditable
     public static function getFile($id)
     {
         return Cache::rememberForever('system_files:' . $id, function() use ($id){
-            $file = File::query()->find($id);
+            $file = File::query()->withoutGlobalScopes()->find($id);
+            if (!$file) {
+                throw new NotFoundHttpException('File not found');
+            }
             return [
                 'id'=> $file->id,
                 'uuid' => $file->uuid,
@@ -198,7 +202,6 @@ class File extends Model implements IsFile, Auditable
                 'share_url' => $file->share_url
             ];
         });
-
     }
 
 }

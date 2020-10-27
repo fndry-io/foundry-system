@@ -9,6 +9,7 @@ use Foundry\Core\Models\Traits\Uuidable;
 use Foundry\Core\Entities\Contracts\IsFile;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -191,7 +192,8 @@ class File extends Model implements IsFile, Auditable
         return Cache::rememberForever('system_files:' . $id, function() use ($id){
             $file = File::query()->withoutGlobalScopes()->find($id);
             if (!$file) {
-                throw new NotFoundHttpException('File not found');
+                Log::error(sprintf('File %s not found', $id));
+                return [];
             }
             return [
                 'id'=> $file->id,

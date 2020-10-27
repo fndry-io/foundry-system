@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 use OwenIt\Auditing\Contracts\Auditable;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -145,24 +146,31 @@ class File extends Model implements IsFile, Auditable
      */
     public function getShareUrlAttribute()
     {
-
         if (config('filesystems.default') === 's3' || config('filesystems.default') === 'do_spaces') {
             if (!$this->isPublic()) {
                 /**
                  * Create a temp url with an expiry period
                  */
-                return Storage::temporaryUrl( $this->name, now()->addMinutes(20) );
+                return Storage::temporaryUrl( $this->name, now()->addMinutes(20), [
+                    'ResponseContentDisposition' => 'attachment; filename="' . str_replace(['"', "'"], "", $this->getCleanFilename()) . '"'
+                ]);
             } else {
                 return Storage::url($this->name);
             }
         }
 
         if ($this->isPublic()) {
-            return url('/files/' . $this->id . '/' . $this->original_name);
+            return url('/files/' . $this->id . '/' . $this->getCleanFilename());
         } else {
             return route('system.files.read', ['_entity' => $this->id], true);
         }
 
+    }
+
+    public function getCleanFilename()
+    {
+        $name = explode('.', $this->original_name);
+        return Str::slug($name[0]) . '.' . $this->ext;
     }
 
     /**
@@ -198,6 +206,7 @@ class File extends Model implements IsFile, Auditable
             return [
                 'id'=> $file->id,
                 'uuid' => $file->uuid,
+                'name' => $file->name,
                 'ext' => $file->ext,
                 'alt' => $file->alt,
                 'url' => $file->url,

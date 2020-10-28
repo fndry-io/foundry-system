@@ -11,6 +11,6 @@ class BrowsePickListItemsRequest extends PickListRequest
 	 */
 	public function authorize()
 	{
-        return ($this->user() && $this->user()->can('system.pick-lists.read'));
+        return ($this->user() && $this->user()->can('system.pick_lists.read'));
 	}
 }

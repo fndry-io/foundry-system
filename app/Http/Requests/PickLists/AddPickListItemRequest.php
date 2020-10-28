@@ -11,6 +11,6 @@ class AddPickListItemRequest extends PickListRequest
      */
     public function authorize()
     {
-        return ($this->user() && $this->user()->can('system.pick-lists.manage'));
+        return ($this->user() && $this->user()->can('system.pick_lists.manage'));
     }
 }

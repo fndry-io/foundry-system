@@ -31,6 +31,10 @@ class SyncPermissions
                 'system activities' => [
                     'system.activities.read'
                 ],
+                'system settings' => [
+                    'system.settings.read',
+                    'system.settings.manage'
+                ],
                 'system files' => [
                     'system.files.read',
                     'system.files.create',
@@ -46,8 +50,8 @@ class SyncPermissions
                     'system.roles.read'
                 ],
                 'system pick lists' => [
-                    'system.pick-lists.manage',
-                    'system.pick-lists.read'
+                    'system.pick_lists.manage',
+                    'system.pick_lists.read'
                 ]
             ]
         ];

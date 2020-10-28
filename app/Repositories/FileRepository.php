@@ -7,6 +7,10 @@ use Foundry\Core\Repositories\ModelRepository;
 use Foundry\Core\Entities\Contracts\IsEntity;
 use Foundry\Core\Entities\Contracts\IsFile;
 use Foundry\Core\Repositories\Traits\SoftDeleteable;
+use Foundry\System\Events\FileCreated;
+use Foundry\System\Events\FileDeleted;
+use Foundry\System\Events\FileRestored;
+use Foundry\System\Events\FileUpdated;
 use Foundry\System\Events\FolderCreated;
 use Foundry\System\Models\File;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,6 +30,13 @@ class FileRepository extends ModelRepository
 {
 
 	use SoftDeleteable;
+
+	protected $dispatchesEvents = [
+	    'inserted' => FileCreated::class,
+        'updated' => FileUpdated::class,
+        'deleted' => FileDeleted::class,
+        'restored' => FileRestored::class
+    ];
 
 	/**
 	 * @return string|Model
@@ -113,6 +124,8 @@ class FileRepository extends ModelRepository
 		}
 
 		if ($result) {
+            event(new FileCreated($file));
+
 			return $file;
 		} else {
 			return false;

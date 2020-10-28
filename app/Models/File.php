@@ -191,6 +191,11 @@ class File extends Model implements IsFile, Auditable
         return $this->only('id', 'url', 'original_name', 'type', 'size', 'token');
     }
 
+    public function isImage()
+    {
+        return in_array($this->ext, ['jpg', 'jpeg', 'gif', 'png']);
+    }
+
     /**
      * @param int $id The file ID
      * @return array

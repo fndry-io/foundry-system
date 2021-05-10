@@ -58,7 +58,7 @@ class SystemServiceProvider extends ServiceProvider
 			return preg_match('/^[A-Za-z0-9_]+$/', $value);
 		});
 		Validator::extend('telephone', function ($attribute, $value, $parameters, $validator) {
-			return preg_match('/^\+[0-9]{1,15}$/', $value);
+			return preg_match('/^\+[0-9\s]{1,15}$/', $value);
 		});
         Validator::extend('valid_date', function ($attribute, $value, $parameters, $validator) {
             if ($value instanceof Carbon) {

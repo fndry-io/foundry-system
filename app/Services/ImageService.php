@@ -45,6 +45,12 @@ class ImageService extends FileService
             case 'fit':
                 $image->fit($input->value('width'), $input->value('height'));
                 break;
+            case 'within':
+                $image->resize($input->value('width'), $input->value('height'), function($constraint){
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+                break;
         }
 
         $filename = $file->hashName($visibility);
